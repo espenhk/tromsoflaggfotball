@@ -620,19 +620,19 @@ const CoachCard = ({
 
 const PositionCard = ({
   name,
+  abbr,
   tagline,
   icon,
   role,
-  role2,
   traits,
   nflExamples,
   variant = "offense",
 }: {
   name: string;
+  abbr: string;
   tagline: string;
   icon: React.ReactNode;
   role: string;
-  role2?: string;
   traits: string;
   nflExamples?: string;
   variant?: "offense" | "defense";
@@ -646,29 +646,35 @@ const PositionCard = ({
   return (
     <button
       onClick={() => setOpen(!open)}
-      className={`w-full text-left ${bgColor} border ${borderColor} rounded-xl p-5 transition-colors`}
+      className={`w-full text-left ${bgColor} border ${borderColor} rounded-xl p-4 transition-colors`}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         <div className={accentColor}>{icon}</div>
         <div className="flex-1 min-w-0">
-          <h3 className="font-heading font-bold text-foreground">{name}</h3>
+          <h3 className="font-heading font-bold text-foreground text-sm">
+            {name}
+            {abbr && (
+              <span className={`transition-all duration-300 overflow-hidden inline-block ${open ? "max-w-0 opacity-0" : "max-w-[3rem] opacity-60"}`}>
+                {" "}({abbr})
+              </span>
+            )}
+          </h3>
           <p className={`text-xs text-muted-foreground font-body mt-0.5 transition-all duration-300 overflow-hidden ${open ? "max-h-0 opacity-0 mt-0" : "max-h-10 opacity-100"}`}>{tagline}</p>
         </div>
         <ChevronDown
-          className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`w-3.5 h-3.5 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
         />
       </div>
       <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
         <div className="overflow-hidden">
-          <div className="mt-3 space-y-2 pl-8">
-            <p className="text-sm text-muted-foreground font-body leading-relaxed">{role}</p>
-            {role2 && <p className="text-sm text-muted-foreground font-body leading-relaxed">{role2}</p>}
+          <div className="mt-2 space-y-1.5 pl-7">
+            <p className="text-xs text-muted-foreground font-body leading-relaxed">{role}</p>
             <p className={`text-xs font-body ${accentColor}`}>
               <span className="text-muted-foreground">Passer for:</span> {traits}
             </p>
             {nflExamples && (
               <p className="text-xs font-body text-muted-foreground">
-                <span className="text-foreground font-semibold">Kjente NFL-spillere:</span> {nflExamples}
+                <span className="text-foreground font-semibold">NFL:</span> {nflExamples}
               </p>
             )}
           </div>

@@ -579,7 +579,7 @@ const CoachCard = ({
       onClick={() => setOpen(!open)}
       className="w-full text-left py-3"
     >
-      <div className="grid grid-cols-[24px_120px_1fr_auto_auto] md:grid-cols-[24px_140px_1fr_auto_auto] items-center gap-3">
+      <div className="grid grid-cols-[24px_120px_auto_auto_auto] md:grid-cols-[24px_140px_auto_auto_auto] items-center gap-x-3 gap-y-0">
         <div className="text-primary shrink-0">{icon}</div>
         <span className="text-xs text-primary uppercase tracking-wider font-body">{title}</span>
         <span className="font-heading font-bold text-foreground">{name}</span>

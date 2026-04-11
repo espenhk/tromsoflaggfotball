@@ -73,7 +73,7 @@ const FieldDiagram = () => {
         <PlayerDot label="WR" color="bg-sky-400" top="58%" left="72%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-S" />
 
         {/* Dashed arrow from R to QB */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}>
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ zIndex: 1 }}>
           <defs>
             <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
               <polygon points="0 0, 8 3, 0 6" fill="white" fillOpacity="0.6" />
@@ -83,13 +83,14 @@ const FieldDiagram = () => {
             </marker>
           </defs>
           <line
-            x1="62%" y1="38%"
-            x2="51%" y2="63%"
+            x1="63" y1="36"
+            x2="51" y2="63"
             stroke="white"
             strokeOpacity="0.5"
-            strokeWidth="2"
-            strokeDasharray="6 4"
+            strokeWidth="1.5"
+            strokeDasharray="4 3"
             markerEnd="url(#arrowhead)"
+            vectorEffect="non-scaling-stroke"
           />
 
           {/* Kastespill routes */}

@@ -261,7 +261,7 @@ const Index = () => {
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Coachene
           </h2>
-          <div className="space-y-1">
+          <div className="space-y-0">
             {[
               { icon: <Megaphone className="w-5 h-5" />, title: "Head Coach", name: "Espen Haukeland Kristensen", phone: "958 48 889", bio: "Espen har fire sesonger som spiller i Vålerenga Trolls (amerikansk fotball) bak seg, der han spilte quarterback, wide receiver og linebacker. Etter spillerkarrieren gikk han over til trenerbenken — tre år som coach for seniorer, U13 og damelag, med spesialfelt som QB-coach. Tok NM-bronse i flaggfotball i 2025." },
               { icon: <ConeIcon className="w-5 h-5" />, title: "Assistentcoach", name: "Martin Sand Monsen", phone: "952 99 706", bio: "Martin er en av de sentrale figurene fra Tromsø Trailblazers og har spilt flaggfotball i 3–4 år — på alle posisjoner. Til daglig jobber han som lærer, noe som gjør ham til en naturlig pedagog på banen. Flink til å bryte ned spillet og gjøre det forståelig for alle, uansett nivå." },
@@ -583,7 +583,7 @@ const CoachCard = ({
   return (
     <button
       onClick={() => setOpen(!open)}
-      className="w-full text-left py-3"
+      className="w-full text-left py-1.5"
     >
       {/* Desktop layout */}
       <div className="hidden md:grid grid-cols-[24px_140px_1fr_auto_auto] items-center gap-x-4">
@@ -661,7 +661,7 @@ const PositionCard = ({
   return (
     <button
       onClick={() => setOpen(!open)}
-      className="group relative w-full text-left px-4 py-3 transition-all"
+      className="group relative w-full text-left px-4 py-1.5 transition-all"
     >
       {/* Glow background on hover */}
       <div

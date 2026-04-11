@@ -182,7 +182,7 @@ const Index = () => {
               href="https://www.instagram.com/tromsoflaggfotball/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-primary transition-colors"
+              className="text-muted-foreground hover:text-[#E1306C] transition-colors"
               aria-label="Instagram"
             >
               <Instagram className="w-6 h-6" />
@@ -191,7 +191,7 @@ const Index = () => {
               href="https://www.facebook.com/profile.php?id=61587334652354&locale=nb_NO"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-primary transition-colors"
+              className="text-muted-foreground hover:text-[#1877F2] transition-colors"
               aria-label="Facebook"
             >
               <Facebook className="w-6 h-6" />

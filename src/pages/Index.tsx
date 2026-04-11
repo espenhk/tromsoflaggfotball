@@ -672,7 +672,7 @@ const PositionCard = ({
       />
       <button
         onClick={() => setOpen(!open)}
-        className="relative w-full text-left px-3 py-1.5 md:py-1.5 py-2"
+        className="relative w-full text-left px-3 py-2 md:py-1.5"
       >
         <div className="relative flex items-center gap-2">
           <div className={accentColor}>{icon}</div>

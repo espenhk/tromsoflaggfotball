@@ -441,7 +441,7 @@ const LinkCard = ({
     <div
       className={`absolute inset-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${glowColor || "bg-primary/10"}`}
     />
-    <div className={`relative mt-0.5 ${iconColor || "text-primary"}`}>
+    <div className={`relative mt-1 ${iconColor || "text-primary"}`}>
       {icon || <ExternalLink className="w-5 h-5" />}
     </div>
     <div className="relative flex-1 min-w-0">

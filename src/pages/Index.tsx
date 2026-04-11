@@ -324,12 +324,16 @@ const Index = () => {
               title="Facebook"
               description="Lik siden vår for aktuell info om treninger og arrangementer."
               icon={<Facebook className="w-5 h-5" />}
+              iconColor="text-[#1877F2]"
+              hoverBg="hover:bg-[#1877F2]/10"
             />
             <LinkCard
               href="https://www.instagram.com/tromsoflaggfotball/"
               title="Instagram"
               description="Bilder og videoer fra trening og kamper."
               icon={<Instagram className="w-5 h-5" />}
+              iconColor="text-[#E1306C]"
+              hoverBg="hover:bg-[#E1306C]/10"
             />
             <LinkCard
               href="https://flaggfotball.no"

@@ -1,9 +1,19 @@
 import { useState } from "react";
 
+const positionFullNames: Record<string, string> = {
+  QB: "QB – Quarterback",
+  C: "C – Center",
+  WR: "WR – Wide Receiver",
+  RB: "RB – Running Back",
+  R: "R – Rusher",
+  DB: "DB – Defensive Back",
+};
+
 const positionDescriptions: Record<string, string> = {
   QB: "Lagets playmaker og leder på banen. Kaster ballen til medspillere og styrer spillet.",
   C: "Starter hvert spill ved å snappe ballen til QB. Går deretter ut som mottaker eller blokkerer rusheren.",
   WR: "Løper ruter og fanger pasninger fra QB. Målet er å bli fri fra forsvareren og ta imot ballen.",
+  RB: "Tar imot ballen fra QB og løper med den. Kan også brukes som mottaker på korte pasninger.",
   R: "Starter 7 yards fra ballen med hånden i været. Kan rushe mot QB så fort de klarer etter snap. Laget kan ha 0–2 rushere per spill.",
   DB: "Dekker motstanderens mottakere. Hindrer pasninger og drar flagget til ballbæreren.",
 };
@@ -63,25 +73,44 @@ const FieldDiagram = () => {
         {/* OFFENSE */}
         <PlayerDot label="C" color="bg-sky-400" top="57%" left="50%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="C" />
         <PlayerDot label="QB" color="bg-amber-400" top="68%" left="50%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="QB" />
-        {activeTab === "kastespill" ? (
-          // Kastespill: WR-L moved inward
-          <PlayerDot label="WR" color="bg-sky-400" top="52%" left="30%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-L" />
-        ) : (
-          <PlayerDot label="WR" color="bg-sky-400" top="52%" left="15%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-L" />
-        )}
-        <PlayerDot label="WR" color="bg-sky-400" top="52%" left="85%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-R" />
-        <PlayerDot label="WR" color="bg-sky-400" top="58%" left="72%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-S" />
 
-        {/* Dashed arrow from R to QB */}
+        {/* Tab-specific offense players */}
+        {activeTab === "løpespill" ? (
+          <>
+            {/* Løpespill: one WR becomes RB next to QB */}
+            <PlayerDot label="WR" color="bg-sky-400" top="52%" left="15%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-L" />
+            <PlayerDot label="WR" color="bg-sky-400" top="52%" left="85%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-R" />
+            <PlayerDot label="RB" color="bg-sky-400" top="68%" left="38%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="RB" />
+          </>
+        ) : activeTab === "kastespill" ? (
+          <>
+            <PlayerDot label="WR" color="bg-sky-400" top="52%" left="30%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-L" />
+            <PlayerDot label="WR" color="bg-sky-400" top="52%" left="85%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-R" />
+            <PlayerDot label="WR" color="bg-sky-400" top="58%" left="72%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-S" />
+          </>
+        ) : (
+          <>
+            <PlayerDot label="WR" color="bg-sky-400" top="52%" left="15%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-L" />
+            <PlayerDot label="WR" color="bg-sky-400" top="52%" left="85%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-R" />
+            <PlayerDot label="WR" color="bg-sky-400" top="58%" left="72%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-S" />
+          </>
+        )}
+
+        {/* SVG overlay for arrows and routes */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ zIndex: 1 }}>
           <defs>
             <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
               <polygon points="0 0, 8 3, 0 6" fill="white" fillOpacity="0.6" />
             </marker>
-            <marker id="arrowhead-yellow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-              <polygon points="0 0, 8 3, 0 6" fill="#facc15" fillOpacity="0.9" />
+            <marker id="arrowhead-yellow" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto">
+              <polygon points="0 0, 6 2.5, 0 5" fill="#facc15" fillOpacity="0.7" />
+            </marker>
+            <marker id="arrowhead-green" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto">
+              <polygon points="0 0, 6 2.5, 0 5" fill="#4ade80" fillOpacity="0.8" />
             </marker>
           </defs>
+
+          {/* Dashed arrow from R to QB */}
           <line
             x1="63" y1="36"
             x2="51" y2="63"
@@ -96,61 +125,130 @@ const FieldDiagram = () => {
           {/* Kastespill routes */}
           {activeTab === "kastespill" && (
             <>
-              {/* WR-R (85%): Post – run up then cut diagonally inward */}
+              {/* WR-R (85%): Post */}
               <polyline
                 points="85,52 85,38 60,22"
                 fill="none"
                 stroke="#facc15"
-                strokeWidth="2.5"
+                strokeOpacity="0.6"
+                strokeWidth="1.8"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 markerEnd="url(#arrowhead-yellow)"
                 vectorEffect="non-scaling-stroke"
-                style={{ filter: "drop-shadow(0 0 2px rgba(0,0,0,0.5))" }}
               />
-              <text x="62" y="20" fill="#facc15" fontSize="3.5" fontWeight="bold" textAnchor="middle">POST</text>
+              <text x="62" y="20" fill="#facc15" fillOpacity="0.8" fontSize="3.5" fontWeight="bold" textAnchor="middle">POST</text>
 
-              {/* WR-S (72%): Dig – run up then cut sharply inward */}
+              {/* WR-S (72%): Dig – longer straight, then cut in */}
               <polyline
-                points="72,58 72,42 45,42"
+                points="72,58 72,36 45,36"
                 fill="none"
                 stroke="#facc15"
-                strokeWidth="2.5"
+                strokeOpacity="0.6"
+                strokeWidth="1.8"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 markerEnd="url(#arrowhead-yellow)"
                 vectorEffect="non-scaling-stroke"
-                style={{ filter: "drop-shadow(0 0 2px rgba(0,0,0,0.5))" }}
               />
-              <text x="43" y="40" fill="#facc15" fontSize="3.5" fontWeight="bold" textAnchor="middle">DIG</text>
+              <text x="43" y="34" fill="#facc15" fillOpacity="0.8" fontSize="3.5" fontWeight="bold" textAnchor="middle">DIG</text>
 
-              {/* C (50%): Hitch – run up short then stop */}
+              {/* C (50%): Hitch – run up, then turn back down-left */}
               <polyline
-                points="50,57 50,46 52,48"
+                points="50,57 50,46 46,50"
                 fill="none"
                 stroke="#facc15"
-                strokeWidth="2.5"
+                strokeOpacity="0.6"
+                strokeWidth="1.8"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 markerEnd="url(#arrowhead-yellow)"
                 vectorEffect="non-scaling-stroke"
-                style={{ filter: "drop-shadow(0 0 2px rgba(0,0,0,0.5))" }}
               />
-              <text x="55" y="44" fill="#facc15" fontSize="3.5" fontWeight="bold" textAnchor="start">HITCH</text>
+              <text x="43" y="44" fill="#facc15" fillOpacity="0.8" fontSize="3.5" fontWeight="bold" textAnchor="end">HITCH</text>
 
-              {/* WR-L (30%): Out – run up then cut outward */}
+              {/* WR-L (30%): Out */}
               <polyline
                 points="30,52 30,40 12,40"
                 fill="none"
                 stroke="#facc15"
-                strokeWidth="2.5"
+                strokeOpacity="0.6"
+                strokeWidth="1.8"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 markerEnd="url(#arrowhead-yellow)"
                 vectorEffect="non-scaling-stroke"
-                style={{ filter: "drop-shadow(0 0 2px rgba(0,0,0,0.5))" }}
               />
-              <text x="10" y="38" fill="#facc15" fontSize="3.5" fontWeight="bold" textAnchor="middle">OUT</text>
+              <text x="10" y="38" fill="#facc15" fillOpacity="0.8" fontSize="3.5" fontWeight="bold" textAnchor="middle">OUT</text>
+            </>
+          )}
+
+          {/* Løpespill routes */}
+          {activeTab === "løpespill" && (
+            <>
+              {/* QB hands off to RB – short arrow */}
+              <polyline
+                points="50,68 42,68"
+                fill="none"
+                stroke="#4ade80"
+                strokeOpacity="0.7"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeDasharray="3 2"
+                markerEnd="url(#arrowhead-green)"
+                vectorEffect="non-scaling-stroke"
+              />
+              <text x="46" y="73" fill="#4ade80" fillOpacity="0.8" fontSize="3" fontWeight="bold" textAnchor="middle">HANDOFF</text>
+
+              {/* RB runs through the gap – up and slightly right */}
+              <polyline
+                points="38,68 38,58 42,42 50,28"
+                fill="none"
+                stroke="#4ade80"
+                strokeOpacity="0.7"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                markerEnd="url(#arrowhead-green)"
+                vectorEffect="non-scaling-stroke"
+              />
+              <text x="52" y="26" fill="#4ade80" fillOpacity="0.8" fontSize="3.5" fontWeight="bold" textAnchor="start">RUN</text>
+
+              {/* C blocks – short arrow forward */}
+              <polyline
+                points="50,57 50,50"
+                fill="none"
+                stroke="white"
+                strokeOpacity="0.4"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                markerEnd="url(#arrowhead)"
+                vectorEffect="non-scaling-stroke"
+              />
+
+              {/* WR-L runs a go route as decoy */}
+              <polyline
+                points="15,52 15,32"
+                fill="none"
+                stroke="white"
+                strokeOpacity="0.3"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+                strokeDasharray="3 3"
+                vectorEffect="non-scaling-stroke"
+              />
+
+              {/* WR-R runs a go route as decoy */}
+              <polyline
+                points="85,52 85,32"
+                fill="none"
+                stroke="white"
+                strokeOpacity="0.3"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+                strokeDasharray="3 3"
+                vectorEffect="non-scaling-stroke"
+              />
             </>
           )}
         </svg>
@@ -214,6 +312,7 @@ const PlayerDot = ({
 }) => {
   const isActive = activeTooltip === id;
   const description = positionDescriptions[label] || "";
+  const fullName = positionFullNames[label] || label;
   const leftNum = parseFloat(left);
   const tooltipAlign = leftNum > 60 ? "right-0" : leftNum < 40 ? "left-0" : "left-1/2 -translate-x-1/2";
 
@@ -231,8 +330,8 @@ const PlayerDot = ({
         {label}
       </span>
       {isActive && description && (
-        <div className={`absolute top-full mt-1 w-44 bg-black/90 text-white text-[11px] leading-snug rounded-lg px-3 py-2 shadow-xl ${tooltipAlign}`}>
-          <div className="font-bold mb-0.5">{label}</div>
+        <div className={`absolute top-full mt-1 w-48 bg-black/90 text-white text-[11px] leading-snug rounded-lg px-3 py-2 shadow-xl ${tooltipAlign}`}>
+          <div className="font-bold mb-0.5">{fullName}</div>
           {description}
         </div>
       )}

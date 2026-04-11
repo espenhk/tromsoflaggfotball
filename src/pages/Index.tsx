@@ -586,54 +586,59 @@ const CoachCard = ({
 }) => {
   const [open, setOpen] = useState(false);
   return (
-    <button
-      onClick={() => setOpen(!open)}
-      className="w-full text-left py-1.5"
-    >
-      {/* Desktop layout */}
-      <div className="hidden md:grid grid-cols-[24px_140px_1fr_auto_auto] items-center gap-x-4">
-        <div className="text-primary shrink-0">{icon}</div>
-        <span className="text-xs text-primary uppercase tracking-wider font-body">{title}</span>
-        <span className="font-heading font-bold text-foreground">{name}</span>
-        <a
-          href={`tel:+47${phone.replace(/\s/g, "")}`}
-          onClick={(e) => e.stopPropagation()}
-          className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors font-body text-sm"
-        >
-          <Phone className="w-3.5 h-3.5" />
-          {phone}
-        </a>
-        <ChevronDown
-          className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-        />
-      </div>
-      {/* Mobile layout - stacked */}
-      <div className="flex md:hidden items-start gap-3">
-        <div className="text-primary shrink-0 mt-0.5">{icon}</div>
-        <div className="flex-1 min-w-0">
-          <span className="text-xs text-primary uppercase tracking-wider font-body block">{title}</span>
-          <span className="font-heading font-bold text-foreground block">{name}</span>
+    <article className="relative md:border-0 border-t border-white/5 first:border-t-0">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full text-left py-2 md:py-1.5"
+      >
+        {/* Desktop layout */}
+        <div className="hidden md:grid grid-cols-[24px_140px_1fr_auto_auto] items-center gap-x-4">
+          <div className="text-primary shrink-0">{icon}</div>
+          <span className="text-xs text-primary uppercase tracking-wider font-body">{title}</span>
+          <span className="font-heading font-bold text-foreground">{name}</span>
           <a
             href={`tel:+47${phone.replace(/\s/g, "")}`}
             onClick={(e) => e.stopPropagation()}
-            className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors font-body text-sm mt-0.5"
+            className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors font-body text-sm"
           >
             <Phone className="w-3.5 h-3.5" />
             {phone}
           </a>
+          <ChevronDown
+            className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+          />
         </div>
-        <ChevronDown
-          className={`w-4 h-4 text-muted-foreground shrink-0 mt-1 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-        />
-      </div>
-      <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
-        <div className="overflow-hidden">
-          <p className="text-sm text-muted-foreground font-body leading-relaxed mt-3 pl-9">
-            {bio}
-          </p>
+        {/* Mobile layout - compact single line */}
+        <div className="flex md:hidden items-center gap-2 px-1">
+          <div className="text-primary shrink-0">{icon}</div>
+          <div className="flex-1 min-w-0">
+            <span className="font-heading font-bold text-foreground text-sm">{name}</span>
+            <span className="text-xs text-muted-foreground font-body ml-1.5">{title}</span>
+          </div>
+          <ChevronDown
+            className={`w-3.5 h-3.5 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+          />
+        </div>
+      </button>
+      <div className={`grid transition-[grid-template-rows,opacity,margin] duration-300 ease-out ${open ? "mt-1 md:mt-2 grid-rows-[1fr] opacity-100" : "mt-0 grid-rows-[0fr] opacity-0"}`}>
+        <div className="min-h-0 overflow-hidden">
+          <div className="pl-8 md:pl-9 pr-3 pb-2 md:pb-1 space-y-1.5">
+            {/* Phone visible on mobile only when expanded */}
+            <a
+              href={`tel:+47${phone.replace(/\s/g, "")}`}
+              onClick={(e) => e.stopPropagation()}
+              className="flex md:hidden items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors font-body text-sm"
+            >
+              <Phone className="w-3.5 h-3.5" />
+              {phone}
+            </a>
+            <p className="text-sm text-muted-foreground font-body leading-relaxed">
+              {bio}
+            </p>
+          </div>
         </div>
       </div>
-    </button>
+    </article>
   );
 };
 

@@ -649,7 +649,7 @@ const PositionCard = ({
           <h3 className="font-heading font-bold text-foreground text-sm">
             {name}
             {abbr && (
-              <sup className={`transition-all duration-300 overflow-hidden inline-block text-[0.6em] align-super ${accentColor} ${open ? "max-w-0 opacity-0" : "max-w-[2rem] opacity-60"}`}>
+              <sup className={`ml-0.5 transition-all duration-300 text-[0.7em] align-super ${accentColor} ${open ? "opacity-0" : "opacity-50"}`}>
                 {abbr}
               </sup>
             )}

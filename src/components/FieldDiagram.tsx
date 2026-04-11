@@ -137,9 +137,8 @@ const FieldDiagram = () => {
                 markerEnd="url(#arrowhead-yellow)"
                 vectorEffect="non-scaling-stroke"
               />
-              <text x="62" y="20" fill="#facc15" fillOpacity="0.8" fontSize="3.5" fontWeight="bold" textAnchor="middle">POST</text>
 
-              {/* WR-S (72%): Dig – longer straight, then cut in */}
+              {/* WR-S (72%): Dig */}
               <polyline
                 points="72,58 72,36 45,36"
                 fill="none"
@@ -151,9 +150,8 @@ const FieldDiagram = () => {
                 markerEnd="url(#arrowhead-yellow)"
                 vectorEffect="non-scaling-stroke"
               />
-              <text x="43" y="34" fill="#facc15" fillOpacity="0.8" fontSize="3.5" fontWeight="bold" textAnchor="middle">DIG</text>
 
-              {/* C (50%): Hitch – run up, then turn back down-left */}
+              {/* C (50%): Hitch */}
               <polyline
                 points="50,57 50,46 46,50"
                 fill="none"
@@ -165,7 +163,6 @@ const FieldDiagram = () => {
                 markerEnd="url(#arrowhead-yellow)"
                 vectorEffect="non-scaling-stroke"
               />
-              <text x="43" y="44" fill="#facc15" fillOpacity="0.8" fontSize="3.5" fontWeight="bold" textAnchor="end">HITCH</text>
 
               {/* WR-L (30%): Out */}
               <polyline
@@ -179,30 +176,15 @@ const FieldDiagram = () => {
                 markerEnd="url(#arrowhead-yellow)"
                 vectorEffect="non-scaling-stroke"
               />
-              <text x="10" y="38" fill="#facc15" fillOpacity="0.8" fontSize="3.5" fontWeight="bold" textAnchor="middle">OUT</text>
             </>
           )}
 
           {/* Løpespill routes */}
           {activeTab === "løpespill" && (
             <>
-              {/* QB hands off to RB – short arrow */}
+              {/* RB runs up through center (dive) */}
               <polyline
-                points="50,68 42,68"
-                fill="none"
-                stroke="#4ade80"
-                strokeOpacity="0.7"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeDasharray="3 2"
-                markerEnd="url(#arrowhead-green)"
-                vectorEffect="non-scaling-stroke"
-              />
-              <text x="46" y="73" fill="#4ade80" fillOpacity="0.8" fontSize="3" fontWeight="bold" textAnchor="middle">HANDOFF</text>
-
-              {/* RB runs through the gap – up and slightly right */}
-              <polyline
-                points="38,68 38,58 42,42 50,28"
+                points="38,68 38,58 44,44 48,30"
                 fill="none"
                 stroke="#4ade80"
                 strokeOpacity="0.7"
@@ -212,41 +194,43 @@ const FieldDiagram = () => {
                 markerEnd="url(#arrowhead-green)"
                 vectorEffect="non-scaling-stroke"
               />
-              <text x="52" y="26" fill="#4ade80" fillOpacity="0.8" fontSize="3.5" fontWeight="bold" textAnchor="start">RUN</text>
 
-              {/* C blocks – short arrow forward */}
+              {/* C blocks – L-shape forward and left */}
               <polyline
-                points="50,57 50,50"
+                points="50,57 50,48 44,44"
                 fill="none"
                 stroke="white"
-                strokeOpacity="0.4"
+                strokeOpacity="0.5"
                 strokeWidth="1.5"
                 strokeLinecap="round"
+                strokeLinejoin="round"
                 markerEnd="url(#arrowhead)"
                 vectorEffect="non-scaling-stroke"
               />
 
-              {/* WR-L runs a go route as decoy */}
+              {/* WR-L: out route (up then cut out) */}
               <polyline
-                points="15,52 15,32"
+                points="15,52 15,40 6,34"
                 fill="none"
                 stroke="white"
-                strokeOpacity="0.3"
+                strokeOpacity="0.4"
                 strokeWidth="1.2"
                 strokeLinecap="round"
-                strokeDasharray="3 3"
+                strokeLinejoin="round"
+                markerEnd="url(#arrowhead)"
                 vectorEffect="non-scaling-stroke"
               />
 
-              {/* WR-R runs a go route as decoy */}
+              {/* WR-R: out route (up then cut out) */}
               <polyline
-                points="85,52 85,32"
+                points="85,52 85,40 94,34"
                 fill="none"
                 stroke="white"
-                strokeOpacity="0.3"
+                strokeOpacity="0.4"
                 strokeWidth="1.2"
                 strokeLinecap="round"
-                strokeDasharray="3 3"
+                strokeLinejoin="round"
+                markerEnd="url(#arrowhead)"
                 vectorEffect="non-scaling-stroke"
               />
             </>

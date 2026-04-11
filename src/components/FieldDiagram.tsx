@@ -182,9 +182,20 @@ const FieldDiagram = () => {
           {/* Løpespill routes */}
           {activeTab === "løpespill" && (
             <>
-              {/* RB runs up through center (dive) */}
+              {/* QB handoff motion – small line down-right, no arrowhead */}
+              <line
+                x1="50" y1="63"
+                x2="52" y2="68"
+                stroke="#4ade80"
+                strokeOpacity="0.6"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                vectorEffect="non-scaling-stroke"
+              />
+
+              {/* RB runs diagonally up-right past QB, then straight up */}
               <polyline
-                points="38,68 38,58 44,44 48,30"
+                points="50,72 56,62 56,30"
                 fill="none"
                 stroke="#4ade80"
                 strokeOpacity="0.7"
@@ -195,15 +206,14 @@ const FieldDiagram = () => {
                 vectorEffect="non-scaling-stroke"
               />
 
-              {/* C blocks – L-shape forward and left */}
+              {/* C blocks forward */}
               <polyline
-                points="50,57 50,48 44,44"
+                points="50,57 50,48"
                 fill="none"
                 stroke="white"
                 strokeOpacity="0.5"
                 strokeWidth="1.5"
                 strokeLinecap="round"
-                strokeLinejoin="round"
                 markerEnd="url(#arrowhead)"
                 vectorEffect="non-scaling-stroke"
               />

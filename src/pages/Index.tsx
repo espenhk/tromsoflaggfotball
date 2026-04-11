@@ -18,39 +18,39 @@ const navItems = [
 
 const offensePositions = [
   {
-    name: "Quarterback (QB)",
-    tagline: "Lederen som kaster ballen til sine mottakere",
+    name: "Quarterback",
+    abbr: "QB",
+    tagline: "Lagets playmaker og leder",
     icon: <Star className="w-5 h-5 text-amber-400" />,
-    role: "Lagets playmaker og den viktigste spilleren på banen. QB styrer angrepet, leser forsvaret og bestemmer hvem som skal få ballen. I flaggfotball handler det om presise kast, rask beslutningstaking og evnen til å lese motstanderens forsvar.",
-    role2: "QB trenger ikke være den raskeste spilleren — men må ha god oversikt og holde hodet kaldt under press. De beste QBene gjør medspillerne sine bedre.",
-    traits: "God oversikt, presise kast, rask beslutningstaking. Trenger ikke være raskest — men må lese spillet godt.",
+    role: "Styrer angrepet, leser forsvaret og kaster ballen til mottakerne. Handler om presise kast og rask beslutningstaking.",
+    traits: "God oversikt, presise kast, rask beslutningstaking.",
     nflExamples: "Patrick Mahomes, Josh Allen, Lamar Jackson",
   },
   {
-    name: "Running Back (RB)",
-    tagline: "Eksplosiv løper som tar ballen gjennom forsvaret",
+    name: "Running Back",
+    abbr: "RB",
+    tagline: "Eksplosiv løper med ballen",
     icon: <Zap className="w-5 h-5 text-emerald-400" />,
-    role: "Running back tar imot ballen direkte fra QB og løper med den gjennom forsvaret. I flaggfotball brukes RB ofte i løpespill, der målet er å komme seg forbi forsvarere med fart og smidighet uten å bli dratt i flagget.",
-    role2: "RB kan også brukes som mottaker på korte pasninger. Posisjonen passer perfekt for eksplosive spillere som elsker å ha ballen i hendene.",
-    traits: "Eksplosiv fart, god balanse, evne til å lese blokker. Perfekt for de som liker å løpe med ballen.",
+    role: "Tar imot ballen fra QB og løper gjennom forsvaret. Brukes i løpespill og korte pasninger.",
+    traits: "Eksplosiv fart, god balanse, smidighet.",
     nflExamples: "Derrick Henry, Saquon Barkley, Christian McCaffrey",
   },
   {
-    name: "Center (C)",
-    tagline: "Starter hvert spill og setter det hele i gang",
+    name: "Center",
+    abbr: "C",
+    tagline: "Starter hvert spill",
     icon: <Users className="w-5 h-5" />,
-    role: "Center er spilleren som starter hvert eneste spill ved å snappe ballen til QB. Etter snappen går center ut som mottaker eller hjelper til med å blokkere rusheren.",
-    role2: "Det er en allsidig posisjon som krever pålitelighet og god kommunikasjon — du må vite når ballen skal snappes, og være klar til å bidra i spillet etterpå. En god center er limet i laget.",
-    traits: "Pålitelig, god kommunikasjon, allsidig. En stabil spiller som gjør de små tingene riktig.",
-    nflExamples: "Travis Kelce (TE, lignende rolle som mottaker), Jason Kelce",
+    role: "Snapper ballen til QB og går deretter ut som mottaker eller blokkerer rusheren. Limet i laget.",
+    traits: "Pålitelig, god kommunikasjon, allsidig.",
+    nflExamples: "Travis Kelce (TE), Jason Kelce",
   },
   {
-    name: "Wide Receiver (WR)",
-    tagline: "Den raske som løper fri og fanger ballen",
+    name: "Wide Receiver",
+    abbr: "WR",
+    tagline: "Rask mottaker som fanger ballen",
     icon: <Target className="w-5 h-5" />,
-    role: "Wide receiver er den raske spilleren som løper planlagte ruter nedover banen for å bli fri fra forsvareren. Målet er å skape separasjon og ta imot pasninger fra QB.",
-    role2: "I flaggfotball er dette en av de mest spennende posisjonene — du får løpe, gjøre raske vendinger og ta spektakulære fangster. Det handler om timing, hurtighet og gode hender.",
-    traits: "Hurtighet, gode hender, evne til å lese forsvar. Perfekt for de som liker å løpe og gjøre raske vendinger.",
+    role: "Løper planlagte ruter for å bli fri fra forsvareren og ta imot pasninger fra QB.",
+    traits: "Hurtighet, gode hender, raske vendinger.",
     nflExamples: "Tyreek Hill, Ja'Marr Chase, CeeDee Lamb",
   },
 ];
@@ -58,29 +58,29 @@ const offensePositions = [
 const defensePositions = [
   {
     name: "Rusher",
-    tagline: "Jager quarterbacken og presser spillet",
+    abbr: "",
+    tagline: "Jager quarterbacken",
     icon: <Crosshair className="w-5 h-5 text-orange-400" />,
-    role: "Rusheren er forsvarets mest aggressive spiller. Etter snap har rusheren som mål å komme seg forbi linjen og presse QB til å kaste for tidlig eller dra flagget. I flaggfotball starter rusheren 7 yards fra ballen og kan ha 0–2 rushere per spill.",
-    role2: "Det er en eksplosiv rolle som handler om timing, fart og aggressivitet. Posisjonen finnes ikke i tacklefotball, men ligner på defensive edge-spillere.",
-    traits: "Eksplosiv fart, timing, aggressivitet. Liker du å jage og presse — er dette rollen for deg.",
-    nflExamples: "Myles Garrett, Micah Parsons, T.J. Watt (edge rushers i NFL)",
+    role: "Forsvarets mest aggressive spiller. Starter 7 yards fra ballen og presser QB til å kaste for tidlig.",
+    traits: "Eksplosiv fart, timing, aggressivitet.",
+    nflExamples: "Myles Garrett, Micah Parsons, T.J. Watt",
   },
   {
-    name: "Defensive Back (DB)",
-    tagline: "Dekker mottakerne og bryter opp pasninger",
+    name: "Defensive Back",
+    abbr: "DB",
+    tagline: "Dekker mottakerne tett",
     icon: <Shield className="w-5 h-5" />,
-    role: "Defensive backs dekker motstanderens mottakere tett og prøver å hindre pasninger fra å bli fullført. Du speiler motstanderens bevegelser, leser QB og reagerer lynraskt når ballen er i luften.",
-    role2: "I flaggfotball er DB ofte i en-mot-en-dueller, så god fotarbeid og rask reaksjon er avgjørende. Det er en posisjon for deg som liker å utfordre deg selv mentalt og fysisk.",
-    traits: "Rask reaksjon, god fotarbeid, evne til å speile en motstander. Passer for de som liker en-mot-en-dueller.",
+    role: "Speiler motstanderens bevegelser og prøver å hindre pasninger. Ofte i en-mot-en-dueller.",
+    traits: "Rask reaksjon, god fotarbeid, mental styrke.",
     nflExamples: "Sauce Gardner, Patrick Surtain II, Jalen Ramsey",
   },
   {
-    name: "Safety (S)",
-    tagline: "Siste skanse som leser spillet bakfra",
+    name: "Safety",
+    abbr: "S",
+    tagline: "Siste skanse bakfra",
     icon: <Eye className="w-5 h-5" />,
-    role: "Safety er forsvarets siste linje og den spilleren som har best oversikt over hele banen. Fra sin dype posisjon leser safety spillet, hjelper DBene med dekning og sikrer mot lange pasninger.",
-    role2: "En god safety kombinerer spilleforståelse med atletisk evne — du må kunne lese QB og reagere raskt både fremover og bakover. Det er en posisjon for smarte, allsidige spillere.",
-    traits: "God spilleforståelse, oversikt, allsidighet. Passer for de som liker å lese spillet og ta smarte avgjørelser.",
+    role: "Forsvarets siste linje med best oversikt. Leser spillet og sikrer mot lange pasninger.",
+    traits: "God spilleforståelse, oversikt, allsidighet.",
     nflExamples: "Kyle Hamilton, Derwin James, Jessie Bates III",
   },
 ];
@@ -620,19 +620,19 @@ const CoachCard = ({
 
 const PositionCard = ({
   name,
+  abbr,
   tagline,
   icon,
   role,
-  role2,
   traits,
   nflExamples,
   variant = "offense",
 }: {
   name: string;
+  abbr: string;
   tagline: string;
   icon: React.ReactNode;
   role: string;
-  role2?: string;
   traits: string;
   nflExamples?: string;
   variant?: "offense" | "defense";
@@ -646,29 +646,35 @@ const PositionCard = ({
   return (
     <button
       onClick={() => setOpen(!open)}
-      className={`w-full text-left ${bgColor} border ${borderColor} rounded-xl p-5 transition-colors`}
+      className={`w-full text-left ${bgColor} border ${borderColor} rounded-xl p-4 transition-colors`}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         <div className={accentColor}>{icon}</div>
         <div className="flex-1 min-w-0">
-          <h3 className="font-heading font-bold text-foreground">{name}</h3>
+          <h3 className="font-heading font-bold text-foreground text-sm">
+            {name}
+            {abbr && (
+              <span className={`transition-all duration-300 overflow-hidden inline-block ${open ? "max-w-0 opacity-0" : "max-w-[3rem] opacity-60"}`}>
+                {" "}({abbr})
+              </span>
+            )}
+          </h3>
           <p className={`text-xs text-muted-foreground font-body mt-0.5 transition-all duration-300 overflow-hidden ${open ? "max-h-0 opacity-0 mt-0" : "max-h-10 opacity-100"}`}>{tagline}</p>
         </div>
         <ChevronDown
-          className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`w-3.5 h-3.5 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
         />
       </div>
       <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
         <div className="overflow-hidden">
-          <div className="mt-3 space-y-2 pl-8">
-            <p className="text-sm text-muted-foreground font-body leading-relaxed">{role}</p>
-            {role2 && <p className="text-sm text-muted-foreground font-body leading-relaxed">{role2}</p>}
+          <div className="mt-2 space-y-1.5 pl-7">
+            <p className="text-xs text-muted-foreground font-body leading-relaxed">{role}</p>
             <p className={`text-xs font-body ${accentColor}`}>
               <span className="text-muted-foreground">Passer for:</span> {traits}
             </p>
             {nflExamples && (
               <p className="text-xs font-body text-muted-foreground">
-                <span className="text-foreground font-semibold">Kjente NFL-spillere:</span> {nflExamples}
+                <span className="text-foreground font-semibold">NFL:</span> {nflExamples}
               </p>
             )}
           </div>

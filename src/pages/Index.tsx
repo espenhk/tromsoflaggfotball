@@ -90,11 +90,25 @@ const Index = () => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMobileMenuOpen(false);
+      }
+    };
+    if (mobileMenuOpen) document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [mobileMenuOpen]);
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Sticky top nav */}
-      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="max-w-4xl mx-auto px-4 flex items-center gap-1 overflow-x-auto scrollbar-none py-2">
+      {/* Desktop nav */}
+      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border hidden md:block">
+        <div className="max-w-4xl mx-auto px-4 flex items-center gap-1 py-2">
           <img src={logo} alt="Logo" className="w-6 h-6 shrink-0 mr-2" />
           {navItems.map((item) => (
             <button
@@ -107,6 +121,37 @@ const Index = () => {
           ))}
         </div>
       </nav>
+
+      {/* Mobile floating glass bubble nav */}
+      <div className="fixed top-4 left-4 z-50 md:hidden" ref={menuRef}>
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="flex items-center gap-2 px-3 py-2 rounded-2xl bg-background/40 backdrop-blur-xl border border-white/15 shadow-lg shadow-black/20"
+          aria-label="Meny"
+        >
+          <img src={logo} alt="Logo" className="w-6 h-6" />
+          {mobileMenuOpen ? (
+            <X className="w-5 h-5 text-foreground/80" />
+          ) : (
+            <Menu className="w-5 h-5 text-foreground/80" />
+          )}
+        </button>
+
+        {/* Expanded menu bubble */}
+        {mobileMenuOpen && (
+          <div className="absolute top-full left-0 mt-2 min-w-[200px] rounded-2xl bg-background/50 backdrop-blur-xl border border-white/15 shadow-xl shadow-black/30 p-2 animate-in fade-in slide-in-from-top-2 duration-200">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => { scrollTo(item.id); setMobileMenuOpen(false); }}
+                className="w-full text-left text-sm font-heading font-bold text-foreground/80 hover:text-primary hover:bg-white/10 transition-colors px-4 py-2.5 rounded-xl"
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Hero */}
       <section className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden">

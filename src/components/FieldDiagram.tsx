@@ -281,6 +281,7 @@ const FieldDiagram = () => {
                 markerEnd="url(#arrowhead)" vectorEffect="non-scaling-stroke" />
             </>
           )}
+          </g>
         </svg>
 
         {/* Defense players */}

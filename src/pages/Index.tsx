@@ -79,12 +79,12 @@ const Index = () => {
             <LinkCard
               href="https://club.spond.com/landing/signup/naik/form/0A2A60617F184406B7FFEAA4EDC61409"
               title="Bli medlem"
-              description="Meld deg inn i Amerikanske Idretters klubb via Spond. Ca 80 kr."
+              description="Meld deg inn i Amerikanske Idretters klubb via Spond."
             />
             <LinkCard
               href="https://amerikanskeidretter.no/forbund/klubbdrift/lisens-og-forsikring/#amerikansk-fotball-lisens"
               title="Lisens & forsikring"
-              description="Forsikring for deltakere i flaggfotball via Min Idrett. Ca 100 kr."
+              description="Forsikring for deltakere i flaggfotball via Min Idrett."
             />
             <LinkCard
               href="https://www.facebook.com/profile.php?id=61587334652354&locale=nb_NO"
@@ -129,7 +129,7 @@ const Index = () => {
             />
             <FaqItem
               q="Hva koster det?"
-              a="Medlemskap i Amerikanske Idretters klubb koster ca 80 kr, pluss forsikring via Min Idrett på ca 100 kr. Selve treningene er gratis."
+              a="Trening er helt gratis! Du trenger medlemskap i Amerikanske Idretters klubb (ca 80 kr) og lisens/forsikring via Min Idrett (ca 100 kr). Reiser og påmelding til kamper eller turneringer dekkes av den enkelte."
             />
             <FaqItem
               q="Hva trenger jeg å ta med?"

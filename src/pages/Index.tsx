@@ -585,7 +585,7 @@ const CoachCard = ({
   return (
     <button
       onClick={() => setOpen(!open)}
-      className="w-full text-left py-4 md:flex-1"
+      className="w-full text-left py-4 px-6 md:flex-1"
     >
       <div className="flex items-center gap-2">
         <div className="min-w-0">

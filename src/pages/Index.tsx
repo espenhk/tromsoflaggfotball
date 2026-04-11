@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair, Menu, X } from "lucide-react";
+import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair, Menu, X, UserPlus, ShieldCheck } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import logo from "@/assets/logo.png";
 import heroBg from "@/assets/hero-bg.png";
@@ -182,7 +182,7 @@ const Index = () => {
               href="https://www.instagram.com/tromsoflaggfotball/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-[#E1306C] transition-colors"
+              className="text-muted-foreground hover:text-[#E1306C] hover:-translate-y-0.5 transition-all"
               aria-label="Instagram"
             >
               <Instagram className="w-6 h-6" />
@@ -191,7 +191,7 @@ const Index = () => {
               href="https://www.facebook.com/profile.php?id=61587334652354&locale=nb_NO"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-[#1877F2] transition-colors"
+              className="text-muted-foreground hover:text-[#1877F2] hover:-translate-y-0.5 transition-all"
               aria-label="Facebook"
             >
               <Facebook className="w-6 h-6" />
@@ -324,32 +324,45 @@ const Index = () => {
               title="Facebook"
               description="Lik siden vår for aktuell info om treninger og arrangementer."
               icon={<Facebook className="w-5 h-5" />}
-              iconColor="text-[#1877F2]"
-              hoverBg="hover:bg-[#1877F2]/10"
+              iconColor="text-[#4267B2]"
+              hoverColor="hover:bg-[#4267B2]/8 hover:border-[#4267B2]/30"
+              hoverTitle="group-hover:text-[#4267B2]"
             />
             <LinkCard
               href="https://www.instagram.com/tromsoflaggfotball/"
               title="Instagram"
               description="Bilder og videoer fra trening og kamper."
               icon={<Instagram className="w-5 h-5" />}
-              iconColor="text-[#E1306C]"
-              hoverBg="hover:bg-[#E1306C]/10"
+              iconColor="text-[#C13584]"
+              hoverColor="hover:bg-[#C13584]/8 hover:border-[#C13584]/30"
+              hoverTitle="group-hover:text-[#C13584]"
             />
             <LinkCard
               href="https://flaggfotball.no"
               title="Flaggfotball.no"
               description="Lær mer om sporten, regler og turneringer i Norge."
               icon={<Flag className="w-5 h-5" />}
+              iconColor="text-emerald-400"
+              hoverColor="hover:bg-emerald-400/8 hover:border-emerald-400/30"
+              hoverTitle="group-hover:text-emerald-400"
             />
             <LinkCard
               href="https://club.spond.com/landing/signup/naik/form/0A2A60617F184406B7FFEAA4EDC61409"
               title="Bli medlem"
               description="Meld deg inn i Amerikanske Idretters klubb via Spond."
+              icon={<UserPlus className="w-5 h-5" />}
+              iconColor="text-sky-400"
+              hoverColor="hover:bg-sky-400/8 hover:border-sky-400/30"
+              hoverTitle="group-hover:text-sky-400"
             />
             <LinkCard
               href="https://amerikanskeidretter.no/forbund/klubbdrift/lisens-og-forsikring/#amerikansk-fotball-lisens"
               title="Lisens & forsikring"
               description="Forsikring for deltakere i flaggfotball via Min Idrett."
+              icon={<ShieldCheck className="w-5 h-5" />}
+              iconColor="text-amber-400"
+              hoverColor="hover:bg-amber-400/8 hover:border-amber-400/30"
+              hoverTitle="group-hover:text-amber-400"
             />
           </div>
         </div>
@@ -441,26 +454,28 @@ const LinkCard = ({
   description,
   icon,
   iconColor,
-  hoverBg,
+  hoverColor,
+  hoverTitle,
 }: {
   href: string;
   title: string;
   description: string;
   icon?: React.ReactNode;
   iconColor?: string;
-  hoverBg?: string;
+  hoverColor?: string;
+  hoverTitle?: string;
 }) => (
   <a
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className={`group bg-card border border-border rounded-xl p-6 flex items-start gap-4 hover:border-primary/40 transition-colors ${hoverBg || ""}`}
+    className={`group bg-card border border-border rounded-xl p-6 flex items-start gap-4 transition-all ${hoverColor || "hover:border-primary/40"}`}
   >
     <div className={`mt-0.5 ${iconColor || "text-primary"}`}>
       {icon || <ExternalLink className="w-5 h-5" />}
     </div>
     <div className="flex-1 min-w-0">
-      <p className="font-heading font-bold text-foreground group-hover:text-primary transition-colors">
+      <p className={`font-heading font-bold text-foreground transition-colors ${hoverTitle || "group-hover:text-primary"}`}>
         {title}
       </p>
       <p className="text-sm text-muted-foreground font-body mt-1">{description}</p>

@@ -32,7 +32,7 @@ const offenseTabs: { id: OffenseTabId; label: string }[] = [
 const defenseTabs: { id: DefenseTabId; label: string }[] = [
   { id: "formasjon", label: "Formasjon" },
   { id: "soneforsvar", label: "Soneforsvar" },
-  { id: "mann-mot-mann", label: "Mann-mot-mann" },
+  { id: "mann-mot-mann", label: "Man-man" },
 ];
 
 const zoneAreas: Record<string, { cx: number; cy: number; rx: number; ry: number; color: string; border: string }> = {

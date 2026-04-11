@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ArrowLeft, ChevronDown, ChevronUp, Sparkles, MessageSquare, Code2, Layers, Palette, Rocket, Eye, Zap } from "lucide-react";
+import canvaOriginal from "@/assets/canva-original.png";
 import { useNavigate } from "react-router-dom";
 
 /* ── Mini preview components ────────────────────────────── */

@@ -72,27 +72,30 @@ const FieldDiagram = () => {
 
         {/* OFFENSE */}
         <PlayerDot label="C" color="bg-sky-400" top="57%" left="50%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="C" />
-        <PlayerDot label="QB" color="bg-amber-400" top="68%" left="50%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="QB" />
 
-        {/* Tab-specific offense players */}
         {activeTab === "løpespill" ? (
           <>
-            {/* Løpespill: one WR becomes RB next to QB */}
+            <PlayerDot label="QB" color="bg-amber-400" top="63%" left="50%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="QB" />
+            <PlayerDot label="RB" color="bg-sky-400" top="72%" left="50%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="RB" />
             <PlayerDot label="WR" color="bg-sky-400" top="52%" left="15%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-L" />
             <PlayerDot label="WR" color="bg-sky-400" top="52%" left="85%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-R" />
-            <PlayerDot label="RB" color="bg-sky-400" top="68%" left="38%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="RB" />
-          </>
-        ) : activeTab === "kastespill" ? (
-          <>
-            <PlayerDot label="WR" color="bg-sky-400" top="52%" left="30%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-L" />
-            <PlayerDot label="WR" color="bg-sky-400" top="52%" left="85%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-R" />
-            <PlayerDot label="WR" color="bg-sky-400" top="58%" left="72%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-S" />
           </>
         ) : (
           <>
-            <PlayerDot label="WR" color="bg-sky-400" top="52%" left="15%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-L" />
-            <PlayerDot label="WR" color="bg-sky-400" top="52%" left="85%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-R" />
-            <PlayerDot label="WR" color="bg-sky-400" top="58%" left="72%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-S" />
+            <PlayerDot label="QB" color="bg-amber-400" top="68%" left="50%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="QB" />
+            {activeTab === "kastespill" ? (
+              <>
+                <PlayerDot label="WR" color="bg-sky-400" top="52%" left="30%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-L" />
+                <PlayerDot label="WR" color="bg-sky-400" top="52%" left="85%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-R" />
+                <PlayerDot label="WR" color="bg-sky-400" top="58%" left="72%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-S" />
+              </>
+            ) : (
+              <>
+                <PlayerDot label="WR" color="bg-sky-400" top="52%" left="15%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-L" />
+                <PlayerDot label="WR" color="bg-sky-400" top="52%" left="85%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-R" />
+                <PlayerDot label="WR" color="bg-sky-400" top="58%" left="72%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-S" />
+              </>
+            )}
           </>
         )}
 

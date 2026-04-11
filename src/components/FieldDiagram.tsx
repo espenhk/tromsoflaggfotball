@@ -95,10 +95,10 @@ const ANIMATION_DURATION = 400;
 const FieldDiagram = () => {
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<OffenseTabId>("formasjon");
+  const [pendingTab, setPendingTab] = useState<OffenseTabId | null>(null);
   const [defenseTab, setDefenseTab] = useState<DefenseTabId>("formasjon");
-  const [showArrows, setShowArrows] = useState(true);
+  const [showRoutes, setShowRoutes] = useState(true);
   const [isAnimating, setIsAnimating] = useState(false);
-  const prevTabRef = useRef<OffenseTabId>(activeTab);
 
   const offensePlayers = getOffensePlayers(activeTab);
   const offenseMap = Object.fromEntries(offensePlayers.map(p => [p.id, { top: p.top, left: p.left }]));
@@ -107,15 +107,26 @@ const FieldDiagram = () => {
   const handleOffenseTabChange = useCallback((newTab: OffenseTabId) => {
     if (newTab === activeTab) return;
     setActiveTooltip(null);
-    setShowArrows(false);
-    setIsAnimating(true);
-    setActiveTab(newTab);
-    prevTabRef.current = newTab;
-    setTimeout(() => {
-      setShowArrows(true);
-      setIsAnimating(false);
-    }, ANIMATION_DURATION);
+    // 1. Immediately hide route arrows (not rush arrow)
+    setShowRoutes(false);
+    setPendingTab(newTab);
   }, [activeTab]);
+
+  // 2. Once routes are hidden, switch tab to move dots
+  useEffect(() => {
+    if (pendingTab === null) return;
+    const t = setTimeout(() => {
+      setActiveTab(pendingTab);
+      setIsAnimating(true);
+      setPendingTab(null);
+      // 3. After dots finish moving, show new routes
+      setTimeout(() => {
+        setShowRoutes(true);
+        setIsAnimating(false);
+      }, ANIMATION_DURATION);
+    }, 150); // short delay for route fade-out
+    return () => clearTimeout(t);
+  }, [pendingTab]);
 
   return (
     <div className="bg-card border border-border rounded-2xl p-6 mb-8">
@@ -194,17 +205,8 @@ const FieldDiagram = () => {
           />
         ))}
 
-        {/* SVG overlay */}
-        <svg
-          className="absolute inset-0 w-full h-full pointer-events-none"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-          style={{
-            zIndex: 1,
-            opacity: showArrows ? 1 : 0,
-            transition: "opacity 0.25s ease-in-out",
-          }}
-        >
+        {/* SVG overlay - always visible (rush arrow, zones, man-to-man) */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ zIndex: 1 }}>
           <defs>
             <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
               <polygon points="0 0, 8 3, 0 6" fill="white" fillOpacity="0.6" />
@@ -235,9 +237,12 @@ const FieldDiagram = () => {
             );
           })}
 
-          {/* Rush arrow */}
+          {/* Rush arrow - always visible */}
           <line x1="63" y1="36" x2="51" y2="63" stroke="white" strokeOpacity="0.5"
             strokeWidth="1.5" strokeDasharray="4 3" markerEnd="url(#arrowhead)" vectorEffect="non-scaling-stroke" />
+
+          {/* Route arrows - fade in/out */}
+          <g style={{ opacity: showRoutes ? 1 : 0, transition: "opacity 0.15s ease-in-out" }}>
 
           {/* Kastespill routes */}
           {activeTab === "kastespill" && (
@@ -276,6 +281,7 @@ const FieldDiagram = () => {
                 markerEnd="url(#arrowhead)" vectorEffect="non-scaling-stroke" />
             </>
           )}
+          </g>
         </svg>
 
         {/* Defense players */}

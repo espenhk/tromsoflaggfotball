@@ -59,7 +59,7 @@ const defensePositions = [
   {
     name: "Rusher",
     tagline: "Jager quarterbacken og presser spillet",
-    icon: <Crosshair className="w-5 h-5" />,
+    icon: <Crosshair className="w-5 h-5 text-orange-400" />,
     role: "Rusheren er forsvarets mest aggressive spiller. Etter snap har rusheren som mål å komme seg forbi linjen og presse QB til å kaste for tidlig eller dra flagget. I flaggfotball starter rusheren 7 yards fra ballen og kan ha 0–2 rushere per spill.",
     role2: "Det er en eksplosiv rolle som handler om timing, fart og aggressivitet. Posisjonen finnes ikke i tacklefotball, men ligner på defensive edge-spillere.",
     traits: "Eksplosiv fart, timing, aggressivitet. Liker du å jage og presse — er dette rollen for deg.",

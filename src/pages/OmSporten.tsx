@@ -2,6 +2,7 @@ import { ArrowLeft, Users, Target, Shield, Zap, Brain, Star } from "lucide-react
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import logo from "@/assets/logo.png";
+import FieldDiagram from "@/components/FieldDiagram";
 
 const POSITIONS_URL = "https://flaggfotball.no/pages/posisjoner-i-flaggfotball";
 
@@ -155,6 +156,8 @@ const OmSporten = () => {
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Posisjoner
           </h2>
+
+          <FieldDiagram />
 
           <h3 className="font-heading text-lg font-bold text-primary mb-4">Angrep</h3>
           <div className="space-y-4 mb-8">

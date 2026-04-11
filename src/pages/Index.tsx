@@ -661,38 +661,45 @@ const PositionCard = ({
   const resolvedGlow = glowBg || (isOffense ? "bg-sky-400/10" : "bg-rose-400/10");
 
   return (
-    <button
-      onClick={() => setOpen(!open)}
-      className="group relative w-full text-left px-3 py-1.5 transition-all"
-    >
-      {/* Glow background on hover */}
+    <article className="group relative">
+      {/* Subtle mobile separator */}
+      <div className="md:hidden border-t border-white/5 first:border-t-0" />
+      {/* Glow background on hover (desktop) */}
       <div
-        className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${resolvedGlow}`}
+        className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${resolvedGlow} hidden md:block`}
         style={{ filter: "blur(12px)" }}
       />
       <div
-        className={`absolute inset-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${resolvedGlow}`}
+        className={`absolute inset-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${resolvedGlow} hidden md:block`}
       />
-      <div className="relative flex items-center gap-2">
-        <div className={accentColor}>{icon}</div>
-        <div className="flex-1 min-w-0">
-          <h3 className="font-heading font-bold text-foreground text-sm">
-            {name}
-            {abbr && (
-              <sup className={`ml-0.5 transition-all duration-300 text-[0.7em] align-super ${accentColor} ${open ? "opacity-0" : "opacity-50"}`}>
-                {abbr}
-              </sup>
-            )}
-          </h3>
-          <p className={`text-xs text-muted-foreground font-body mt-0.5 transition-all duration-300 overflow-hidden ${open ? "max-h-0 opacity-0 mt-0" : "max-h-10 opacity-100"}`}>{tagline}</p>
+      <button
+        onClick={() => setOpen(!open)}
+        className="relative w-full text-left px-3 py-1.5 md:py-1.5 py-2"
+      >
+        <div className="relative flex items-center gap-2">
+          <div className={accentColor}>{icon}</div>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-heading font-bold text-foreground text-sm">
+              {name}
+              {abbr && (
+                <sup className={`ml-0.5 transition-all duration-300 text-[0.7em] align-super ${accentColor} ${open ? "opacity-0" : "opacity-50"}`}>
+                  {abbr}
+                </sup>
+              )}
+            </h3>
+            {/* Tagline: hidden on mobile when collapsed, always visible on desktop */}
+            <p className={`text-xs text-muted-foreground font-body mt-0.5 transition-all duration-300 overflow-hidden hidden md:block ${open ? "md:max-h-0 md:opacity-0 md:mt-0" : "md:max-h-10 md:opacity-100"}`}>{tagline}</p>
+          </div>
+          <ChevronDown
+            className={`w-3.5 h-3.5 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
+          />
         </div>
-        <ChevronDown
-          className={`w-3.5 h-3.5 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
-        />
-      </div>
-      <div className={`relative grid transition-[grid-template-rows,opacity,margin] duration-300 ease-out ${open ? "mt-2 grid-rows-[1fr] opacity-100" : "mt-0 grid-rows-[0fr] opacity-0"}`}>
+      </button>
+      <div className={`relative grid transition-[grid-template-rows,opacity,margin] duration-300 ease-out ${open ? "mt-1 md:mt-2 grid-rows-[1fr] opacity-100" : "mt-0 grid-rows-[0fr] opacity-0"}`}>
         <div className="min-h-0 overflow-hidden">
-          <div className="space-y-1.5 pl-7 pb-0.5">
+          <div className="space-y-1.5 pl-10 md:pl-7 pb-1 md:pb-0.5 px-3">
+            {/* Show tagline inside expanded content on mobile */}
+            <p className="text-xs text-muted-foreground font-body leading-relaxed italic md:hidden">{tagline}</p>
             <p className="text-xs text-muted-foreground font-body leading-relaxed">{role}</p>
             <p className={`text-xs font-body ${accentColor}`}>
               <span className="text-muted-foreground">Passer for:</span> {traits}
@@ -705,7 +712,7 @@ const PositionCard = ({
           </div>
         </div>
       </div>
-    </button>
+    </article>
   );
 };
 

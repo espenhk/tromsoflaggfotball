@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair, Menu, X, UserPlus, ShieldCheck, UserCircle } from "lucide-react";
+import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair, Menu, X, UserPlus, ShieldCheck, Megaphone, ConeIcon } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import logo from "@/assets/logo.png";
 import heroBg from "@/assets/hero-bg.png";
@@ -258,6 +258,7 @@ const Index = () => {
           <div className="grid md:grid-cols-2 gap-4">
             <div className="relative">
               <CoachCard
+                icon={<Megaphone className="w-5 h-5" />}
                 title="Head Coach"
                 name="Espen Haukeland Kristensen"
                 phone="958 48 889"
@@ -267,6 +268,7 @@ const Index = () => {
               <div className="hidden md:block absolute right-0 top-2 bottom-2 w-px bg-gradient-to-b from-transparent via-border to-transparent" />
             </div>
             <CoachCard
+              icon={<ConeIcon className="w-5 h-5" />}
               title="Assistentcoach"
               name="Martin Sand Monsen"
               phone="952 99 706"
@@ -571,11 +573,13 @@ const TrainingSection = () => {
 };
 
 const CoachCard = ({
+  icon,
   title,
   name,
   phone,
   bio,
 }: {
+  icon: React.ReactNode;
   title: string;
   name: string;
   phone: string;
@@ -589,7 +593,7 @@ const CoachCard = ({
     >
       <div className="flex items-start gap-4">
         <div className="mt-0.5 text-primary">
-          <UserCircle className="w-5 h-5" />
+          {icon}
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-xs text-primary uppercase tracking-wider font-body mb-1">{title}</p>

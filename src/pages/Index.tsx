@@ -661,9 +661,7 @@ const PositionCard = ({
   const resolvedGlow = glowBg || (isOffense ? "bg-sky-400/10" : "bg-rose-400/10");
 
   return (
-    <article className="group relative">
-      {/* Subtle mobile separator */}
-      <div className="md:hidden border-t border-white/5 first:border-t-0" />
+    <article className="group relative md:border-0 border-t border-white/5 first:border-t-0">
       {/* Glow background on hover (desktop) */}
       <div
         className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${resolvedGlow} hidden md:block`}

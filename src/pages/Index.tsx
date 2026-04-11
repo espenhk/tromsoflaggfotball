@@ -58,7 +58,7 @@ const offensePositions = [
 const defensePositions = [
   {
     name: "Rusher",
-    abbr: "",
+    abbr: "R",
     tagline: "Jager quarterbacken",
     icon: <Crosshair className="w-5 h-5 text-orange-400" />,
     role: "Forsvarets mest aggressive spiller. Starter 7 yards fra ballen og presser QB til å kaste for tidlig.",
@@ -642,9 +642,9 @@ const PositionCard = ({
           <h3 className="font-heading font-bold text-foreground text-sm">
             {name}
             {abbr && (
-              <span className={`transition-all duration-300 overflow-hidden inline-block ${open ? "max-w-0 opacity-0" : "max-w-[3rem] opacity-60"}`}>
-                {" "}({abbr})
-              </span>
+              <sup className={`transition-all duration-300 overflow-hidden inline-block text-[0.6em] align-super ${accentColor} ${open ? "max-w-0 opacity-0" : "max-w-[2rem] opacity-60"}`}>
+                {abbr}
+              </sup>
             )}
           </h3>
           <p className={`text-xs text-muted-foreground font-body mt-0.5 transition-all duration-300 overflow-hidden ${open ? "max-h-0 opacity-0 mt-0" : "max-h-10 opacity-100"}`}>{tagline}</p>

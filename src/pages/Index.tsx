@@ -651,6 +651,7 @@ const MobileFlipCard = () => {
 };
 
 
+const CoachCard = ({
   icon,
   title,
   name,

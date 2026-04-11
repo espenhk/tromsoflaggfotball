@@ -117,7 +117,11 @@ const Index = () => {
           <div className="space-y-3">
             <FaqItem
               q="Hva er flaggfotball?"
-              a="Flaggfotball er en kontaktfri variant av amerikansk fotball. I stedet for tackling drar man av et flagg festet i beltet til motstanderen. Sporten er inkluderende, morsom og passer for alle — uansett alder, kjønn eller erfaring."
+              a="Flaggfotball er en kontaktfri variant av amerikansk fotball. I stedet for tackling drar man av et flagg festet i beltet til motstanderen. Sporten er inkluderende, morsom og passer for alle — uansett kjønn eller erfaring."
+            />
+            <FaqItem
+              q="Hvem kan være med?"
+              a="Alle fra 16 år og oppover er velkommen! Ingen erfaring nødvendig — vi tilpasser treningene slik at alle kan delta og utvikle seg."
             />
             <FaqItem
               q="Trenger jeg erfaring?"

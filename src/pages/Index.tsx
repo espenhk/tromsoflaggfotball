@@ -19,24 +19,28 @@ const navItems = [
 const offensePositions = [
   {
     name: "Quarterback (QB)",
+    tagline: "Lederen som kaster ballen til sine mottakere",
     icon: <Star className="w-5 h-5" />,
     role: "Lagets playmaker og leder på banen. Quarterback kaster ballen til medspillere og styrer spillet.",
     traits: "God oversikt, presise kast, rask beslutningstaking. Trenger ikke være raskest — men må lese spillet godt.",
   },
   {
     name: "Center (C)",
+    tagline: "Starter hvert spill og setter det hele i gang",
     icon: <Shield className="w-5 h-5" />,
     role: "Starter hvert spill ved å snappe ballen til QB. Går deretter ut som mottaker eller blokkerer rusheren.",
     traits: "Pålitelig, god kommunikasjon, allsidig. En stabil spiller som gjør de små tingene riktig.",
   },
   {
     name: "Wide Receiver (WR)",
+    tagline: "Den raske som løper fri og fanger ballen",
     icon: <Zap className="w-5 h-5" />,
     role: "Løper ruter og fanger pasninger fra QB. Målet er å bli fri fra forsvareren og ta imot ballen.",
     traits: "Hurtighet, gode hender, evne til å lese forsvar. Perfekt for de som liker å løpe og gjøre raske vendinger.",
   },
   {
     name: "Running Back (RB)",
+    tagline: "Eksplosiv løper som tar ballen gjennom forsvaret",
     icon: <Target className="w-5 h-5" />,
     role: "Tar imot ballen fra QB og løper med den. Kan også brukes som mottaker på korte pasninger.",
     traits: "Eksplosiv fart, god balanse, evne til å lese blokker. Perfekt for de som liker å løpe med ballen.",
@@ -46,12 +50,14 @@ const offensePositions = [
 const defensePositions = [
   {
     name: "Rusher",
+    tagline: "Jager quarterbacken og presser spillet",
     icon: <Zap className="w-5 h-5" />,
     role: "Forsvarsspilleren som jager QB etter snap. Har et visst antall sekunder før hen kan krysse scrimmage-linjen.",
     traits: "Eksplosiv fart, timing, aggressivitet. Liker du å jage og presse — er dette rollen for deg.",
   },
   {
     name: "Defensive Back (DB)",
+    tagline: "Dekker mottakerne og stjeler ballen",
     icon: <Shield className="w-5 h-5" />,
     role: "Dekker motstanderens mottakere. Målet er å hindre pasninger og dra flagget til ballbæreren.",
     traits: "Rask reaksjon, god fotarbeid, evne til å speile en motstander. Passer for de som liker en-mot-en-dueller.",
@@ -102,9 +108,29 @@ const Index = () => {
             Flaggfotball
           </p>
           <div className="w-16 h-px bg-primary/50 mb-4" />
-          <p className="font-body text-muted-foreground text-sm tracking-widest uppercase">
+          <p className="font-body text-muted-foreground text-sm tracking-widest uppercase mb-6">
             Arktisk flaggfotball · 69°N
           </p>
+          <div className="flex items-center gap-4">
+            <a
+              href="https://www.instagram.com/tromsoflaggfotball/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-primary transition-colors"
+              aria-label="Instagram"
+            >
+              <Instagram className="w-6 h-6" />
+            </a>
+            <a
+              href="https://www.facebook.com/profile.php?id=61587334652354&locale=nb_NO"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-primary transition-colors"
+              aria-label="Facebook"
+            >
+              <Facebook className="w-6 h-6" />
+            </a>
+          </div>
         </div>
       </section>
 
@@ -194,30 +220,36 @@ const Index = () => {
 
       {/* Posisjoner */}
       <section className="py-16 px-6">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Posisjoner
           </h2>
 
-          <h3 className="font-heading text-lg font-bold text-primary mb-4">Angrep</h3>
-          <div className="space-y-4 mb-8">
-            {offensePositions.map((pos) => (
-              <PositionCard key={pos.name} {...pos} />
-            ))}
-          </div>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <h3 className="font-heading text-lg font-bold text-primary mb-4">Angrep</h3>
+              <div className="space-y-4">
+                {offensePositions.map((pos) => (
+                  <PositionCard key={pos.name} {...pos} />
+                ))}
+              </div>
+            </div>
 
-          <h3 className="font-heading text-lg font-bold text-primary mb-4">Forsvar</h3>
-          <div className="space-y-4 mb-6">
-            {defensePositions.map((pos) => (
-              <PositionCard key={pos.name} {...pos} />
-            ))}
+            <div>
+              <h3 className="font-heading text-lg font-bold text-primary mb-4">Forsvar</h3>
+              <div className="space-y-4">
+                {defensePositions.map((pos) => (
+                  <PositionCard key={pos.name} {...pos} />
+                ))}
+              </div>
+            </div>
           </div>
 
           <a
             href={POSITIONS_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity"
+            className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-6"
           >
             Les mer om alle posisjoner på flaggfotball.no →
           </a>
@@ -440,11 +472,13 @@ const CoachCard = ({
 
 const PositionCard = ({
   name,
+  tagline,
   icon,
   role,
   traits,
 }: {
   name: string;
+  tagline: string;
   icon: React.ReactNode;
   role: string;
   traits: string;
@@ -457,16 +491,13 @@ const PositionCard = ({
     >
       <div className="flex items-center gap-3">
         <div className="text-primary">{icon}</div>
-        <h3 className="font-heading font-bold text-foreground flex-1">{name}</h3>
-        <svg
+        <div className="flex-1 min-w-0">
+          <h3 className="font-heading font-bold text-foreground">{name}</h3>
+          <p className="text-xs text-muted-foreground font-body mt-0.5">{tagline}</p>
+        </div>
+        <ChevronDown
           className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
+        />
       </div>
       {open && (
         <div className="mt-3 space-y-2 pl-8">

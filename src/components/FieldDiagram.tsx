@@ -210,14 +210,14 @@ const FieldDiagram = () => {
         {/* SVG overlay - always visible (rush arrow, zones, man-to-man) */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ zIndex: 1 }}>
           <defs>
-            <marker id="arrowhead" markerWidth="3" markerHeight="3" refX="3" refY="1.5" orient="auto" markerUnits="strokeWidth">
-              <polygon points="0 0, 3 1.5, 0 3" fill="white" fillOpacity="0.6" />
+            <marker id="arrowhead" markerWidth="4" markerHeight="4" refX="4" refY="2" orient="auto" markerUnits="userSpaceOnUse">
+              <polygon points="0 0, 4 2, 0 4" fill="white" fillOpacity="0.6" />
             </marker>
-            <marker id="arrowhead-yellow" markerWidth="3" markerHeight="3" refX="3" refY="1.5" orient="auto" markerUnits="strokeWidth">
-              <polygon points="0 0, 3 1.5, 0 3" fill="#facc15" fillOpacity="0.7" />
+            <marker id="arrowhead-yellow" markerWidth="4" markerHeight="4" refX="4" refY="2" orient="auto" markerUnits="userSpaceOnUse">
+              <polygon points="0 0, 4 2, 0 4" fill="#facc15" fillOpacity="0.7" />
             </marker>
-            <marker id="arrowhead-green" markerWidth="3" markerHeight="3" refX="3" refY="1.5" orient="auto" markerUnits="strokeWidth">
-              <polygon points="0 0, 3 1.5, 0 3" fill="#4ade80" fillOpacity="0.8" />
+            <marker id="arrowhead-green" markerWidth="4" markerHeight="4" refX="4" refY="2" orient="auto" markerUnits="userSpaceOnUse">
+              <polygon points="0 0, 4 2, 0 4" fill="#4ade80" fillOpacity="0.8" />
             </marker>
           </defs>
 

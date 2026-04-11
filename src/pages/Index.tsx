@@ -2,6 +2,7 @@ import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, Chev
 import { useState } from "react";
 import logo from "@/assets/logo.png";
 import heroBg from "@/assets/hero-bg.png";
+import SpinningFootball from "@/components/SpinningFootball";
 
 const Index = () => {
   return (
@@ -32,10 +33,8 @@ const Index = () => {
           </p>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="w-5 h-8 rounded-full border-2 border-muted-foreground/40 flex items-start justify-center pt-1.5">
-            <div className="w-1 h-2 bg-muted-foreground/40 rounded-full" />
-          </div>
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+          <SpinningFootball />
         </div>
       </section>
 

@@ -204,17 +204,7 @@ const Index = () => {
       <TrainingSection />
 
       {/* Banediagram */}
-      <section id="spillet" className="py-16 px-6 scroll-mt-16">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2 text-center">
-            Slik spilles det
-          </h2>
-          <p className="text-muted-foreground font-body text-center mb-8">
-            Utforsk formasjoner, spilltyper og forsvarstaktikker.
-          </p>
-          <FieldDiagram />
-        </div>
-      </section>
+      <GameSection />
 
       {/* Posisjoner */}
       <section className="py-16 px-6">

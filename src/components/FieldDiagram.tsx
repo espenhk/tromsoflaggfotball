@@ -132,10 +132,9 @@ const FieldDiagram = () => {
 
   return (
     <div className="bg-card border border-border rounded-2xl p-6 mb-8">
-      <h3 className="font-heading text-sm font-bold text-muted-foreground mb-4 text-center">
+      <h3 className="font-heading text-xl md:text-2xl font-bold text-foreground mb-4 text-center">
         Oppstilling – 5 mot 5
       </h3>
-      <p className="text-xs text-muted-foreground text-center mb-3">Trykk på en spiller for beskrivelse</p>
 
       {/* Defense navigator */}
       <div className="w-full max-w-md mx-auto">

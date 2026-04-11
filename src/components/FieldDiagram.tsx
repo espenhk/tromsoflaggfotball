@@ -39,12 +39,17 @@ const FieldDiagram = () => {
         </div>
 
         {/* Ball icon in front of Center */}
-        <div
-          className="absolute -translate-x-1/2 -translate-y-1/2 text-lg"
-          style={{ top: "51%", left: "50%" }}
+        <svg
+          className="absolute -translate-x-1/2 -translate-y-1/2"
+          style={{ top: "51%", left: "50%", zIndex: 1 }}
+          width="18" height="11" viewBox="0 0 18 11"
         >
-          🏈
-        </div>
+          <ellipse cx="9" cy="5.5" rx="8.5" ry="5" fill="#8B4513" stroke="#5C2D0A" strokeWidth="0.8" />
+          <line x1="9" y1="1" x2="9" y2="10" stroke="white" strokeWidth="0.7" />
+          <line x1="7" y1="3.5" x2="11" y2="3.5" stroke="white" strokeWidth="0.5" />
+          <line x1="7" y1="5.5" x2="11" y2="5.5" stroke="white" strokeWidth="0.5" />
+          <line x1="7" y1="7.5" x2="11" y2="7.5" stroke="white" strokeWidth="0.5" />
+        </svg>
 
         {/* OFFENSE */}
         <PlayerDot label="C" color="bg-sky-400" top="55%" left="50%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="C" />

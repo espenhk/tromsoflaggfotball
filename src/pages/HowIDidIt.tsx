@@ -282,18 +282,24 @@ export default function HowIDidIt() {
       <section className="max-w-3xl mx-auto px-6 pb-20">
         <div className="relative">
           {/* Timeline line */}
-          <div className="absolute left-[19px] top-0 bottom-0 w-px bg-border" />
+          <div className="absolute left-[17px] top-0 bottom-0 w-px bg-border" />
 
           {steps.map((step, i) => {
             const isOpen = openStep === i;
             return (
-              <div key={i} className="relative pl-14 pb-12">
-                {/* Timeline dot */}
+              <div key={i} className="relative pl-16 pb-12">
+                {/* Timeline icon dot */}
                 <div
-                  className="absolute left-2.5 top-1 w-[18px] h-[18px] rounded-full border-2 border-primary bg-background flex items-center justify-center cursor-pointer hover:scale-110 transition-transform"
+                  className="absolute left-0 top-0 w-[36px] h-[36px] rounded-full border-2 border-primary/40 bg-background flex items-center justify-center cursor-pointer group/dot transition-all hover:border-primary"
                   onClick={() => setOpenStep(isOpen ? null : i)}
                 >
-                  <div className="w-2 h-2 rounded-full bg-primary" />
+                  <span className="text-primary/70 transition-opacity group-hover/dot:opacity-0">
+                    {step.icon}
+                  </span>
+                  {/* Hover overlay with arrow */}
+                  <div className="absolute inset-0 rounded-full bg-muted-foreground/20 flex items-center justify-center opacity-0 group-hover/dot:opacity-100 transition-opacity">
+                    <ChevronDown size={16} className={`text-foreground transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                  </div>
                 </div>
 
                 {/* Phase label */}
@@ -306,12 +312,8 @@ export default function HowIDidIt() {
                   onClick={() => setOpenStep(isOpen ? null : i)}
                   className="w-full text-left group"
                 >
-                  <h3 className="font-heading font-bold text-xl text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
-                    <span className="text-primary/70">{step.icon}</span>
+                  <h3 className="font-heading font-bold text-xl text-foreground group-hover:text-primary transition-colors">
                     {step.title}
-                    <span className="ml-auto text-muted-foreground">
-                      {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                    </span>
                   </h3>
                 </button>
 

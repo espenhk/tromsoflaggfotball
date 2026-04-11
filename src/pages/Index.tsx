@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap } from "lucide-react";
+import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair } from "lucide-react";
 import { useState } from "react";
 import logo from "@/assets/logo.png";
 import heroBg from "@/assets/hero-bg.png";
@@ -38,7 +38,7 @@ const offensePositions = [
   {
     name: "Center (C)",
     tagline: "Starter hvert spill og setter det hele i gang",
-    icon: <Shield className="w-5 h-5" />,
+    icon: <Users className="w-5 h-5" />,
     role: "Center er spilleren som starter hvert eneste spill ved å snappe ballen til QB. Etter snappen går center ut som mottaker eller hjelper til med å blokkere rusheren.",
     role2: "Det er en allsidig posisjon som krever pålitelighet og god kommunikasjon — du må vite når ballen skal snappes, og være klar til å bidra i spillet etterpå. En god center er limet i laget.",
     traits: "Pålitelig, god kommunikasjon, allsidig. En stabil spiller som gjør de små tingene riktig.",
@@ -47,7 +47,7 @@ const offensePositions = [
   {
     name: "Wide Receiver (WR)",
     tagline: "Den raske som løper fri og fanger ballen",
-    icon: <Zap className="w-5 h-5" />,
+    icon: <Target className="w-5 h-5" />,
     role: "Wide receiver er den raske spilleren som løper planlagte ruter nedover banen for å bli fri fra forsvareren. Målet er å skape separasjon og ta imot pasninger fra QB.",
     role2: "I flaggfotball er dette en av de mest spennende posisjonene — du får løpe, gjøre raske vendinger og ta spektakulære fangster. Det handler om timing, hurtighet og gode hender.",
     traits: "Hurtighet, gode hender, evne til å lese forsvar. Perfekt for de som liker å løpe og gjøre raske vendinger.",
@@ -59,7 +59,7 @@ const defensePositions = [
   {
     name: "Rusher",
     tagline: "Jager quarterbacken og presser spillet",
-    icon: <Zap className="w-5 h-5" />,
+    icon: <Crosshair className="w-5 h-5" />,
     role: "Rusheren er forsvarets mest aggressive spiller. Etter snap har rusheren som mål å komme seg forbi linjen og presse QB til å kaste for tidlig eller dra flagget. I flaggfotball starter rusheren 7 yards fra ballen og kan ha 0–2 rushere per spill.",
     role2: "Det er en eksplosiv rolle som handler om timing, fart og aggressivitet. Posisjonen finnes ikke i tacklefotball, men ligner på defensive edge-spillere.",
     traits: "Eksplosiv fart, timing, aggressivitet. Liker du å jage og presse — er dette rollen for deg.",
@@ -77,7 +77,7 @@ const defensePositions = [
   {
     name: "Safety (S)",
     tagline: "Siste skanse som leser spillet bakfra",
-    icon: <Shield className="w-5 h-5" />,
+    icon: <Eye className="w-5 h-5" />,
     role: "Safety er forsvarets siste linje og den spilleren som har best oversikt over hele banen. Fra sin dype posisjon leser safety spillet, hjelper DBene med dekning og sikrer mot lange pasninger.",
     role2: "En god safety kombinerer spilleforståelse med atletisk evne — du må kunne lese QB og reagere raskt både fremover og bakover. Det er en posisjon for smarte, allsidige spillere.",
     traits: "God spilleforståelse, oversikt, allsidighet. Passer for de som liker å lese spillet og ta smarte avgjørelser.",

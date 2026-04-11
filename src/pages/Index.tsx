@@ -415,6 +415,37 @@ const LinkCard = ({
   </a>
 );
 
+const GameSection = () => {
+  const [open, setOpen] = useState(true);
+  return (
+    <section id="spillet" className="py-16 px-6 scroll-mt-16">
+      <div className="max-w-3xl mx-auto">
+        <button
+          onClick={() => setOpen(!open)}
+          className="w-full text-left"
+        >
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground text-center">
+              Slik spilles det
+            </h2>
+            <ChevronDown
+              className={`w-6 h-6 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+            />
+          </div>
+          <p className={`text-muted-foreground font-body text-center transition-all duration-300 ease-out ${open ? "mb-8 opacity-100" : "mb-0 opacity-50"}`}>
+            Utforsk formasjoner, spilltyper og forsvarstaktikker.
+          </p>
+        </button>
+        <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+          <div className="overflow-hidden">
+            <FieldDiagram />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const TrainingSection = () => {
   const [open, setOpen] = useState(false);
   return (

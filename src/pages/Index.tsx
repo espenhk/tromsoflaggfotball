@@ -531,12 +531,7 @@ const PositionCard = ({
     </button>
   );
 };
-          </p>
-        </div>
-      )}
-    </button>
-  );
-};
+
 
 const FaqItem = ({ q, a }: { q: string; a: string }) => {
   const [open, setOpen] = useState(false);

@@ -13,6 +13,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        heading: ["Syne", "sans-serif"],
+        body: ["Outfit", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -47,6 +51,34 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        natt: {
+          50: "#e6f2f7",
+          200: "#92c5d8",
+          500: "#021b27",
+          700: "#011018",
+          900: "#00080d",
+        },
+        fjord: {
+          50: "#e2f4f4",
+          200: "#78cacc",
+          500: "#0d6a6a",
+          700: "#063636",
+          900: "#021212",
+        },
+        nordlys: {
+          50: "#eaf8f3",
+          200: "#95dcbc",
+          500: "#54c59e",
+          700: "#226c4e",
+          900: "#0e2c20",
+        },
+        is: {
+          50: "#f5fbfa",
+          200: "#c8e9e4",
+          400: "#8dccc6",
+          600: "#48999a",
+          800: "#1c5555",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -65,20 +97,12 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
       },
       animation: {

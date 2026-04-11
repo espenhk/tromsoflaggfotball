@@ -1,16 +1,196 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink } from "lucide-react";
+import logo from "@/assets/logo.png";
+import heroBg from "@/assets/hero-bg.png";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+    <div className="min-h-screen bg-background">
+      {/* Hero */}
+      <section className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${heroBg})` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/30" />
+
+        <div className="relative z-10 flex flex-col items-center text-center px-6">
+          <img
+            src={logo}
+            alt="Tromsø Flaggfotball logo"
+            className="w-40 h-40 md:w-56 md:h-56 mb-8 drop-shadow-2xl"
+          />
+          <h1 className="font-heading text-5xl md:text-7xl font-extrabold tracking-tight text-foreground mb-2">
+            TROMSØ
+          </h1>
+          <p className="font-heading text-xl md:text-2xl font-bold text-primary tracking-widest uppercase mb-4">
+            Flaggfotball
+          </p>
+          <div className="w-16 h-px bg-primary/50 mb-4" />
+          <p className="font-body text-muted-foreground text-sm tracking-widest uppercase">
+            Arktisk flaggfotball · 69°N
+          </p>
+        </div>
+
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+          <div className="w-5 h-8 rounded-full border-2 border-muted-foreground/40 flex items-start justify-center pt-1.5">
+            <div className="w-1 h-2 bg-muted-foreground/40 rounded-full" />
+          </div>
+        </div>
+      </section>
+
+      {/* Intro */}
+      <section className="py-20 px-6">
+        <div className="max-w-2xl mx-auto text-center">
+          <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">
+            Bli med på laget.
+          </h2>
+          <p className="font-body text-muted-foreground text-lg leading-relaxed">
+            Vi er Tromsøs første flaggfotballklubb. Flaggfotball er en kontaktfri variant av
+            amerikansk fotball — perfekt for alle aldre og nivåer. Åpne treninger hver mandag,
+            ingen erfaring nødvendig.
+          </p>
+        </div>
+      </section>
+
+      {/* Treninger */}
+      <section className="py-16 px-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-card border border-border rounded-2xl p-8 md:p-12">
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
+              Treninger
+            </h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              <InfoCard icon={<Calendar className="w-5 h-5" />} label="Dag" value="Mandager" />
+              <InfoCard icon={<Clock className="w-5 h-5" />} label="Tid" value="20:30 – 22:00" />
+              <InfoCard icon={<MapPin className="w-5 h-5" />} label="Sted" value="Mellomvegen 110" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Lenker */}
+      <section className="py-16 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
+            Kom i gang
+          </h2>
+          <div className="grid md:grid-cols-2 gap-4">
+            <LinkCard
+              href="https://club.spond.com/landing/signup/naik/form/0A2A60617F184406B7FFEAA4EDC61409"
+              title="Bli medlem"
+              description="Meld deg inn i Amerikanske Idretters klubb via Spond. Ca 80 kr."
+            />
+            <LinkCard
+              href="https://amerikanskeidretter.no/forbund/klubbdrift/lisens-og-forsikring/#amerikansk-fotball-lisens"
+              title="Lisens & forsikring"
+              description="Forsikring for deltakere i flaggfotball via Min Idrett. Ca 100 kr."
+            />
+            <LinkCard
+              href="https://www.facebook.com/profile.php?id=61587334652354&locale=nb_NO"
+              title="Facebook"
+              description="Lik siden vår for aktuell info om treninger og arrangementer."
+              icon={<Facebook className="w-5 h-5" />}
+            />
+            <LinkCard
+              href="https://www.instagram.com/tromsoflaggfotball/"
+              title="Instagram"
+              description="Bilder og videoer fra trening og kamper."
+              icon={<Instagram className="w-5 h-5" />}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Kontakt */}
+      <section className="py-16 px-6 border-t border-border">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
+            Kontakt
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            <ContactCard
+              role="Coach"
+              name="Espen Haukeland Kristensen"
+              phone="958 48 889"
+            />
+            <ContactCard
+              role="Ass. coach"
+              name="Martin Sand Monsen"
+              phone="952 99 706"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-8 px-6 border-t border-border">
+        <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <img src={logo} alt="Logo" className="w-8 h-8" />
+            <span className="font-heading text-sm font-bold text-muted-foreground">
+              Tromsø Flaggfotball
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} Tromsø Flaggfotball
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };
 
-const Index = PlaceholderIndex;
+const InfoCard = ({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) => (
+  <div className="flex items-start gap-3">
+    <div className="text-primary mt-0.5">{icon}</div>
+    <div>
+      <p className="text-xs text-muted-foreground uppercase tracking-wider font-body">{label}</p>
+      <p className="font-heading text-lg font-bold text-foreground">{value}</p>
+    </div>
+  </div>
+);
+
+const LinkCard = ({
+  href,
+  title,
+  description,
+  icon,
+}: {
+  href: string;
+  title: string;
+  description: string;
+  icon?: React.ReactNode;
+}) => (
+  <a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="group bg-card border border-border rounded-xl p-6 flex items-start gap-4 hover:border-primary/40 transition-colors"
+  >
+    <div className="text-primary mt-0.5">
+      {icon || <ExternalLink className="w-5 h-5" />}
+    </div>
+    <div className="flex-1 min-w-0">
+      <p className="font-heading font-bold text-foreground group-hover:text-primary transition-colors">
+        {title}
+      </p>
+      <p className="text-sm text-muted-foreground font-body mt-1">{description}</p>
+    </div>
+  </a>
+);
+
+const ContactCard = ({ role, name, phone }: { role: string; name: string; phone: string }) => (
+  <div className="bg-card border border-border rounded-xl p-6">
+    <p className="text-xs text-primary uppercase tracking-wider font-body mb-1">{role}</p>
+    <p className="font-heading font-bold text-foreground text-lg">{name}</p>
+    <a
+      href={`tel:+47${phone.replace(/\s/g, "")}`}
+      className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mt-2 font-body text-sm"
+    >
+      <Phone className="w-4 h-4" />
+      {phone}
+    </a>
+  </div>
+);
 
 export default Index;

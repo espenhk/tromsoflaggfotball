@@ -255,7 +255,7 @@ const Index = () => {
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Coachene
           </h2>
-          <div className="space-y-1 flex flex-col items-center">
+          <div className="space-y-1">
             {[
               { icon: <Megaphone className="w-5 h-5" />, title: "Head Coach", name: "Espen Haukeland Kristensen", phone: "958 48 889", bio: "Espen har fire sesonger som spiller i Vålerenga Trolls (amerikansk fotball) bak seg, der han spilte quarterback, wide receiver og linebacker. Etter spillerkarrieren gikk han over til trenerbenken — tre år som coach for seniorer, U13 og damelag, med spesialfelt som QB-coach. Tok NM-bronse i flaggfotball i 2025." },
               { icon: <ConeIcon className="w-5 h-5" />, title: "Assistentcoach", name: "Martin Sand Monsen", phone: "952 99 706", bio: "Martin er en av de sentrale figurene fra Tromsø Trailblazers og har spilt flaggfotball i 3–4 år — på alle posisjoner. Til daglig jobber han som lærer, noe som gjør ham til en naturlig pedagog på banen. Flink til å bryte ned spillet og gjøre det forståelig for alle, uansett nivå." },
@@ -579,7 +579,7 @@ const CoachCard = ({
       onClick={() => setOpen(!open)}
       className="w-full text-left py-3"
     >
-      <div className="grid grid-cols-[24px_120px_minmax(120px,auto)_auto_auto] md:grid-cols-[24px_140px_minmax(140px,auto)_auto_auto] items-center gap-x-3 gap-y-0">
+      <div className="grid grid-cols-[24px_120px_1fr_auto_auto] md:grid-cols-[24px_140px_1fr_auto_auto] items-center gap-x-4 gap-y-0 max-w-2xl">
         <div className="text-primary shrink-0">{icon}</div>
         <span className="text-xs text-primary uppercase tracking-wider font-body">{title}</span>
         <span className="font-heading font-bold text-foreground">{name}</span>

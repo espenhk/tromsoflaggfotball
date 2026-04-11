@@ -73,7 +73,7 @@ const FieldDiagram = () => {
           </defs>
           <line
             x1="58%" y1="38%"
-            x2="50%" y2="62%"
+            x2="51%" y2="58%"
             stroke="white"
             strokeOpacity="0.5"
             strokeWidth="2"
@@ -108,8 +108,8 @@ const FieldDiagram = () => {
         <PlayerDot
           label="DB"
           color="bg-rose-400"
-          top="35%"
-          left="60%"
+          top="28%"
+          left="65%"
         />
         {/* DB safety */}
         <PlayerDot

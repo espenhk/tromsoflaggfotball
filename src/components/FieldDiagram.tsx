@@ -95,10 +95,10 @@ const ANIMATION_DURATION = 400;
 const FieldDiagram = () => {
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<OffenseTabId>("formasjon");
+  const [pendingTab, setPendingTab] = useState<OffenseTabId | null>(null);
   const [defenseTab, setDefenseTab] = useState<DefenseTabId>("formasjon");
-  const [showArrows, setShowArrows] = useState(true);
+  const [showRoutes, setShowRoutes] = useState(true);
   const [isAnimating, setIsAnimating] = useState(false);
-  const prevTabRef = useRef<OffenseTabId>(activeTab);
 
   const offensePlayers = getOffensePlayers(activeTab);
   const offenseMap = Object.fromEntries(offensePlayers.map(p => [p.id, { top: p.top, left: p.left }]));
@@ -107,15 +107,26 @@ const FieldDiagram = () => {
   const handleOffenseTabChange = useCallback((newTab: OffenseTabId) => {
     if (newTab === activeTab) return;
     setActiveTooltip(null);
-    setShowArrows(false);
-    setIsAnimating(true);
-    setActiveTab(newTab);
-    prevTabRef.current = newTab;
-    setTimeout(() => {
-      setShowArrows(true);
-      setIsAnimating(false);
-    }, ANIMATION_DURATION);
+    // 1. Immediately hide route arrows (not rush arrow)
+    setShowRoutes(false);
+    setPendingTab(newTab);
   }, [activeTab]);
+
+  // 2. Once routes are hidden, switch tab to move dots
+  useEffect(() => {
+    if (pendingTab === null) return;
+    const t = setTimeout(() => {
+      setActiveTab(pendingTab);
+      setIsAnimating(true);
+      setPendingTab(null);
+      // 3. After dots finish moving, show new routes
+      setTimeout(() => {
+        setShowRoutes(true);
+        setIsAnimating(false);
+      }, ANIMATION_DURATION);
+    }, 150); // short delay for route fade-out
+    return () => clearTimeout(t);
+  }, [pendingTab]);
 
   return (
     <div className="bg-card border border-border rounded-2xl p-6 mb-8">

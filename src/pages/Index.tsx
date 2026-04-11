@@ -22,6 +22,7 @@ const offensePositions = [
     abbr: "QB",
     tagline: "Lagets playmaker og leder",
     icon: <Star className="w-5 h-5 text-amber-400" />,
+    glowBg: "bg-amber-400/10",
     role: "Styrer angrepet, leser forsvaret og kaster ballen til mottakerne. Handler om presise kast og rask beslutningstaking.",
     traits: "God oversikt, presise kast, rask beslutningstaking.",
     nflExamples: "Patrick Mahomes, Josh Allen, Lamar Jackson",
@@ -31,6 +32,7 @@ const offensePositions = [
     abbr: "RB",
     tagline: "Eksplosiv løper med ballen",
     icon: <Zap className="w-5 h-5 text-emerald-400" />,
+    glowBg: "bg-emerald-400/10",
     role: "Tar imot ballen fra QB og løper gjennom forsvaret. Brukes i løpespill og korte pasninger.",
     traits: "Eksplosiv fart, god balanse, smidighet.",
     nflExamples: "Derrick Henry, Saquon Barkley, Christian McCaffrey",
@@ -40,6 +42,7 @@ const offensePositions = [
     abbr: "C",
     tagline: "Starter hvert spill",
     icon: <Users className="w-5 h-5" />,
+    glowBg: "bg-sky-400/10",
     role: "Snapper ballen til QB og går deretter ut som mottaker eller blokkerer rusheren. Limet i laget.",
     traits: "Pålitelig, god kommunikasjon, allsidig.",
     nflExamples: "Travis Kelce (TE), Jason Kelce",
@@ -49,6 +52,7 @@ const offensePositions = [
     abbr: "WR",
     tagline: "Rask mottaker som fanger ballen",
     icon: <Target className="w-5 h-5" />,
+    glowBg: "bg-sky-400/10",
     role: "Løper planlagte ruter for å bli fri fra forsvareren og ta imot pasninger fra QB.",
     traits: "Hurtighet, gode hender, raske vendinger.",
     nflExamples: "Tyreek Hill, Ja'Marr Chase, CeeDee Lamb",
@@ -61,6 +65,7 @@ const defensePositions = [
     abbr: "R",
     tagline: "Jager quarterbacken",
     icon: <Crosshair className="w-5 h-5 text-orange-400" />,
+    glowBg: "bg-orange-400/10",
     role: "Forsvarets mest aggressive spiller. Starter 7 yards fra ballen og presser QB til å kaste for tidlig.",
     traits: "Eksplosiv fart, timing, aggressivitet.",
     nflExamples: "Myles Garrett, Micah Parsons, T.J. Watt",
@@ -70,6 +75,7 @@ const defensePositions = [
     abbr: "DB",
     tagline: "Dekker mottakerne tett",
     icon: <Shield className="w-5 h-5" />,
+    glowBg: "bg-rose-400/10",
     role: "Speiler motstanderens bevegelser og prøver å hindre pasninger. Ofte i en-mot-en-dueller.",
     traits: "Rask reaksjon, god fotarbeid, mental styrke.",
     nflExamples: "Sauce Gardner, Patrick Surtain II, Jalen Ramsey",
@@ -79,6 +85,7 @@ const defensePositions = [
     abbr: "S",
     tagline: "Siste skanse bakfra",
     icon: <Eye className="w-5 h-5" />,
+    glowBg: "bg-rose-400/10",
     role: "Forsvarets siste linje med best oversikt. Leser spillet og sikrer mot lange pasninger.",
     traits: "God spilleforståelse, oversikt, allsidighet.",
     nflExamples: "Kyle Hamilton, Derwin James, Jessie Bates III",
@@ -611,6 +618,7 @@ const PositionCard = ({
   abbr,
   tagline,
   icon,
+  glowBg,
   role,
   traits,
   nflExamples,
@@ -620,6 +628,7 @@ const PositionCard = ({
   abbr: string;
   tagline: string;
   icon: React.ReactNode;
+  glowBg?: string;
   role: string;
   traits: string;
   nflExamples?: string;
@@ -628,7 +637,7 @@ const PositionCard = ({
   const [open, setOpen] = useState(false);
   const isOffense = variant === "offense";
   const accentColor = isOffense ? "text-sky-400" : "text-rose-400";
-  const glowColor = isOffense ? "bg-sky-400/10" : "bg-rose-400/10";
+  const resolvedGlow = glowBg || (isOffense ? "bg-sky-400/10" : "bg-rose-400/10");
 
   return (
     <button
@@ -637,11 +646,11 @@ const PositionCard = ({
     >
       {/* Glow background on hover */}
       <div
-        className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${glowColor}`}
+        className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${resolvedGlow}`}
         style={{ filter: "blur(12px)" }}
       />
       <div
-        className={`absolute inset-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${glowColor}`}
+        className={`absolute inset-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${resolvedGlow}`}
       />
       <div className="relative flex items-center gap-2">
         <div className={accentColor}>{icon}</div>

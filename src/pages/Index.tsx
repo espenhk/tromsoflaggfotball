@@ -683,7 +683,7 @@ const PositionCard = ({
             <h3 className="font-heading font-bold text-foreground text-sm">
               {name}
               {abbr && (
-                <sup className={`ml-0.5 transition-all duration-300 text-[0.7em] align-super ${accentColor} ${open ? "opacity-0" : "opacity-50"}`}>
+                <sup className={`ml-0.5 transition-all duration-300 text-[0.7em] align-super ${resolvedSupColor} ${open ? "opacity-0" : "opacity-50"}`}>
                   {abbr}
                 </sup>
               )}
@@ -698,7 +698,7 @@ const PositionCard = ({
       </button>
       <div className={`relative grid transition-[grid-template-rows,opacity,margin] duration-300 ease-out ${open ? "mt-1 md:mt-2 grid-rows-[1fr] opacity-100" : "mt-0 grid-rows-[0fr] opacity-0"}`}>
         <div className="min-h-0 overflow-hidden">
-          <div className="space-y-1.5 pl-10 md:pl-7 pb-1 md:pb-0.5 px-3">
+          <div className="space-y-1.5 pl-10 md:pl-7 pb-2 md:pb-1.5 pr-3 pl-10">
             {/* Show tagline inside expanded content on mobile */}
             <p className="text-xs text-muted-foreground font-body leading-relaxed italic md:hidden">{tagline}</p>
             <p className="text-xs text-muted-foreground font-body leading-relaxed">{role}</p>

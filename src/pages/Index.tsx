@@ -322,7 +322,7 @@ const Index = () => {
             <LinkCard
               href="https://www.facebook.com/profile.php?id=61587334652354&locale=nb_NO"
               title="Facebook"
-              description="Lik siden vår for aktuell info om treninger og arrangementer."
+              description="Lik siden vår for aktuell info om treninger."
               icon={<Facebook className="w-5 h-5" />}
               iconColor="text-[#4267B2]"
               hoverColor="hover:bg-[#4267B2]/15 hover:border-[#4267B2]/30"

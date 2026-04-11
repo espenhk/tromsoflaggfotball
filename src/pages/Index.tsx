@@ -83,16 +83,6 @@ const Index = () => {
           </h2>
           <div className="grid md:grid-cols-2 gap-4">
             <LinkCard
-              href="https://club.spond.com/landing/signup/naik/form/0A2A60617F184406B7FFEAA4EDC61409"
-              title="Bli medlem"
-              description="Meld deg inn i Amerikanske Idretters klubb via Spond."
-            />
-            <LinkCard
-              href="https://amerikanskeidretter.no/forbund/klubbdrift/lisens-og-forsikring/#amerikansk-fotball-lisens"
-              title="Lisens & forsikring"
-              description="Forsikring for deltakere i flaggfotball via Min Idrett."
-            />
-            <LinkCard
               href="https://www.facebook.com/profile.php?id=61587334652354&locale=nb_NO"
               title="Facebook"
               description="Lik siden vår for aktuell info om treninger og arrangementer."
@@ -109,6 +99,16 @@ const Index = () => {
               title="Flaggfotball.no"
               description="Lær mer om sporten, regler og turneringer i Norge."
               icon={<Flag className="w-5 h-5" />}
+            />
+            <LinkCard
+              href="https://club.spond.com/landing/signup/naik/form/0A2A60617F184406B7FFEAA4EDC61409"
+              title="Bli medlem"
+              description="Meld deg inn i Amerikanske Idretters klubb via Spond."
+            />
+            <LinkCard
+              href="https://amerikanskeidretter.no/forbund/klubbdrift/lisens-og-forsikring/#amerikansk-fotball-lisens"
+              title="Lisens & forsikring"
+              description="Forsikring for deltakere i flaggfotball via Min Idrett."
             />
           </div>
         </div>

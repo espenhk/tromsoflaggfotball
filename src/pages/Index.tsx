@@ -255,18 +255,14 @@ const Index = () => {
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Coachene
           </h2>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="relative">
-              <CoachCard
-                icon={<Megaphone className="w-5 h-5" />}
-                title="Head Coach"
-                name="Espen Haukeland Kristensen"
-                phone="958 48 889"
-                bio="Espen har fire sesonger som spiller i Vålerenga Trolls (amerikansk fotball) bak seg, der han spilte quarterback, wide receiver og linebacker. Etter spillerkarrieren gikk han over til trenerbenken — tre år som coach for seniorer, U13 og damelag, med spesialfelt som QB-coach. Tok NM-bronse i flaggfotball i 2025."
-              />
-              {/* Vertical divider on right edge */}
-              <div className="hidden md:block absolute right-0 top-2 bottom-2 w-px bg-gradient-to-b from-transparent via-border to-transparent" />
-            </div>
+          <div className="space-y-2">
+            <CoachCard
+              icon={<Megaphone className="w-5 h-5" />}
+              title="Head Coach"
+              name="Espen Haukeland Kristensen"
+              phone="958 48 889"
+              bio="Espen har fire sesonger som spiller i Vålerenga Trolls (amerikansk fotball) bak seg, der han spilte quarterback, wide receiver og linebacker. Etter spillerkarrieren gikk han over til trenerbenken — tre år som coach for seniorer, U13 og damelag, med spesialfelt som QB-coach. Tok NM-bronse i flaggfotball i 2025."
+            />
             <CoachCard
               icon={<ConeIcon className="w-5 h-5" />}
               title="Assistentcoach"

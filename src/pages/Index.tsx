@@ -12,6 +12,7 @@ const navItems = [
   { id: "spillet", label: "Slik spilles det" },
   { id: "coachene", label: "Coachene" },
   { id: "kom-i-gang", label: "Kom i gang" },
+  { id: "video", label: "Video" },
   { id: "faq", label: "FAQ" },
 ];
 
@@ -286,7 +287,7 @@ const Index = () => {
       </section>
 
       {/* Video */}
-      <section className="py-16 px-6">
+      <section id="video" className="py-16 px-6 scroll-mt-16">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2">
             Se flaggfotball i aksjon

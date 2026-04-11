@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair, Menu, X, UserPlus, ShieldCheck, Megaphone, ConeIcon, Swords, ShieldAlert } from "lucide-react";
+import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair, Menu, X, UserPlus, ShieldCheck, Megaphone, ConeIcon } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import logo from "@/assets/logo.png";
 import heroBg from "@/assets/hero-bg.png";
@@ -498,8 +498,40 @@ const GameSection = () => {
           </div>
         </div>
 
-        {/* Mobile: flip card */}
-        <MobileFlipCard />
+        {/* Mobile: stacked layout */}
+        <div className="space-y-6 md:hidden">
+          <div>
+            <FieldDiagram />
+            <a
+              href={POSITIONS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-4"
+            >
+              Les mer om alle posisjoner på flaggfotball.no →
+            </a>
+          </div>
+
+          <div className="space-y-5">
+            <div>
+              <h3 className="font-heading text-base font-bold text-sky-400 mb-2.5">Angrep</h3>
+              <div className="space-y-0">
+                {offensePositions.map((pos) => (
+                  <PositionCard key={pos.name} {...pos} variant="offense" />
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="font-heading text-base font-bold text-rose-400 mb-2.5">Forsvar</h3>
+              <div className="space-y-0">
+                {defensePositions.map((pos) => (
+                  <PositionCard key={pos.name} {...pos} variant="defense" />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -535,130 +567,6 @@ const TrainingSection = () => {
     </section>
   );
 };
-
-type FlipFace = "diagram" | "offense" | "defense";
-
-const MobileFlipCard = () => {
-  const [face, setFace] = useState<FlipFace>("diagram");
-  const [flipDirection, setFlipDirection] = useState<"left" | "right">("right");
-  const [isFlipping, setIsFlipping] = useState(false);
-
-  const flipTo = (target: FlipFace, direction: "left" | "right") => {
-    if (isFlipping) return;
-    setFlipDirection(direction);
-    setIsFlipping(true);
-    // At halfway point of flip, swap content
-    setTimeout(() => setFace(target), 250);
-    setTimeout(() => setIsFlipping(false), 500);
-  };
-
-  const flipClass = isFlipping
-    ? flipDirection === "right"
-      ? "animate-[flipRight_500ms_ease-in-out]"
-      : "animate-[flipLeft_500ms_ease-in-out]"
-    : "";
-
-  return (
-    <div className="md:hidden">
-      <style>{`
-        @keyframes flipRight {
-          0% { transform: perspective(800px) rotateY(0deg); }
-          50% { transform: perspective(800px) rotateY(90deg); }
-          100% { transform: perspective(800px) rotateY(0deg); }
-        }
-        @keyframes flipLeft {
-          0% { transform: perspective(800px) rotateY(0deg); }
-          50% { transform: perspective(800px) rotateY(-90deg); }
-          100% { transform: perspective(800px) rotateY(0deg); }
-        }
-      `}</style>
-      <div className={`relative ${flipClass}`}>
-        {/* Content faces */}
-        {face === "diagram" && (
-          <div className="relative">
-            <FieldDiagram />
-            {/* Flip buttons overlaid on diagram edges, styled like diagram tabs */}
-            <button
-              onClick={() => flipTo("defense", "right")}
-              className="absolute top-1 right-1 z-10 text-[10px] uppercase tracking-wider font-body text-rose-400/70 hover:text-rose-400 transition-colors px-2 py-0.5 rounded bg-background/40 backdrop-blur-sm"
-            >
-              Forsvar ›
-            </button>
-            <button
-              onClick={() => flipTo("offense", "left")}
-              className="absolute bottom-1 left-1 z-10 text-[10px] uppercase tracking-wider font-body text-sky-400/70 hover:text-sky-400 transition-colors px-2 py-0.5 rounded bg-background/40 backdrop-blur-sm"
-            >
-              ‹ Angrep
-            </button>
-            <a
-              href={POSITIONS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-4"
-            >
-              Les mer om alle posisjoner på flaggfotball.no →
-            </a>
-          </div>
-        )}
-
-        {face === "offense" && (
-          <div className="rounded-xl border border-sky-400/10 bg-card/30 p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-heading text-base font-bold text-sky-400">Angrep</h3>
-              <button
-                onClick={() => flipTo("diagram", "right")}
-                className="text-[10px] uppercase tracking-wider font-body text-sky-400/70 hover:text-sky-400 transition-colors px-2 py-0.5 rounded bg-background/40"
-              >
-                ‹ Banen
-              </button>
-            </div>
-            <div className="space-y-0">
-              {offensePositions.map((pos) => (
-                <PositionCard key={pos.name} {...pos} variant="offense" />
-              ))}
-            </div>
-            <div className="flex justify-end mt-3">
-              <button
-                onClick={() => flipTo("defense", "right")}
-                className="text-[10px] uppercase tracking-wider font-body text-rose-400/70 hover:text-rose-400 transition-colors px-2 py-0.5 rounded bg-background/40"
-              >
-                Forsvar ›
-              </button>
-            </div>
-          </div>
-        )}
-
-        {face === "defense" && (
-          <div className="rounded-xl border border-rose-400/10 bg-card/30 p-4">
-            <div className="flex items-center justify-between mb-3">
-              <button
-                onClick={() => flipTo("offense", "left")}
-                className="text-[10px] uppercase tracking-wider font-body text-sky-400/70 hover:text-sky-400 transition-colors px-2 py-0.5 rounded bg-background/40"
-              >
-                ‹ Angrep
-              </button>
-              <h3 className="font-heading text-base font-bold text-rose-400">Forsvar</h3>
-            </div>
-            <div className="space-y-0">
-              {defensePositions.map((pos) => (
-                <PositionCard key={pos.name} {...pos} variant="defense" />
-              ))}
-            </div>
-            <div className="flex justify-end mt-3">
-              <button
-                onClick={() => flipTo("diagram", "left")}
-                className="text-[10px] uppercase tracking-wider font-body text-rose-400/70 hover:text-rose-400 transition-colors px-2 py-0.5 rounded bg-background/40"
-              >
-                Banen ›
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
 
 const CoachCard = ({
   icon,
@@ -755,7 +663,7 @@ const PositionCard = ({
   return (
     <button
       onClick={() => setOpen(!open)}
-      className="group relative w-full text-left px-3 py-1 transition-all"
+      className="group relative w-full text-left px-3 py-1.5 transition-all"
     >
       {/* Glow background on hover */}
       <div
@@ -782,9 +690,9 @@ const PositionCard = ({
           className={`w-3.5 h-3.5 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
         />
       </div>
-      <div className={`relative grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
-        <div className="overflow-hidden">
-          <div className="mt-2 space-y-1.5 pl-7">
+      <div className={`relative grid transition-[grid-template-rows,opacity,margin] duration-300 ease-out ${open ? "mt-2 grid-rows-[1fr] opacity-100" : "mt-0 grid-rows-[0fr] opacity-0"}`}>
+        <div className="min-h-0 overflow-hidden">
+          <div className="space-y-1.5 pl-7 pb-0.5">
             <p className="text-xs text-muted-foreground font-body leading-relaxed">{role}</p>
             <p className={`text-xs font-body ${accentColor}`}>
               <span className="text-muted-foreground">Passer for:</span> {traits}

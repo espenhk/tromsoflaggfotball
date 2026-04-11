@@ -176,10 +176,9 @@ const Index = () => {
           />
           <h1 className="font-heading text-5xl md:text-7xl font-extrabold tracking-tight text-foreground mb-2">
             TROMSØ
+            <br />
+            <span className="text-primary">FLAGGFOTBALL</span>
           </h1>
-          <p className="font-heading text-xl md:text-2xl font-bold text-primary tracking-widest uppercase mb-4">
-            Flaggfotball
-          </p>
           <div className="w-16 h-px bg-primary/50 mb-4" />
           <p className="font-body text-muted-foreground text-sm tracking-widest uppercase mb-6">
             Arktisk flaggfotball · 69°N

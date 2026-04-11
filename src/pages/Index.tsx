@@ -174,10 +174,10 @@ const Index = () => {
             alt="Tromsø Flaggfotball logo"
             className="w-40 h-40 md:w-56 md:h-56 mb-8 drop-shadow-2xl"
           />
-          <h1 className="font-heading text-5xl md:text-7xl font-extrabold tracking-tight text-foreground mb-2">
+          <h1 className="font-heading text-3xl md:text-5xl font-extrabold tracking-tight text-foreground mb-2">
             TROMSØ
             <br />
-            <span className="text-primary">FLAGGFOTBALL</span>
+            FLAGGFOTBALL
           </h1>
           <div className="w-16 h-px bg-primary/50 mb-4" />
           <p className="font-body text-muted-foreground text-sm tracking-widest uppercase mb-6">

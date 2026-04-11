@@ -43,13 +43,13 @@ const FieldDiagram = () => {
         <svg
           className="absolute -translate-x-1/2 -translate-y-1/2"
           style={{ top: "51%", left: "50%", zIndex: 1 }}
-          width="18" height="11" viewBox="0 0 18 11"
+          width="11" height="18" viewBox="0 0 11 18"
         >
-          <ellipse cx="9" cy="5.5" rx="8.5" ry="5" fill="#8B4513" stroke="#5C2D0A" strokeWidth="0.8" />
-          <line x1="9" y1="1" x2="9" y2="10" stroke="white" strokeWidth="0.7" />
-          <line x1="7" y1="3.5" x2="11" y2="3.5" stroke="white" strokeWidth="0.5" />
-          <line x1="7" y1="5.5" x2="11" y2="5.5" stroke="white" strokeWidth="0.5" />
-          <line x1="7" y1="7.5" x2="11" y2="7.5" stroke="white" strokeWidth="0.5" />
+          <ellipse cx="5.5" cy="9" rx="5" ry="8.5" fill="#8B4513" stroke="#5C2D0A" strokeWidth="0.8" />
+          <line x1="5.5" y1="1" x2="5.5" y2="17" stroke="white" strokeWidth="0.7" />
+          <line x1="3.5" y1="7" x2="7.5" y2="7" stroke="white" strokeWidth="0.5" />
+          <line x1="3.5" y1="9" x2="7.5" y2="9" stroke="white" strokeWidth="0.5" />
+          <line x1="3.5" y1="11" x2="7.5" y2="11" stroke="white" strokeWidth="0.5" />
         </svg>
 
         {/* OFFENSE */}

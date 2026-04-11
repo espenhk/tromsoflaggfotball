@@ -23,6 +23,7 @@ const offensePositions = [
     tagline: "Lagets playmaker og leder",
     icon: <Star className="w-5 h-5 text-amber-400" />,
     glowBg: "bg-amber-400/10",
+    supColor: "text-amber-400",
     role: "Styrer angrepet, leser forsvaret og kaster ballen til mottakerne. Handler om presise kast og rask beslutningstaking.",
     traits: "God oversikt, presise kast, rask beslutningstaking.",
     nflExamples: "Patrick Mahomes, Josh Allen, Lamar Jackson",
@@ -33,6 +34,7 @@ const offensePositions = [
     tagline: "Eksplosiv løper med ballen",
     icon: <Zap className="w-5 h-5 text-emerald-400" />,
     glowBg: "bg-emerald-400/10",
+    supColor: "text-emerald-400",
     role: "Tar imot ballen fra QB og løper gjennom forsvaret. Brukes i løpespill og korte pasninger.",
     traits: "Eksplosiv fart, god balanse, smidighet.",
     nflExamples: "Derrick Henry, Saquon Barkley, Christian McCaffrey",
@@ -66,6 +68,7 @@ const defensePositions = [
     tagline: "Jager quarterbacken",
     icon: <Crosshair className="w-5 h-5 text-orange-400" />,
     glowBg: "bg-orange-400/10",
+    supColor: "text-orange-400",
     role: "Forsvarets mest aggressive spiller. Starter 7 yards fra ballen og presser QB til å kaste for tidlig.",
     traits: "Eksplosiv fart, timing, aggressivitet.",
     nflExamples: "Myles Garrett, Micah Parsons, T.J. Watt",
@@ -644,6 +647,7 @@ const PositionCard = ({
   traits,
   nflExamples,
   variant = "offense",
+  supColor,
 }: {
   name: string;
   abbr: string;
@@ -654,10 +658,12 @@ const PositionCard = ({
   traits: string;
   nflExamples?: string;
   variant?: "offense" | "defense";
+  supColor?: string;
 }) => {
   const [open, setOpen] = useState(false);
   const isOffense = variant === "offense";
   const accentColor = isOffense ? "text-sky-400" : "text-rose-400";
+  const resolvedSupColor = supColor || accentColor;
   const resolvedGlow = glowBg || (isOffense ? "bg-sky-400/10" : "bg-rose-400/10");
 
   return (
@@ -680,7 +686,7 @@ const PositionCard = ({
             <h3 className="font-heading font-bold text-foreground text-sm">
               {name}
               {abbr && (
-                <sup className={`ml-0.5 transition-all duration-300 text-[0.7em] align-super ${accentColor} ${open ? "opacity-0" : "opacity-50"}`}>
+                <sup className={`ml-0.5 transition-all duration-300 text-[0.7em] align-super ${resolvedSupColor} ${open ? "opacity-0" : "opacity-50"}`}>
                   {abbr}
                 </sup>
               )}
@@ -695,7 +701,7 @@ const PositionCard = ({
       </button>
       <div className={`relative grid transition-[grid-template-rows,opacity,margin] duration-300 ease-out ${open ? "mt-1 md:mt-2 grid-rows-[1fr] opacity-100" : "mt-0 grid-rows-[0fr] opacity-0"}`}>
         <div className="min-h-0 overflow-hidden">
-          <div className="space-y-1.5 pl-10 md:pl-7 pb-1 md:pb-0.5 px-3">
+          <div className="space-y-1.5 pl-10 md:pl-7 pb-2 md:pb-1.5 pr-3">
             {/* Show tagline inside expanded content on mobile */}
             <p className="text-xs text-muted-foreground font-body leading-relaxed italic md:hidden">{tagline}</p>
             <p className="text-xs text-muted-foreground font-body leading-relaxed">{role}</p>

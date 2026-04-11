@@ -9,7 +9,7 @@ const POSITIONS_URL = "https://flaggfotball.no/pages/posisjoner-i-flaggfotball";
 const navItems = [
   { id: "om", label: "Om sporten" },
   { id: "treninger", label: "Treninger" },
-  { id: "spillet", label: "Slik spilles det" },
+  { id: "spillet", label: "Dette er flaggfotball" },
   { id: "coachene", label: "Coachene" },
   { id: "kom-i-gang", label: "Kom i gang" },
   { id: "video", label: "Video" },
@@ -215,19 +215,19 @@ const Index = () => {
 
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h3 className="font-heading text-lg font-bold text-primary mb-4">Angrep</h3>
+              <h3 className="font-heading text-lg font-bold text-sky-400 mb-4">Angrep</h3>
               <div className="space-y-4">
                 {offensePositions.map((pos) => (
-                  <PositionCard key={pos.name} {...pos} />
+                  <PositionCard key={pos.name} {...pos} variant="offense" />
                 ))}
               </div>
             </div>
 
             <div>
-              <h3 className="font-heading text-lg font-bold text-primary mb-4">Forsvar</h3>
+              <h3 className="font-heading text-lg font-bold text-rose-400 mb-4">Forsvar</h3>
               <div className="space-y-4">
                 {defensePositions.map((pos) => (
-                  <PositionCard key={pos.name} {...pos} />
+                  <PositionCard key={pos.name} {...pos} variant="defense" />
                 ))}
               </div>
             </div>
@@ -427,7 +427,7 @@ const GameSection = () => {
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
-                Slik spilles det
+                Dette er flaggfotball
               </h2>
               <ChevronDown
                 className={`w-6 h-6 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
@@ -566,6 +566,7 @@ const PositionCard = ({
   role2,
   traits,
   nflExamples,
+  variant = "offense",
 }: {
   name: string;
   tagline: string;
@@ -574,15 +575,21 @@ const PositionCard = ({
   role2?: string;
   traits: string;
   nflExamples?: string;
+  variant?: "offense" | "defense";
 }) => {
   const [open, setOpen] = useState(false);
+  const isOffense = variant === "offense";
+  const borderColor = isOffense ? "border-sky-400/20 hover:border-sky-400/40" : "border-rose-400/20 hover:border-rose-400/40";
+  const bgColor = isOffense ? "bg-sky-950/20" : "bg-rose-950/20";
+  const accentColor = isOffense ? "text-sky-400" : "text-rose-400";
+
   return (
     <button
       onClick={() => setOpen(!open)}
-      className="w-full text-left bg-card border border-border rounded-xl p-5 hover:border-primary/40 transition-colors"
+      className={`w-full text-left ${bgColor} border ${borderColor} rounded-xl p-5 transition-colors`}
     >
       <div className="flex items-center gap-3">
-        <div className="text-primary">{icon}</div>
+        <div className={accentColor}>{icon}</div>
         <div className="flex-1 min-w-0">
           <h3 className="font-heading font-bold text-foreground">{name}</h3>
           <p className={`text-xs text-muted-foreground font-body mt-0.5 transition-all duration-300 overflow-hidden ${open ? "max-h-0 opacity-0 mt-0" : "max-h-10 opacity-100"}`}>{tagline}</p>
@@ -596,7 +603,7 @@ const PositionCard = ({
           <div className="mt-3 space-y-2 pl-8">
             <p className="text-sm text-muted-foreground font-body leading-relaxed">{role}</p>
             {role2 && <p className="text-sm text-muted-foreground font-body leading-relaxed">{role2}</p>}
-            <p className="text-xs text-primary font-body">
+            <p className={`text-xs font-body ${accentColor}`}>
               <span className="text-muted-foreground">Passer for:</span> {traits}
             </p>
             {nflExamples && (

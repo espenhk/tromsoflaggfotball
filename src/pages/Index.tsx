@@ -102,9 +102,29 @@ const Index = () => {
             Flaggfotball
           </p>
           <div className="w-16 h-px bg-primary/50 mb-4" />
-          <p className="font-body text-muted-foreground text-sm tracking-widest uppercase">
+          <p className="font-body text-muted-foreground text-sm tracking-widest uppercase mb-6">
             Arktisk flaggfotball · 69°N
           </p>
+          <div className="flex items-center gap-4">
+            <a
+              href="https://www.instagram.com/tromsoflaggfotball/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-primary transition-colors"
+              aria-label="Instagram"
+            >
+              <Instagram className="w-6 h-6" />
+            </a>
+            <a
+              href="https://www.facebook.com/profile.php?id=61587334652354&locale=nb_NO"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-primary transition-colors"
+              aria-label="Facebook"
+            >
+              <Facebook className="w-6 h-6" />
+            </a>
+          </div>
         </div>
       </section>
 
@@ -194,30 +214,36 @@ const Index = () => {
 
       {/* Posisjoner */}
       <section className="py-16 px-6">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Posisjoner
           </h2>
 
-          <h3 className="font-heading text-lg font-bold text-primary mb-4">Angrep</h3>
-          <div className="space-y-4 mb-8">
-            {offensePositions.map((pos) => (
-              <PositionCard key={pos.name} {...pos} />
-            ))}
-          </div>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <h3 className="font-heading text-lg font-bold text-primary mb-4">Angrep</h3>
+              <div className="space-y-4">
+                {offensePositions.map((pos) => (
+                  <PositionCard key={pos.name} {...pos} />
+                ))}
+              </div>
+            </div>
 
-          <h3 className="font-heading text-lg font-bold text-primary mb-4">Forsvar</h3>
-          <div className="space-y-4 mb-6">
-            {defensePositions.map((pos) => (
-              <PositionCard key={pos.name} {...pos} />
-            ))}
+            <div>
+              <h3 className="font-heading text-lg font-bold text-primary mb-4">Forsvar</h3>
+              <div className="space-y-4">
+                {defensePositions.map((pos) => (
+                  <PositionCard key={pos.name} {...pos} />
+                ))}
+              </div>
+            </div>
           </div>
 
           <a
             href={POSITIONS_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity"
+            className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-6"
           >
             Les mer om alle posisjoner på flaggfotball.no →
           </a>
@@ -440,11 +466,13 @@ const CoachCard = ({
 
 const PositionCard = ({
   name,
+  tagline,
   icon,
   role,
   traits,
 }: {
   name: string;
+  tagline: string;
   icon: React.ReactNode;
   role: string;
   traits: string;
@@ -457,16 +485,13 @@ const PositionCard = ({
     >
       <div className="flex items-center gap-3">
         <div className="text-primary">{icon}</div>
-        <h3 className="font-heading font-bold text-foreground flex-1">{name}</h3>
-        <svg
+        <div className="flex-1 min-w-0">
+          <h3 className="font-heading font-bold text-foreground">{name}</h3>
+          <p className="text-xs text-muted-foreground font-body mt-0.5">{tagline}</p>
+        </div>
+        <ChevronDown
           className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
+        />
       </div>
       {open && (
         <div className="mt-3 space-y-2 pl-8">

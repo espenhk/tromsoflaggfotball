@@ -585,35 +585,33 @@ const CoachCard = ({
   return (
     <button
       onClick={() => setOpen(!open)}
-      className="w-full text-left py-4 px-6 md:flex-1"
+      className="w-full text-left py-3 px-6"
     >
-      <div className="flex items-start gap-4">
-        <div className="mt-0.5 text-primary">
+      <div className="flex items-center gap-4">
+        <div className="text-primary shrink-0">
           {icon}
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-xs text-primary uppercase tracking-wider font-body mb-1">{title}</p>
-          <div className="flex items-center gap-2">
-            <p className="font-heading font-bold text-foreground">{name}</p>
-            <ChevronDown
-              className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-            />
-          </div>
+        <div className="flex items-center gap-3 flex-wrap flex-1 min-w-0">
+          <span className="text-xs text-primary uppercase tracking-wider font-body">{title}</span>
+          <span className="font-heading font-bold text-foreground">{name}</span>
           <a
             href={`tel:+47${phone.replace(/\s/g, "")}`}
             onClick={(e) => e.stopPropagation()}
-            className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors font-body text-sm mt-1"
+            className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors font-body text-sm"
           >
-            <Phone className="w-4 h-4" />
+            <Phone className="w-3.5 h-3.5" />
             {phone}
           </a>
-          <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
-            <div className="overflow-hidden">
-              <p className="text-sm text-muted-foreground font-body leading-relaxed mt-3">
-                {bio}
-              </p>
-            </div>
-          </div>
+          <ChevronDown
+            className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+          />
+        </div>
+      </div>
+      <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+        <div className="overflow-hidden">
+          <p className="text-sm text-muted-foreground font-body leading-relaxed mt-3 pl-9">
+            {bio}
+          </p>
         </div>
       </div>
     </button>

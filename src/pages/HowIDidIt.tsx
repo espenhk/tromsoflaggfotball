@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ArrowLeft, ChevronDown, ChevronUp, Sparkles, MessageSquare, Code2, Layers, Palette, Rocket, Eye, Zap } from "lucide-react";
+import canvaOriginal from "@/assets/canva-original.png";
 import { useNavigate } from "react-router-dom";
 
 /* ── Mini preview components ────────────────────────────── */
@@ -139,6 +140,14 @@ const steps: Step[] = [
       "Logo, ikoner og det overordnede designspråket var altså klart før Lovable kom inn i bildet. Lovable-jobben handlet om å ta en statisk visjon og gjøre den levende.",
     ],
     color: "hsl(var(--primary))",
+    preview: (
+      <div className="bg-card/80 border border-border rounded-lg p-3 max-w-[340px]">
+        <div className="font-heading text-[0.55rem] uppercase tracking-widest text-primary mb-2">
+          ▸ Original Canva-side
+        </div>
+        <img src={canvaOriginal} alt="Den originale Canva-siden for Tromsø Flaggfotball" className="rounded border border-border" />
+      </div>
+    ),
   },
   {
     phase: "Fase 1",

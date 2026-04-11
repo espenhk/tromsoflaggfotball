@@ -618,6 +618,7 @@ const PositionCard = ({
   abbr,
   tagline,
   icon,
+  glowBg,
   role,
   traits,
   nflExamples,
@@ -627,6 +628,7 @@ const PositionCard = ({
   abbr: string;
   tagline: string;
   icon: React.ReactNode;
+  glowBg?: string;
   role: string;
   traits: string;
   nflExamples?: string;
@@ -635,7 +637,7 @@ const PositionCard = ({
   const [open, setOpen] = useState(false);
   const isOffense = variant === "offense";
   const accentColor = isOffense ? "text-sky-400" : "text-rose-400";
-  const glowColor = isOffense ? "bg-sky-400/10" : "bg-rose-400/10";
+  const resolvedGlow = glowBg || (isOffense ? "bg-sky-400/10" : "bg-rose-400/10");
 
   return (
     <button

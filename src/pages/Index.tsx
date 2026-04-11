@@ -505,21 +505,23 @@ const TrainingSection = () => {
           Treninger
         </h2>
 
-        <div className="grid md:grid-cols-3 gap-6 mb-6">
-          <InfoCard icon={<Calendar className="w-5 h-5" />} label="Dag" value="Mandager" />
-          <InfoCard icon={<Clock className="w-5 h-5" />} label="Tid" value="20:30 – 22:00" />
-          <InfoCard icon={<MapPin className="w-5 h-5" />} label="Sted" value="Mellomvegen 110" />
-        </div>
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="flex flex-col gap-4 md:w-1/3 shrink-0">
+            <InfoCard icon={<Calendar className="w-5 h-5" />} label="Dag" value="Mandager" />
+            <InfoCard icon={<Clock className="w-5 h-5" />} label="Tid" value="20:30 – 22:00" />
+            <InfoCard icon={<MapPin className="w-5 h-5" />} label="Sted" value="Mellomvegen 110" />
+          </div>
 
-        <div className="rounded-xl overflow-hidden border border-border aspect-video">
-          <iframe
-            className="w-full h-full"
-            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Mellomvegen+110,+9006+Tromsø&maptype=satellite&zoom=17"
-            title="Mellomvegen 110, Tromsø"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            allowFullScreen
-          />
+          <div className="rounded-xl overflow-hidden border border-border flex-1 min-h-[200px]">
+            <iframe
+              className="w-full h-full min-h-[200px]"
+              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Mellomvegen+110,+9006+Tromsø&maptype=satellite&zoom=17"
+              title="Mellomvegen 110, Tromsø"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
+          </div>
         </div>
       </div>
     </section>

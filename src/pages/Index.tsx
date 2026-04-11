@@ -434,20 +434,18 @@ const TrainingSection = () => {
           onClick={() => setOpen(!open)}
           className="w-full text-left bg-card border border-border rounded-2xl p-8 md:p-12 hover:border-primary/40 transition-colors"
         >
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between">
             <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
               Treninger
+              <span className={`inline transition-all duration-300 ease-out ${open ? "opacity-0 max-w-0 overflow-hidden" : "opacity-100 max-w-[400px]"}`}>
+                <span className="font-body font-normal text-muted-foreground text-sm md:text-base ml-2">
+                  – mandager kl 20:30–22:00 i Mellomvegen 110
+                </span>
+              </span>
             </h2>
             <ChevronDown
               className={`w-6 h-6 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
             />
-          </div>
-
-          {/* Condensed single-line summary – visible when collapsed */}
-          <div className={`transition-all duration-300 ease-out overflow-hidden ${open ? "max-h-0 opacity-0" : "max-h-12 opacity-100"}`}>
-            <p className="text-muted-foreground font-body text-sm md:text-base">
-              Mandager kl 20:30–22:00 i Mellomvegen 110
-            </p>
           </div>
 
           {/* Expanded info cards – animated in */}

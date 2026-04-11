@@ -644,6 +644,7 @@ const PositionCard = ({
   traits,
   nflExamples,
   variant = "offense",
+  supColor,
 }: {
   name: string;
   abbr: string;
@@ -654,10 +655,12 @@ const PositionCard = ({
   traits: string;
   nflExamples?: string;
   variant?: "offense" | "defense";
+  supColor?: string;
 }) => {
   const [open, setOpen] = useState(false);
   const isOffense = variant === "offense";
   const accentColor = isOffense ? "text-sky-400" : "text-rose-400";
+  const resolvedSupColor = supColor || accentColor;
   const resolvedGlow = glowBg || (isOffense ? "bg-sky-400/10" : "bg-rose-400/10");
 
   return (

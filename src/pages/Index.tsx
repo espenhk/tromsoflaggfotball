@@ -490,12 +490,14 @@ const PositionCard = ({
   icon,
   role,
   traits,
+  nflExamples,
 }: {
   name: string;
   tagline: string;
   icon: React.ReactNode;
   role: string;
   traits: string;
+  nflExamples?: string;
 }) => {
   const [open, setOpen] = useState(false);
   return (
@@ -518,6 +520,17 @@ const PositionCard = ({
           <p className="text-sm text-muted-foreground font-body leading-relaxed">{role}</p>
           <p className="text-xs text-primary font-body">
             <span className="text-muted-foreground">Passer for:</span> {traits}
+          </p>
+          {nflExamples && (
+            <p className="text-xs font-body text-muted-foreground">
+              <span className="text-foreground font-semibold">Kjente NFL-spillere:</span> {nflExamples}
+            </p>
+          )}
+        </div>
+      )}
+    </button>
+  );
+};
           </p>
         </div>
       )}

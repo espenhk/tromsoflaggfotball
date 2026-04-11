@@ -573,46 +573,23 @@ const MobileFlipCard = () => {
         }
       `}</style>
       <div className={`relative ${flipClass}`}>
-        {/* Top-right: flip to defense */}
-        {face !== "defense" && (
-          <button
-            onClick={() => flipTo("defense", "right")}
-            className="absolute top-2 right-2 z-10 flex items-center gap-1 text-xs text-rose-400 bg-background/80 backdrop-blur-sm rounded-full px-2.5 py-1 border border-rose-400/20 hover:bg-rose-400/10 transition-colors"
-            aria-label="Vis forsvar"
-          >
-            <ShieldAlert className="w-3.5 h-3.5" />
-            <span className="font-body">Forsvar</span>
-          </button>
-        )}
-
-        {/* Bottom-left: flip to offense */}
-        {face !== "offense" && (
-          <button
-            onClick={() => flipTo("offense", "left")}
-            className="absolute bottom-2 left-2 z-10 flex items-center gap-1 text-xs text-sky-400 bg-background/80 backdrop-blur-sm rounded-full px-2.5 py-1 border border-sky-400/20 hover:bg-sky-400/10 transition-colors"
-            aria-label="Vis angrep"
-          >
-            <Swords className="w-3.5 h-3.5" />
-            <span className="font-body">Angrep</span>
-          </button>
-        )}
-
-        {/* Back to diagram button when showing positions */}
-        {face !== "diagram" && (
-          <button
-            onClick={() => flipTo("diagram", face === "offense" ? "right" : "left")}
-            className="absolute top-2 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1 text-xs text-primary bg-background/80 backdrop-blur-sm rounded-full px-2.5 py-1 border border-primary/20 hover:bg-primary/10 transition-colors"
-            aria-label="Tilbake til diagram"
-          >
-            <Flag className="w-3.5 h-3.5" />
-            <span className="font-body">Banen</span>
-          </button>
-        )}
-
         {/* Content faces */}
         {face === "diagram" && (
-          <div>
+          <div className="relative">
             <FieldDiagram />
+            {/* Flip buttons overlaid on diagram edges, styled like diagram tabs */}
+            <button
+              onClick={() => flipTo("defense", "right")}
+              className="absolute top-1 right-1 z-10 text-[10px] uppercase tracking-wider font-body text-rose-400/70 hover:text-rose-400 transition-colors px-2 py-0.5 rounded bg-background/40 backdrop-blur-sm"
+            >
+              Forsvar ›
+            </button>
+            <button
+              onClick={() => flipTo("offense", "left")}
+              className="absolute bottom-1 left-1 z-10 text-[10px] uppercase tracking-wider font-body text-sky-400/70 hover:text-sky-400 transition-colors px-2 py-0.5 rounded bg-background/40 backdrop-blur-sm"
+            >
+              ‹ Angrep
+            </button>
             <a
               href={POSITIONS_URL}
               target="_blank"
@@ -625,23 +602,55 @@ const MobileFlipCard = () => {
         )}
 
         {face === "offense" && (
-          <div className="py-8">
-            <h3 className="font-heading text-lg font-bold text-sky-400 mb-4">Angrep</h3>
-            <div className="space-y-1.5">
+          <div className="rounded-xl border border-sky-400/10 bg-card/30 p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-heading text-base font-bold text-sky-400">Angrep</h3>
+              <button
+                onClick={() => flipTo("diagram", "right")}
+                className="text-[10px] uppercase tracking-wider font-body text-sky-400/70 hover:text-sky-400 transition-colors px-2 py-0.5 rounded bg-background/40"
+              >
+                ‹ Banen
+              </button>
+            </div>
+            <div className="space-y-0">
               {offensePositions.map((pos) => (
                 <PositionCard key={pos.name} {...pos} variant="offense" />
               ))}
+            </div>
+            <div className="flex justify-end mt-3">
+              <button
+                onClick={() => flipTo("defense", "right")}
+                className="text-[10px] uppercase tracking-wider font-body text-rose-400/70 hover:text-rose-400 transition-colors px-2 py-0.5 rounded bg-background/40"
+              >
+                Forsvar ›
+              </button>
             </div>
           </div>
         )}
 
         {face === "defense" && (
-          <div className="py-8">
-            <h3 className="font-heading text-lg font-bold text-rose-400 mb-4">Forsvar</h3>
-            <div className="space-y-1.5">
+          <div className="rounded-xl border border-rose-400/10 bg-card/30 p-4">
+            <div className="flex items-center justify-between mb-3">
+              <button
+                onClick={() => flipTo("offense", "left")}
+                className="text-[10px] uppercase tracking-wider font-body text-sky-400/70 hover:text-sky-400 transition-colors px-2 py-0.5 rounded bg-background/40"
+              >
+                ‹ Angrep
+              </button>
+              <h3 className="font-heading text-base font-bold text-rose-400">Forsvar</h3>
+            </div>
+            <div className="space-y-0">
               {defensePositions.map((pos) => (
                 <PositionCard key={pos.name} {...pos} variant="defense" />
               ))}
+            </div>
+            <div className="flex justify-end mt-3">
+              <button
+                onClick={() => flipTo("diagram", "left")}
+                className="text-[10px] uppercase tracking-wider font-body text-rose-400/70 hover:text-rose-400 transition-colors px-2 py-0.5 rounded bg-background/40"
+              >
+                Banen ›
+              </button>
             </div>
           </div>
         )}
@@ -746,7 +755,7 @@ const PositionCard = ({
   return (
     <button
       onClick={() => setOpen(!open)}
-      className="group relative w-full text-left px-4 py-1.5 transition-all"
+      className="group relative w-full text-left px-3 py-1 transition-all"
     >
       {/* Glow background on hover */}
       <div

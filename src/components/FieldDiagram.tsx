@@ -350,7 +350,6 @@ const AnimatedPlayerDot = ({
   const [pos, setPos] = useState({ top, left });
   const [displayLabel, setDisplayLabel] = useState(label);
   const [labelOpacity, setLabelOpacity] = useState(1);
-  const [dotColor, setDotColor] = useState(color);
   const prevPos = useRef({ top, left });
   const prevLabel = useRef(label);
 
@@ -363,19 +362,24 @@ const AnimatedPlayerDot = ({
 
   useEffect(() => {
     if (prevLabel.current !== label) {
-      // Fade out old label, swap, fade in new label
       setLabelOpacity(0);
       const timeout = setTimeout(() => {
         setDisplayLabel(label);
-        setDotColor(color);
         setLabelOpacity(1);
       }, 200);
       prevLabel.current = label;
       return () => clearTimeout(timeout);
-    } else {
-      setDotColor(color);
     }
-  }, [label, color]);
+  }, [label]);
+
+  // Map tailwind color classes to actual colors for smooth CSS transitions
+  const colorMap: Record<string, string> = {
+    "bg-sky-400": "#38bdf8",
+    "bg-amber-400": "#fbbf24",
+    "bg-rose-400": "#fb7185",
+    "bg-emerald-400": "#34d399",
+  };
+  const resolvedColor = colorMap[color] || "#38bdf8";
 
   const isActive = activeTooltip === id;
   const description = positionDescriptions[displayLabel] || "";
@@ -397,7 +401,11 @@ const AnimatedPlayerDot = ({
       }}
     >
       <div
-        className={`w-6 h-6 rounded-full ${dotColor} border-2 border-white/80 shadow-lg transition-all duration-200 ${isActive ? "scale-125 ring-2 ring-white/60" : "hover:scale-110"}`}
+        className={`w-6 h-6 rounded-full border-2 border-white/80 shadow-lg ${isActive ? "scale-125 ring-2 ring-white/60" : "hover:scale-110"}`}
+        style={{
+          backgroundColor: resolvedColor,
+          transition: "background-color 0.4s ease-in-out, transform 0.2s",
+        }}
       />
       <span
         className="text-[10px] font-heading font-bold text-white drop-shadow-md"

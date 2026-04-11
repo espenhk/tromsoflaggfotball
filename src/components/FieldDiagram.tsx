@@ -2,6 +2,7 @@ import { useState } from "react";
 
 const positionDescriptions: Record<string, string> = {
   QB: "Lagets playmaker og leder på banen. Kaster ballen til medspillere og styrer spillet.",
+
   C: "Starter hvert spill ved å snappe ballen til QB. Går deretter ut som mottaker eller blokkerer rusheren.",
   WR: "Løper ruter og fanger pasninger fra QB. Målet er å bli fri fra forsvareren og ta imot ballen.",
   R: "Jager QB etter snap. Har et visst antall sekunder før hen kan krysse scrimmage-linjen.",

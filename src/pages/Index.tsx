@@ -464,6 +464,7 @@ const GameSection = () => {
 
         {/* Desktop: 3-column layout with positions flanking the diagram */}
         <div className="hidden md:grid md:grid-cols-[1fr_2fr_1fr] gap-6 items-start">
+          {/* Offense positions - left */}
           <div>
             <h3 className="font-heading text-lg font-bold text-sky-400 mb-4">Angrep</h3>
             <div className="space-y-3">
@@ -473,6 +474,7 @@ const GameSection = () => {
             </div>
           </div>
 
+          {/* Field diagram - center */}
           <div>
             <FieldDiagram />
             <a
@@ -485,6 +487,7 @@ const GameSection = () => {
             </a>
           </div>
 
+          {/* Defense positions - right */}
           <div>
             <h3 className="font-heading text-lg font-bold text-rose-400 mb-4">Forsvar</h3>
             <div className="space-y-3">
@@ -495,39 +498,8 @@ const GameSection = () => {
           </div>
         </div>
 
-        {/* Mobile: stacked layout */}
-        <div className="md:hidden">
-          <FieldDiagram />
-
-          <div className="mt-4 space-y-4">
-            <div>
-              <h3 className="font-heading text-lg font-bold text-sky-400 mb-3">Angrep</h3>
-              <div className="space-y-0">
-                {offensePositions.map((pos) => (
-                  <PositionCard key={pos.name} {...pos} variant="offense" />
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="font-heading text-lg font-bold text-rose-400 mb-3">Forsvar</h3>
-              <div className="space-y-0">
-                {defensePositions.map((pos) => (
-                  <PositionCard key={pos.name} {...pos} variant="defense" />
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <a
-            href={POSITIONS_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-5"
-          >
-            Les mer om alle posisjoner på flaggfotball.no →
-          </a>
-        </div>
+        {/* Mobile: flip card */}
+        <MobileFlipCard />
       </div>
     </section>
   );
@@ -564,6 +536,130 @@ const TrainingSection = () => {
   );
 };
 
+type FlipFace = "diagram" | "offense" | "defense";
+
+const MobileFlipCard = () => {
+  const [face, setFace] = useState<FlipFace>("diagram");
+  const [flipDirection, setFlipDirection] = useState<"left" | "right">("right");
+  const [isFlipping, setIsFlipping] = useState(false);
+
+  const flipTo = (target: FlipFace, direction: "left" | "right") => {
+    if (isFlipping) return;
+    setFlipDirection(direction);
+    setIsFlipping(true);
+    // At halfway point of flip, swap content
+    setTimeout(() => setFace(target), 250);
+    setTimeout(() => setIsFlipping(false), 500);
+  };
+
+  const flipClass = isFlipping
+    ? flipDirection === "right"
+      ? "animate-[flipRight_500ms_ease-in-out]"
+      : "animate-[flipLeft_500ms_ease-in-out]"
+    : "";
+
+  return (
+    <div className="md:hidden">
+      <style>{`
+        @keyframes flipRight {
+          0% { transform: perspective(800px) rotateY(0deg); }
+          50% { transform: perspective(800px) rotateY(90deg); }
+          100% { transform: perspective(800px) rotateY(0deg); }
+        }
+        @keyframes flipLeft {
+          0% { transform: perspective(800px) rotateY(0deg); }
+          50% { transform: perspective(800px) rotateY(-90deg); }
+          100% { transform: perspective(800px) rotateY(0deg); }
+        }
+      `}</style>
+      <div className={`relative ${flipClass}`}>
+        {/* Content faces */}
+        {face === "diagram" && (
+          <div className="relative">
+            <FieldDiagram />
+            {/* Flip buttons overlaid on diagram edges, styled like diagram tabs */}
+            <button
+              onClick={() => flipTo("defense", "right")}
+              className="absolute top-1 right-1 z-10 text-[10px] uppercase tracking-wider font-body text-rose-400/70 hover:text-rose-400 transition-colors px-2 py-0.5 rounded bg-background/40 backdrop-blur-sm"
+            >
+              Forsvar ›
+            </button>
+            <button
+              onClick={() => flipTo("offense", "left")}
+              className="absolute bottom-1 left-1 z-10 text-[10px] uppercase tracking-wider font-body text-sky-400/70 hover:text-sky-400 transition-colors px-2 py-0.5 rounded bg-background/40 backdrop-blur-sm"
+            >
+              ‹ Angrep
+            </button>
+            <a
+              href={POSITIONS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-4"
+            >
+              Les mer om alle posisjoner på flaggfotball.no →
+            </a>
+          </div>
+        )}
+
+        {face === "offense" && (
+          <div className="rounded-xl border border-sky-400/10 bg-card/30 p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-heading text-base font-bold text-sky-400">Angrep</h3>
+              <button
+                onClick={() => flipTo("diagram", "right")}
+                className="text-[10px] uppercase tracking-wider font-body text-sky-400/70 hover:text-sky-400 transition-colors px-2 py-0.5 rounded bg-background/40"
+              >
+                ‹ Banen
+              </button>
+            </div>
+            <div className="space-y-0">
+              {offensePositions.map((pos) => (
+                <PositionCard key={pos.name} {...pos} variant="offense" />
+              ))}
+            </div>
+            <div className="flex justify-end mt-3">
+              <button
+                onClick={() => flipTo("defense", "right")}
+                className="text-[10px] uppercase tracking-wider font-body text-rose-400/70 hover:text-rose-400 transition-colors px-2 py-0.5 rounded bg-background/40"
+              >
+                Forsvar ›
+              </button>
+            </div>
+          </div>
+        )}
+
+        {face === "defense" && (
+          <div className="rounded-xl border border-rose-400/10 bg-card/30 p-4">
+            <div className="flex items-center justify-between mb-3">
+              <button
+                onClick={() => flipTo("offense", "left")}
+                className="text-[10px] uppercase tracking-wider font-body text-sky-400/70 hover:text-sky-400 transition-colors px-2 py-0.5 rounded bg-background/40"
+              >
+                ‹ Angrep
+              </button>
+              <h3 className="font-heading text-base font-bold text-rose-400">Forsvar</h3>
+            </div>
+            <div className="space-y-0">
+              {defensePositions.map((pos) => (
+                <PositionCard key={pos.name} {...pos} variant="defense" />
+              ))}
+            </div>
+            <div className="flex justify-end mt-3">
+              <button
+                onClick={() => flipTo("diagram", "left")}
+                className="text-[10px] uppercase tracking-wider font-body text-rose-400/70 hover:text-rose-400 transition-colors px-2 py-0.5 rounded bg-background/40"
+              >
+                Banen ›
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+
 const CoachCard = ({
   icon,
   title,
@@ -578,12 +674,12 @@ const CoachCard = ({
   bio: string;
 }) => {
   const [open, setOpen] = useState(false);
-
   return (
     <button
       onClick={() => setOpen(!open)}
       className="w-full text-left py-1.5"
     >
+      {/* Desktop layout */}
       <div className="hidden md:grid grid-cols-[24px_140px_1fr_auto_auto] items-center gap-x-4">
         <div className="text-primary shrink-0">{icon}</div>
         <span className="text-xs text-primary uppercase tracking-wider font-body">{title}</span>
@@ -600,7 +696,7 @@ const CoachCard = ({
           className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
         />
       </div>
-
+      {/* Mobile layout - stacked */}
       <div className="flex md:hidden items-start gap-3">
         <div className="text-primary shrink-0 mt-0.5">{icon}</div>
         <div className="flex-1 min-w-0">
@@ -619,10 +715,9 @@ const CoachCard = ({
           className={`w-4 h-4 text-muted-foreground shrink-0 mt-1 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
         />
       </div>
-
-      <div className={`grid overflow-hidden transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100 mt-2" : "grid-rows-[0fr] opacity-0 mt-0"}`}>
-        <div className="min-h-0 overflow-hidden">
-          <p className="text-sm text-muted-foreground font-body leading-relaxed pl-9">
+      <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+        <div className="overflow-hidden">
+          <p className="text-sm text-muted-foreground font-body leading-relaxed mt-3 pl-9">
             {bio}
           </p>
         </div>
@@ -660,8 +755,9 @@ const PositionCard = ({
   return (
     <button
       onClick={() => setOpen(!open)}
-      className="group relative w-full text-left px-4 py-1 md:py-1.5 transition-all"
+      className="group relative w-full text-left px-3 py-1 transition-all"
     >
+      {/* Glow background on hover */}
       <div
         className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${resolvedGlow}`}
         style={{ filter: "blur(12px)" }}
@@ -669,7 +765,6 @@ const PositionCard = ({
       <div
         className={`absolute inset-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${resolvedGlow}`}
       />
-
       <div className="relative flex items-center gap-2">
         <div className={accentColor}>{icon}</div>
         <div className="flex-1 min-w-0">
@@ -681,18 +776,15 @@ const PositionCard = ({
               </sup>
             )}
           </h3>
-          <p className={`text-xs text-muted-foreground font-body mt-0.5 transition-all duration-300 overflow-hidden ${open ? "max-h-0 opacity-0 mt-0" : "max-h-10 opacity-100"}`}>
-            {tagline}
-          </p>
+          <p className={`text-xs text-muted-foreground font-body mt-0.5 transition-all duration-300 overflow-hidden ${open ? "max-h-0 opacity-0 mt-0" : "max-h-10 opacity-100"}`}>{tagline}</p>
         </div>
         <ChevronDown
           className={`w-3.5 h-3.5 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
         />
       </div>
-
-      <div className={`relative grid overflow-hidden transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100 mt-1.5" : "grid-rows-[0fr] opacity-0 mt-0"}`}>
-        <div className="min-h-0 overflow-hidden">
-          <div className="space-y-1.5 pl-7">
+      <div className={`relative grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+        <div className="overflow-hidden">
+          <div className="mt-2 space-y-1.5 pl-7">
             <p className="text-xs text-muted-foreground font-body leading-relaxed">{role}</p>
             <p className={`text-xs font-body ${accentColor}`}>
               <span className="text-muted-foreground">Passer for:</span> {traits}

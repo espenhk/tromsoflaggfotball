@@ -2,9 +2,10 @@ import { useState } from "react";
 
 const positionDescriptions: Record<string, string> = {
   QB: "Lagets playmaker og leder på banen. Kaster ballen til medspillere og styrer spillet.",
+
   C: "Starter hvert spill ved å snappe ballen til QB. Går deretter ut som mottaker eller blokkerer rusheren.",
   WR: "Løper ruter og fanger pasninger fra QB. Målet er å bli fri fra forsvareren og ta imot ballen.",
-  R: "Jager QB etter snap. Har et visst antall sekunder før hen kan krysse scrimmage-linjen.",
+  R: "Starter 7 yards fra ballen med hånden i været. Kan rushe mot QB så fort de klarer etter snap. Laget kan ha 0–2 rushere per spill.",
   DB: "Dekker motstanderens mottakere. Hindrer pasninger og drar flagget til ballbæreren.",
 };
 
@@ -52,8 +53,8 @@ const FieldDiagram = () => {
         </svg>
 
         {/* OFFENSE */}
-        <PlayerDot label="C" color="bg-sky-400" top="55%" left="50%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="C" />
-        <PlayerDot label="QB" color="bg-amber-400" top="65%" left="50%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="QB" />
+        <PlayerDot label="C" color="bg-sky-400" top="57%" left="50%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="C" />
+        <PlayerDot label="QB" color="bg-amber-400" top="68%" left="50%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="QB" />
         <PlayerDot label="WR" color="bg-sky-400" top="52%" left="15%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-L" />
         <PlayerDot label="WR" color="bg-sky-400" top="52%" left="85%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-R" />
         <PlayerDot label="WR" color="bg-sky-400" top="58%" left="72%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-S" />
@@ -67,7 +68,7 @@ const FieldDiagram = () => {
           </defs>
           <line
             x1="58%" y1="38%"
-            x2="51%" y2="58%"
+            x2="51%" y2="61%"
             stroke="white"
             strokeOpacity="0.5"
             strokeWidth="2"

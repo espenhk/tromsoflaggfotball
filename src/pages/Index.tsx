@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair, Menu, X, UserPlus, ShieldCheck, Megaphone, ConeIcon } from "lucide-react";
+import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair, Menu, X, UserPlus, ShieldCheck, Megaphone, ConeIcon, Swords, ShieldAlert } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import logo from "@/assets/logo.png";
 import heroBg from "@/assets/hero-bg.png";
@@ -536,7 +536,121 @@ const TrainingSection = () => {
   );
 };
 
-const CoachCard = ({
+type FlipFace = "diagram" | "offense" | "defense";
+
+const MobileFlipCard = () => {
+  const [face, setFace] = useState<FlipFace>("diagram");
+  const [flipDirection, setFlipDirection] = useState<"left" | "right">("right");
+  const [isFlipping, setIsFlipping] = useState(false);
+
+  const flipTo = (target: FlipFace, direction: "left" | "right") => {
+    if (isFlipping) return;
+    setFlipDirection(direction);
+    setIsFlipping(true);
+    // At halfway point of flip, swap content
+    setTimeout(() => setFace(target), 250);
+    setTimeout(() => setIsFlipping(false), 500);
+  };
+
+  const flipClass = isFlipping
+    ? flipDirection === "right"
+      ? "animate-[flipRight_500ms_ease-in-out]"
+      : "animate-[flipLeft_500ms_ease-in-out]"
+    : "";
+
+  return (
+    <div className="md:hidden">
+      <style>{`
+        @keyframes flipRight {
+          0% { transform: perspective(800px) rotateY(0deg); }
+          50% { transform: perspective(800px) rotateY(90deg); }
+          100% { transform: perspective(800px) rotateY(0deg); }
+        }
+        @keyframes flipLeft {
+          0% { transform: perspective(800px) rotateY(0deg); }
+          50% { transform: perspective(800px) rotateY(-90deg); }
+          100% { transform: perspective(800px) rotateY(0deg); }
+        }
+      `}</style>
+      <div className={`relative ${flipClass}`}>
+        {/* Top-right: flip to defense */}
+        {face !== "defense" && (
+          <button
+            onClick={() => flipTo("defense", "right")}
+            className="absolute top-2 right-2 z-10 flex items-center gap-1 text-xs text-rose-400 bg-background/80 backdrop-blur-sm rounded-full px-2.5 py-1 border border-rose-400/20 hover:bg-rose-400/10 transition-colors"
+            aria-label="Vis forsvar"
+          >
+            <ShieldAlert className="w-3.5 h-3.5" />
+            <span className="font-body">Forsvar</span>
+          </button>
+        )}
+
+        {/* Bottom-left: flip to offense */}
+        {face !== "offense" && (
+          <button
+            onClick={() => flipTo("offense", "left")}
+            className="absolute bottom-2 left-2 z-10 flex items-center gap-1 text-xs text-sky-400 bg-background/80 backdrop-blur-sm rounded-full px-2.5 py-1 border border-sky-400/20 hover:bg-sky-400/10 transition-colors"
+            aria-label="Vis angrep"
+          >
+            <Swords className="w-3.5 h-3.5" />
+            <span className="font-body">Angrep</span>
+          </button>
+        )}
+
+        {/* Back to diagram button when showing positions */}
+        {face !== "diagram" && (
+          <button
+            onClick={() => flipTo("diagram", face === "offense" ? "right" : "left")}
+            className="absolute top-2 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1 text-xs text-primary bg-background/80 backdrop-blur-sm rounded-full px-2.5 py-1 border border-primary/20 hover:bg-primary/10 transition-colors"
+            aria-label="Tilbake til diagram"
+          >
+            <Flag className="w-3.5 h-3.5" />
+            <span className="font-body">Banen</span>
+          </button>
+        )}
+
+        {/* Content faces */}
+        {face === "diagram" && (
+          <div>
+            <FieldDiagram />
+            <a
+              href={POSITIONS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-4"
+            >
+              Les mer om alle posisjoner på flaggfotball.no →
+            </a>
+          </div>
+        )}
+
+        {face === "offense" && (
+          <div className="py-8">
+            <h3 className="font-heading text-lg font-bold text-sky-400 mb-4">Angrep</h3>
+            <div className="space-y-1.5">
+              {offensePositions.map((pos) => (
+                <PositionCard key={pos.name} {...pos} variant="offense" />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {face === "defense" && (
+          <div className="py-8">
+            <h3 className="font-heading text-lg font-bold text-rose-400 mb-4">Forsvar</h3>
+            <div className="space-y-1.5">
+              {defensePositions.map((pos) => (
+                <PositionCard key={pos.name} {...pos} variant="defense" />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+
   icon,
   title,
   name,

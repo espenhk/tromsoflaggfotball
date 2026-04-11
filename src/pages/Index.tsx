@@ -1,4 +1,5 @@
-import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink } from "lucide-react";
+import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag } from "lucide-react";
+import { useState } from "react";
 import logo from "@/assets/logo.png";
 import heroBg from "@/assets/hero-bg.png";
 
@@ -97,6 +98,43 @@ const Index = () => {
               description="Bilder og videoer fra trening og kamper."
               icon={<Instagram className="w-5 h-5" />}
             />
+            <LinkCard
+              href="https://flaggfotball.no"
+              title="Flaggfotball.no"
+              description="Lær mer om sporten, regler og turneringer i Norge."
+              icon={<Flag className="w-5 h-5" />}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-16 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
+            Ofte stilte spørsmål
+          </h2>
+          <div className="space-y-3">
+            <FaqItem
+              q="Hva er flaggfotball?"
+              a="Flaggfotball er en kontaktfri variant av amerikansk fotball. I stedet for tackling drar man av et flagg festet i beltet til motstanderen. Sporten er inkluderende, morsom og passer for alle — uansett alder, kjønn eller erfaring."
+            />
+            <FaqItem
+              q="Trenger jeg erfaring?"
+              a="Nei! Vi tar imot alle, fra nybegynnere til de med erfaring. Treningene er tilpasset slik at du lærer underveis."
+            />
+            <FaqItem
+              q="Hva koster det?"
+              a="Medlemskap i Amerikanske Idretters klubb koster ca 80 kr, pluss forsikring via Min Idrett på ca 100 kr. Selve treningene er gratis."
+            />
+            <FaqItem
+              q="Hva trenger jeg å ta med?"
+              a="Sportklær og joggesko. Alt annet utstyr har vi. Ta gjerne med en vannflaske."
+            />
+            <FaqItem
+              q="Hvor mange er på et lag?"
+              a="Flaggfotball spilles vanligvis 5 mot 5 på banen. Vi deler inn i lag på trening."
+            />
           </div>
         </div>
       </section>
@@ -192,5 +230,26 @@ const ContactCard = ({ role, name, phone }: { role: string; name: string; phone:
     </a>
   </div>
 );
+
+
+const FaqItem = ({ q, a }: { q: string; a: string }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <button
+      onClick={() => setOpen(!open)}
+      className="w-full text-left bg-card border border-border rounded-xl p-5 transition-colors hover:border-primary/40"
+    >
+      <div className="flex items-center justify-between gap-4">
+        <p className="font-heading font-bold text-foreground">{q}</p>
+        <ChevronDown
+          className={`w-5 h-5 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </div>
+      {open && (
+        <p className="text-sm text-muted-foreground font-body mt-3 leading-relaxed">{a}</p>
+      )}
+    </button>
+  );
+};
 
 export default Index;

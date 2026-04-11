@@ -484,40 +484,38 @@ const LinkCard = ({
 const GameSection = () => {
   const [open, setOpen] = useState(false);
   return (
-    <section id="spillet" className="py-16 px-6 scroll-mt-16">
+    <section id="spillet" className="py-16 px-6 scroll-mt-16 bg-card/50">
       <div className="max-w-3xl mx-auto">
-        <div className="bg-card border border-border rounded-2xl p-6 md:p-8 hover:border-primary/40 transition-colors">
-          <button
-            onClick={() => setOpen(!open)}
-            className="w-full text-left"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
-                Dette er flaggfotball
-              </h2>
-              <ChevronDown
-                className={`w-6 h-6 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-              />
-            </div>
-          </button>
-
-          {/* Expanded content */}
-          <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
-            <div className="overflow-hidden">
-              <p className="text-muted-foreground font-body text-center mb-6">
-                Utforsk formasjoner, spilltyper og forsvarstaktikker.
-              </p>
-            </div>
+        <button
+          onClick={() => setOpen(!open)}
+          className="w-full text-left"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
+              Dette er flaggfotball
+            </h2>
+            <ChevronDown
+              className={`w-6 h-6 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+            />
           </div>
+        </button>
 
-          {/* Field diagram preview – partial when collapsed, full when open */}
-          <div className="relative" onClick={() => !open && setOpen(true)}>
-            <div className={`overflow-hidden transition-all duration-300 ease-out ${open ? "max-h-[2000px]" : "h-40 cursor-pointer"}`}>
-              <FieldDiagram />
-            </div>
-            {/* Fade overlay when collapsed */}
-            <div className={`absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-card to-transparent pointer-events-none transition-opacity duration-300 ${open ? "opacity-0" : "opacity-100"}`} />
+        {/* Expanded content */}
+        <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+          <div className="overflow-hidden">
+            <p className="text-muted-foreground font-body text-center mb-6">
+              Utforsk formasjoner, spilltyper og forsvarstaktikker.
+            </p>
           </div>
+        </div>
+
+        {/* Field diagram preview – partial when collapsed, full when open */}
+        <div className="relative" onClick={() => !open && setOpen(true)}>
+          <div className={`overflow-hidden transition-all duration-300 ease-out ${open ? "max-h-[2000px]" : "h-40 cursor-pointer"}`}>
+            <FieldDiagram />
+          </div>
+          {/* Fade overlay when collapsed */}
+          <div className={`absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[hsl(185,100%,10%,0.5)] to-transparent pointer-events-none transition-opacity duration-300 ${open ? "opacity-0" : "opacity-100"}`} />
         </div>
       </div>
     </section>

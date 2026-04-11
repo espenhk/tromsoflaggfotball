@@ -246,46 +246,8 @@ const Index = () => {
       {/* Treninger */}
       <TrainingSection />
 
-      {/* Banediagram */}
+      {/* Banediagram + Posisjoner */}
       <GameSection />
-
-      {/* Posisjoner */}
-      <section className="py-16 px-6 bg-card/50">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
-            Posisjoner
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="font-heading text-lg font-bold text-sky-400 mb-4">Angrep</h3>
-              <div className="space-y-4">
-                {offensePositions.map((pos) => (
-                  <PositionCard key={pos.name} {...pos} variant="offense" />
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="font-heading text-lg font-bold text-rose-400 mb-4">Forsvar</h3>
-              <div className="space-y-4">
-                {defensePositions.map((pos) => (
-                  <PositionCard key={pos.name} {...pos} variant="defense" />
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <a
-            href={POSITIONS_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-6"
-          >
-            Les mer om alle posisjoner på flaggfotball.no →
-          </a>
-        </div>
-      </section>
 
       {/* Coachene */}
       <section id="coachene" className="py-16 px-6 scroll-mt-16">
@@ -497,14 +459,82 @@ const LinkCard = ({
 const GameSection = () => {
   return (
     <section id="spillet" className="py-16 px-6 scroll-mt-16 bg-card/50">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2">
           Dette er flaggfotball
         </h2>
-        <p className="text-muted-foreground font-body text-center mb-6">
+        <p className="text-muted-foreground font-body mb-6">
           Utforsk formasjoner, spilltyper og forsvarstaktikker.
         </p>
-        <FieldDiagram />
+
+        {/* Desktop: 3-column layout with positions flanking the diagram */}
+        <div className="hidden md:grid md:grid-cols-[1fr_2fr_1fr] gap-6 items-start">
+          {/* Offense positions - left */}
+          <div>
+            <h3 className="font-heading text-lg font-bold text-sky-400 mb-4">Angrep</h3>
+            <div className="space-y-3">
+              {offensePositions.map((pos) => (
+                <PositionCard key={pos.name} {...pos} variant="offense" />
+              ))}
+            </div>
+          </div>
+
+          {/* Field diagram - center */}
+          <div>
+            <FieldDiagram />
+            <a
+              href={POSITIONS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-4"
+            >
+              Les mer om alle posisjoner på flaggfotball.no →
+            </a>
+          </div>
+
+          {/* Defense positions - right */}
+          <div>
+            <h3 className="font-heading text-lg font-bold text-rose-400 mb-4">Forsvar</h3>
+            <div className="space-y-3">
+              {defensePositions.map((pos) => (
+                <PositionCard key={pos.name} {...pos} variant="defense" />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile: stacked layout */}
+        <div className="md:hidden">
+          <FieldDiagram />
+
+          <div className="mt-8 space-y-6">
+            <div>
+              <h3 className="font-heading text-lg font-bold text-sky-400 mb-4">Angrep</h3>
+              <div className="space-y-3">
+                {offensePositions.map((pos) => (
+                  <PositionCard key={pos.name} {...pos} variant="offense" />
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 className="font-heading text-lg font-bold text-rose-400 mb-4">Forsvar</h3>
+              <div className="space-y-3">
+                {defensePositions.map((pos) => (
+                  <PositionCard key={pos.name} {...pos} variant="defense" />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <a
+            href={POSITIONS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-6"
+          >
+            Les mer om alle posisjoner på flaggfotball.no →
+          </a>
+        </div>
       </div>
     </section>
   );

@@ -205,17 +205,8 @@ const FieldDiagram = () => {
           />
         ))}
 
-        {/* SVG overlay */}
-        <svg
-          className="absolute inset-0 w-full h-full pointer-events-none"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-          style={{
-            zIndex: 1,
-            opacity: showArrows ? 1 : 0,
-            transition: "opacity 0.25s ease-in-out",
-          }}
-        >
+        {/* SVG overlay - always visible (rush arrow, zones, man-to-man) */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ zIndex: 1 }}>
           <defs>
             <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
               <polygon points="0 0, 8 3, 0 6" fill="white" fillOpacity="0.6" />
@@ -246,9 +237,12 @@ const FieldDiagram = () => {
             );
           })}
 
-          {/* Rush arrow */}
+          {/* Rush arrow - always visible */}
           <line x1="63" y1="36" x2="51" y2="63" stroke="white" strokeOpacity="0.5"
             strokeWidth="1.5" strokeDasharray="4 3" markerEnd="url(#arrowhead)" vectorEffect="non-scaling-stroke" />
+
+          {/* Route arrows - fade in/out */}
+          <g style={{ opacity: showRoutes ? 1 : 0, transition: "opacity 0.15s ease-in-out" }}>
 
           {/* Kastespill routes */}
           {activeTab === "kastespill" && (

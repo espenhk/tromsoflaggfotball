@@ -627,16 +627,23 @@ const PositionCard = ({
 }) => {
   const [open, setOpen] = useState(false);
   const isOffense = variant === "offense";
-  const borderColor = isOffense ? "border-sky-400/20 hover:border-sky-400/40" : "border-rose-400/20 hover:border-rose-400/40";
-  const bgColor = isOffense ? "bg-sky-950/20" : "bg-rose-950/20";
   const accentColor = isOffense ? "text-sky-400" : "text-rose-400";
+  const glowColor = isOffense ? "bg-sky-400/10" : "bg-rose-400/10";
 
   return (
     <button
       onClick={() => setOpen(!open)}
-      className={`w-full text-left ${bgColor} border ${borderColor} rounded-xl p-4 transition-colors`}
+      className="group relative w-full text-left px-4 py-3 transition-all"
     >
-      <div className="flex items-center gap-2">
+      {/* Glow background on hover */}
+      <div
+        className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${glowColor}`}
+        style={{ filter: "blur(12px)" }}
+      />
+      <div
+        className={`absolute inset-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${glowColor}`}
+      />
+      <div className="relative flex items-center gap-2">
         <div className={accentColor}>{icon}</div>
         <div className="flex-1 min-w-0">
           <h3 className="font-heading font-bold text-foreground text-sm">
@@ -653,7 +660,7 @@ const PositionCard = ({
           className={`w-3.5 h-3.5 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
         />
       </div>
-      <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+      <div className={`relative grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
         <div className="overflow-hidden">
           <div className="mt-2 space-y-1.5 pl-7">
             <p className="text-xs text-muted-foreground font-body leading-relaxed">{role}</p>

@@ -464,7 +464,6 @@ const GameSection = () => {
 
         {/* Desktop: 3-column layout with positions flanking the diagram */}
         <div className="hidden md:grid md:grid-cols-[1fr_2fr_1fr] gap-6 items-start">
-          {/* Offense positions - left */}
           <div>
             <h3 className="font-heading text-lg font-bold text-sky-400 mb-4">Angrep</h3>
             <div className="space-y-3">
@@ -474,7 +473,6 @@ const GameSection = () => {
             </div>
           </div>
 
-          {/* Field diagram - center */}
           <div>
             <FieldDiagram />
             <a
@@ -487,7 +485,6 @@ const GameSection = () => {
             </a>
           </div>
 
-          {/* Defense positions - right */}
           <div>
             <h3 className="font-heading text-lg font-bold text-rose-400 mb-4">Forsvar</h3>
             <div className="space-y-3">
@@ -511,6 +508,7 @@ const GameSection = () => {
                 ))}
               </div>
             </div>
+
             <div>
               <h3 className="font-heading text-lg font-bold text-rose-400 mb-3">Forsvar</h3>
               <div className="space-y-0">
@@ -535,6 +533,37 @@ const GameSection = () => {
   );
 };
 
+const TrainingSection = () => {
+  return (
+    <section id="treninger" className="py-16 px-6 scroll-mt-16">
+      <div className="max-w-4xl mx-auto">
+        <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-6">
+          Treninger
+        </h2>
+
+        <div className="flex flex-col md:flex-row md:items-start gap-6">
+          <div className="flex flex-col gap-4 md:w-1/3 shrink-0">
+            <InfoCard icon={<Calendar className="w-5 h-5" />} label="Dag" value="Mandager" />
+            <InfoCard icon={<Clock className="w-5 h-5" />} label="Tid" value="20:30 – 22:00" />
+            <InfoCard icon={<MapPin className="w-5 h-5" />} label="Sted" value="Mellomvegen 110" />
+          </div>
+
+          <div className="rounded-xl overflow-hidden border border-border flex-1 h-[180px] md:h-[160px]">
+            <iframe
+              className="w-full h-full"
+              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Mellomvegen+110,+9006+Tromsø&maptype=satellite&zoom=17"
+              title="Mellomvegen 110, Tromsø"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const CoachCard = ({
   icon,
   title,
@@ -549,12 +578,12 @@ const CoachCard = ({
   bio: string;
 }) => {
   const [open, setOpen] = useState(false);
+
   return (
     <button
       onClick={() => setOpen(!open)}
       className="w-full text-left py-1.5"
     >
-      {/* Desktop layout */}
       <div className="hidden md:grid grid-cols-[24px_140px_1fr_auto_auto] items-center gap-x-4">
         <div className="text-primary shrink-0">{icon}</div>
         <span className="text-xs text-primary uppercase tracking-wider font-body">{title}</span>
@@ -571,7 +600,7 @@ const CoachCard = ({
           className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
         />
       </div>
-      {/* Mobile layout - stacked */}
+
       <div className="flex md:hidden items-start gap-3">
         <div className="text-primary shrink-0 mt-0.5">{icon}</div>
         <div className="flex-1 min-w-0">
@@ -590,9 +619,10 @@ const CoachCard = ({
           className={`w-4 h-4 text-muted-foreground shrink-0 mt-1 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
         />
       </div>
-      <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
-        <div className="overflow-hidden">
-          <p className="text-sm text-muted-foreground font-body leading-relaxed mt-3 pl-9">
+
+      <div className={`grid overflow-hidden transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100 mt-2" : "grid-rows-[0fr] opacity-0 mt-0"}`}>
+        <div className="min-h-0 overflow-hidden">
+          <p className="text-sm text-muted-foreground font-body leading-relaxed pl-9">
             {bio}
           </p>
         </div>
@@ -630,9 +660,8 @@ const PositionCard = ({
   return (
     <button
       onClick={() => setOpen(!open)}
-      className="group relative w-full text-left px-3 py-1 transition-all"
+      className="group relative w-full text-left px-4 py-1 md:py-1.5 transition-all"
     >
-      {/* Glow background on hover */}
       <div
         className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${resolvedGlow}`}
         style={{ filter: "blur(12px)" }}
@@ -640,6 +669,7 @@ const PositionCard = ({
       <div
         className={`absolute inset-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${resolvedGlow}`}
       />
+
       <div className="relative flex items-center gap-2">
         <div className={accentColor}>{icon}</div>
         <div className="flex-1 min-w-0">
@@ -651,15 +681,18 @@ const PositionCard = ({
               </sup>
             )}
           </h3>
-          <p className={`text-xs text-muted-foreground font-body mt-0.5 transition-all duration-300 overflow-hidden ${open ? "max-h-0 opacity-0 mt-0" : "max-h-10 opacity-100"}`}>{tagline}</p>
+          <p className={`text-xs text-muted-foreground font-body mt-0.5 transition-all duration-300 overflow-hidden ${open ? "max-h-0 opacity-0 mt-0" : "max-h-10 opacity-100"}`}>
+            {tagline}
+          </p>
         </div>
         <ChevronDown
           className={`w-3.5 h-3.5 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
         />
       </div>
-      <div className={`relative grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
-        <div className="overflow-hidden">
-          <div className="mt-2 space-y-1.5 pl-7">
+
+      <div className={`relative grid overflow-hidden transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100 mt-1.5" : "grid-rows-[0fr] opacity-0 mt-0"}`}>
+        <div className="min-h-0 overflow-hidden">
+          <div className="space-y-1.5 pl-7">
             <p className="text-xs text-muted-foreground font-body leading-relaxed">{role}</p>
             <p className={`text-xs font-body ${accentColor}`}>
               <span className="text-muted-foreground">Passer for:</span> {traits}

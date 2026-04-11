@@ -78,7 +78,7 @@ const getOffensePlayers = (tab: OffenseTabId): PlayerPosition[] => {
 };
 
 const defensePlayersBase: PlayerPosition[] = [
-  { top: 36, left: 63, label: "R", color: "bg-rose-400", id: "R" },
+  { top: 36, left: 63, label: "R", color: "bg-orange-400", id: "R" },
   { top: 38, left: 15, label: "DB", color: "bg-rose-400", id: "DB-L" },
   { top: 38, left: 85, label: "DB", color: "bg-rose-400", id: "DB-R" },
   { top: 22, left: 65, label: "S", color: "bg-rose-400", id: "DB-S" },

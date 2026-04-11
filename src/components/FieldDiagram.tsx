@@ -132,9 +132,6 @@ const FieldDiagram = () => {
 
   return (
     <div className="mb-0">
-      <h3 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-4 text-center">
-        Oppstilling – 5 mot 5
-      </h3>
 
       {/* Defense navigator */}
       <div className="w-full max-w-md mx-auto">
@@ -176,7 +173,10 @@ const FieldDiagram = () => {
         </div>
         <div className="absolute inset-x-0 bottom-0 h-[15%] bg-emerald-900/60 flex flex-col items-center justify-center">
           <span className="text-white/40 font-heading text-xs font-bold tracking-widest uppercase">Endesone</span>
-          <span className="text-white/30 text-[9px] mt-0.5">Trykk på en spiller for beskrivelse</span>
+        </div>
+        {/* Instruction text - positioned just above bottom end zone */}
+        <div className="absolute inset-x-0" style={{ bottom: "17%", zIndex: 3 }}>
+          <p className="text-white/30 text-[9px] text-center">Trykk på en spiller for beskrivelse</p>
         </div>
 
         {/* Ball */}
@@ -210,14 +210,14 @@ const FieldDiagram = () => {
         {/* SVG overlay - always visible (rush arrow, zones, man-to-man) */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ zIndex: 1 }}>
           <defs>
-            <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-              <polygon points="0 0, 8 3, 0 6" fill="white" fillOpacity="0.6" />
+            <marker id="arrowhead" markerWidth="3" markerHeight="3" refX="3" refY="1.5" orient="auto" markerUnits="strokeWidth">
+              <polygon points="0 0, 3 1.5, 0 3" fill="white" fillOpacity="0.6" />
             </marker>
-            <marker id="arrowhead-yellow" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto">
-              <polygon points="0 0, 6 2.5, 0 5" fill="#facc15" fillOpacity="0.7" />
+            <marker id="arrowhead-yellow" markerWidth="3" markerHeight="3" refX="3" refY="1.5" orient="auto" markerUnits="strokeWidth">
+              <polygon points="0 0, 3 1.5, 0 3" fill="#facc15" fillOpacity="0.7" />
             </marker>
-            <marker id="arrowhead-green" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto">
-              <polygon points="0 0, 6 2.5, 0 5" fill="#4ade80" fillOpacity="0.8" />
+            <marker id="arrowhead-green" markerWidth="3" markerHeight="3" refX="3" refY="1.5" orient="auto" markerUnits="strokeWidth">
+              <polygon points="0 0, 3 1.5, 0 3" fill="#4ade80" fillOpacity="0.8" />
             </marker>
           </defs>
 

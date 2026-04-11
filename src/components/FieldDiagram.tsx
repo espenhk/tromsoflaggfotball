@@ -2,15 +2,23 @@ import { useState } from "react";
 
 const positionDescriptions: Record<string, string> = {
   QB: "Lagets playmaker og leder på banen. Kaster ballen til medspillere og styrer spillet.",
-
   C: "Starter hvert spill ved å snappe ballen til QB. Går deretter ut som mottaker eller blokkerer rusheren.",
   WR: "Løper ruter og fanger pasninger fra QB. Målet er å bli fri fra forsvareren og ta imot ballen.",
   R: "Starter 7 yards fra ballen med hånden i været. Kan rushe mot QB så fort de klarer etter snap. Laget kan ha 0–2 rushere per spill.",
   DB: "Dekker motstanderens mottakere. Hindrer pasninger og drar flagget til ballbæreren.",
 };
 
+type TabId = "formasjon" | "kastespill" | "løpespill";
+
+const tabs: { id: TabId; label: string }[] = [
+  { id: "formasjon", label: "Formasjon" },
+  { id: "kastespill", label: "Kastespill" },
+  { id: "løpespill", label: "Løpespill" },
+];
+
 const FieldDiagram = () => {
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<TabId>("formasjon");
 
   return (
     <div className="bg-card border border-border rounded-2xl p-6 mb-8">
@@ -19,7 +27,7 @@ const FieldDiagram = () => {
       </h3>
       <p className="text-xs text-muted-foreground text-center mb-3">Trykk på en spiller for beskrivelse</p>
       <div
-        className="relative w-full max-w-md mx-auto aspect-[3/4] bg-emerald-800 rounded-xl overflow-hidden border-2 border-emerald-600"
+        className="relative w-full max-w-md mx-auto aspect-[3/4] bg-emerald-800 rounded-t-xl overflow-hidden border-2 border-b-0 border-emerald-600"
         onClick={() => setActiveTooltip(null)}
       >
         {/* Field lines */}
@@ -67,8 +75,8 @@ const FieldDiagram = () => {
             </marker>
           </defs>
           <line
-            x1="58%" y1="38%"
-            x2="51%" y2="61%"
+            x1="62%" y1="38%"
+            x2="51%" y2="63%"
             stroke="white"
             strokeOpacity="0.5"
             strokeWidth="2"
@@ -78,7 +86,7 @@ const FieldDiagram = () => {
         </svg>
 
         {/* DEFENSE */}
-        <PlayerDot label="R" color="bg-rose-400" top="36%" left="58%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="R" />
+        <PlayerDot label="R" color="bg-rose-400" top="36%" left="63%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="R" />
         <PlayerDot label="DB" color="bg-rose-400" top="38%" left="15%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="DB-L" />
         <PlayerDot label="DB" color="bg-rose-400" top="38%" left="85%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="DB-R" />
         <PlayerDot label="DB" color="bg-rose-400" top="28%" left="65%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="DB-S" />
@@ -95,6 +103,23 @@ const FieldDiagram = () => {
             <span className="text-[10px] text-white/60 font-body">Forsvar</span>
           </div>
         </div>
+      </div>
+
+      {/* Tab navigator */}
+      <div className="w-full max-w-md mx-auto flex border-2 border-t-0 border-emerald-600 rounded-b-xl overflow-hidden">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => { setActiveTab(tab.id); setActiveTooltip(null); }}
+            className={`flex-1 py-2.5 text-xs font-heading font-bold tracking-wide transition-colors ${
+              activeTab === tab.id
+                ? "bg-emerald-700 text-white"
+                : "bg-emerald-900/80 text-white/50 hover:text-white/70 hover:bg-emerald-800/80"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
     </div>
   );
@@ -119,7 +144,6 @@ const PlayerDot = ({
 }) => {
   const isActive = activeTooltip === id;
   const description = positionDescriptions[label] || "";
-  // Determine if tooltip should go left (for dots on right side)
   const leftNum = parseFloat(left);
   const tooltipAlign = leftNum > 60 ? "right-0" : leftNum < 40 ? "left-0" : "left-1/2 -translate-x-1/2";
 

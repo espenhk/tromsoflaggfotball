@@ -507,14 +507,6 @@ const PositionCard = ({
           </p>
         </div>
       )}
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            className="inline-block text-xs text-muted-foreground hover:text-primary transition-colors font-body"
-          >
-            Les mer på flaggfotball.no →
-          </a>
-        </div>
-      )}
     </button>
   );
 };

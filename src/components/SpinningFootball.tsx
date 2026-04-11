@@ -1,6 +1,4 @@
 const SpinningFootball = () => {
-  // 8 frames of a football rotating around its long axis (like a spiral throw)
-  // Each frame shows a different cross-section / lace position
   const frames = [
     // Frame 0: laces facing viewer
     <g key={0}>
@@ -20,12 +18,12 @@ const SpinningFootball = () => {
       <line x1="22.5" y1="19.5" x2="24.8" y2="19.5" stroke="hsl(var(--primary-foreground))" strokeWidth="0.6" opacity="0.35" />
       <line x1="22" y1="22" x2="24.5" y2="22.3" stroke="hsl(var(--primary-foreground))" strokeWidth="0.6" opacity="0.35" />
     </g>,
-    // Frame 2: laces at edge (barely visible)
+    // Frame 2: laces at edge
     <g key={2}>
       <ellipse cx="20" cy="20" rx="6" ry="11" fill="hsl(var(--primary))" opacity="0.8" />
       <path d="M25.5 14 Q26 20 25.5 26" stroke="hsl(var(--primary-foreground))" strokeWidth="0.5" fill="none" opacity="0.2" />
     </g>,
-    // Frame 3: laces on back side (hidden) — plain ball
+    // Frame 3: plain ball (laces on back)
     <g key={3}>
       <ellipse cx="20" cy="20" rx="6" ry="11" fill="hsl(var(--primary))" opacity="0.8" />
     </g>,
@@ -33,12 +31,12 @@ const SpinningFootball = () => {
     <g key={4}>
       <ellipse cx="20" cy="20" rx="6" ry="11" fill="hsl(var(--primary))" opacity="0.8" />
     </g>,
-    // Frame 5: laces coming back from left edge
+    // Frame 5: laces coming from left edge
     <g key={5}>
       <ellipse cx="20" cy="20" rx="6" ry="11" fill="hsl(var(--primary))" opacity="0.8" />
       <path d="M14.5 14 Q14 20 14.5 26" stroke="hsl(var(--primary-foreground))" strokeWidth="0.5" fill="none" opacity="0.2" />
     </g>,
-    // Frame 6: laces rotating back toward center from left
+    // Frame 6: laces rotating back from left
     <g key={6}>
       <ellipse cx="20" cy="20" rx="6" ry="11" fill="hsl(var(--primary))" opacity="0.8" />
       <path d="M17 12.5 Q16 20 17 27.5" stroke="hsl(var(--primary-foreground))" strokeWidth="0.8" fill="none" opacity="0.4" />
@@ -58,12 +56,27 @@ const SpinningFootball = () => {
     </g>,
   ];
 
+  // Motion trail lines (below-left of ball) — slightly different per frame
+  const trails = [
+    <g key="t0"><line x1="4" y1="36" x2="10" y2="32" /><line x1="2" y1="32" x2="7" y2="29" /><line x1="6" y1="39" x2="12" y2="35" /></g>,
+    <g key="t1"><line x1="3" y1="35" x2="9" y2="31" /><line x1="1" y1="31" x2="6" y2="28" /><line x1="5" y1="38" x2="11" y2="34" /></g>,
+    <g key="t2"><line x1="4" y1="37" x2="10" y2="33" /><line x1="2" y1="33" x2="7" y2="30" /><line x1="6" y1="40" x2="12" y2="36" /></g>,
+    <g key="t3"><line x1="3" y1="36" x2="9" y2="32" /><line x1="1" y1="32" x2="6" y2="29" /><line x1="5" y1="39" x2="11" y2="35" /></g>,
+    <g key="t4"><line x1="4" y1="35" x2="10" y2="31" /><line x1="2" y1="31" x2="7" y2="28" /><line x1="6" y1="38" x2="12" y2="34" /></g>,
+    <g key="t5"><line x1="3" y1="37" x2="9" y2="33" /><line x1="1" y1="33" x2="6" y2="30" /><line x1="5" y1="40" x2="11" y2="36" /></g>,
+    <g key="t6"><line x1="4" y1="36" x2="10" y2="32" /><line x1="2" y1="32" x2="7" y2="29" /><line x1="6" y1="39" x2="12" y2="35" /></g>,
+    <g key="t7"><line x1="3" y1="35" x2="9" y2="31" /><line x1="1" y1="31" x2="6" y2="28" /><line x1="5" y1="38" x2="11" y2="34" /></g>,
+  ];
+
   return (
-    <div className="w-12 h-12">
-      <svg viewBox="0 0 40 40" className="w-full h-full" style={{ transform: "rotate(-40deg)" }}>
+    <div className="w-14 h-14">
+      <svg viewBox="0 0 44 44" className="w-full h-full" style={{ transform: "rotate(40deg)" }}>
         {frames.map((frame, i) => (
           <g key={i} opacity="0" className="animate-football-frame" style={{ animationDelay: `${i * 200}ms` }}>
             {frame}
+            <g stroke="hsl(var(--muted-foreground))" strokeWidth="1.2" strokeLinecap="round" opacity="0.35">
+              {trails[i]}
+            </g>
           </g>
         ))}
       </svg>

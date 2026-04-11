@@ -20,11 +20,20 @@ const offensePositions = [
   {
     name: "Quarterback (QB)",
     tagline: "Lederen som kaster ballen til sine mottakere",
-    icon: <Star className="w-5 h-5" />,
+    icon: <Star className="w-5 h-5 text-amber-400" />,
     role: "Lagets playmaker og den viktigste spilleren på banen. QB styrer angrepet, leser forsvaret og bestemmer hvem som skal få ballen. I flaggfotball handler det om presise kast, rask beslutningstaking og evnen til å lese motstanderens forsvar.",
     role2: "QB trenger ikke være den raskeste spilleren — men må ha god oversikt og holde hodet kaldt under press. De beste QBene gjør medspillerne sine bedre.",
     traits: "God oversikt, presise kast, rask beslutningstaking. Trenger ikke være raskest — men må lese spillet godt.",
     nflExamples: "Patrick Mahomes, Josh Allen, Lamar Jackson",
+  },
+  {
+    name: "Running Back (RB)",
+    tagline: "Eksplosiv løper som tar ballen gjennom forsvaret",
+    icon: <Zap className="w-5 h-5 text-emerald-400" />,
+    role: "Running back tar imot ballen direkte fra QB og løper med den gjennom forsvaret. I flaggfotball brukes RB ofte i løpespill, der målet er å komme seg forbi forsvarere med fart og smidighet uten å bli dratt i flagget.",
+    role2: "RB kan også brukes som mottaker på korte pasninger. Posisjonen passer perfekt for eksplosive spillere som elsker å ha ballen i hendene.",
+    traits: "Eksplosiv fart, god balanse, evne til å lese blokker. Perfekt for de som liker å løpe med ballen.",
+    nflExamples: "Derrick Henry, Saquon Barkley, Christian McCaffrey",
   },
   {
     name: "Center (C)",
@@ -43,15 +52,6 @@ const offensePositions = [
     role2: "I flaggfotball er dette en av de mest spennende posisjonene — du får løpe, gjøre raske vendinger og ta spektakulære fangster. Det handler om timing, hurtighet og gode hender.",
     traits: "Hurtighet, gode hender, evne til å lese forsvar. Perfekt for de som liker å løpe og gjøre raske vendinger.",
     nflExamples: "Tyreek Hill, Ja'Marr Chase, CeeDee Lamb",
-  },
-  {
-    name: "Running Back (RB)",
-    tagline: "Eksplosiv løper som tar ballen gjennom forsvaret",
-    icon: <Target className="w-5 h-5" />,
-    role: "Running back tar imot ballen direkte fra QB og løper med den gjennom forsvaret. I flaggfotball brukes RB ofte i løpespill, der målet er å komme seg forbi forsvarere med fart og smidighet uten å bli dratt i flagget.",
-    role2: "RB kan også brukes som mottaker på korte pasninger. Posisjonen passer perfekt for eksplosive spillere som elsker å ha ballen i hendene.",
-    traits: "Eksplosiv fart, god balanse, evne til å lese blokker. Perfekt for de som liker å løpe med ballen.",
-    nflExamples: "Derrick Henry, Saquon Barkley, Christian McCaffrey",
   },
 ];
 
@@ -333,7 +333,7 @@ const Index = () => {
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Ofte stilte spørsmål
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 items-start">
             <FaqItem
               q="Hvem kan være med?"
               a="Alle fra 16 år og oppover er velkommen! Ingen erfaring nødvendig — vi tilpasser treningene slik at alle kan delta og utvikle seg."

@@ -255,21 +255,13 @@ const Index = () => {
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Coachene
           </h2>
-          <div className="space-y-2">
-            <CoachCard
-              icon={<Megaphone className="w-5 h-5" />}
-              title="Head Coach"
-              name="Espen Haukeland Kristensen"
-              phone="958 48 889"
-              bio="Espen har fire sesonger som spiller i Vålerenga Trolls (amerikansk fotball) bak seg, der han spilte quarterback, wide receiver og linebacker. Etter spillerkarrieren gikk han over til trenerbenken — tre år som coach for seniorer, U13 og damelag, med spesialfelt som QB-coach. Tok NM-bronse i flaggfotball i 2025."
-            />
-            <CoachCard
-              icon={<ConeIcon className="w-5 h-5" />}
-              title="Assistentcoach"
-              name="Martin Sand Monsen"
-              phone="952 99 706"
-              bio="Martin er en av de sentrale figurene fra Tromsø Trailblazers og har spilt flaggfotball i 3–4 år — på alle posisjoner. Til daglig jobber han som lærer, noe som gjør ham til en naturlig pedagog på banen. Flink til å bryte ned spillet og gjøre det forståelig for alle, uansett nivå."
-            />
+          <div className="space-y-1 flex flex-col items-center">
+            {[
+              { icon: <Megaphone className="w-5 h-5" />, title: "Head Coach", name: "Espen Haukeland Kristensen", phone: "958 48 889", bio: "Espen har fire sesonger som spiller i Vålerenga Trolls (amerikansk fotball) bak seg, der han spilte quarterback, wide receiver og linebacker. Etter spillerkarrieren gikk han over til trenerbenken — tre år som coach for seniorer, U13 og damelag, med spesialfelt som QB-coach. Tok NM-bronse i flaggfotball i 2025." },
+              { icon: <ConeIcon className="w-5 h-5" />, title: "Assistentcoach", name: "Martin Sand Monsen", phone: "952 99 706", bio: "Martin er en av de sentrale figurene fra Tromsø Trailblazers og har spilt flaggfotball i 3–4 år — på alle posisjoner. Til daglig jobber han som lærer, noe som gjør ham til en naturlig pedagog på banen. Flink til å bryte ned spillet og gjøre det forståelig for alle, uansett nivå." },
+            ].map((coach) => (
+              <CoachCard key={coach.name} {...coach} />
+            ))}
           </div>
         </div>
       </section>
@@ -585,27 +577,23 @@ const CoachCard = ({
   return (
     <button
       onClick={() => setOpen(!open)}
-      className="w-full text-left py-3 px-6"
+      className="w-full text-left py-3"
     >
-      <div className="flex items-center gap-4">
-        <div className="text-primary shrink-0">
-          {icon}
-        </div>
-        <div className="flex items-center gap-3 flex-wrap flex-1 min-w-0">
-          <span className="text-xs text-primary uppercase tracking-wider font-body">{title}</span>
-          <span className="font-heading font-bold text-foreground">{name}</span>
-          <a
-            href={`tel:+47${phone.replace(/\s/g, "")}`}
-            onClick={(e) => e.stopPropagation()}
-            className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors font-body text-sm"
-          >
-            <Phone className="w-3.5 h-3.5" />
-            {phone}
-          </a>
-          <ChevronDown
-            className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-          />
-        </div>
+      <div className="grid grid-cols-[24px_120px_1fr_auto_auto] md:grid-cols-[24px_140px_1fr_auto_auto] items-center gap-3">
+        <div className="text-primary shrink-0">{icon}</div>
+        <span className="text-xs text-primary uppercase tracking-wider font-body">{title}</span>
+        <span className="font-heading font-bold text-foreground">{name}</span>
+        <a
+          href={`tel:+47${phone.replace(/\s/g, "")}`}
+          onClick={(e) => e.stopPropagation()}
+          className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors font-body text-sm"
+        >
+          <Phone className="w-3.5 h-3.5" />
+          {phone}
+        </a>
+        <ChevronDown
+          className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+        />
       </div>
       <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
         <div className="overflow-hidden">

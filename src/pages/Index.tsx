@@ -524,20 +524,22 @@ const PositionCard = ({
           className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
         />
       </div>
-      {open && (
-        <div className="mt-3 space-y-2 pl-8 animate-fade-in">
-          <p className="text-sm text-muted-foreground font-body leading-relaxed">{role}</p>
-          {role2 && <p className="text-sm text-muted-foreground font-body leading-relaxed">{role2}</p>}
-          <p className="text-xs text-primary font-body">
-            <span className="text-muted-foreground">Passer for:</span> {traits}
-          </p>
-          {nflExamples && (
-            <p className="text-xs font-body text-muted-foreground">
-              <span className="text-foreground font-semibold">Kjente NFL-spillere:</span> {nflExamples}
+      <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+        <div className="overflow-hidden">
+          <div className="mt-3 space-y-2 pl-8">
+            <p className="text-sm text-muted-foreground font-body leading-relaxed">{role}</p>
+            {role2 && <p className="text-sm text-muted-foreground font-body leading-relaxed">{role2}</p>}
+            <p className="text-xs text-primary font-body">
+              <span className="text-muted-foreground">Passer for:</span> {traits}
             </p>
-          )}
+            {nflExamples && (
+              <p className="text-xs font-body text-muted-foreground">
+                <span className="text-foreground font-semibold">Kjente NFL-spillere:</span> {nflExamples}
+              </p>
+            )}
+          </div>
         </div>
-      )}
+      </div>
     </button>
   );
 };

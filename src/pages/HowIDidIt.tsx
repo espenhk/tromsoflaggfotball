@@ -258,13 +258,13 @@ export default function HowIDidIt() {
       {/* Intro */}
       <section className="max-w-3xl mx-auto px-6 pt-16 pb-8">
         <h2 className="font-heading font-extrabold text-3xl md:text-4xl text-foreground mb-4">
-          Bygget med Lovable
+          Bygget med GPT-5.2 + Lovable
         </h2>
         <p className="text-muted-foreground font-body leading-relaxed text-lg mb-2">
-          Denne nettsiden ble bygget utelukkende med <a href="https://lovable.dev" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Lovable</a> — en AI-drevet kodeeditor der du beskriver hva du vil ha, og AI-en bygger det for deg i sanntid.
+          Denne nettsiden startet som en enkel Canva-side. Den visuelle identiteten — farger, fonter, og designretning — ble utviklet gjennom samtaler med <strong className="text-foreground/80">GPT-5.2</strong>. Deretter ble alt bygget ut til en interaktiv nettside med <a href="https://lovable.dev" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Lovable</a>.
         </p>
         <p className="text-muted-foreground font-body leading-relaxed">
-          Ingen manuell koding. Ingen design-filer. Bare en samtale mellom meg og en AI som forstår React, Tailwind og SVG.
+          Ingen manuell koding. Ingen Figma. Bare naturlig språk, to AI-er, og en visjon om å gjøre flaggfotball tilgjengelig.
           Her er prosessen, steg for steg.
         </p>
       </section>

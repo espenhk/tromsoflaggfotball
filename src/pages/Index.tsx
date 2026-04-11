@@ -182,7 +182,7 @@ const Index = () => {
               href="https://www.instagram.com/tromsoflaggfotball/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-primary transition-colors"
+              className="text-muted-foreground hover:text-[#E1306C] transition-colors"
               aria-label="Instagram"
             >
               <Instagram className="w-6 h-6" />
@@ -191,7 +191,7 @@ const Index = () => {
               href="https://www.facebook.com/profile.php?id=61587334652354&locale=nb_NO"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-primary transition-colors"
+              className="text-muted-foreground hover:text-[#1877F2] transition-colors"
               aria-label="Facebook"
             >
               <Facebook className="w-6 h-6" />
@@ -324,12 +324,16 @@ const Index = () => {
               title="Facebook"
               description="Lik siden vår for aktuell info om treninger og arrangementer."
               icon={<Facebook className="w-5 h-5" />}
+              iconColor="text-[#1877F2]"
+              hoverBg="hover:bg-[#1877F2]/10"
             />
             <LinkCard
               href="https://www.instagram.com/tromsoflaggfotball/"
               title="Instagram"
               description="Bilder og videoer fra trening og kamper."
               icon={<Instagram className="w-5 h-5" />}
+              iconColor="text-[#E1306C]"
+              hoverBg="hover:bg-[#E1306C]/10"
             />
             <LinkCard
               href="https://flaggfotball.no"
@@ -436,19 +440,23 @@ const LinkCard = ({
   title,
   description,
   icon,
+  iconColor,
+  hoverBg,
 }: {
   href: string;
   title: string;
   description: string;
   icon?: React.ReactNode;
+  iconColor?: string;
+  hoverBg?: string;
 }) => (
   <a
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className="group bg-card border border-border rounded-xl p-6 flex items-start gap-4 hover:border-primary/40 transition-colors"
+    className={`group bg-card border border-border rounded-xl p-6 flex items-start gap-4 hover:border-primary/40 transition-colors ${hoverBg || ""}`}
   >
-    <div className="text-primary mt-0.5">
+    <div className={`mt-0.5 ${iconColor || "text-primary"}`}>
       {icon || <ExternalLink className="w-5 h-5" />}
     </div>
     <div className="flex-1 min-w-0">

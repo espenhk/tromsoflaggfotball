@@ -440,19 +440,23 @@ const LinkCard = ({
   title,
   description,
   icon,
+  iconColor,
+  hoverBg,
 }: {
   href: string;
   title: string;
   description: string;
   icon?: React.ReactNode;
+  iconColor?: string;
+  hoverBg?: string;
 }) => (
   <a
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className="group bg-card border border-border rounded-xl p-6 flex items-start gap-4 hover:border-primary/40 transition-colors"
+    className={`group bg-card border border-border rounded-xl p-6 flex items-start gap-4 hover:border-primary/40 transition-colors ${hoverBg || ""}`}
   >
-    <div className="text-primary mt-0.5">
+    <div className={`mt-0.5 ${iconColor || "text-primary"}`}>
       {icon || <ExternalLink className="w-5 h-5" />}
     </div>
     <div className="flex-1 min-w-0">

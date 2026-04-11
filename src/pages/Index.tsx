@@ -250,7 +250,7 @@ const Index = () => {
       <GameSection />
 
       {/* Posisjoner */}
-      <section className="py-16 px-6">
+      <section className="py-16 px-6 bg-card/50">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Posisjoner

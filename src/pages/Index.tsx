@@ -6,6 +6,15 @@ import FieldDiagram from "@/components/FieldDiagram";
 
 const POSITIONS_URL = "https://flaggfotball.no/pages/posisjoner-i-flaggfotball";
 
+const navItems = [
+  { id: "om", label: "Om sporten" },
+  { id: "treninger", label: "Treninger" },
+  { id: "spillet", label: "Slik spilles det" },
+  { id: "coachene", label: "Coachene" },
+  { id: "kom-i-gang", label: "Kom i gang" },
+  { id: "faq", label: "FAQ" },
+];
+
 const offensePositions = [
   {
     name: "Quarterback (QB)",
@@ -49,8 +58,28 @@ const defensePositions = [
 ];
 
 const Index = () => {
+  const scrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Sticky top nav */}
+      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+        <div className="max-w-4xl mx-auto px-4 flex items-center gap-1 overflow-x-auto scrollbar-none py-2">
+          <img src={logo} alt="Logo" className="w-6 h-6 shrink-0 mr-2" />
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => scrollTo(item.id)}
+              className="text-xs font-heading font-bold text-muted-foreground hover:text-primary transition-colors whitespace-nowrap px-3 py-1.5 rounded-lg hover:bg-primary/5"
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </nav>
+
       {/* Hero */}
       <section className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden">
         <div
@@ -79,7 +108,7 @@ const Index = () => {
       </section>
 
       {/* Om sporten */}
-      <section className="py-20 px-6">
+      <section id="om" className="py-20 px-6 scroll-mt-16">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">
             Hva er flaggfotball?
@@ -123,8 +152,34 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Treninger */}
+      <section id="treninger" className="py-16 px-6 scroll-mt-16">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-card border border-border rounded-2xl p-8 md:p-12">
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
+              Treninger
+            </h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              <InfoCard icon={<Calendar className="w-5 h-5" />} label="Dag" value="Mandager" />
+              <InfoCard icon={<Clock className="w-5 h-5" />} label="Tid" value="20:30 – 22:00" />
+              <InfoCard icon={<MapPin className="w-5 h-5" />} label="Sted" value="Mellomvegen 110" />
+            </div>
+            <div className="mt-8 rounded-xl overflow-hidden border border-border aspect-video">
+              <iframe
+                className="w-full h-full"
+                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Mellomvegen+110,+9006+Tromsø&maptype=satellite&zoom=17"
+                title="Mellomvegen 110, Tromsø"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Banediagram */}
-      <section className="py-16 px-6">
+      <section id="spillet" className="py-16 px-6 scroll-mt-16">
         <div className="max-w-3xl mx-auto">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2 text-center">
             Slik spilles det
@@ -168,100 +223,31 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Treninger */}
-      <section className="py-16 px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-card border border-border rounded-2xl p-8 md:p-12">
-            <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
-              Treninger
-            </h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              <InfoCard icon={<Calendar className="w-5 h-5" />} label="Dag" value="Mandager" />
-              <InfoCard icon={<Clock className="w-5 h-5" />} label="Tid" value="20:30 – 22:00" />
-              <InfoCard icon={<MapPin className="w-5 h-5" />} label="Sted" value="Mellomvegen 110" />
-            </div>
-            <div className="mt-8 rounded-xl overflow-hidden border border-border aspect-video">
-              <iframe
-                className="w-full h-full"
-                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Mellomvegen+110,+9006+Tromsø&maptype=satellite&zoom=17"
-                title="Mellomvegen 110, Tromsø"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Coachene */}
-      <section className="py-16 px-6">
+      <section id="coachene" className="py-16 px-6 scroll-mt-16">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Coachene
           </h2>
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-card border border-border rounded-2xl p-8">
-              <p className="text-xs text-primary uppercase tracking-wider font-body mb-1">Head Coach</p>
-              <p className="font-heading font-bold text-foreground text-xl mb-3">Espen Haukeland Kristensen</p>
-              <p className="text-sm text-muted-foreground font-body leading-relaxed mb-4">
-                Espen har fire sesonger som spiller i Vålerenga Trolls (amerikansk fotball) bak seg, 
-                der han spilte quarterback, wide receiver og linebacker. Etter spillerkarrieren 
-                gikk han over til trenerbenken — tre år som coach for seniorer, U13 og damelag, 
-                med spesialfelt som QB-coach. Tok NM-bronse i flaggfotball i 2025.
-              </p>
-              <a
-                href="tel:+4795848889"
-                className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors font-body text-sm"
-              >
-                <Phone className="w-4 h-4" />
-                958 48 889
-              </a>
-            </div>
-            <div className="bg-card border border-border rounded-2xl p-8">
-              <p className="text-xs text-primary uppercase tracking-wider font-body mb-1">Assistentcoach</p>
-              <p className="font-heading font-bold text-foreground text-xl mb-3">Martin Sand Monsen</p>
-              <p className="text-sm text-muted-foreground font-body leading-relaxed mb-4">
-                Martin er en av de sentrale figurene fra Tromsø Trailblazers og har spilt 
-                flaggfotball i 3–4 år — på alle posisjoner. Til daglig jobber han som lærer, 
-                noe som gjør ham til en naturlig pedagog på banen. Flink til å bryte ned spillet 
-                og gjøre det forståelig for alle, uansett nivå.
-              </p>
-              <a
-                href="tel:+4795299706"
-                className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors font-body text-sm"
-              >
-                <Phone className="w-4 h-4" />
-                952 99 706
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Video */}
-      <section className="py-16 px-6">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2">
-            Se flaggfotball i aksjon
-          </h2>
-          <p className="text-muted-foreground font-body text-sm mb-6">
-            Fanatics Flag Football Classic — Wildcats FFC vs. Team USA
-          </p>
-          <div className="aspect-video rounded-xl overflow-hidden border border-border">
-            <iframe
-              className="w-full h-full"
-              src="https://www.youtube.com/embed/BqLI6k8HEk8"
-              title="Wildcats vs Team USA – Fanatics Flag Football Classic"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
+            <CoachCard
+              title="Head Coach"
+              name="Espen Haukeland Kristensen"
+              phone="958 48 889"
+              bio="Espen har fire sesonger som spiller i Vålerenga Trolls (amerikansk fotball) bak seg, der han spilte quarterback, wide receiver og linebacker. Etter spillerkarrieren gikk han over til trenerbenken — tre år som coach for seniorer, U13 og damelag, med spesialfelt som QB-coach. Tok NM-bronse i flaggfotball i 2025."
+            />
+            <CoachCard
+              title="Assistentcoach"
+              name="Martin Sand Monsen"
+              phone="952 99 706"
+              bio="Martin er en av de sentrale figurene fra Tromsø Trailblazers og har spilt flaggfotball i 3–4 år — på alle posisjoner. Til daglig jobber han som lærer, noe som gjør ham til en naturlig pedagog på banen. Flink til å bryte ned spillet og gjøre det forståelig for alle, uansett nivå."
             />
           </div>
         </div>
       </section>
 
-      {/* Lenker */}
-      <section className="py-16 px-6">
+      {/* Kom i gang */}
+      <section id="kom-i-gang" className="py-16 px-6 scroll-mt-16">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Kom i gang
@@ -299,8 +285,29 @@ const Index = () => {
         </div>
       </section>
 
-      {/* FAQ */}
+      {/* Video */}
       <section className="py-16 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2">
+            Se flaggfotball i aksjon
+          </h2>
+          <p className="text-muted-foreground font-body text-sm mb-6">
+            Fanatics Flag Football Classic — Wildcats FFC vs. Team USA
+          </p>
+          <div className="aspect-video rounded-xl overflow-hidden border border-border">
+            <iframe
+              className="w-full h-full"
+              src="https://www.youtube.com/embed/BqLI6k8HEk8"
+              title="Wildcats vs Team USA – Fanatics Flag Football Classic"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="py-16 px-6 scroll-mt-16">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Ofte stilte spørsmål
@@ -334,7 +341,7 @@ const Index = () => {
       <footer className="py-8 px-6 border-t border-border">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <img src={logo} alt="Logo" className="w-8 h-8" />
+            <img src={logo} alt="Logo" className="w-6 h-6" />
             <span className="font-heading text-sm font-bold text-muted-foreground">
               Tromsø Flaggfotball
             </span>
@@ -386,6 +393,49 @@ const LinkCard = ({
     </div>
   </a>
 );
+
+const CoachCard = ({
+  title,
+  name,
+  phone,
+  bio,
+}: {
+  title: string;
+  name: string;
+  phone: string;
+  bio: string;
+}) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <button
+      onClick={() => setOpen(!open)}
+      className="w-full text-left bg-card border border-border rounded-2xl p-6 hover:border-primary/40 transition-colors"
+    >
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-xs text-primary uppercase tracking-wider font-body mb-1">{title}</p>
+          <p className="font-heading font-bold text-foreground text-lg">{name}</p>
+          <a
+            href={`tel:+47${phone.replace(/\s/g, "")}`}
+            onClick={(e) => e.stopPropagation()}
+            className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors font-body text-sm mt-1"
+          >
+            <Phone className="w-4 h-4" />
+            {phone}
+          </a>
+        </div>
+        <ChevronDown
+          className={`w-5 h-5 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </div>
+      {open && (
+        <p className="text-sm text-muted-foreground font-body leading-relaxed mt-4 border-t border-border pt-4">
+          {bio}
+        </p>
+      )}
+    </button>
+  );
+};
 
 const PositionCard = ({
   name,

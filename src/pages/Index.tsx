@@ -293,13 +293,18 @@ const Index = () => {
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Coachene
           </h2>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="flex flex-col md:flex-row gap-0">
             <CoachCard
               title="Head Coach"
               name="Espen Haukeland Kristensen"
               phone="958 48 889"
               bio="Espen har fire sesonger som spiller i Vålerenga Trolls (amerikansk fotball) bak seg, der han spilte quarterback, wide receiver og linebacker. Etter spillerkarrieren gikk han over til trenerbenken — tre år som coach for seniorer, U13 og damelag, med spesialfelt som QB-coach. Tok NM-bronse i flaggfotball i 2025."
             />
+            {/* Vertical divider with fade */}
+            <div className="hidden md:flex items-stretch mx-6">
+              <div className="w-px bg-gradient-to-b from-transparent via-border to-transparent" />
+            </div>
+            <div className="md:hidden h-px mx-4 bg-gradient-to-r from-transparent via-border to-transparent" />
             <CoachCard
               title="Assistentcoach"
               name="Martin Sand Monsen"
@@ -323,7 +328,7 @@ const Index = () => {
               description="Lik siden vår for aktuell info om treninger."
               icon={<Facebook className="w-5 h-5" />}
               iconColor="text-[#4267B2]"
-              hoverColor="hover:bg-[#4267B2]/15 hover:border-[#4267B2]/30"
+              glowColor="bg-[#4267B2]/15"
               hoverTitle="group-hover:text-[#4267B2]"
             />
             <LinkCard
@@ -332,7 +337,7 @@ const Index = () => {
               description="Bilder og videoer fra trening og kamper."
               icon={<Instagram className="w-5 h-5" />}
               iconColor="text-[#C13584]"
-              hoverColor="hover:bg-[#C13584]/15 hover:border-[#C13584]/30"
+              glowColor="bg-[#C13584]/15"
               hoverTitle="group-hover:text-[#C13584]"
             />
             <LinkCard
@@ -341,7 +346,7 @@ const Index = () => {
               description="Lær mer om sporten, regler og turneringer i Norge."
               icon={<Flag className="w-5 h-5" />}
               iconColor="text-emerald-400"
-              hoverColor="hover:bg-emerald-400/15 hover:border-emerald-400/30"
+              glowColor="bg-emerald-400/15"
               hoverTitle="group-hover:text-emerald-400"
             />
             <LinkCard
@@ -350,7 +355,7 @@ const Index = () => {
               description="Meld deg inn i Amerikanske Idretters klubb via Spond."
               icon={<UserPlus className="w-5 h-5" />}
               iconColor="text-sky-400"
-              hoverColor="hover:bg-sky-400/15 hover:border-sky-400/30"
+              glowColor="bg-sky-400/15"
               hoverTitle="group-hover:text-sky-400"
             />
             <LinkCard
@@ -359,7 +364,7 @@ const Index = () => {
               description="Forsikring for deltakere i flaggfotball via Min Idrett."
               icon={<ShieldCheck className="w-5 h-5" />}
               iconColor="text-amber-400"
-              hoverColor="hover:bg-amber-400/15 hover:border-amber-400/30"
+              glowColor="bg-amber-400/15"
               hoverTitle="group-hover:text-amber-400"
             />
           </div>
@@ -452,7 +457,7 @@ const LinkCard = ({
   description,
   icon,
   iconColor,
-  hoverColor,
+  glowColor,
   hoverTitle,
 }: {
   href: string;
@@ -460,19 +465,27 @@ const LinkCard = ({
   description: string;
   icon?: React.ReactNode;
   iconColor?: string;
-  hoverColor?: string;
+  glowColor?: string;
   hoverTitle?: string;
 }) => (
   <a
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className={`group bg-card border border-border rounded-xl p-6 flex items-start gap-4 transition-all ${hoverColor || "hover:border-primary/40"}`}
+    className="group relative flex items-start gap-4 px-6 py-4 rounded-xl transition-all"
   >
-    <div className={`mt-0.5 ${iconColor || "text-primary"}`}>
+    {/* Glow background */}
+    <div
+      className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${glowColor || "bg-primary/10"}`}
+      style={{ filter: "blur(12px)" }}
+    />
+    <div
+      className={`absolute inset-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${glowColor || "bg-primary/10"}`}
+    />
+    <div className={`relative mt-0.5 ${iconColor || "text-primary"}`}>
       {icon || <ExternalLink className="w-5 h-5" />}
     </div>
-    <div className="flex-1 min-w-0">
+    <div className="relative flex-1 min-w-0">
       <p className={`font-heading font-bold text-foreground transition-colors ${hoverTitle || "group-hover:text-primary"}`}>
         {title}
       </p>
@@ -543,12 +556,17 @@ const CoachCard = ({
   return (
     <button
       onClick={() => setOpen(!open)}
-      className="w-full text-left bg-card border border-border rounded-2xl p-6 hover:border-primary/40 transition-colors"
+      className="w-full text-left py-4 md:flex-1"
     >
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center gap-2">
         <div className="min-w-0">
           <p className="text-xs text-primary uppercase tracking-wider font-body mb-1">{title}</p>
-          <p className="font-heading font-bold text-foreground text-lg">{name}</p>
+          <div className="flex items-center gap-2">
+            <p className="font-heading font-bold text-foreground text-lg">{name}</p>
+            <ChevronDown
+              className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+            />
+          </div>
           <a
             href={`tel:+47${phone.replace(/\s/g, "")}`}
             onClick={(e) => e.stopPropagation()}
@@ -558,13 +576,10 @@ const CoachCard = ({
             {phone}
           </a>
         </div>
-        <ChevronDown
-          className={`w-5 h-5 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-        />
       </div>
       <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
         <div className="overflow-hidden">
-          <p className="text-sm text-muted-foreground font-body leading-relaxed mt-4 border-t border-border pt-4">
+          <p className="text-sm text-muted-foreground font-body leading-relaxed mt-4">
             {bio}
           </p>
         </div>

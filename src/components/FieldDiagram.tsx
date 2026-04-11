@@ -83,13 +83,14 @@ const FieldDiagram = () => {
             </marker>
           </defs>
           <line
-            x1="63" y1="38"
+            x1="63" y1="36"
             x2="51" y2="63"
             stroke="white"
             strokeOpacity="0.5"
             strokeWidth="1.5"
             strokeDasharray="4 3"
             markerEnd="url(#arrowhead)"
+            vectorEffect="non-scaling-stroke"
           />
 
           {/* Kastespill routes */}

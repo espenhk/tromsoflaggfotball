@@ -380,6 +380,7 @@ const AnimatedPlayerDot = ({
     "bg-amber-400": "#fbbf24",
     "bg-rose-400": "#fb7185",
     "bg-emerald-400": "#34d399",
+    "bg-orange-400": "#fb923c",
   };
   const resolvedColor = colorMap[color] || "#38bdf8";
 

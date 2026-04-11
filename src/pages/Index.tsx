@@ -220,26 +220,24 @@ const Index = () => {
       </section>
 
       {/* Åpent for alle */}
-      <section className="px-6 pb-16">
+      <section className="py-16 px-6 bg-card/50">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-card border border-border rounded-2xl p-8">
-            <div className="flex items-start gap-4">
-              <div className="text-primary mt-1">
-                <Users className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="font-heading text-xl md:text-2xl font-bold text-foreground mb-3">
-                  Åpent for alle
-                </h3>
-                <p className="text-muted-foreground font-body leading-relaxed mb-3">
-                  I Norge spilles flaggfotball ofte <strong className="text-foreground">mixed</strong> — med
-                  spillere av alle kjønn på samme lag. Fart, teknikk og spilleforståelse betyr mer enn fysisk styrke.
-                </p>
-                <p className="text-muted-foreground font-body leading-relaxed">
-                  I Tromsø trener vi alltid sammen — og det er nettopp det som gjør det gøy.
-                  Ingen erfaring nødvendig, bare møt opp.
-                </p>
-              </div>
+          <div className="flex items-start gap-4">
+            <div className="text-primary mt-1">
+              <Users className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-heading text-xl md:text-2xl font-bold text-foreground mb-3">
+                Åpent for alle
+              </h3>
+              <p className="text-muted-foreground font-body leading-relaxed mb-3">
+                I Norge spilles flaggfotball ofte <strong className="text-foreground">mixed</strong> — med
+                spillere av alle kjønn på samme lag. Fart, teknikk og spilleforståelse betyr mer enn fysisk styrke.
+              </p>
+              <p className="text-muted-foreground font-body leading-relaxed">
+                I Tromsø trener vi alltid sammen — og det er nettopp det som gjør det gøy.
+                Ingen erfaring nødvendig, bare møt opp.
+              </p>
             </div>
           </div>
         </div>
@@ -252,7 +250,7 @@ const Index = () => {
       <GameSection />
 
       {/* Posisjoner */}
-      <section className="py-16 px-6">
+      <section className="py-16 px-6 bg-card/50">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Posisjoner
@@ -313,7 +311,7 @@ const Index = () => {
       </section>
 
       {/* Kom i gang */}
-      <section id="kom-i-gang" className="py-16 px-6 scroll-mt-16">
+      <section id="kom-i-gang" className="py-16 px-6 scroll-mt-16 bg-card/50">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Kom i gang
@@ -390,7 +388,7 @@ const Index = () => {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="py-16 px-6 scroll-mt-16">
+      <section id="faq" className="py-16 px-6 scroll-mt-16 bg-card/50">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Ofte stilte spørsmål
@@ -486,40 +484,38 @@ const LinkCard = ({
 const GameSection = () => {
   const [open, setOpen] = useState(false);
   return (
-    <section id="spillet" className="py-16 px-6 scroll-mt-16">
+    <section id="spillet" className="py-16 px-6 scroll-mt-16 bg-card/50">
       <div className="max-w-3xl mx-auto">
-        <div className="bg-card border border-border rounded-2xl p-6 md:p-8 hover:border-primary/40 transition-colors">
-          <button
-            onClick={() => setOpen(!open)}
-            className="w-full text-left"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
-                Dette er flaggfotball
-              </h2>
-              <ChevronDown
-                className={`w-6 h-6 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-              />
-            </div>
-          </button>
-
-          {/* Expanded content */}
-          <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
-            <div className="overflow-hidden">
-              <p className="text-muted-foreground font-body text-center mb-6">
-                Utforsk formasjoner, spilltyper og forsvarstaktikker.
-              </p>
-            </div>
+        <button
+          onClick={() => setOpen(!open)}
+          className="w-full text-left"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
+              Dette er flaggfotball
+            </h2>
+            <ChevronDown
+              className={`w-6 h-6 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+            />
           </div>
+        </button>
 
-          {/* Field diagram preview – partial when collapsed, full when open */}
-          <div className="relative" onClick={() => !open && setOpen(true)}>
-            <div className={`overflow-hidden transition-all duration-300 ease-out ${open ? "max-h-[2000px]" : "h-40 cursor-pointer"}`}>
-              <FieldDiagram />
-            </div>
-            {/* Fade overlay when collapsed */}
-            <div className={`absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-card to-transparent pointer-events-none transition-opacity duration-300 ${open ? "opacity-0" : "opacity-100"}`} />
+        {/* Expanded content */}
+        <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+          <div className="overflow-hidden">
+            <p className="text-muted-foreground font-body text-center mb-6">
+              Utforsk formasjoner, spilltyper og forsvarstaktikker.
+            </p>
           </div>
+        </div>
+
+        {/* Field diagram preview – partial when collapsed, full when open */}
+        <div className="relative" onClick={() => !open && setOpen(true)}>
+          <div className={`overflow-hidden transition-all duration-300 ease-out ${open ? "max-h-[2000px]" : "h-40 cursor-pointer"}`}>
+            <FieldDiagram />
+          </div>
+          {/* Fade overlay when collapsed */}
+          <div className={`absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[hsl(185,100%,10%,0.5)] to-transparent pointer-events-none transition-opacity duration-300 ${open ? "opacity-0" : "opacity-100"}`} />
         </div>
       </div>
     </section>
@@ -533,7 +529,7 @@ const TrainingSection = () => {
       <div className="max-w-4xl mx-auto">
         <button
           onClick={() => setOpen(!open)}
-          className="w-full text-left bg-card border border-border rounded-2xl p-8 md:p-12 hover:border-primary/40 transition-colors"
+          className="w-full text-left"
         >
           <div className="flex items-center justify-between">
             <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground flex items-baseline gap-2">
@@ -548,34 +544,34 @@ const TrainingSection = () => {
               className={`w-6 h-6 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
             />
           </div>
-
-          {/* Expanded info cards – animated in */}
-          <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
-            <div className="overflow-hidden">
-              <div className="grid md:grid-cols-3 gap-6 pt-4">
-                <InfoCard icon={<Calendar className="w-5 h-5" />} label="Dag" value="Mandager" />
-                <InfoCard icon={<Clock className="w-5 h-5" />} label="Tid" value="20:30 – 22:00" />
-                <InfoCard icon={<MapPin className="w-5 h-5" />} label="Sted" value="Mellomvegen 110" />
-              </div>
-            </div>
-          </div>
-
-          {/* Map preview with fade when collapsed, full when open */}
-          <div className="relative mt-6">
-            <div className={`rounded-xl overflow-hidden border border-border transition-all duration-300 ease-out ${open ? "aspect-video" : "h-28"}`}>
-              <iframe
-                className="w-full h-full min-h-[300px]"
-                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Mellomvegen+110,+9006+Tromsø&maptype=satellite&zoom=17"
-                title="Mellomvegen 110, Tromsø"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
-              />
-            </div>
-            {/* Fade overlay when collapsed */}
-            <div className={`absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-card to-transparent rounded-b-xl pointer-events-none transition-opacity duration-300 ${open ? "opacity-0" : "opacity-100"}`} />
-          </div>
         </button>
+
+        {/* Expanded info cards – animated in */}
+        <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+          <div className="overflow-hidden">
+            <div className="grid md:grid-cols-3 gap-6 pt-4">
+              <InfoCard icon={<Calendar className="w-5 h-5" />} label="Dag" value="Mandager" />
+              <InfoCard icon={<Clock className="w-5 h-5" />} label="Tid" value="20:30 – 22:00" />
+              <InfoCard icon={<MapPin className="w-5 h-5" />} label="Sted" value="Mellomvegen 110" />
+            </div>
+          </div>
+        </div>
+
+        {/* Map preview with fade when collapsed, full when open */}
+        <div className="relative mt-6" onClick={() => !open && setOpen(true)}>
+          <div className={`rounded-xl overflow-hidden border border-border transition-all duration-300 ease-out ${open ? "aspect-video" : "h-28 cursor-pointer"}`}>
+            <iframe
+              className="w-full h-full min-h-[300px]"
+              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Mellomvegen+110,+9006+Tromsø&maptype=satellite&zoom=17"
+              title="Mellomvegen 110, Tromsø"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
+          </div>
+          {/* Fade overlay when collapsed */}
+          <div className={`absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background to-transparent rounded-b-xl pointer-events-none transition-opacity duration-300 ${open ? "opacity-0" : "opacity-100"}`} />
+        </div>
       </div>
     </section>
   );

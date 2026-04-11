@@ -201,30 +201,7 @@ const Index = () => {
       </section>
 
       {/* Treninger */}
-      <section id="treninger" className="py-16 px-6 scroll-mt-16">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-card border border-border rounded-2xl p-8 md:p-12">
-            <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
-              Treninger
-            </h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              <InfoCard icon={<Calendar className="w-5 h-5" />} label="Dag" value="Mandager" />
-              <InfoCard icon={<Clock className="w-5 h-5" />} label="Tid" value="20:30 – 22:00" />
-              <InfoCard icon={<MapPin className="w-5 h-5" />} label="Sted" value="Mellomvegen 110" />
-            </div>
-            <div className="mt-8 rounded-xl overflow-hidden border border-border aspect-video">
-              <iframe
-                className="w-full h-full"
-                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Mellomvegen+110,+9006+Tromsø&maptype=satellite&zoom=17"
-                title="Mellomvegen 110, Tromsø"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+      <TrainingSection />
 
       {/* Banediagram */}
       <section id="spillet" className="py-16 px-6 scroll-mt-16">

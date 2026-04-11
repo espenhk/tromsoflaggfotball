@@ -1,9 +1,52 @@
-import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag } from "lucide-react";
+import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import heroBg from "@/assets/hero-bg.png";
+import FieldDiagram from "@/components/FieldDiagram";
 
+const POSITIONS_URL = "https://flaggfotball.no/pages/posisjoner-i-flaggfotball";
+
+const offensePositions = [
+  {
+    name: "Quarterback (QB)",
+    icon: <Star className="w-5 h-5" />,
+    role: "Lagets playmaker og leder på banen. Quarterback kaster ballen til medspillere og styrer spillet.",
+    traits: "God oversikt, presise kast, rask beslutningstaking. Trenger ikke være raskest — men må lese spillet godt.",
+  },
+  {
+    name: "Center (C)",
+    icon: <Shield className="w-5 h-5" />,
+    role: "Starter hvert spill ved å snappe ballen til QB. Går deretter ut som mottaker eller blokkerer rusheren.",
+    traits: "Pålitelig, god kommunikasjon, allsidig. En stabil spiller som gjør de små tingene riktig.",
+  },
+  {
+    name: "Wide Receiver (WR)",
+    icon: <Zap className="w-5 h-5" />,
+    role: "Løper ruter og fanger pasninger fra QB. Målet er å bli fri fra forsvareren og ta imot ballen.",
+    traits: "Hurtighet, gode hender, evne til å lese forsvar. Perfekt for de som liker å løpe og gjøre raske vendinger.",
+  },
+  {
+    name: "Running Back (RB)",
+    icon: <Target className="w-5 h-5" />,
+    role: "Tar imot ballen fra QB og løper med den. Kan også brukes som mottaker på korte pasninger.",
+    traits: "Eksplosiv fart, god balanse, evne til å lese blokker. Perfekt for de som liker å løpe med ballen.",
+  },
+];
+
+const defensePositions = [
+  {
+    name: "Rusher",
+    icon: <Zap className="w-5 h-5" />,
+    role: "Forsvarsspilleren som jager QB etter snap. Har et visst antall sekunder før hen kan krysse scrimmage-linjen.",
+    traits: "Eksplosiv fart, timing, aggressivitet. Liker du å jage og presse — er dette rollen for deg.",
+  },
+  {
+    name: "Defensive Back (DB)",
+    icon: <Shield className="w-5 h-5" />,
+    role: "Dekker motstanderens mottakere. Målet er å hindre pasninger og dra flagget til ballbæreren.",
+    traits: "Rask reaksjon, god fotarbeid, evne til å speile en motstander. Passer for de som liker en-mot-en-dueller.",
+  },
+];
 
 const Index = () => {
   return (
@@ -33,26 +76,95 @@ const Index = () => {
             Arktisk flaggfotball · 69°N
           </p>
         </div>
-
       </section>
 
-      {/* Intro */}
+      {/* Om sporten */}
       <section className="py-20 px-6">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">
-            Bli med på laget.
+            Hva er flaggfotball?
           </h2>
-          <p className="font-body text-muted-foreground text-lg leading-relaxed">
-            Vi er Tromsøs første flaggfotballklubb. Flaggfotball er en kontaktfri variant av
-            amerikansk fotball — perfekt for alle aldre og nivåer. Åpne treninger hver mandag,
-            ingen erfaring nødvendig.
+          <p className="font-body text-muted-foreground text-lg leading-relaxed mb-4">
+            Flaggfotball er en kontaktfri variant av amerikansk fotball. I stedet for å tackle
+            drar du av et flagg som henger i beltet til motstanderen. Sporten er rask, taktisk
+            og inkluderende — og blir olympisk idrett i LA 2028.
           </p>
-          <Link
-            to="/om-sporten"
-            className="inline-block mt-6 text-primary font-heading font-bold text-sm hover:opacity-80 transition-opacity"
+          <p className="font-body text-muted-foreground leading-relaxed">
+            Det spilles <strong className="text-foreground">5 mot 5</strong> på en bane
+            som er omtrent 70 × 30 meter. Hvert lag har fire forsøk på å krysse
+            midtlinjen, og deretter fire nye forsøk for å score touchdown.
+          </p>
+        </div>
+      </section>
+
+      {/* Åpent for alle */}
+      <section className="px-6 pb-16">
+        <div className="max-w-3xl mx-auto">
+          <div className="bg-card border border-border rounded-2xl p-8">
+            <div className="flex items-start gap-4">
+              <div className="text-primary mt-1">
+                <Users className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-heading text-xl md:text-2xl font-bold text-foreground mb-3">
+                  Åpent for alle
+                </h3>
+                <p className="text-muted-foreground font-body leading-relaxed mb-3">
+                  I Norge spilles flaggfotball ofte <strong className="text-foreground">mixed</strong> — med
+                  spillere av alle kjønn på samme lag. Fart, teknikk og spilleforståelse betyr mer enn fysisk styrke.
+                </p>
+                <p className="text-muted-foreground font-body leading-relaxed">
+                  I Tromsø trener vi alltid sammen — og det er nettopp det som gjør det gøy.
+                  Ingen erfaring nødvendig, bare møt opp.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Banediagram */}
+      <section className="py-16 px-6">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2 text-center">
+            Slik spilles det
+          </h2>
+          <p className="text-muted-foreground font-body text-center mb-8">
+            Utforsk formasjoner, spilltyper og forsvarstaktikker.
+          </p>
+          <FieldDiagram />
+        </div>
+      </section>
+
+      {/* Posisjoner */}
+      <section className="py-16 px-6">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
+            Posisjoner
+          </h2>
+
+          <h3 className="font-heading text-lg font-bold text-primary mb-4">Angrep</h3>
+          <div className="space-y-4 mb-8">
+            {offensePositions.map((pos) => (
+              <PositionCard key={pos.name} {...pos} />
+            ))}
+          </div>
+
+          <h3 className="font-heading text-lg font-bold text-primary mb-4">Forsvar</h3>
+          <div className="space-y-4 mb-6">
+            {defensePositions.map((pos) => (
+              <PositionCard key={pos.name} {...pos} />
+            ))}
+          </div>
+
+          <a
+            href={POSITIONS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity"
           >
-            Les mer om sporten →
-          </Link>
+            Les mer om alle posisjoner på flaggfotball.no →
+          </a>
         </div>
       </section>
 
@@ -78,6 +190,72 @@ const Index = () => {
                 allowFullScreen
               />
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Coachene */}
+      <section className="py-16 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
+            Coachene
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-card border border-border rounded-2xl p-8">
+              <p className="text-xs text-primary uppercase tracking-wider font-body mb-1">Head Coach</p>
+              <p className="font-heading font-bold text-foreground text-xl mb-3">Espen Haukeland Kristensen</p>
+              <p className="text-sm text-muted-foreground font-body leading-relaxed mb-4">
+                Espen har fire sesonger som spiller i Vålerenga Trolls (amerikansk fotball) bak seg, 
+                der han spilte quarterback, wide receiver og linebacker. Etter spillerkarrieren 
+                gikk han over til trenerbenken — tre år som coach for seniorer, U13 og damelag, 
+                med spesialfelt som QB-coach. Tok NM-bronse i flaggfotball i 2025.
+              </p>
+              <a
+                href="tel:+4795848889"
+                className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors font-body text-sm"
+              >
+                <Phone className="w-4 h-4" />
+                958 48 889
+              </a>
+            </div>
+            <div className="bg-card border border-border rounded-2xl p-8">
+              <p className="text-xs text-primary uppercase tracking-wider font-body mb-1">Assistentcoach</p>
+              <p className="font-heading font-bold text-foreground text-xl mb-3">Martin Sand Monsen</p>
+              <p className="text-sm text-muted-foreground font-body leading-relaxed mb-4">
+                Martin er en av de sentrale figurene fra Tromsø Trailblazers og har spilt 
+                flaggfotball i 3–4 år — på alle posisjoner. Til daglig jobber han som lærer, 
+                noe som gjør ham til en naturlig pedagog på banen. Flink til å bryte ned spillet 
+                og gjøre det forståelig for alle, uansett nivå.
+              </p>
+              <a
+                href="tel:+4795299706"
+                className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors font-body text-sm"
+              >
+                <Phone className="w-4 h-4" />
+                952 99 706
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Video */}
+      <section className="py-16 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2">
+            Se flaggfotball i aksjon
+          </h2>
+          <p className="text-muted-foreground font-body text-sm mb-6">
+            Fanatics Flag Football Classic — Wildcats FFC vs. Team USA
+          </p>
+          <div className="aspect-video rounded-xl overflow-hidden border border-border">
+            <iframe
+              className="w-full h-full"
+              src="https://www.youtube.com/embed/BqLI6k8HEk8"
+              title="Wildcats vs Team USA – Fanatics Flag Football Classic"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
           </div>
         </div>
       </section>
@@ -121,38 +299,13 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Video */}
-      <section className="py-16 px-6">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2">
-            Se flaggfotball i aksjon
-          </h2>
-          <p className="text-muted-foreground font-body text-sm mb-6">
-            Fanatics Flag Football Classic — Wildcats FFC vs. Team USA
-          </p>
-          <div className="aspect-video rounded-xl overflow-hidden border border-border">
-            <iframe
-              className="w-full h-full"
-              src="https://www.youtube.com/embed/BqLI6k8HEk8"
-              title="Wildcats vs Team USA – Fanatics Flag Football Classic"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
-        </div>
-      </section>
-
-
+      {/* FAQ */}
       <section className="py-16 px-6">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Ofte stilte spørsmål
           </h2>
           <div className="space-y-3">
-            <FaqItem
-              q="Hva er flaggfotball?"
-              a="Flaggfotball er en kontaktfri variant av amerikansk fotball. I stedet for tackling drar man av et flagg festet i beltet til motstanderen. Sporten er inkluderende, morsom og passer for alle — uansett kjønn eller erfaring."
-            />
             <FaqItem
               q="Hvem kan være med?"
               a="Alle fra 16 år og oppover er velkommen! Ingen erfaring nødvendig — vi tilpasser treningene slik at alle kan delta og utvikle seg."
@@ -172,27 +325,6 @@ const Index = () => {
             <FaqItem
               q="Hvor mange er på et lag?"
               a="Flaggfotball spilles vanligvis 5 mot 5 på banen. Vi deler inn i lag på trening."
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Kontakt */}
-      <section className="py-16 px-6 border-t border-border">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
-            Kontakt
-          </h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            <ContactCard
-              role="Coach"
-              name="Espen Haukeland Kristensen"
-              phone="958 48 889"
-            />
-            <ContactCard
-              role="Ass. coach"
-              name="Martin Sand Monsen"
-              phone="952 99 706"
             />
           </div>
         </div>
@@ -255,20 +387,56 @@ const LinkCard = ({
   </a>
 );
 
-const ContactCard = ({ role, name, phone }: { role: string; name: string; phone: string }) => (
-  <div className="bg-card border border-border rounded-xl p-6">
-    <p className="text-xs text-primary uppercase tracking-wider font-body mb-1">{role}</p>
-    <p className="font-heading font-bold text-foreground text-lg">{name}</p>
-    <a
-      href={`tel:+47${phone.replace(/\s/g, "")}`}
-      className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mt-2 font-body text-sm"
+const PositionCard = ({
+  name,
+  icon,
+  role,
+  traits,
+}: {
+  name: string;
+  icon: React.ReactNode;
+  role: string;
+  traits: string;
+}) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <button
+      onClick={() => setOpen(!open)}
+      className="w-full text-left bg-card border border-border rounded-xl p-5 hover:border-primary/40 transition-colors"
     >
-      <Phone className="w-4 h-4" />
-      {phone}
-    </a>
-  </div>
-);
-
+      <div className="flex items-center gap-3">
+        <div className="text-primary">{icon}</div>
+        <h3 className="font-heading font-bold text-foreground flex-1">{name}</h3>
+        <svg
+          className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+      {open && (
+        <div className="mt-3 space-y-2 pl-8">
+          <p className="text-sm text-muted-foreground font-body leading-relaxed">{role}</p>
+          <p className="text-xs text-primary font-body">
+            <span className="text-muted-foreground">Passer for:</span> {traits}
+          </p>
+          <a
+            href={POSITIONS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="inline-block text-xs text-muted-foreground hover:text-primary transition-colors font-body"
+          >
+            Les mer på flaggfotball.no →
+          </a>
+        </div>
+      )}
+    </button>
+  );
+};
 
 const FaqItem = ({ q, a }: { q: string; a: string }) => {
   const [open, setOpen] = useState(false);

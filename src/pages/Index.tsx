@@ -531,7 +531,7 @@ const TrainingSection = () => {
       <div className="max-w-4xl mx-auto">
         <button
           onClick={() => setOpen(!open)}
-          className="w-full text-left bg-card border border-border rounded-2xl p-8 md:p-12 hover:border-primary/40 transition-colors"
+          className="w-full text-left"
         >
           <div className="flex items-center justify-between">
             <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground flex items-baseline gap-2">
@@ -546,34 +546,34 @@ const TrainingSection = () => {
               className={`w-6 h-6 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
             />
           </div>
-
-          {/* Expanded info cards – animated in */}
-          <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
-            <div className="overflow-hidden">
-              <div className="grid md:grid-cols-3 gap-6 pt-4">
-                <InfoCard icon={<Calendar className="w-5 h-5" />} label="Dag" value="Mandager" />
-                <InfoCard icon={<Clock className="w-5 h-5" />} label="Tid" value="20:30 – 22:00" />
-                <InfoCard icon={<MapPin className="w-5 h-5" />} label="Sted" value="Mellomvegen 110" />
-              </div>
-            </div>
-          </div>
-
-          {/* Map preview with fade when collapsed, full when open */}
-          <div className="relative mt-6">
-            <div className={`rounded-xl overflow-hidden border border-border transition-all duration-300 ease-out ${open ? "aspect-video" : "h-28"}`}>
-              <iframe
-                className="w-full h-full min-h-[300px]"
-                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Mellomvegen+110,+9006+Tromsø&maptype=satellite&zoom=17"
-                title="Mellomvegen 110, Tromsø"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
-              />
-            </div>
-            {/* Fade overlay when collapsed */}
-            <div className={`absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-card to-transparent rounded-b-xl pointer-events-none transition-opacity duration-300 ${open ? "opacity-0" : "opacity-100"}`} />
-          </div>
         </button>
+
+        {/* Expanded info cards – animated in */}
+        <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+          <div className="overflow-hidden">
+            <div className="grid md:grid-cols-3 gap-6 pt-4">
+              <InfoCard icon={<Calendar className="w-5 h-5" />} label="Dag" value="Mandager" />
+              <InfoCard icon={<Clock className="w-5 h-5" />} label="Tid" value="20:30 – 22:00" />
+              <InfoCard icon={<MapPin className="w-5 h-5" />} label="Sted" value="Mellomvegen 110" />
+            </div>
+          </div>
+        </div>
+
+        {/* Map preview with fade when collapsed, full when open */}
+        <div className="relative mt-6" onClick={() => !open && setOpen(true)}>
+          <div className={`rounded-xl overflow-hidden border border-border transition-all duration-300 ease-out ${open ? "aspect-video" : "h-28 cursor-pointer"}`}>
+            <iframe
+              className="w-full h-full min-h-[300px]"
+              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Mellomvegen+110,+9006+Tromsø&maptype=satellite&zoom=17"
+              title="Mellomvegen 110, Tromsø"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
+          </div>
+          {/* Fade overlay when collapsed */}
+          <div className={`absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background to-transparent rounded-b-xl pointer-events-none transition-opacity duration-300 ${open ? "opacity-0" : "opacity-100"}`} />
+        </div>
       </div>
     </section>
   );

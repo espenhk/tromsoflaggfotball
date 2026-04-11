@@ -174,8 +174,9 @@ const FieldDiagram = () => {
         <div className="absolute inset-x-0 top-0 h-[15%] bg-emerald-900/60 flex items-center justify-center">
           <span className="text-white/40 font-heading text-xs font-bold tracking-widest uppercase">Endesone</span>
         </div>
-        <div className="absolute inset-x-0 bottom-0 h-[15%] bg-emerald-900/60 flex items-center justify-center">
+        <div className="absolute inset-x-0 bottom-0 h-[15%] bg-emerald-900/60 flex flex-col items-center justify-center">
           <span className="text-white/40 font-heading text-xs font-bold tracking-widest uppercase">Endesone</span>
+          <span className="text-white/30 text-[9px] mt-0.5">Trykk på en spiller for beskrivelse</span>
         </div>
 
         {/* Ball */}

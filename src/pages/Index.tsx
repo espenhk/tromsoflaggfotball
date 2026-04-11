@@ -518,14 +518,14 @@ const PositionCard = ({
         <div className="text-primary">{icon}</div>
         <div className="flex-1 min-w-0">
           <h3 className="font-heading font-bold text-foreground">{name}</h3>
-          <p className="text-xs text-muted-foreground font-body mt-0.5">{tagline}</p>
+          <p className={`text-xs text-muted-foreground font-body mt-0.5 transition-all duration-300 overflow-hidden ${open ? "max-h-0 opacity-0 mt-0" : "max-h-10 opacity-100"}`}>{tagline}</p>
         </div>
         <ChevronDown
           className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
         />
       </div>
       {open && (
-        <div className="mt-3 space-y-2 pl-8">
+        <div className="mt-3 space-y-2 pl-8 animate-fade-in">
           <p className="text-sm text-muted-foreground font-body leading-relaxed">{role}</p>
           {role2 && <p className="text-sm text-muted-foreground font-body leading-relaxed">{role2}</p>}
           <p className="text-xs text-primary font-body">

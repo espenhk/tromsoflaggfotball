@@ -7,6 +7,7 @@ const positionFullNames: Record<string, string> = {
   RB: "RB – Running Back",
   R: "R – Rusher",
   DB: "DB – Defensive Back",
+  S: "S – Safety",
 };
 
 const positionDescriptions: Record<string, string> = {
@@ -15,7 +16,8 @@ const positionDescriptions: Record<string, string> = {
   WR: "Løper ruter og fanger pasninger fra QB. Målet er å bli fri fra forsvareren og ta imot ballen.",
   RB: "Tar imot ballen fra QB og løper med den. Kan også brukes som mottaker på korte pasninger.",
   R: "Starter 7 yards fra ballen med hånden i året. Kan rushe mot QB så fort de klarer etter snap. Laget kan ha 0–2 rushere per spill.",
-  DB: "Dekker motstanderens mottakere. Hindrer pasninger og drar flagget til ballbæreren.",
+  DB: "Dekker motstanderens mottakere tett. Hindrer pasninger og drar flagget til ballbæreren.",
+  S: "Siste skanse i forsvaret. Leser spillet bakfra, hjelper til med dekning og sikrer mot lange pasninger.",
 };
 
 type OffenseTabId = "formasjon" | "kastespill" | "løpespill";
@@ -79,8 +81,8 @@ const defensePlayersBase: PlayerPosition[] = [
   { top: 36, left: 63, label: "R", color: "bg-rose-400", id: "R" },
   { top: 38, left: 15, label: "DB", color: "bg-rose-400", id: "DB-L" },
   { top: 38, left: 85, label: "DB", color: "bg-rose-400", id: "DB-R" },
-  { top: 22, left: 65, label: "DB", color: "bg-rose-400", id: "DB-S" },
-  { top: 27, left: 40, label: "DB", color: "bg-rose-400", id: "DB-SA" },
+  { top: 22, left: 65, label: "S", color: "bg-rose-400", id: "DB-S" },
+  { top: 27, left: 40, label: "S", color: "bg-rose-400", id: "DB-SA" },
 ];
 
 const getManAssignments = (tab: OffenseTabId): Record<string, string> => {

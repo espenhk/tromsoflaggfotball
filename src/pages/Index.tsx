@@ -220,26 +220,24 @@ const Index = () => {
       </section>
 
       {/* Åpent for alle */}
-      <section className="px-6 pb-16">
+      <section className="py-16 px-6 bg-card/50">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-card border border-border rounded-2xl p-8">
-            <div className="flex items-start gap-4">
-              <div className="text-primary mt-1">
-                <Users className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="font-heading text-xl md:text-2xl font-bold text-foreground mb-3">
-                  Åpent for alle
-                </h3>
-                <p className="text-muted-foreground font-body leading-relaxed mb-3">
-                  I Norge spilles flaggfotball ofte <strong className="text-foreground">mixed</strong> — med
-                  spillere av alle kjønn på samme lag. Fart, teknikk og spilleforståelse betyr mer enn fysisk styrke.
-                </p>
-                <p className="text-muted-foreground font-body leading-relaxed">
-                  I Tromsø trener vi alltid sammen — og det er nettopp det som gjør det gøy.
-                  Ingen erfaring nødvendig, bare møt opp.
-                </p>
-              </div>
+          <div className="flex items-start gap-4">
+            <div className="text-primary mt-1">
+              <Users className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-heading text-xl md:text-2xl font-bold text-foreground mb-3">
+                Åpent for alle
+              </h3>
+              <p className="text-muted-foreground font-body leading-relaxed mb-3">
+                I Norge spilles flaggfotball ofte <strong className="text-foreground">mixed</strong> — med
+                spillere av alle kjønn på samme lag. Fart, teknikk og spilleforståelse betyr mer enn fysisk styrke.
+              </p>
+              <p className="text-muted-foreground font-body leading-relaxed">
+                I Tromsø trener vi alltid sammen — og det er nettopp det som gjør det gøy.
+                Ingen erfaring nødvendig, bare møt opp.
+              </p>
             </div>
           </div>
         </div>

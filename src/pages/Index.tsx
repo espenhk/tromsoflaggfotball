@@ -21,7 +21,8 @@ const offensePositions = [
     name: "Quarterback (QB)",
     tagline: "Lederen som kaster ballen til sine mottakere",
     icon: <Star className="w-5 h-5" />,
-    role: "Lagets playmaker og den viktigste spilleren på banen. QB styrer angrepet, leser forsvaret og bestemmer hvem som skal få ballen. I flaggfotball handler det om presise kast, rask beslutningstaking og evnen til å lese motstanderens forsvar. QB trenger ikke være den raskeste spilleren — men må ha god oversikt og holde hodet kaldt under press. De beste QBene gjør medspillerne sine bedre.",
+    role: "Lagets playmaker og den viktigste spilleren på banen. QB styrer angrepet, leser forsvaret og bestemmer hvem som skal få ballen. I flaggfotball handler det om presise kast, rask beslutningstaking og evnen til å lese motstanderens forsvar.",
+    role2: "QB trenger ikke være den raskeste spilleren — men må ha god oversikt og holde hodet kaldt under press. De beste QBene gjør medspillerne sine bedre.",
     traits: "God oversikt, presise kast, rask beslutningstaking. Trenger ikke være raskest — men må lese spillet godt.",
     nflExamples: "Patrick Mahomes, Josh Allen, Lamar Jackson",
   },
@@ -29,7 +30,8 @@ const offensePositions = [
     name: "Center (C)",
     tagline: "Starter hvert spill og setter det hele i gang",
     icon: <Shield className="w-5 h-5" />,
-    role: "Center er spilleren som starter hvert eneste spill ved å snappe ballen til QB. Etter snappen går center ut som mottaker eller hjelper til med å blokkere rusheren. Det er en allsidig posisjon som krever pålitelighet og god kommunikasjon — du må vite når ballen skal snappes, og være klar til å bidra i spillet etterpå. En god center er limet i laget.",
+    role: "Center er spilleren som starter hvert eneste spill ved å snappe ballen til QB. Etter snappen går center ut som mottaker eller hjelper til med å blokkere rusheren.",
+    role2: "Det er en allsidig posisjon som krever pålitelighet og god kommunikasjon — du må vite når ballen skal snappes, og være klar til å bidra i spillet etterpå. En god center er limet i laget.",
     traits: "Pålitelig, god kommunikasjon, allsidig. En stabil spiller som gjør de små tingene riktig.",
     nflExamples: "Travis Kelce (TE, lignende rolle som mottaker), Jason Kelce",
   },
@@ -37,7 +39,8 @@ const offensePositions = [
     name: "Wide Receiver (WR)",
     tagline: "Den raske som løper fri og fanger ballen",
     icon: <Zap className="w-5 h-5" />,
-    role: "Wide receiver er den raske spilleren som løper planlagte ruter nedover banen for å bli fri fra forsvareren. Målet er å skape separasjon og ta imot pasninger fra QB. I flaggfotball er dette en av de mest spennende posisjonene — du får løpe, gjøre raske vendinger og ta spektakulære fangster. Det handler om timing, hurtighet og gode hender.",
+    role: "Wide receiver er den raske spilleren som løper planlagte ruter nedover banen for å bli fri fra forsvareren. Målet er å skape separasjon og ta imot pasninger fra QB.",
+    role2: "I flaggfotball er dette en av de mest spennende posisjonene — du får løpe, gjøre raske vendinger og ta spektakulære fangster. Det handler om timing, hurtighet og gode hender.",
     traits: "Hurtighet, gode hender, evne til å lese forsvar. Perfekt for de som liker å løpe og gjøre raske vendinger.",
     nflExamples: "Tyreek Hill, Ja'Marr Chase, CeeDee Lamb",
   },
@@ -45,7 +48,8 @@ const offensePositions = [
     name: "Running Back (RB)",
     tagline: "Eksplosiv løper som tar ballen gjennom forsvaret",
     icon: <Target className="w-5 h-5" />,
-    role: "Running back tar imot ballen direkte fra QB og løper med den gjennom forsvaret. I flaggfotball brukes RB ofte i løpespill, der målet er å komme seg forbi forsvarere med fart og smidighet uten å bli dratt i flagget. RB kan også brukes som mottaker på korte pasninger. Posisjonen passer perfekt for eksplosive spillere som elsker å ha ballen i hendene.",
+    role: "Running back tar imot ballen direkte fra QB og løper med den gjennom forsvaret. I flaggfotball brukes RB ofte i løpespill, der målet er å komme seg forbi forsvarere med fart og smidighet uten å bli dratt i flagget.",
+    role2: "RB kan også brukes som mottaker på korte pasninger. Posisjonen passer perfekt for eksplosive spillere som elsker å ha ballen i hendene.",
     traits: "Eksplosiv fart, god balanse, evne til å lese blokker. Perfekt for de som liker å løpe med ballen.",
     nflExamples: "Derrick Henry, Saquon Barkley, Christian McCaffrey",
   },
@@ -56,7 +60,8 @@ const defensePositions = [
     name: "Rusher",
     tagline: "Jager quarterbacken og presser spillet",
     icon: <Zap className="w-5 h-5" />,
-    role: "Rusheren er forsvarets mest aggressive spiller. Etter snap har rusheren som mål å komme seg forbi linjen og presse QB til å kaste for tidlig eller dra flagget. I flaggfotball starter rusheren 7 yards fra ballen og kan ha 0–2 rushere per spill. Det er en eksplosiv rolle som handler om timing, fart og aggressivitet. Posisjonen finnes ikke i tacklefotball, men ligner på defensive edge-spillere.",
+    role: "Rusheren er forsvarets mest aggressive spiller. Etter snap har rusheren som mål å komme seg forbi linjen og presse QB til å kaste for tidlig eller dra flagget. I flaggfotball starter rusheren 7 yards fra ballen og kan ha 0–2 rushere per spill.",
+    role2: "Det er en eksplosiv rolle som handler om timing, fart og aggressivitet. Posisjonen finnes ikke i tacklefotball, men ligner på defensive edge-spillere.",
     traits: "Eksplosiv fart, timing, aggressivitet. Liker du å jage og presse — er dette rollen for deg.",
     nflExamples: "Myles Garrett, Micah Parsons, T.J. Watt (edge rushers i NFL)",
   },
@@ -64,7 +69,8 @@ const defensePositions = [
     name: "Defensive Back (DB)",
     tagline: "Dekker mottakerne og bryter opp pasninger",
     icon: <Shield className="w-5 h-5" />,
-    role: "Defensive backs dekker motstanderens mottakere tett og prøver å hindre pasninger fra å bli fullført. Du speiler motstanderens bevegelser, leser QB og reagerer lynraskt når ballen er i luften. I flaggfotball er DB ofte i en-mot-en-dueller, så god fotarbeid og rask reaksjon er avgjørende. Det er en posisjon for deg som liker å utfordre deg selv mentalt og fysisk.",
+    role: "Defensive backs dekker motstanderens mottakere tett og prøver å hindre pasninger fra å bli fullført. Du speiler motstanderens bevegelser, leser QB og reagerer lynraskt når ballen er i luften.",
+    role2: "I flaggfotball er DB ofte i en-mot-en-dueller, så god fotarbeid og rask reaksjon er avgjørende. Det er en posisjon for deg som liker å utfordre deg selv mentalt og fysisk.",
     traits: "Rask reaksjon, god fotarbeid, evne til å speile en motstander. Passer for de som liker en-mot-en-dueller.",
     nflExamples: "Sauce Gardner, Patrick Surtain II, Jalen Ramsey",
   },
@@ -72,7 +78,8 @@ const defensePositions = [
     name: "Safety (S)",
     tagline: "Siste skanse som leser spillet bakfra",
     icon: <Shield className="w-5 h-5" />,
-    role: "Safety er forsvarets siste linje og den spilleren som har best oversikt over hele banen. Fra sin dype posisjon leser safety spillet, hjelper DBene med dekning og sikrer mot lange pasninger. En god safety kombinerer spilleforståelse med atletisk evne — du må kunne lese QB og reagere raskt både fremover og bakover. Det er en posisjon for smarte, allsidige spillere.",
+    role: "Safety er forsvarets siste linje og den spilleren som har best oversikt over hele banen. Fra sin dype posisjon leser safety spillet, hjelper DBene med dekning og sikrer mot lange pasninger.",
+    role2: "En god safety kombinerer spilleforståelse med atletisk evne — du må kunne lese QB og reagere raskt både fremover og bakover. Det er en posisjon for smarte, allsidige spillere.",
     traits: "God spilleforståelse, oversikt, allsidighet. Passer for de som liker å lese spillet og ta smarte avgjørelser.",
     nflExamples: "Kyle Hamilton, Derwin James, Jessie Bates III",
   },
@@ -489,6 +496,7 @@ const PositionCard = ({
   tagline,
   icon,
   role,
+  role2,
   traits,
   nflExamples,
 }: {
@@ -496,6 +504,7 @@ const PositionCard = ({
   tagline: string;
   icon: React.ReactNode;
   role: string;
+  role2?: string;
   traits: string;
   nflExamples?: string;
 }) => {
@@ -518,6 +527,7 @@ const PositionCard = ({
       {open && (
         <div className="mt-3 space-y-2 pl-8">
           <p className="text-sm text-muted-foreground font-body leading-relaxed">{role}</p>
+          {role2 && <p className="text-sm text-muted-foreground font-body leading-relaxed">{role2}</p>}
           <p className="text-xs text-primary font-body">
             <span className="text-muted-foreground">Passer for:</span> {traits}
           </p>

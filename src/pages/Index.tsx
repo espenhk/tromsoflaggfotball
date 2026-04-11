@@ -498,167 +498,42 @@ const GameSection = () => {
           </div>
         </div>
 
-        {/* Mobile: flip card */}
-        <MobileFlipCard />
-      </div>
-    </section>
-  );
-};
+        {/* Mobile: stacked layout */}
+        <div className="md:hidden">
+          <FieldDiagram />
 
-const TrainingSection = () => {
-  return (
-    <section id="treninger" className="py-16 px-6 scroll-mt-16">
-      <div className="max-w-4xl mx-auto">
-        <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-6">
-          Treninger
-        </h2>
-
-        <div className="flex flex-col md:flex-row md:items-start gap-6">
-          <div className="flex flex-col gap-4 md:w-1/3 shrink-0">
-            <InfoCard icon={<Calendar className="w-5 h-5" />} label="Dag" value="Mandager" />
-            <InfoCard icon={<Clock className="w-5 h-5" />} label="Tid" value="20:30 – 22:00" />
-            <InfoCard icon={<MapPin className="w-5 h-5" />} label="Sted" value="Mellomvegen 110" />
+          <div className="mt-4 space-y-4">
+            <div>
+              <h3 className="font-heading text-lg font-bold text-sky-400 mb-3">Angrep</h3>
+              <div className="space-y-0">
+                {offensePositions.map((pos) => (
+                  <PositionCard key={pos.name} {...pos} variant="offense" />
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 className="font-heading text-lg font-bold text-rose-400 mb-3">Forsvar</h3>
+              <div className="space-y-0">
+                {defensePositions.map((pos) => (
+                  <PositionCard key={pos.name} {...pos} variant="defense" />
+                ))}
+              </div>
+            </div>
           </div>
 
-          <div className="rounded-xl overflow-hidden border border-border flex-1 h-[180px] md:h-[160px]">
-            <iframe
-              className="w-full h-full"
-              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Mellomvegen+110,+9006+Tromsø&maptype=satellite&zoom=17"
-              title="Mellomvegen 110, Tromsø"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              allowFullScreen
-            />
-          </div>
+          <a
+            href={POSITIONS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-5"
+          >
+            Les mer om alle posisjoner på flaggfotball.no →
+          </a>
         </div>
       </div>
     </section>
   );
 };
-
-type FlipFace = "diagram" | "offense" | "defense";
-
-const MobileFlipCard = () => {
-  const [face, setFace] = useState<FlipFace>("diagram");
-  const [flipDirection, setFlipDirection] = useState<"left" | "right">("right");
-  const [isFlipping, setIsFlipping] = useState(false);
-
-  const flipTo = (target: FlipFace, direction: "left" | "right") => {
-    if (isFlipping) return;
-    setFlipDirection(direction);
-    setIsFlipping(true);
-    // At halfway point of flip, swap content
-    setTimeout(() => setFace(target), 250);
-    setTimeout(() => setIsFlipping(false), 500);
-  };
-
-  const flipClass = isFlipping
-    ? flipDirection === "right"
-      ? "animate-[flipRight_500ms_ease-in-out]"
-      : "animate-[flipLeft_500ms_ease-in-out]"
-    : "";
-
-  return (
-    <div className="md:hidden">
-      <style>{`
-        @keyframes flipRight {
-          0% { transform: perspective(800px) rotateY(0deg); }
-          50% { transform: perspective(800px) rotateY(90deg); }
-          100% { transform: perspective(800px) rotateY(0deg); }
-        }
-        @keyframes flipLeft {
-          0% { transform: perspective(800px) rotateY(0deg); }
-          50% { transform: perspective(800px) rotateY(-90deg); }
-          100% { transform: perspective(800px) rotateY(0deg); }
-        }
-      `}</style>
-      <div className={`relative ${flipClass}`}>
-        {/* Content faces */}
-        {face === "diagram" && (
-          <div className="relative">
-            <FieldDiagram />
-            {/* Flip buttons overlaid on diagram edges, styled like diagram tabs */}
-            <button
-              onClick={() => flipTo("defense", "right")}
-              className="absolute top-1 right-1 z-10 text-[10px] uppercase tracking-wider font-body text-rose-400/70 hover:text-rose-400 transition-colors px-2 py-0.5 rounded bg-background/40 backdrop-blur-sm"
-            >
-              Forsvar ›
-            </button>
-            <button
-              onClick={() => flipTo("offense", "left")}
-              className="absolute bottom-1 left-1 z-10 text-[10px] uppercase tracking-wider font-body text-sky-400/70 hover:text-sky-400 transition-colors px-2 py-0.5 rounded bg-background/40 backdrop-blur-sm"
-            >
-              ‹ Angrep
-            </button>
-            <a
-              href={POSITIONS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-4"
-            >
-              Les mer om alle posisjoner på flaggfotball.no →
-            </a>
-          </div>
-        )}
-
-        {face === "offense" && (
-          <div className="rounded-xl border border-sky-400/10 bg-card/30 p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-heading text-base font-bold text-sky-400">Angrep</h3>
-              <button
-                onClick={() => flipTo("diagram", "right")}
-                className="text-[10px] uppercase tracking-wider font-body text-sky-400/70 hover:text-sky-400 transition-colors px-2 py-0.5 rounded bg-background/40"
-              >
-                ‹ Banen
-              </button>
-            </div>
-            <div className="space-y-0">
-              {offensePositions.map((pos) => (
-                <PositionCard key={pos.name} {...pos} variant="offense" />
-              ))}
-            </div>
-            <div className="flex justify-end mt-3">
-              <button
-                onClick={() => flipTo("defense", "right")}
-                className="text-[10px] uppercase tracking-wider font-body text-rose-400/70 hover:text-rose-400 transition-colors px-2 py-0.5 rounded bg-background/40"
-              >
-                Forsvar ›
-              </button>
-            </div>
-          </div>
-        )}
-
-        {face === "defense" && (
-          <div className="rounded-xl border border-rose-400/10 bg-card/30 p-4">
-            <div className="flex items-center justify-between mb-3">
-              <button
-                onClick={() => flipTo("offense", "left")}
-                className="text-[10px] uppercase tracking-wider font-body text-sky-400/70 hover:text-sky-400 transition-colors px-2 py-0.5 rounded bg-background/40"
-              >
-                ‹ Angrep
-              </button>
-              <h3 className="font-heading text-base font-bold text-rose-400">Forsvar</h3>
-            </div>
-            <div className="space-y-0">
-              {defensePositions.map((pos) => (
-                <PositionCard key={pos.name} {...pos} variant="defense" />
-              ))}
-            </div>
-            <div className="flex justify-end mt-3">
-              <button
-                onClick={() => flipTo("diagram", "left")}
-                className="text-[10px] uppercase tracking-wider font-body text-rose-400/70 hover:text-rose-400 transition-colors px-2 py-0.5 rounded bg-background/40"
-              >
-                Banen ›
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
 
 const CoachCard = ({
   icon,

@@ -434,7 +434,7 @@ const TrainingSection = () => {
           onClick={() => setOpen(!open)}
           className="w-full text-left bg-card border border-border rounded-2xl p-8 md:p-12 hover:border-primary/40 transition-colors"
         >
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-4">
             <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
               Treninger
             </h2>
@@ -442,15 +442,28 @@ const TrainingSection = () => {
               className={`w-6 h-6 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
             />
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            <InfoCard icon={<Calendar className="w-5 h-5" />} label="Dag" value="Mandager" />
-            <InfoCard icon={<Clock className="w-5 h-5" />} label="Tid" value="20:30 – 22:00" />
-            <InfoCard icon={<MapPin className="w-5 h-5" />} label="Sted" value="Mellomvegen 110" />
+
+          {/* Condensed single-line summary – visible when collapsed */}
+          <div className={`transition-all duration-300 ease-out overflow-hidden ${open ? "max-h-0 opacity-0" : "max-h-12 opacity-100"}`}>
+            <p className="text-muted-foreground font-body text-sm md:text-base">
+              Mandager kl 20:30–22:00 i Mellomvegen 110
+            </p>
+          </div>
+
+          {/* Expanded info cards – animated in */}
+          <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+            <div className="overflow-hidden">
+              <div className="grid md:grid-cols-3 gap-6 pt-4">
+                <InfoCard icon={<Calendar className="w-5 h-5" />} label="Dag" value="Mandager" />
+                <InfoCard icon={<Clock className="w-5 h-5" />} label="Tid" value="20:30 – 22:00" />
+                <InfoCard icon={<MapPin className="w-5 h-5" />} label="Sted" value="Mellomvegen 110" />
+              </div>
+            </div>
           </div>
 
           {/* Map preview with fade when collapsed, full when open */}
-          <div className="relative mt-8">
-            <div className={`rounded-xl overflow-hidden border border-border transition-all duration-300 ease-out ${open ? "aspect-video" : "h-32"}`}>
+          <div className="relative mt-6">
+            <div className={`rounded-xl overflow-hidden border border-border transition-all duration-300 ease-out ${open ? "aspect-video" : "h-28"}`}>
               <iframe
                 className="w-full h-full min-h-[300px]"
                 src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Mellomvegen+110,+9006+Tromsø&maptype=satellite&zoom=17"

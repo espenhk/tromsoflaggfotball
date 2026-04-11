@@ -64,13 +64,31 @@ const FieldDiagram = () => {
           left="72%"
         />
 
+        {/* Dashed arrow from R to QB */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}>
+          <defs>
+            <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="white" fillOpacity="0.6" />
+            </marker>
+          </defs>
+          <line
+            x1="58%" y1="38%"
+            x2="50%" y2="62%"
+            stroke="white"
+            strokeOpacity="0.5"
+            strokeWidth="2"
+            strokeDasharray="6 4"
+            markerEnd="url(#arrowhead)"
+          />
+        </svg>
+
         {/* DEFENSE (top half) */}
         {/* Rusher */}
         <PlayerDot
           label="R"
           color="bg-rose-400"
-          top="43%"
-          left="50%"
+          top="36%"
+          left="58%"
         />
         {/* DB left */}
         <PlayerDot

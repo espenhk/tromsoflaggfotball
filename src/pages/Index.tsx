@@ -496,6 +496,7 @@ const PositionCard = ({
   tagline,
   icon,
   role,
+  role2,
   traits,
   nflExamples,
 }: {
@@ -503,6 +504,7 @@ const PositionCard = ({
   tagline: string;
   icon: React.ReactNode;
   role: string;
+  role2?: string;
   traits: string;
   nflExamples?: string;
 }) => {
@@ -525,6 +527,7 @@ const PositionCard = ({
       {open && (
         <div className="mt-3 space-y-2 pl-8">
           <p className="text-sm text-muted-foreground font-body leading-relaxed">{role}</p>
+          {role2 && <p className="text-sm text-muted-foreground font-body leading-relaxed">{role2}</p>}
           <p className="text-xs text-primary font-body">
             <span className="text-muted-foreground">Passer for:</span> {traits}
           </p>

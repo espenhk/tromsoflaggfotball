@@ -131,8 +131,8 @@ const FieldDiagram = () => {
   }, [pendingTab]);
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-6 mb-8">
-      <h3 className="font-heading text-xl md:text-2xl font-bold text-foreground mb-4 text-center">
+    <div className="mb-0">
+      <h3 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-4 text-center">
         Oppstilling – 5 mot 5
       </h3>
 

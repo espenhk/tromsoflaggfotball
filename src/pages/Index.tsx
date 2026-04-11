@@ -231,4 +231,25 @@ const ContactCard = ({ role, name, phone }: { role: string; name: string; phone:
   </div>
 );
 
+
+const FaqItem = ({ q, a }: { q: string; a: string }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <button
+      onClick={() => setOpen(!open)}
+      className="w-full text-left bg-card border border-border rounded-xl p-5 transition-colors hover:border-primary/40"
+    >
+      <div className="flex items-center justify-between gap-4">
+        <p className="font-heading font-bold text-foreground">{q}</p>
+        <ChevronDown
+          className={`w-5 h-5 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </div>
+      {open && (
+        <p className="text-sm text-muted-foreground font-body mt-3 leading-relaxed">{a}</p>
+      )}
+    </button>
+  );
+};
+
 export default Index;

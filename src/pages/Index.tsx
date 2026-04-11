@@ -19,24 +19,28 @@ const navItems = [
 const offensePositions = [
   {
     name: "Quarterback (QB)",
+    tagline: "Lederen som kaster ballen til sine mottakere",
     icon: <Star className="w-5 h-5" />,
     role: "Lagets playmaker og leder på banen. Quarterback kaster ballen til medspillere og styrer spillet.",
     traits: "God oversikt, presise kast, rask beslutningstaking. Trenger ikke være raskest — men må lese spillet godt.",
   },
   {
     name: "Center (C)",
+    tagline: "Starter hvert spill og setter det hele i gang",
     icon: <Shield className="w-5 h-5" />,
     role: "Starter hvert spill ved å snappe ballen til QB. Går deretter ut som mottaker eller blokkerer rusheren.",
     traits: "Pålitelig, god kommunikasjon, allsidig. En stabil spiller som gjør de små tingene riktig.",
   },
   {
     name: "Wide Receiver (WR)",
+    tagline: "Den raske som løper fri og fanger ballen",
     icon: <Zap className="w-5 h-5" />,
     role: "Løper ruter og fanger pasninger fra QB. Målet er å bli fri fra forsvareren og ta imot ballen.",
     traits: "Hurtighet, gode hender, evne til å lese forsvar. Perfekt for de som liker å løpe og gjøre raske vendinger.",
   },
   {
     name: "Running Back (RB)",
+    tagline: "Eksplosiv løper som tar ballen gjennom forsvaret",
     icon: <Target className="w-5 h-5" />,
     role: "Tar imot ballen fra QB og løper med den. Kan også brukes som mottaker på korte pasninger.",
     traits: "Eksplosiv fart, god balanse, evne til å lese blokker. Perfekt for de som liker å løpe med ballen.",
@@ -46,12 +50,14 @@ const offensePositions = [
 const defensePositions = [
   {
     name: "Rusher",
+    tagline: "Jager quarterbacken og presser spillet",
     icon: <Zap className="w-5 h-5" />,
     role: "Forsvarsspilleren som jager QB etter snap. Har et visst antall sekunder før hen kan krysse scrimmage-linjen.",
     traits: "Eksplosiv fart, timing, aggressivitet. Liker du å jage og presse — er dette rollen for deg.",
   },
   {
     name: "Defensive Back (DB)",
+    tagline: "Dekker mottakerne og stjeler ballen",
     icon: <Shield className="w-5 h-5" />,
     role: "Dekker motstanderens mottakere. Målet er å hindre pasninger og dra flagget til ballbæreren.",
     traits: "Rask reaksjon, god fotarbeid, evne til å speile en motstander. Passer for de som liker en-mot-en-dueller.",

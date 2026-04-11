@@ -18,17 +18,92 @@ const positionDescriptions: Record<string, string> = {
   DB: "Dekker motstanderens mottakere. Hindrer pasninger og drar flagget til ballbæreren.",
 };
 
-type TabId = "formasjon" | "kastespill" | "løpespill";
+type OffenseTabId = "formasjon" | "kastespill" | "løpespill";
+type DefenseTabId = "formasjon" | "soneforsvar" | "mann-mot-mann";
 
-const tabs: { id: TabId; label: string }[] = [
+const offenseTabs: { id: OffenseTabId; label: string }[] = [
   { id: "formasjon", label: "Formasjon" },
   { id: "kastespill", label: "Kastespill" },
   { id: "løpespill", label: "Løpespill" },
 ];
 
+const defenseTabs: { id: DefenseTabId; label: string }[] = [
+  { id: "formasjon", label: "Formasjon" },
+  { id: "soneforsvar", label: "Soneforsvar" },
+  { id: "mann-mot-mann", label: "Mann-mot-mann" },
+];
+
+// Zone coverage areas for each DB (cx, cy, rx, ry in viewBox 0-100 coords)
+const zoneAreas: Record<string, { cx: number; cy: number; rx: number; ry: number; color: string }> = {
+  "DB-L": { cx: 15, cy: 35, rx: 16, ry: 12, color: "rgba(251,146,60,0.15)" },   // orange
+  "DB-R": { cx: 85, cy: 35, rx: 16, ry: 12, color: "rgba(96,165,250,0.15)" },    // blue
+  "DB-SA": { cx: 38, cy: 24, rx: 16, ry: 12, color: "rgba(74,222,128,0.15)" },   // green
+  "DB-S": { cx: 68, cy: 20, rx: 16, ry: 12, color: "rgba(192,132,252,0.15)" },   // purple
+};
+
+const zoneBorderColors: Record<string, string> = {
+  "DB-L": "rgba(251,146,60,0.4)",
+  "DB-R": "rgba(96,165,250,0.4)",
+  "DB-SA": "rgba(74,222,128,0.4)",
+  "DB-S": "rgba(192,132,252,0.4)",
+};
+
+// Helper to get offense positions based on active tab
+const getOffensePositions = (activeTab: OffenseTabId) => {
+  const positions: Record<string, { top: number; left: number }> = {
+    C: { top: 57, left: 50 },
+  };
+
+  if (activeTab === "løpespill") {
+    positions["WR-L"] = { top: 52, left: 15 };
+    positions["WR-R"] = { top: 52, left: 85 };
+    positions["RB"] = { top: 72, left: 50 };
+  } else if (activeTab === "kastespill") {
+    positions["WR-L"] = { top: 52, left: 30 };
+    positions["WR-R"] = { top: 52, left: 85 };
+    positions["WR-S"] = { top: 58, left: 72 };
+  } else {
+    positions["WR-L"] = { top: 52, left: 15 };
+    positions["WR-R"] = { top: 52, left: 85 };
+    positions["WR-S"] = { top: 58, left: 72 };
+  }
+
+  return positions;
+};
+
+// Man-to-man assignments: DB id → offense id
+const getManAssignments = (activeTab: OffenseTabId): Record<string, string> => {
+  if (activeTab === "løpespill") {
+    return {
+      "DB-L": "WR-L",
+      "DB-SA": "C",
+      "DB-S": "RB",
+      "DB-R": "WR-R",
+    };
+  }
+  // formasjon & kastespill
+  return {
+    "DB-L": "WR-L",
+    "DB-SA": "C",
+    "DB-S": "WR-S",
+    "DB-R": "WR-R",
+  };
+};
+
+const defensePositions: Record<string, { top: number; left: number }> = {
+  "DB-L": { top: 38, left: 15 },
+  "DB-R": { top: 38, left: 85 },
+  "DB-S": { top: 22, left: 65 },
+  "DB-SA": { top: 27, left: 40 },
+};
+
 const FieldDiagram = () => {
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<TabId>("formasjon");
+  const [activeTab, setActiveTab] = useState<OffenseTabId>("formasjon");
+  const [defenseTab, setDefenseTab] = useState<DefenseTabId>("formasjon");
+
+  const offensePos = getOffensePositions(activeTab);
+  const manAssignments = getManAssignments(activeTab);
 
   return (
     <div className="bg-card border border-border rounded-2xl p-6 mb-8">
@@ -36,8 +111,26 @@ const FieldDiagram = () => {
         Oppstilling – 5 mot 5
       </h3>
       <p className="text-xs text-muted-foreground text-center mb-3">Trykk på en spiller for beskrivelse</p>
+
+      {/* Defense tab navigator (top) */}
+      <div className="w-full max-w-md mx-auto flex border-2 border-b-0 border-emerald-600 rounded-t-xl overflow-hidden">
+        {defenseTabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => { setDefenseTab(tab.id); setActiveTooltip(null); }}
+            className={`flex-1 py-2.5 text-xs font-heading font-bold tracking-wide transition-colors ${
+              defenseTab === tab.id
+                ? "bg-rose-700 text-white"
+                : "bg-rose-900/80 text-white/50 hover:text-white/70 hover:bg-rose-800/80"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       <div
-        className="relative w-full max-w-md mx-auto aspect-[3/4] bg-emerald-800 rounded-t-xl overflow-hidden border-2 border-b-0 border-emerald-600"
+        className="relative w-full max-w-md mx-auto aspect-[3/4] bg-emerald-800 overflow-hidden border-2 border-t-0 border-b-0 border-emerald-600"
         onClick={() => setActiveTooltip(null)}
       >
         {/* Field lines */}
@@ -99,7 +192,7 @@ const FieldDiagram = () => {
           </>
         )}
 
-        {/* SVG overlay for arrows and routes */}
+        {/* SVG overlay for arrows, routes, zones, and man coverage */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ zIndex: 1 }}>
           <defs>
             <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
@@ -112,6 +205,41 @@ const FieldDiagram = () => {
               <polygon points="0 0, 6 2.5, 0 5" fill="#4ade80" fillOpacity="0.8" />
             </marker>
           </defs>
+
+          {/* Zone coverage circles */}
+          {defenseTab === "soneforsvar" && Object.entries(zoneAreas).map(([id, zone]) => (
+            <ellipse
+              key={id}
+              cx={zone.cx}
+              cy={zone.cy}
+              rx={zone.rx}
+              ry={zone.ry}
+              fill={zone.color}
+              stroke={zoneBorderColors[id]}
+              strokeWidth="1.5"
+              vectorEffect="non-scaling-stroke"
+            />
+          ))}
+
+          {/* Man-to-man dashed lines */}
+          {defenseTab === "mann-mot-mann" && Object.entries(manAssignments).map(([dbId, offId]) => {
+            const db = defensePositions[dbId];
+            const off = offensePos[offId];
+            if (!db || !off) return null;
+            return (
+              <line
+                key={dbId}
+                x1={db.left}
+                y1={db.top}
+                x2={off.left}
+                y2={off.top}
+                stroke="rgba(251,113,133,0.6)"
+                strokeWidth="1.5"
+                strokeDasharray="4 3"
+                vectorEffect="non-scaling-stroke"
+              />
+            );
+          })}
 
           {/* Dashed arrow from R to QB */}
           <line
@@ -128,7 +256,6 @@ const FieldDiagram = () => {
           {/* Kastespill routes */}
           {activeTab === "kastespill" && (
             <>
-              {/* WR-R (85%): Post */}
               <polyline
                 points="85,52 85,38 60,22"
                 fill="none"
@@ -140,8 +267,6 @@ const FieldDiagram = () => {
                 markerEnd="url(#arrowhead-yellow)"
                 vectorEffect="non-scaling-stroke"
               />
-
-              {/* WR-S (72%): Dig */}
               <polyline
                 points="72,58 72,36 45,36"
                 fill="none"
@@ -153,8 +278,6 @@ const FieldDiagram = () => {
                 markerEnd="url(#arrowhead-yellow)"
                 vectorEffect="non-scaling-stroke"
               />
-
-              {/* C (50%): Hitch */}
               <polyline
                 points="50,57 50,46 46,50"
                 fill="none"
@@ -166,8 +289,6 @@ const FieldDiagram = () => {
                 markerEnd="url(#arrowhead-yellow)"
                 vectorEffect="non-scaling-stroke"
               />
-
-              {/* WR-L (30%): Out */}
               <polyline
                 points="30,52 30,40 12,40"
                 fill="none"
@@ -185,7 +306,6 @@ const FieldDiagram = () => {
           {/* Løpespill routes */}
           {activeTab === "løpespill" && (
             <>
-              {/* QB handoff motion – small line down-right, no arrowhead */}
               <line
                 x1="50" y1="63"
                 x2="52" y2="68"
@@ -195,8 +315,6 @@ const FieldDiagram = () => {
                 strokeLinecap="round"
                 vectorEffect="non-scaling-stroke"
               />
-
-              {/* RB runs diagonally up-right past QB, then straight up */}
               <polyline
                 points="50,72 56,62 56,30"
                 fill="none"
@@ -208,8 +326,6 @@ const FieldDiagram = () => {
                 markerEnd="url(#arrowhead-green)"
                 vectorEffect="non-scaling-stroke"
               />
-
-              {/* C blocks forward */}
               <polyline
                 points="50,57 50,48"
                 fill="none"
@@ -220,8 +336,6 @@ const FieldDiagram = () => {
                 markerEnd="url(#arrowhead)"
                 vectorEffect="non-scaling-stroke"
               />
-
-              {/* WR-L: out route (up then cut out) */}
               <polyline
                 points="15,52 15,40 6,34"
                 fill="none"
@@ -233,8 +347,6 @@ const FieldDiagram = () => {
                 markerEnd="url(#arrowhead)"
                 vectorEffect="non-scaling-stroke"
               />
-
-              {/* WR-R: out route (up then cut out) */}
               <polyline
                 points="85,52 85,40 94,34"
                 fill="none"
@@ -270,9 +382,9 @@ const FieldDiagram = () => {
         </div>
       </div>
 
-      {/* Tab navigator */}
+      {/* Offense tab navigator (bottom) */}
       <div className="w-full max-w-md mx-auto flex border-2 border-t-0 border-emerald-600 rounded-b-xl overflow-hidden">
-        {tabs.map((tab) => (
+        {offenseTabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => { setActiveTab(tab.id); setActiveTooltip(null); }}

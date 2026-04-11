@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 const positionFullNames: Record<string, string> = {
   QB: "QB – Quarterback",
@@ -14,7 +14,7 @@ const positionDescriptions: Record<string, string> = {
   C: "Starter hvert spill ved å snappe ballen til QB. Går deretter ut som mottaker eller blokkerer rusheren.",
   WR: "Løper ruter og fanger pasninger fra QB. Målet er å bli fri fra forsvareren og ta imot ballen.",
   RB: "Tar imot ballen fra QB og løper med den. Kan også brukes som mottaker på korte pasninger.",
-  R: "Starter 7 yards fra ballen med hånden i været. Kan rushe mot QB så fort de klarer etter snap. Laget kan ha 0–2 rushere per spill.",
+  R: "Starter 7 yards fra ballen med hånden i året. Kan rushe mot QB så fort de klarer etter snap. Laget kan ha 0–2 rushere per spill.",
   DB: "Dekker motstanderens mottakere. Hindrer pasninger og drar flagget til ballbæreren.",
 };
 
@@ -42,6 +42,7 @@ const zoneAreas: Record<string, { cx: number; cy: number; rx: number; ry: number
 
 type PlayerPosition = { top: number; left: number; label: string; color: string; id: string };
 
+// WR-S is the slot WR that becomes RB in løpespill — same id so it animates
 const getOffensePlayers = (tab: OffenseTabId): PlayerPosition[] => {
   const c: PlayerPosition = { top: 57, left: 50, label: "C", color: "bg-sky-400", id: "C" };
 
@@ -49,7 +50,8 @@ const getOffensePlayers = (tab: OffenseTabId): PlayerPosition[] => {
     return [
       c,
       { top: 63, left: 50, label: "QB", color: "bg-amber-400", id: "QB" },
-      { top: 72, left: 50, label: "RB", color: "bg-sky-400", id: "RB" },
+      // WR-S moves down to become RB
+      { top: 72, left: 50, label: "RB", color: "bg-emerald-400", id: "WR-S" },
       { top: 52, left: 15, label: "WR", color: "bg-sky-400", id: "WR-L" },
       { top: 52, left: 85, label: "WR", color: "bg-sky-400", id: "WR-R" },
     ];
@@ -83,19 +85,37 @@ const defensePlayersBase: PlayerPosition[] = [
 
 const getManAssignments = (tab: OffenseTabId): Record<string, string> => {
   if (tab === "løpespill") {
-    return { "DB-L": "WR-L", "DB-SA": "C", "DB-S": "RB", "DB-R": "WR-R" };
+    return { "DB-L": "WR-L", "DB-SA": "C", "DB-S": "WR-S", "DB-R": "WR-R" };
   }
   return { "DB-L": "WR-L", "DB-SA": "C", "DB-S": "WR-S", "DB-R": "WR-R" };
 };
+
+const ANIMATION_DURATION = 400;
 
 const FieldDiagram = () => {
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<OffenseTabId>("formasjon");
   const [defenseTab, setDefenseTab] = useState<DefenseTabId>("formasjon");
+  const [showArrows, setShowArrows] = useState(true);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const prevTabRef = useRef<OffenseTabId>(activeTab);
 
   const offensePlayers = getOffensePlayers(activeTab);
   const offenseMap = Object.fromEntries(offensePlayers.map(p => [p.id, { top: p.top, left: p.left }]));
   const manAssignments = getManAssignments(activeTab);
+
+  const handleOffenseTabChange = useCallback((newTab: OffenseTabId) => {
+    if (newTab === activeTab) return;
+    setActiveTooltip(null);
+    setShowArrows(false);
+    setIsAnimating(true);
+    setActiveTab(newTab);
+    prevTabRef.current = newTab;
+    setTimeout(() => {
+      setShowArrows(true);
+      setIsAnimating(false);
+    }, ANIMATION_DURATION);
+  }, [activeTab]);
 
   return (
     <div className="bg-card border border-border rounded-2xl p-6 mb-8">
@@ -106,8 +126,8 @@ const FieldDiagram = () => {
 
       {/* Defense navigator */}
       <div className="w-full max-w-md mx-auto">
-        <div className="bg-rose-900/40 border-2 border-b-0 border-rose-400/30 rounded-t-xl overflow-hidden">
-          <div className="text-[10px] font-heading font-bold text-rose-300/70 tracking-widest uppercase text-center py-1">
+        <div className="bg-rose-950/30 border-2 border-b-0 border-rose-400/20 rounded-t-xl overflow-hidden">
+          <div className="text-[10px] font-heading font-bold text-rose-300/50 tracking-widest uppercase text-center py-1 bg-rose-950/30">
             Forsvar
           </div>
           <div className="flex">
@@ -117,8 +137,8 @@ const FieldDiagram = () => {
                 onClick={() => { setDefenseTab(tab.id); setActiveTooltip(null); }}
                 className={`flex-1 py-2 text-xs font-heading font-bold tracking-wide transition-colors ${
                   defenseTab === tab.id
-                    ? "bg-rose-800/60 text-rose-200"
-                    : "bg-rose-950/40 text-rose-300/40 hover:text-rose-300/60 hover:bg-rose-900/40"
+                    ? "bg-rose-900/40 text-rose-200/80"
+                    : "bg-rose-950/30 text-rose-300/30 hover:text-rose-300/50 hover:bg-rose-950/50"
                 }`}
               >
                 {tab.label}
@@ -170,11 +190,21 @@ const FieldDiagram = () => {
             activeTooltip={activeTooltip}
             setActiveTooltip={setActiveTooltip}
             id={p.id}
+            isAnimating={isAnimating}
           />
         ))}
 
         {/* SVG overlay */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ zIndex: 1 }}>
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          style={{
+            zIndex: 1,
+            opacity: showArrows ? 1 : 0,
+            transition: "opacity 0.25s ease-in-out",
+          }}
+        >
           <defs>
             <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
               <polygon points="0 0, 8 3, 0 6" fill="white" fillOpacity="0.6" />
@@ -259,6 +289,7 @@ const FieldDiagram = () => {
             activeTooltip={activeTooltip}
             setActiveTooltip={setActiveTooltip}
             id={p.id}
+            isAnimating={false}
           />
         ))}
 
@@ -277,23 +308,23 @@ const FieldDiagram = () => {
 
       {/* Offense navigator */}
       <div className="w-full max-w-md mx-auto">
-        <div className="bg-sky-900/40 border-2 border-t-0 border-sky-400/30 rounded-b-xl overflow-hidden">
+        <div className="bg-sky-950/30 border-2 border-t-0 border-sky-400/20 rounded-b-xl overflow-hidden">
           <div className="flex">
             {offenseTabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => { setActiveTab(tab.id); setActiveTooltip(null); }}
+                onClick={() => handleOffenseTabChange(tab.id)}
                 className={`flex-1 py-2 text-xs font-heading font-bold tracking-wide transition-colors ${
                   activeTab === tab.id
-                    ? "bg-sky-800/60 text-sky-200"
-                    : "bg-sky-950/40 text-sky-300/40 hover:text-sky-300/60 hover:bg-sky-900/40"
+                    ? "bg-sky-900/40 text-sky-200/80"
+                    : "bg-sky-950/30 text-sky-300/30 hover:text-sky-300/50 hover:bg-sky-950/50"
                 }`}
               >
                 {tab.label}
               </button>
             ))}
           </div>
-          <div className="text-[10px] font-heading font-bold text-sky-300/70 tracking-widest uppercase text-center py-1">
+          <div className="text-[10px] font-heading font-bold text-sky-300/50 tracking-widest uppercase text-center py-1 bg-sky-950/30">
             Angrep
           </div>
         </div>
@@ -304,13 +335,18 @@ const FieldDiagram = () => {
 
 // Animated player dot that transitions smoothly when position changes
 const AnimatedPlayerDot = ({
-  label, color, top, left, activeTooltip, setActiveTooltip, id,
+  label, color, top, left, activeTooltip, setActiveTooltip, id, isAnimating,
 }: {
   label: string; color: string; top: number; left: number;
   activeTooltip: string | null; setActiveTooltip: (id: string | null) => void; id: string;
+  isAnimating: boolean;
 }) => {
   const [pos, setPos] = useState({ top, left });
+  const [displayLabel, setDisplayLabel] = useState(label);
+  const [labelOpacity, setLabelOpacity] = useState(1);
+  const [dotColor, setDotColor] = useState(color);
   const prevPos = useRef({ top, left });
+  const prevLabel = useRef(label);
 
   useEffect(() => {
     if (prevPos.current.top !== top || prevPos.current.left !== left) {
@@ -319,9 +355,25 @@ const AnimatedPlayerDot = ({
     }
   }, [top, left]);
 
+  useEffect(() => {
+    if (prevLabel.current !== label) {
+      // Fade out old label, swap, fade in new label
+      setLabelOpacity(0);
+      const timeout = setTimeout(() => {
+        setDisplayLabel(label);
+        setDotColor(color);
+        setLabelOpacity(1);
+      }, 200);
+      prevLabel.current = label;
+      return () => clearTimeout(timeout);
+    } else {
+      setDotColor(color);
+    }
+  }, [label, color]);
+
   const isActive = activeTooltip === id;
-  const description = positionDescriptions[label] || "";
-  const fullName = positionFullNames[label] || label;
+  const description = positionDescriptions[displayLabel] || "";
+  const fullName = positionFullNames[displayLabel] || displayLabel;
   const tooltipAlign = pos.left > 60 ? "right-0" : pos.left < 40 ? "left-0" : "left-1/2 -translate-x-1/2";
 
   return (
@@ -338,8 +390,15 @@ const AnimatedPlayerDot = ({
         setActiveTooltip(isActive ? null : id);
       }}
     >
-      <div className={`w-6 h-6 rounded-full ${color} border-2 border-white/80 shadow-lg transition-transform ${isActive ? "scale-125 ring-2 ring-white/60" : "hover:scale-110"}`} />
-      <span className="text-[10px] font-heading font-bold text-white drop-shadow-md">{label}</span>
+      <div
+        className={`w-6 h-6 rounded-full ${dotColor} border-2 border-white/80 shadow-lg transition-all duration-200 ${isActive ? "scale-125 ring-2 ring-white/60" : "hover:scale-110"}`}
+      />
+      <span
+        className="text-[10px] font-heading font-bold text-white drop-shadow-md"
+        style={{ opacity: labelOpacity, transition: "opacity 0.2s ease-in-out" }}
+      >
+        {displayLabel}
+      </span>
       {isActive && description && (
         <div className={`absolute top-full mt-1 w-48 bg-black/90 text-white text-[11px] leading-snug rounded-lg px-3 py-2 shadow-xl ${tooltipAlign}`}>
           <div className="font-bold mb-0.5">{fullName}</div>

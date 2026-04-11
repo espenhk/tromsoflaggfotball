@@ -311,7 +311,7 @@ const Index = () => {
       </section>
 
       {/* Kom i gang */}
-      <section id="kom-i-gang" className="py-16 px-6 scroll-mt-16">
+      <section id="kom-i-gang" className="py-16 px-6 scroll-mt-16 bg-card/50">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Kom i gang
@@ -388,7 +388,7 @@ const Index = () => {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="py-16 px-6 scroll-mt-16">
+      <section id="faq" className="py-16 px-6 scroll-mt-16 bg-card/50">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Ofte stilte spørsmål

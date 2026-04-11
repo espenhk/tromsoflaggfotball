@@ -2,7 +2,7 @@ import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, Chev
 import { useState } from "react";
 import logo from "@/assets/logo.png";
 import heroBg from "@/assets/hero-bg.png";
-import SpinningFootball from "@/components/SpinningFootball";
+
 
 const Index = () => {
   return (

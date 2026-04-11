@@ -104,18 +104,15 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "football-spin": {
-          "0%": { transform: "scaleX(1)" },
-          "25%": { transform: "scaleX(0.15)" },
-          "50%": { transform: "scaleX(-1)" },
-          "75%": { transform: "scaleX(0.15)" },
-          "100%": { transform: "scaleX(1)" },
+        "football-frame": {
+          "0%, 10%": { opacity: "1" },
+          "12.5%, 100%": { opacity: "0" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "football-spin": "football-spin 1.8s ease-in-out infinite",
+        "football-frame": "football-frame 1.6s steps(1) infinite",
       },
     },
   },

@@ -646,11 +646,11 @@ const PositionCard = ({
     >
       {/* Glow background on hover */}
       <div
-        className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${glowColor}`}
+        className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${resolvedGlow}`}
         style={{ filter: "blur(12px)" }}
       />
       <div
-        className={`absolute inset-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${glowColor}`}
+        className={`absolute inset-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${resolvedGlow}`}
       />
       <div className="relative flex items-center gap-2">
         <div className={accentColor}>{icon}</div>

@@ -25,6 +25,12 @@ const offensePositions = [
     role: "Løper ruter og fanger pasninger fra QB. Målet er å bli fri fra forsvareren og ta imot ballen.",
     traits: "Hurtighet, gode hender, evne til å lese forsvar. Perfekt for de som liker å løpe og gjøre raske vendinger.",
   },
+  {
+    name: "Running Back (RB)",
+    icon: <Zap className="w-5 h-5" />,
+    role: "Tar imot ballen fra QB og løper med den. Kan også brukes som mottaker på korte pasninger.",
+    traits: "Eksplosiv fart, god balanse, evne til å lese blokker. Perfekt for de som liker å løpe med ballen.",
+  },
 ];
 
 const defensePositions = [

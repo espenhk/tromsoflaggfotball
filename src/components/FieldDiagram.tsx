@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const positionFullNames: Record<string, string> = {
   QB: "QB – Quarterback",
@@ -33,68 +33,59 @@ const defenseTabs: { id: DefenseTabId; label: string }[] = [
   { id: "mann-mot-mann", label: "Mann-mot-mann" },
 ];
 
-// Zone coverage areas for each DB (cx, cy, rx, ry in viewBox 0-100 coords)
-const zoneAreas: Record<string, { cx: number; cy: number; rx: number; ry: number; color: string }> = {
-  "DB-L": { cx: 15, cy: 35, rx: 16, ry: 12, color: "rgba(251,146,60,0.15)" },   // orange
-  "DB-R": { cx: 85, cy: 35, rx: 16, ry: 12, color: "rgba(96,165,250,0.15)" },    // blue
-  "DB-SA": { cx: 38, cy: 24, rx: 16, ry: 12, color: "rgba(74,222,128,0.15)" },   // green
-  "DB-S": { cx: 68, cy: 20, rx: 16, ry: 12, color: "rgba(192,132,252,0.15)" },   // purple
+const zoneAreas: Record<string, { cx: number; cy: number; rx: number; ry: number; color: string; border: string }> = {
+  "DB-L": { cx: 15, cy: 35, rx: 16, ry: 12, color: "rgba(251,146,60,0.15)", border: "rgba(251,146,60,0.4)" },
+  "DB-R": { cx: 85, cy: 35, rx: 16, ry: 12, color: "rgba(96,165,250,0.15)", border: "rgba(96,165,250,0.4)" },
+  "DB-SA": { cx: 38, cy: 24, rx: 16, ry: 12, color: "rgba(74,222,128,0.15)", border: "rgba(74,222,128,0.4)" },
+  "DB-S": { cx: 68, cy: 20, rx: 16, ry: 12, color: "rgba(192,132,252,0.15)", border: "rgba(192,132,252,0.4)" },
 };
 
-const zoneBorderColors: Record<string, string> = {
-  "DB-L": "rgba(251,146,60,0.4)",
-  "DB-R": "rgba(96,165,250,0.4)",
-  "DB-SA": "rgba(74,222,128,0.4)",
-  "DB-S": "rgba(192,132,252,0.4)",
-};
+type PlayerPosition = { top: number; left: number; label: string; color: string; id: string };
 
-// Helper to get offense positions based on active tab
-const getOffensePositions = (activeTab: OffenseTabId) => {
-  const positions: Record<string, { top: number; left: number }> = {
-    C: { top: 57, left: 50 },
-  };
+const getOffensePlayers = (tab: OffenseTabId): PlayerPosition[] => {
+  const c: PlayerPosition = { top: 57, left: 50, label: "C", color: "bg-sky-400", id: "C" };
 
-  if (activeTab === "løpespill") {
-    positions["WR-L"] = { top: 52, left: 15 };
-    positions["WR-R"] = { top: 52, left: 85 };
-    positions["RB"] = { top: 72, left: 50 };
-  } else if (activeTab === "kastespill") {
-    positions["WR-L"] = { top: 52, left: 30 };
-    positions["WR-R"] = { top: 52, left: 85 };
-    positions["WR-S"] = { top: 58, left: 72 };
-  } else {
-    positions["WR-L"] = { top: 52, left: 15 };
-    positions["WR-R"] = { top: 52, left: 85 };
-    positions["WR-S"] = { top: 58, left: 72 };
+  if (tab === "løpespill") {
+    return [
+      c,
+      { top: 63, left: 50, label: "QB", color: "bg-amber-400", id: "QB" },
+      { top: 72, left: 50, label: "RB", color: "bg-sky-400", id: "RB" },
+      { top: 52, left: 15, label: "WR", color: "bg-sky-400", id: "WR-L" },
+      { top: 52, left: 85, label: "WR", color: "bg-sky-400", id: "WR-R" },
+    ];
   }
-
-  return positions;
-};
-
-// Man-to-man assignments: DB id → offense id
-const getManAssignments = (activeTab: OffenseTabId): Record<string, string> => {
-  if (activeTab === "løpespill") {
-    return {
-      "DB-L": "WR-L",
-      "DB-SA": "C",
-      "DB-S": "RB",
-      "DB-R": "WR-R",
-    };
+  if (tab === "kastespill") {
+    return [
+      c,
+      { top: 68, left: 50, label: "QB", color: "bg-amber-400", id: "QB" },
+      { top: 52, left: 30, label: "WR", color: "bg-sky-400", id: "WR-L" },
+      { top: 52, left: 85, label: "WR", color: "bg-sky-400", id: "WR-R" },
+      { top: 58, left: 72, label: "WR", color: "bg-sky-400", id: "WR-S" },
+    ];
   }
-  // formasjon & kastespill
-  return {
-    "DB-L": "WR-L",
-    "DB-SA": "C",
-    "DB-S": "WR-S",
-    "DB-R": "WR-R",
-  };
+  // formasjon
+  return [
+    c,
+    { top: 68, left: 50, label: "QB", color: "bg-amber-400", id: "QB" },
+    { top: 52, left: 15, label: "WR", color: "bg-sky-400", id: "WR-L" },
+    { top: 52, left: 85, label: "WR", color: "bg-sky-400", id: "WR-R" },
+    { top: 58, left: 72, label: "WR", color: "bg-sky-400", id: "WR-S" },
+  ];
 };
 
-const defensePositions: Record<string, { top: number; left: number }> = {
-  "DB-L": { top: 38, left: 15 },
-  "DB-R": { top: 38, left: 85 },
-  "DB-S": { top: 22, left: 65 },
-  "DB-SA": { top: 27, left: 40 },
+const defensePlayersBase: PlayerPosition[] = [
+  { top: 36, left: 63, label: "R", color: "bg-rose-400", id: "R" },
+  { top: 38, left: 15, label: "DB", color: "bg-rose-400", id: "DB-L" },
+  { top: 38, left: 85, label: "DB", color: "bg-rose-400", id: "DB-R" },
+  { top: 22, left: 65, label: "DB", color: "bg-rose-400", id: "DB-S" },
+  { top: 27, left: 40, label: "DB", color: "bg-rose-400", id: "DB-SA" },
+];
+
+const getManAssignments = (tab: OffenseTabId): Record<string, string> => {
+  if (tab === "løpespill") {
+    return { "DB-L": "WR-L", "DB-SA": "C", "DB-S": "RB", "DB-R": "WR-R" };
+  }
+  return { "DB-L": "WR-L", "DB-SA": "C", "DB-S": "WR-S", "DB-R": "WR-R" };
 };
 
 const FieldDiagram = () => {
@@ -102,7 +93,8 @@ const FieldDiagram = () => {
   const [activeTab, setActiveTab] = useState<OffenseTabId>("formasjon");
   const [defenseTab, setDefenseTab] = useState<DefenseTabId>("formasjon");
 
-  const offensePos = getOffensePositions(activeTab);
+  const offensePlayers = getOffensePlayers(activeTab);
+  const offenseMap = Object.fromEntries(offensePlayers.map(p => [p.id, { top: p.top, left: p.left }]));
   const manAssignments = getManAssignments(activeTab);
 
   return (
@@ -112,23 +104,31 @@ const FieldDiagram = () => {
       </h3>
       <p className="text-xs text-muted-foreground text-center mb-3">Trykk på en spiller for beskrivelse</p>
 
-      {/* Defense tab navigator (top) */}
-      <div className="w-full max-w-md mx-auto flex border-2 border-b-0 border-emerald-600 rounded-t-xl overflow-hidden">
-        {defenseTabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => { setDefenseTab(tab.id); setActiveTooltip(null); }}
-            className={`flex-1 py-2.5 text-xs font-heading font-bold tracking-wide transition-colors ${
-              defenseTab === tab.id
-                ? "bg-rose-700 text-white"
-                : "bg-rose-900/80 text-white/50 hover:text-white/70 hover:bg-rose-800/80"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+      {/* Defense navigator */}
+      <div className="w-full max-w-md mx-auto">
+        <div className="bg-rose-900/40 border-2 border-b-0 border-rose-400/30 rounded-t-xl overflow-hidden">
+          <div className="text-[10px] font-heading font-bold text-rose-300/70 tracking-widest uppercase text-center py-1">
+            Forsvar
+          </div>
+          <div className="flex">
+            {defenseTabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => { setDefenseTab(tab.id); setActiveTooltip(null); }}
+                className={`flex-1 py-2 text-xs font-heading font-bold tracking-wide transition-colors ${
+                  defenseTab === tab.id
+                    ? "bg-rose-800/60 text-rose-200"
+                    : "bg-rose-950/40 text-rose-300/40 hover:text-rose-300/60 hover:bg-rose-900/40"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
+      {/* Field */}
       <div
         className="relative w-full max-w-md mx-auto aspect-[3/4] bg-emerald-800 overflow-hidden border-2 border-t-0 border-b-0 border-emerald-600"
         onClick={() => setActiveTooltip(null)}
@@ -140,17 +140,13 @@ const FieldDiagram = () => {
 
         {/* End zones */}
         <div className="absolute inset-x-0 top-0 h-[15%] bg-emerald-900/60 flex items-center justify-center">
-          <span className="text-white/40 font-heading text-xs font-bold tracking-widest uppercase">
-            Endesone
-          </span>
+          <span className="text-white/40 font-heading text-xs font-bold tracking-widest uppercase">Endesone</span>
         </div>
         <div className="absolute inset-x-0 bottom-0 h-[15%] bg-emerald-900/60 flex items-center justify-center">
-          <span className="text-white/40 font-heading text-xs font-bold tracking-widest uppercase">
-            Endesone
-          </span>
+          <span className="text-white/40 font-heading text-xs font-bold tracking-widest uppercase">Endesone</span>
         </div>
 
-        {/* Ball icon */}
+        {/* Ball */}
         <svg
           className="absolute -translate-x-1/2 -translate-y-1/2"
           style={{ top: "51%", left: "50%", zIndex: 1 }}
@@ -163,36 +159,21 @@ const FieldDiagram = () => {
           <line x1="3.5" y1="11" x2="7.5" y2="11" stroke="white" strokeWidth="0.5" />
         </svg>
 
-        {/* OFFENSE */}
-        <PlayerDot label="C" color="bg-sky-400" top="57%" left="50%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="C" />
+        {/* Offense players */}
+        {offensePlayers.map((p) => (
+          <AnimatedPlayerDot
+            key={p.id}
+            label={p.label}
+            color={p.color}
+            top={p.top}
+            left={p.left}
+            activeTooltip={activeTooltip}
+            setActiveTooltip={setActiveTooltip}
+            id={p.id}
+          />
+        ))}
 
-        {activeTab === "løpespill" ? (
-          <>
-            <PlayerDot label="QB" color="bg-amber-400" top="63%" left="50%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="QB" />
-            <PlayerDot label="RB" color="bg-sky-400" top="72%" left="50%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="RB" />
-            <PlayerDot label="WR" color="bg-sky-400" top="52%" left="15%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-L" />
-            <PlayerDot label="WR" color="bg-sky-400" top="52%" left="85%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-R" />
-          </>
-        ) : (
-          <>
-            <PlayerDot label="QB" color="bg-amber-400" top="68%" left="50%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="QB" />
-            {activeTab === "kastespill" ? (
-              <>
-                <PlayerDot label="WR" color="bg-sky-400" top="52%" left="30%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-L" />
-                <PlayerDot label="WR" color="bg-sky-400" top="52%" left="85%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-R" />
-                <PlayerDot label="WR" color="bg-sky-400" top="58%" left="72%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-S" />
-              </>
-            ) : (
-              <>
-                <PlayerDot label="WR" color="bg-sky-400" top="52%" left="15%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-L" />
-                <PlayerDot label="WR" color="bg-sky-400" top="52%" left="85%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-R" />
-                <PlayerDot label="WR" color="bg-sky-400" top="58%" left="72%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-S" />
-              </>
-            )}
-          </>
-        )}
-
-        {/* SVG overlay for arrows, routes, zones, and man coverage */}
+        {/* SVG overlay */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ zIndex: 1 }}>
           <defs>
             <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
@@ -206,168 +187,80 @@ const FieldDiagram = () => {
             </marker>
           </defs>
 
-          {/* Zone coverage circles */}
-          {defenseTab === "soneforsvar" && Object.entries(zoneAreas).map(([id, zone]) => (
-            <ellipse
-              key={id}
-              cx={zone.cx}
-              cy={zone.cy}
-              rx={zone.rx}
-              ry={zone.ry}
-              fill={zone.color}
-              stroke={zoneBorderColors[id]}
-              strokeWidth="1.5"
-              vectorEffect="non-scaling-stroke"
-            />
+          {/* Zone coverage */}
+          {defenseTab === "soneforsvar" && Object.entries(zoneAreas).map(([id, z]) => (
+            <ellipse key={id} cx={z.cx} cy={z.cy} rx={z.rx} ry={z.ry}
+              fill={z.color} stroke={z.border} strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
           ))}
 
-          {/* Man-to-man dashed lines */}
+          {/* Man-to-man lines */}
           {defenseTab === "mann-mot-mann" && Object.entries(manAssignments).map(([dbId, offId]) => {
-            const db = defensePositions[dbId];
-            const off = offensePos[offId];
+            const db = defensePlayersBase.find(p => p.id === dbId);
+            const off = offenseMap[offId];
             if (!db || !off) return null;
             return (
-              <line
-                key={dbId}
-                x1={db.left}
-                y1={db.top}
-                x2={off.left}
-                y2={off.top}
-                stroke="rgba(251,113,133,0.6)"
-                strokeWidth="1.5"
-                strokeDasharray="4 3"
-                vectorEffect="non-scaling-stroke"
-              />
+              <line key={dbId} x1={db.left} y1={db.top} x2={off.left} y2={off.top}
+                stroke="rgba(251,113,133,0.6)" strokeWidth="1.5" strokeDasharray="4 3"
+                vectorEffect="non-scaling-stroke" />
             );
           })}
 
-          {/* Dashed arrow from R to QB */}
-          <line
-            x1="63" y1="36"
-            x2="51" y2="63"
-            stroke="white"
-            strokeOpacity="0.5"
-            strokeWidth="1.5"
-            strokeDasharray="4 3"
-            markerEnd="url(#arrowhead)"
-            vectorEffect="non-scaling-stroke"
-          />
+          {/* Rush arrow */}
+          <line x1="63" y1="36" x2="51" y2="63" stroke="white" strokeOpacity="0.5"
+            strokeWidth="1.5" strokeDasharray="4 3" markerEnd="url(#arrowhead)" vectorEffect="non-scaling-stroke" />
 
           {/* Kastespill routes */}
           {activeTab === "kastespill" && (
             <>
-              <polyline
-                points="85,52 85,38 60,22"
-                fill="none"
-                stroke="#facc15"
-                strokeOpacity="0.6"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                markerEnd="url(#arrowhead-yellow)"
-                vectorEffect="non-scaling-stroke"
-              />
-              <polyline
-                points="72,58 72,36 45,36"
-                fill="none"
-                stroke="#facc15"
-                strokeOpacity="0.6"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                markerEnd="url(#arrowhead-yellow)"
-                vectorEffect="non-scaling-stroke"
-              />
-              <polyline
-                points="50,57 50,46 46,50"
-                fill="none"
-                stroke="#facc15"
-                strokeOpacity="0.6"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                markerEnd="url(#arrowhead-yellow)"
-                vectorEffect="non-scaling-stroke"
-              />
-              <polyline
-                points="30,52 30,40 12,40"
-                fill="none"
-                stroke="#facc15"
-                strokeOpacity="0.6"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                markerEnd="url(#arrowhead-yellow)"
-                vectorEffect="non-scaling-stroke"
-              />
+              <polyline points="85,52 85,38 60,22" fill="none" stroke="#facc15" strokeOpacity="0.6"
+                strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+                markerEnd="url(#arrowhead-yellow)" vectorEffect="non-scaling-stroke" />
+              <polyline points="72,58 72,36 45,36" fill="none" stroke="#facc15" strokeOpacity="0.6"
+                strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+                markerEnd="url(#arrowhead-yellow)" vectorEffect="non-scaling-stroke" />
+              <polyline points="50,57 50,46 46,50" fill="none" stroke="#facc15" strokeOpacity="0.6"
+                strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+                markerEnd="url(#arrowhead-yellow)" vectorEffect="non-scaling-stroke" />
+              <polyline points="30,52 30,40 12,40" fill="none" stroke="#facc15" strokeOpacity="0.6"
+                strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+                markerEnd="url(#arrowhead-yellow)" vectorEffect="non-scaling-stroke" />
             </>
           )}
 
           {/* Løpespill routes */}
           {activeTab === "løpespill" && (
             <>
-              <line
-                x1="50" y1="63"
-                x2="52" y2="68"
-                stroke="#4ade80"
-                strokeOpacity="0.6"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                vectorEffect="non-scaling-stroke"
-              />
-              <polyline
-                points="50,72 56,62 56,30"
-                fill="none"
-                stroke="#4ade80"
-                strokeOpacity="0.7"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                markerEnd="url(#arrowhead-green)"
-                vectorEffect="non-scaling-stroke"
-              />
-              <polyline
-                points="50,57 50,48"
-                fill="none"
-                stroke="white"
-                strokeOpacity="0.5"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                markerEnd="url(#arrowhead)"
-                vectorEffect="non-scaling-stroke"
-              />
-              <polyline
-                points="15,52 15,40 6,34"
-                fill="none"
-                stroke="white"
-                strokeOpacity="0.4"
-                strokeWidth="1.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                markerEnd="url(#arrowhead)"
-                vectorEffect="non-scaling-stroke"
-              />
-              <polyline
-                points="85,52 85,40 94,34"
-                fill="none"
-                stroke="white"
-                strokeOpacity="0.4"
-                strokeWidth="1.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                markerEnd="url(#arrowhead)"
-                vectorEffect="non-scaling-stroke"
-              />
+              <line x1="50" y1="63" x2="52" y2="68" stroke="#4ade80" strokeOpacity="0.6"
+                strokeWidth="1.5" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+              <polyline points="50,72 56,62 56,30" fill="none" stroke="#4ade80" strokeOpacity="0.7"
+                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                markerEnd="url(#arrowhead-green)" vectorEffect="non-scaling-stroke" />
+              <polyline points="50,57 50,48" fill="none" stroke="white" strokeOpacity="0.5"
+                strokeWidth="1.5" strokeLinecap="round" markerEnd="url(#arrowhead)"
+                vectorEffect="non-scaling-stroke" />
+              <polyline points="15,52 15,40 6,34" fill="none" stroke="white" strokeOpacity="0.4"
+                strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"
+                markerEnd="url(#arrowhead)" vectorEffect="non-scaling-stroke" />
+              <polyline points="85,52 85,40 94,34" fill="none" stroke="white" strokeOpacity="0.4"
+                strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"
+                markerEnd="url(#arrowhead)" vectorEffect="non-scaling-stroke" />
             </>
           )}
         </svg>
 
-        {/* DEFENSE */}
-        <PlayerDot label="R" color="bg-rose-400" top="36%" left="63%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="R" />
-        <PlayerDot label="DB" color="bg-rose-400" top="38%" left="15%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="DB-L" />
-        <PlayerDot label="DB" color="bg-rose-400" top="38%" left="85%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="DB-R" />
-        <PlayerDot label="DB" color="bg-rose-400" top="22%" left="65%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="DB-S" />
-        <PlayerDot label="DB" color="bg-rose-400" top="27%" left="40%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="DB-SA" />
+        {/* Defense players */}
+        {defensePlayersBase.map((p) => (
+          <AnimatedPlayerDot
+            key={p.id}
+            label={p.label}
+            color={p.color}
+            top={p.top}
+            left={p.left}
+            activeTooltip={activeTooltip}
+            setActiveTooltip={setActiveTooltip}
+            id={p.id}
+          />
+        ))}
 
         {/* Legend */}
         <div className="absolute bottom-[17%] left-3 flex flex-col gap-1">
@@ -382,62 +275,71 @@ const FieldDiagram = () => {
         </div>
       </div>
 
-      {/* Offense tab navigator (bottom) */}
-      <div className="w-full max-w-md mx-auto flex border-2 border-t-0 border-emerald-600 rounded-b-xl overflow-hidden">
-        {offenseTabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => { setActiveTab(tab.id); setActiveTooltip(null); }}
-            className={`flex-1 py-2.5 text-xs font-heading font-bold tracking-wide transition-colors ${
-              activeTab === tab.id
-                ? "bg-emerald-700 text-white"
-                : "bg-emerald-900/80 text-white/50 hover:text-white/70 hover:bg-emerald-800/80"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+      {/* Offense navigator */}
+      <div className="w-full max-w-md mx-auto">
+        <div className="bg-sky-900/40 border-2 border-t-0 border-sky-400/30 rounded-b-xl overflow-hidden">
+          <div className="flex">
+            {offenseTabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => { setActiveTab(tab.id); setActiveTooltip(null); }}
+                className={`flex-1 py-2 text-xs font-heading font-bold tracking-wide transition-colors ${
+                  activeTab === tab.id
+                    ? "bg-sky-800/60 text-sky-200"
+                    : "bg-sky-950/40 text-sky-300/40 hover:text-sky-300/60 hover:bg-sky-900/40"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+          <div className="text-[10px] font-heading font-bold text-sky-300/70 tracking-widest uppercase text-center py-1">
+            Angrep
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-const PlayerDot = ({
-  label,
-  color,
-  top,
-  left,
-  activeTooltip,
-  setActiveTooltip,
-  id,
+// Animated player dot that transitions smoothly when position changes
+const AnimatedPlayerDot = ({
+  label, color, top, left, activeTooltip, setActiveTooltip, id,
 }: {
-  label: string;
-  color: string;
-  top: string;
-  left: string;
-  activeTooltip: string | null;
-  setActiveTooltip: (id: string | null) => void;
-  id: string;
+  label: string; color: string; top: number; left: number;
+  activeTooltip: string | null; setActiveTooltip: (id: string | null) => void; id: string;
 }) => {
+  const [pos, setPos] = useState({ top, left });
+  const prevPos = useRef({ top, left });
+
+  useEffect(() => {
+    if (prevPos.current.top !== top || prevPos.current.left !== left) {
+      prevPos.current = { top, left };
+      setPos({ top, left });
+    }
+  }, [top, left]);
+
   const isActive = activeTooltip === id;
   const description = positionDescriptions[label] || "";
   const fullName = positionFullNames[label] || label;
-  const leftNum = parseFloat(left);
-  const tooltipAlign = leftNum > 60 ? "right-0" : leftNum < 40 ? "left-0" : "left-1/2 -translate-x-1/2";
+  const tooltipAlign = pos.left > 60 ? "right-0" : pos.left < 40 ? "left-0" : "left-1/2 -translate-x-1/2";
 
   return (
     <div
       className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-0.5 cursor-pointer"
-      style={{ top, left, zIndex: isActive ? 20 : 2 }}
+      style={{
+        top: `${pos.top}%`,
+        left: `${pos.left}%`,
+        zIndex: isActive ? 20 : 2,
+        transition: "top 0.4s ease-in-out, left 0.4s ease-in-out",
+      }}
       onClick={(e) => {
         e.stopPropagation();
         setActiveTooltip(isActive ? null : id);
       }}
     >
       <div className={`w-6 h-6 rounded-full ${color} border-2 border-white/80 shadow-lg transition-transform ${isActive ? "scale-125 ring-2 ring-white/60" : "hover:scale-110"}`} />
-      <span className="text-[10px] font-heading font-bold text-white drop-shadow-md">
-        {label}
-      </span>
+      <span className="text-[10px] font-heading font-bold text-white drop-shadow-md">{label}</span>
       {isActive && description && (
         <div className={`absolute top-full mt-1 w-48 bg-black/90 text-white text-[11px] leading-snug rounded-lg px-3 py-2 shadow-xl ${tooltipAlign}`}>
           <div className="font-bold mb-0.5">{fullName}</div>

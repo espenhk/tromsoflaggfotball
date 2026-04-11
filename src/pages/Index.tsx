@@ -325,7 +325,7 @@ const Index = () => {
               description="Lik siden vår for aktuell info om treninger og arrangementer."
               icon={<Facebook className="w-5 h-5" />}
               iconColor="text-[#4267B2]"
-              hoverColor="hover:bg-[#4267B2]/8 hover:border-[#4267B2]/30"
+              hoverColor="hover:bg-[#4267B2]/15 hover:border-[#4267B2]/30"
               hoverTitle="group-hover:text-[#4267B2]"
             />
             <LinkCard
@@ -334,7 +334,7 @@ const Index = () => {
               description="Bilder og videoer fra trening og kamper."
               icon={<Instagram className="w-5 h-5" />}
               iconColor="text-[#C13584]"
-              hoverColor="hover:bg-[#C13584]/8 hover:border-[#C13584]/30"
+              hoverColor="hover:bg-[#C13584]/15 hover:border-[#C13584]/30"
               hoverTitle="group-hover:text-[#C13584]"
             />
             <LinkCard
@@ -343,7 +343,7 @@ const Index = () => {
               description="Lær mer om sporten, regler og turneringer i Norge."
               icon={<Flag className="w-5 h-5" />}
               iconColor="text-emerald-400"
-              hoverColor="hover:bg-emerald-400/8 hover:border-emerald-400/30"
+              hoverColor="hover:bg-emerald-400/15 hover:border-emerald-400/30"
               hoverTitle="group-hover:text-emerald-400"
             />
             <LinkCard
@@ -352,7 +352,7 @@ const Index = () => {
               description="Meld deg inn i Amerikanske Idretters klubb via Spond."
               icon={<UserPlus className="w-5 h-5" />}
               iconColor="text-sky-400"
-              hoverColor="hover:bg-sky-400/8 hover:border-sky-400/30"
+              hoverColor="hover:bg-sky-400/15 hover:border-sky-400/30"
               hoverTitle="group-hover:text-sky-400"
             />
             <LinkCard
@@ -361,7 +361,7 @@ const Index = () => {
               description="Forsikring for deltakere i flaggfotball via Min Idrett."
               icon={<ShieldCheck className="w-5 h-5" />}
               iconColor="text-amber-400"
-              hoverColor="hover:bg-amber-400/8 hover:border-amber-400/30"
+              hoverColor="hover:bg-amber-400/15 hover:border-amber-400/30"
               hoverTitle="group-hover:text-amber-400"
             />
           </div>

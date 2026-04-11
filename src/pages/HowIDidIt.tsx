@@ -126,16 +126,30 @@ interface Step {
 
 const steps: Step[] = [
   {
-    phase: "Fase 1",
+    phase: "Fase 0",
     icon: <Sparkles size={20} />,
-    title: "Identitet & grunnstruktur",
+    title: "Utgangspunktet: Canva + GPT-5.2",
     description:
-      "Alt startet med en idé: lag en nettside for flaggfotball-laget i Tromsø. Første steg var å definere den visuelle identiteten — arktisk tema med mørke farger, nordlys-grønne aksenter, og en clean, sporty look.",
+      "Prosjektet startet ikke med kode — det startet med en enkel Canva-side og en lang samtale med GPT-5.2. Før noe ble bygget i Lovable, var den visuelle identiteten allerede definert.",
     details: [
-      "Valgte fonter: Syne for overskrifter (fet, geometrisk) og Outfit for brødtekst (moderne, lettlest).",
-      "Definerte en komplett fargepalett i HSL: natt-blå bakgrunn, fjord-teal sekundærfarge, nordlys-grønn som primær, og is-mint som aksent.",
-      "Bygget grunnstrukturen: hero-seksjon med bakgrunnsbilde, sticky navigasjon, og seksjoner for info, treninger, posisjoner, FAQ.",
-      "Alt ble satt opp med Tailwind CSS design tokens — ingen hardkodede farger i komponenter.",
+      "Den opprinnelige nettsiden var bygget som en enkel one-pager i Canva. Funksjonell, men statisk — ingen interaktivitet, ingen animasjoner, ingen mulighet for å utvide innhold dynamisk.",
+      "Gjennom en serie samtaler med GPT-5.2 ble den visuelle retningen utforsket: arktisk tema, mørke bakgrunner, nordlys-grønne aksenter. GPT foreslo fargepaletter, fontkombos og layout-prinsipper.",
+      "Font-valget landet på Syne (geometrisk, fet — perfekt for overskrifter) og Outfit (moderne, lettlest — ideell for brødtekst). Begge ble valgt for å balansere sportslighet med lesbarhet.",
+      "Fargepaletten ble definert i HSL: natt-blå (#001a14) som bakgrunn, fjord-teal som sekundær, nordlys-grønn som primærfarge, og is-mint som aksent. Alt inspirert av Tromsøs arktiske landskap.",
+      "Logo, ikoner og det overordnede designspråket var altså klart før Lovable kom inn i bildet. Lovable-jobben handlet om å ta en statisk visjon og gjøre den levende.",
+    ],
+    color: "hsl(var(--primary))",
+  },
+  {
+    phase: "Fase 1",
+    icon: <Layers size={20} />,
+    title: "Fra Canva til kode i Lovable",
+    description:
+      "Med designretningen klar ble alt overført til Lovable. Grunnstrukturen ble bygget ut: hero-seksjon, navigasjon, seksjoner for info, treninger, posisjoner og FAQ — alt med Tailwind design tokens.",
+    details: [
+      "Hele fargepaletten ble implementert som CSS-variabler i HSL-format, slik at alle komponenter bruker semantiske tokens (--primary, --background, --card) i stedet for hardkodede farger.",
+      "Grunnstrukturen: hero med bakgrunnsbilde, sticky navigasjon, og logisk inndeling i seksjoner som brukeren kan scrolle mellom.",
+      "Innholdet fra Canva-siden ble overført og reorganisert for en bedre informasjonsflyt — med ekspanderbare kort og mer interaktive elementer enn en statisk side kan tilby.",
     ],
     color: "hsl(var(--primary))",
   },

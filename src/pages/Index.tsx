@@ -578,12 +578,14 @@ const FaqItem = ({ q, a }: { q: string; a: string }) => {
       <div className="flex items-center justify-between gap-4">
         <p className="font-heading font-bold text-foreground">{q}</p>
         <ChevronDown
-          className={`w-5 h-5 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`w-5 h-5 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
         />
       </div>
-      {open && (
-        <p className="text-sm text-muted-foreground font-body mt-3 leading-relaxed">{a}</p>
-      )}
+      <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+        <div className="overflow-hidden">
+          <p className="text-sm text-muted-foreground font-body mt-3 leading-relaxed">{a}</p>
+        </div>
+      </div>
     </button>
   );
 };

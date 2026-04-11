@@ -47,7 +47,7 @@ const FieldDiagram = () => {
           </span>
         </div>
 
-        {/* Ball icon in front of Center */}
+        {/* Ball icon */}
         <svg
           className="absolute -translate-x-1/2 -translate-y-1/2"
           style={{ top: "51%", left: "50%", zIndex: 1 }}
@@ -63,7 +63,12 @@ const FieldDiagram = () => {
         {/* OFFENSE */}
         <PlayerDot label="C" color="bg-sky-400" top="57%" left="50%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="C" />
         <PlayerDot label="QB" color="bg-amber-400" top="68%" left="50%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="QB" />
-        <PlayerDot label="WR" color="bg-sky-400" top="52%" left="15%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-L" />
+        {activeTab === "kastespill" ? (
+          // Kastespill: WR-L moved inward
+          <PlayerDot label="WR" color="bg-sky-400" top="52%" left="30%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-L" />
+        ) : (
+          <PlayerDot label="WR" color="bg-sky-400" top="52%" left="15%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-L" />
+        )}
         <PlayerDot label="WR" color="bg-sky-400" top="52%" left="85%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-R" />
         <PlayerDot label="WR" color="bg-sky-400" top="58%" left="72%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="WR-S" />
 
@@ -72,6 +77,9 @@ const FieldDiagram = () => {
           <defs>
             <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
               <polygon points="0 0, 8 3, 0 6" fill="white" fillOpacity="0.6" />
+            </marker>
+            <marker id="arrowhead-yellow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#facc15" fillOpacity="0.9" />
             </marker>
           </defs>
           <line
@@ -83,13 +91,74 @@ const FieldDiagram = () => {
             strokeDasharray="6 4"
             markerEnd="url(#arrowhead)"
           />
+
+          {/* Kastespill routes */}
+          {activeTab === "kastespill" && (
+            <>
+              {/* WR-R (85%): Post – run up then cut diagonally inward */}
+              <polyline
+                points="85,52 85,38 60,22"
+                fill="none"
+                stroke="#facc15"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                markerEnd="url(#arrowhead-yellow)"
+                vectorEffect="non-scaling-stroke"
+                style={{ filter: "drop-shadow(0 0 2px rgba(0,0,0,0.5))" }}
+              />
+              <text x="62" y="20" fill="#facc15" fontSize="3.5" fontWeight="bold" textAnchor="middle">POST</text>
+
+              {/* WR-S (72%): Dig – run up then cut sharply inward */}
+              <polyline
+                points="72,58 72,42 45,42"
+                fill="none"
+                stroke="#facc15"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                markerEnd="url(#arrowhead-yellow)"
+                vectorEffect="non-scaling-stroke"
+                style={{ filter: "drop-shadow(0 0 2px rgba(0,0,0,0.5))" }}
+              />
+              <text x="43" y="40" fill="#facc15" fontSize="3.5" fontWeight="bold" textAnchor="middle">DIG</text>
+
+              {/* C (50%): Hitch – run up short then stop */}
+              <polyline
+                points="50,57 50,46 52,48"
+                fill="none"
+                stroke="#facc15"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                markerEnd="url(#arrowhead-yellow)"
+                vectorEffect="non-scaling-stroke"
+                style={{ filter: "drop-shadow(0 0 2px rgba(0,0,0,0.5))" }}
+              />
+              <text x="55" y="44" fill="#facc15" fontSize="3.5" fontWeight="bold" textAnchor="start">HITCH</text>
+
+              {/* WR-L (30%): Out – run up then cut outward */}
+              <polyline
+                points="30,52 30,40 12,40"
+                fill="none"
+                stroke="#facc15"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                markerEnd="url(#arrowhead-yellow)"
+                vectorEffect="non-scaling-stroke"
+                style={{ filter: "drop-shadow(0 0 2px rgba(0,0,0,0.5))" }}
+              />
+              <text x="10" y="38" fill="#facc15" fontSize="3.5" fontWeight="bold" textAnchor="middle">OUT</text>
+            </>
+          )}
         </svg>
 
         {/* DEFENSE */}
         <PlayerDot label="R" color="bg-rose-400" top="36%" left="63%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="R" />
         <PlayerDot label="DB" color="bg-rose-400" top="38%" left="15%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="DB-L" />
         <PlayerDot label="DB" color="bg-rose-400" top="38%" left="85%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="DB-R" />
-        <PlayerDot label="DB" color="bg-rose-400" top="28%" left="65%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="DB-S" />
+        <PlayerDot label="DB" color="bg-rose-400" top="22%" left="65%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="DB-S" />
         <PlayerDot label="DB" color="bg-rose-400" top="27%" left="40%" activeTooltip={activeTooltip} setActiveTooltip={setActiveTooltip} id="DB-SA" />
 
         {/* Legend */}

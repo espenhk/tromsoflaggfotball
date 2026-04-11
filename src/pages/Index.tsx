@@ -64,6 +64,16 @@ const Index = () => {
               <InfoCard icon={<Clock className="w-5 h-5" />} label="Tid" value="20:30 – 22:00" />
               <InfoCard icon={<MapPin className="w-5 h-5" />} label="Sted" value="Mellomvegen 110" />
             </div>
+            <div className="mt-8 rounded-xl overflow-hidden border border-border aspect-video">
+              <iframe
+                className="w-full h-full"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1000!2d18.9551!3d69.6496!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNjnCsDM4JzU4LjYiTiAxOMKwNTcnMTguNCJF!5e0!3m2!1sno!2sno!4v1700000000000"
+                title="Mellomvegen 110, Tromsø"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            </div>
           </div>
         </div>
       </section>

@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair, Menu, X, UserPlus, ShieldCheck } from "lucide-react";
+import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair, Menu, X, UserPlus, ShieldCheck, UserCircle } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import logo from "@/assets/logo.png";
 import heroBg from "@/assets/hero-bg.png";
@@ -587,11 +587,14 @@ const CoachCard = ({
       onClick={() => setOpen(!open)}
       className="w-full text-left py-4 px-6 md:flex-1"
     >
-      <div className="flex items-center gap-2">
-        <div className="min-w-0">
+      <div className="flex items-start gap-4">
+        <div className="mt-0.5 text-primary">
+          <UserCircle className="w-5 h-5" />
+        </div>
+        <div className="flex-1 min-w-0">
           <p className="text-xs text-primary uppercase tracking-wider font-body mb-1">{title}</p>
           <div className="flex items-center gap-2">
-            <p className="font-heading font-bold text-foreground text-lg">{name}</p>
+            <p className="font-heading font-bold text-foreground">{name}</p>
             <ChevronDown
               className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
             />
@@ -604,13 +607,13 @@ const CoachCard = ({
             <Phone className="w-4 h-4" />
             {phone}
           </a>
-        </div>
-      </div>
-      <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
-        <div className="overflow-hidden">
-          <p className="text-sm text-muted-foreground font-body leading-relaxed mt-4">
-            {bio}
-          </p>
+          <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+            <div className="overflow-hidden">
+              <p className="text-sm text-muted-foreground font-body leading-relaxed mt-3">
+                {bio}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </button>

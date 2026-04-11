@@ -290,15 +290,15 @@ export default function HowIDidIt() {
               <div key={i} className="relative pl-16 pb-12">
                 {/* Timeline icon dot */}
                 <div
-                  className="absolute left-0 top-0 w-[36px] h-[36px] rounded-full border-2 border-primary/40 bg-background flex items-center justify-center cursor-pointer group/dot transition-all hover:border-primary animate-pulse hover:animate-none"
+                  className="absolute left-0 top-0 w-[36px] h-[36px] rounded-full border-2 border-primary/40 bg-background flex items-center justify-center cursor-pointer group/dot transition-all hover:border-primary"
                   onClick={() => setOpenStep(isOpen ? null : i)}
                 >
-                  <span className="text-primary/70 transition-opacity group-hover/dot:opacity-0">
+                  <span className="text-primary/70">
                     {step.icon}
                   </span>
-                  {/* Hover overlay with arrow */}
-                  <div className="absolute inset-0 rounded-full bg-muted-foreground/20 flex items-center justify-center opacity-0 group-hover/dot:opacity-100 transition-opacity">
-                    <ChevronDown size={16} className={`text-foreground transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                  {/* Mini badge with arrow */}
+                  <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-muted flex items-center justify-center border border-border transition-colors group-hover/dot:bg-primary group-hover/dot:border-primary`}>
+                    <ChevronDown size={10} className={`text-muted-foreground group-hover/dot:text-primary-foreground transition-all ${isOpen ? "rotate-180" : ""}`} />
                   </div>
                 </div>
 

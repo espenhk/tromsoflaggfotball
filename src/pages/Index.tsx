@@ -1,5 +1,6 @@
 import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import heroBg from "@/assets/hero-bg.png";
 
@@ -46,6 +47,12 @@ const Index = () => {
             amerikansk fotball — perfekt for alle aldre og nivåer. Åpne treninger hver mandag,
             ingen erfaring nødvendig.
           </p>
+          <Link
+            to="/om-sporten"
+            className="inline-block mt-6 text-primary font-heading font-bold text-sm hover:opacity-80 transition-opacity"
+          >
+            Les mer om sporten →
+          </Link>
         </div>
       </section>
 

@@ -502,10 +502,10 @@ const GameSection = () => {
         <div className="md:hidden">
           <FieldDiagram />
 
-          <div className="mt-8 space-y-6">
+          <div className="mt-6 space-y-4">
             <div>
               <h3 className="font-heading text-lg font-bold text-sky-400 mb-4">Angrep</h3>
-              <div className="space-y-3">
+              <div className="space-y-1.5">
                 {offensePositions.map((pos) => (
                   <PositionCard key={pos.name} {...pos} variant="offense" />
                 ))}
@@ -513,7 +513,7 @@ const GameSection = () => {
             </div>
             <div>
               <h3 className="font-heading text-lg font-bold text-rose-400 mb-4">Forsvar</h3>
-              <div className="space-y-3">
+              <div className="space-y-1.5">
                 {defensePositions.map((pos) => (
                   <PositionCard key={pos.name} {...pos} variant="defense" />
                 ))}
@@ -585,7 +585,8 @@ const CoachCard = ({
       onClick={() => setOpen(!open)}
       className="w-full text-left py-3"
     >
-      <div className="grid grid-cols-[24px_120px_1fr_auto_auto] md:grid-cols-[24px_140px_1fr_auto_auto] items-center gap-x-4 gap-y-0">
+      {/* Desktop layout */}
+      <div className="hidden md:grid grid-cols-[24px_140px_1fr_auto_auto] items-center gap-x-4">
         <div className="text-primary shrink-0">{icon}</div>
         <span className="text-xs text-primary uppercase tracking-wider font-body">{title}</span>
         <span className="font-heading font-bold text-foreground">{name}</span>
@@ -599,6 +600,25 @@ const CoachCard = ({
         </a>
         <ChevronDown
           className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+        />
+      </div>
+      {/* Mobile layout - stacked */}
+      <div className="flex md:hidden items-start gap-3">
+        <div className="text-primary shrink-0 mt-0.5">{icon}</div>
+        <div className="flex-1 min-w-0">
+          <span className="text-xs text-primary uppercase tracking-wider font-body block">{title}</span>
+          <span className="font-heading font-bold text-foreground block">{name}</span>
+          <a
+            href={`tel:+47${phone.replace(/\s/g, "")}`}
+            onClick={(e) => e.stopPropagation()}
+            className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors font-body text-sm mt-0.5"
+          >
+            <Phone className="w-3.5 h-3.5" />
+            {phone}
+          </a>
+        </div>
+        <ChevronDown
+          className={`w-4 h-4 text-muted-foreground shrink-0 mt-1 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
         />
       </div>
       <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>

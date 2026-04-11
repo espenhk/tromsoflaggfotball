@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import logo from "@/assets/logo.png";
 
-const positions = [
+const POSITIONS_URL = "https://flaggfotball.no/pages/posisjoner-i-flaggfotball";
+
+const offensePositions = [
   {
     name: "Quarterback (QB)",
     icon: <Star className="w-5 h-5" />,
@@ -22,6 +24,9 @@ const positions = [
     role: "Løper ruter og fanger pasninger fra QB. Målet er å bli fri fra forsvareren og ta imot ballen.",
     traits: "Hurtighet, gode hender, evne til å lese forsvar. Perfekt for de som liker å løpe og gjøre raske vendinger.",
   },
+];
+
+const defensePositions = [
   {
     name: "Rusher",
     icon: <Target className="w-5 h-5" />,
@@ -150,11 +155,29 @@ const OmSporten = () => {
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Posisjoner
           </h2>
-          <div className="space-y-4">
-            {positions.map((pos) => (
+
+          <h3 className="font-heading text-lg font-bold text-primary mb-4">Angrep</h3>
+          <div className="space-y-4 mb-8">
+            {offensePositions.map((pos) => (
               <PositionCard key={pos.name} {...pos} />
             ))}
           </div>
+
+          <h3 className="font-heading text-lg font-bold text-primary mb-4">Forsvar</h3>
+          <div className="space-y-4 mb-6">
+            {defensePositions.map((pos) => (
+              <PositionCard key={pos.name} {...pos} />
+            ))}
+          </div>
+
+          <a
+            href={POSITIONS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity"
+          >
+            Les mer om alle posisjoner på flaggfotball.no →
+          </a>
         </div>
       </section>
 

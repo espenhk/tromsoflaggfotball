@@ -67,7 +67,7 @@ const Index = () => {
             <div className="mt-8 rounded-xl overflow-hidden border border-border aspect-video">
               <iframe
                 className="w-full h-full"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1500!2d18.955!3d69.6496!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s!2sMellomvegen+110%2C+Troms%C3%B8!5e1!3m2!1sno!2sno!4v1700000000000"
+                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Mellomvegen+110,+9006+Tromsø&maptype=satellite&zoom=17"
                 title="Mellomvegen 110, Tromsø"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

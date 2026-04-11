@@ -208,7 +208,7 @@ const FieldDiagram = () => {
         ))}
 
         {/* SVG overlay - always visible (rush arrow, zones, man-to-man) */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 133.33" preserveAspectRatio="none" style={{ zIndex: 1 }}>
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ zIndex: 1 }}>
           <defs>
             <marker id="arrowhead" markerWidth="3" markerHeight="3" refX="3" refY="1.5" orient="auto" markerUnits="strokeWidth">
               <polygon points="0 0, 3 1.5, 0 3" fill="white" fillOpacity="0.6" />

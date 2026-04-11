@@ -505,9 +505,8 @@ const PositionCard = ({
           <p className="text-xs text-primary font-body">
             <span className="text-muted-foreground">Passer for:</span> {traits}
           </p>
-          <a
-            href={POSITIONS_URL}
-            target="_blank"
+        </div>
+      )}
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
             className="inline-block text-xs text-muted-foreground hover:text-primary transition-colors font-body"

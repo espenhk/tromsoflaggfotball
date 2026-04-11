@@ -83,12 +83,12 @@ const FieldDiagram = () => {
             </marker>
           </defs>
           <line
-            x1="62%" y1="38%"
-            x2="51%" y2="63%"
+            x1="63" y1="38"
+            x2="51" y2="63"
             stroke="white"
             strokeOpacity="0.5"
-            strokeWidth="2"
-            strokeDasharray="6 4"
+            strokeWidth="1.5"
+            strokeDasharray="4 3"
             markerEnd="url(#arrowhead)"
           />
 

@@ -290,7 +290,7 @@ export default function HowIDidIt() {
               <div key={i} className="relative pl-16 pb-12">
                 {/* Timeline icon dot */}
                 <div
-                  className="absolute left-0 top-0 w-[36px] h-[36px] rounded-full border-2 border-primary/40 bg-background flex items-center justify-center cursor-pointer group/dot transition-all hover:border-primary"
+                  className="absolute left-0 top-0 w-[36px] h-[36px] rounded-full border-2 border-primary/40 bg-background flex items-center justify-center cursor-pointer group/dot transition-all hover:border-primary animate-pulse hover:animate-none"
                   onClick={() => setOpenStep(isOpen ? null : i)}
                 >
                   <span className="text-primary/70 transition-opacity group-hover/dot:opacity-0">
@@ -303,7 +303,7 @@ export default function HowIDidIt() {
                 </div>
 
                 {/* Phase label */}
-                <div className="font-heading text-[0.65rem] uppercase tracking-[0.15em] text-primary/60 mb-1">
+                <div className="font-heading text-sm uppercase tracking-[0.15em] text-primary/60 mb-1">
                   {step.phase}
                 </div>
 

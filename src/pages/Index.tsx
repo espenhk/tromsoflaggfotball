@@ -498,38 +498,8 @@ const GameSection = () => {
           </div>
         </div>
 
-        {/* Mobile: stacked layout */}
-        <div className="md:hidden">
-          <FieldDiagram />
-
-          <div className="mt-6 space-y-4">
-            <div>
-              <h3 className="font-heading text-lg font-bold text-sky-400 mb-4">Angrep</h3>
-              <div className="space-y-1.5">
-                {offensePositions.map((pos) => (
-                  <PositionCard key={pos.name} {...pos} variant="offense" />
-                ))}
-              </div>
-            </div>
-            <div>
-              <h3 className="font-heading text-lg font-bold text-rose-400 mb-4">Forsvar</h3>
-              <div className="space-y-1.5">
-                {defensePositions.map((pos) => (
-                  <PositionCard key={pos.name} {...pos} variant="defense" />
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <a
-            href={POSITIONS_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-6"
-          >
-            Les mer om alle posisjoner på flaggfotball.no →
-          </a>
-        </div>
+        {/* Mobile: flip card */}
+        <MobileFlipCard />
       </div>
     </section>
   );

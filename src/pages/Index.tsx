@@ -333,7 +333,7 @@ const Index = () => {
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             Ofte stilte spørsmål
           </h2>
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             <FaqItem
               q="Hvem kan være med?"
               a="Alle fra 16 år og oppover er velkommen! Ingen erfaring nødvendig — vi tilpasser treningene slik at alle kan delta og utvikle seg."
@@ -344,15 +344,15 @@ const Index = () => {
             />
             <FaqItem
               q="Hva koster det?"
-              a="Trening er helt gratis! Du trenger medlemskap i Amerikanske Idretters klubb (ca 80 kr) og lisens/forsikring via Min Idrett (ca 100 kr). Reiser og påmelding til kamper eller turneringer dekkes av den enkelte."
+              a="Trening er helt gratis! Du trenger medlemskap i Amerikanske Idretters klubb (ca 80 kr) og lisens/forsikring via Min Idrett (ca 100 kr)."
             />
             <FaqItem
-              q="Hva trenger jeg å ta med?"
+              q="Hva må jeg ta med?"
               a="Sportklær og joggesko. Alt annet utstyr har vi. Ta gjerne med en vannflaske."
             />
             <FaqItem
-              q="Hvor mange er på et lag?"
-              a="Flaggfotball spilles vanligvis 5 mot 5 på banen. Vi deler inn i lag på trening."
+              q="Hvor mange på laget?"
+              a="Flaggfotball spilles 5 mot 5 på banen. Vi deler inn i lag på trening."
             />
           </div>
         </div>
@@ -605,17 +605,17 @@ const FaqItem = ({ q, a }: { q: string; a: string }) => {
   return (
     <button
       onClick={() => setOpen(!open)}
-      className="w-full text-left bg-card border border-border rounded-xl p-5 transition-colors hover:border-primary/40"
+      className="w-full text-left bg-primary/5 border border-primary/10 rounded-xl p-4 transition-all hover:bg-primary/10 hover:border-primary/20"
     >
-      <div className="flex items-center justify-between gap-4">
-        <p className="font-heading font-bold text-foreground">{q}</p>
+      <div className="flex items-start justify-between gap-2">
+        <p className="font-heading text-sm font-bold text-foreground leading-snug">{q}</p>
         <ChevronDown
-          className={`w-5 h-5 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+          className={`w-4 h-4 text-primary/50 shrink-0 mt-0.5 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
         />
       </div>
       <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
         <div className="overflow-hidden">
-          <p className="text-sm text-muted-foreground font-body mt-3 leading-relaxed">{a}</p>
+          <p className="text-xs text-muted-foreground font-body mt-2 leading-relaxed">{a}</p>
         </div>
       </div>
     </button>

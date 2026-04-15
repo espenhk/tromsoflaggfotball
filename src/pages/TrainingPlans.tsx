@@ -13,15 +13,18 @@ const DrillCard = ({ drill, index }: { drill: Drill; index: number }) => {
         onClick={() => setShowVideo(!showVideo)}
         className="w-full flex items-center justify-between p-4 hover:bg-secondary/50 transition-colors text-left"
       >
-        <div className="flex items-center gap-3">
-          <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-heading font-bold text-sm">
+        <div className="flex items-center gap-3 min-w-0">
+          <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-heading font-bold text-sm shrink-0">
             {index + 1}
           </span>
-          <div>
+          <div className="min-w-0">
             <h4 className="font-heading text-base md:text-lg text-foreground">{drill.name}</h4>
             <div className="flex items-center gap-2 text-muted-foreground text-sm">
-              <Clock className="w-3.5 h-3.5" />
+              <Clock className="w-3.5 h-3.5 shrink-0" />
               <span>{drill.duration}</span>
+              {drill.progression && (
+                <span className="text-primary text-xs font-medium">● Progresjon</span>
+              )}
             </div>
           </div>
         </div>
@@ -35,6 +38,11 @@ const DrillCard = ({ drill, index }: { drill: Drill; index: number }) => {
         <div className="min-h-0 overflow-hidden">
           <div className="px-4 pb-4 space-y-3">
             <p className="text-muted-foreground text-sm">{drill.description}</p>
+            {drill.progression && (
+              <div className="rounded-md bg-primary/10 border border-primary/20 px-3 py-2">
+                <p className="text-primary text-sm font-medium">📈 Progresjon: {drill.progression}</p>
+              </div>
+            )}
             <div className="aspect-video rounded-md overflow-hidden bg-background">
               {showVideo && (
                 <video
@@ -116,17 +124,22 @@ const WeekPlanCard = ({ weekPlan, defaultOpen = false }: { weekPlan: WeekPlan; d
               ))}
             </div>
 
-            {/* Game time */}
-            <div className="rounded-lg border border-border bg-secondary/30 p-4">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                <span className="font-heading text-foreground uppercase text-sm">
-                  {weekPlan.gameTime}
-                </span>
+            {/* Walkthrough */}
+            <div className="rounded-lg border border-border bg-muted/30 p-4">
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="text-base">📋</span>
+                <span className="font-heading text-foreground uppercase text-sm">Walkthrough</span>
               </div>
-              <p className="text-muted-foreground text-sm mt-1.5">
-                Oppdeling av lag &amp; kort gjennomgang av fokusområder før kampstart. Avslutt med opprydding og evaluering.
-              </p>
+              <p className="text-muted-foreground text-sm">{weekPlan.walkthrough}</p>
+            </div>
+
+            {/* Scrimmage */}
+            <div className="rounded-lg border border-border bg-secondary/30 p-4">
+              <div className="flex items-center gap-2 mb-1.5">
+                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                <span className="font-heading text-foreground uppercase text-sm">Scrimmage</span>
+              </div>
+              <p className="text-muted-foreground text-sm">{weekPlan.scrimmage}</p>
             </div>
           </div>
         </div>

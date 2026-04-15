@@ -38,6 +38,11 @@ const DrillCard = ({ drill, index }: { drill: Drill; index: number }) => {
         <div className="min-h-0 overflow-hidden">
           <div className="px-4 pb-4 space-y-3">
             <p className="text-muted-foreground text-sm">{drill.description}</p>
+            {drill.progression && (
+              <div className="rounded-md bg-primary/10 border border-primary/20 px-3 py-2">
+                <p className="text-primary text-sm font-medium">📈 Progresjon: {drill.progression}</p>
+              </div>
+            )}
             <div className="aspect-video rounded-md overflow-hidden bg-background">
               {showVideo && (
                 <video

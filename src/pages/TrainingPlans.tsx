@@ -124,17 +124,22 @@ const WeekPlanCard = ({ weekPlan, defaultOpen = false }: { weekPlan: WeekPlan; d
               ))}
             </div>
 
-            {/* Game time */}
-            <div className="rounded-lg border border-border bg-secondary/30 p-4">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                <span className="font-heading text-foreground uppercase text-sm">
-                  {weekPlan.gameTime}
-                </span>
+            {/* Walkthrough */}
+            <div className="rounded-lg border border-border bg-muted/30 p-4">
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="text-base">📋</span>
+                <span className="font-heading text-foreground uppercase text-sm">Walkthrough</span>
               </div>
-              <p className="text-muted-foreground text-sm mt-1.5">
-                Oppdeling av lag &amp; kort gjennomgang av fokusområder før kampstart. Avslutt med opprydding og evaluering.
-              </p>
+              <p className="text-muted-foreground text-sm">{weekPlan.walkthrough}</p>
+            </div>
+
+            {/* Scrimmage */}
+            <div className="rounded-lg border border-border bg-secondary/30 p-4">
+              <div className="flex items-center gap-2 mb-1.5">
+                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                <span className="font-heading text-foreground uppercase text-sm">Scrimmage</span>
+              </div>
+              <p className="text-muted-foreground text-sm">{weekPlan.scrimmage}</p>
             </div>
           </div>
         </div>

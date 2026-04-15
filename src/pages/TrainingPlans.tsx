@@ -3,67 +3,124 @@ import { ChevronDown, Clock, Play, ExternalLink, Package, Timer, ArrowLeft, Dumb
 import { Link } from "react-router-dom";
 import { adultTrainingPlans, type Drill, type WeekPlan, type PhasePlan } from "@/data/adultTrainingPlans";
 
-/* ── Drill Card ─────────────────────────────────────────── */
-const DrillCard = ({ drill, index }: { drill: Drill; index: number }) => {
-  const [showVideo, setShowVideo] = useState(false);
+/* ── Session Item (unified card for warmup, drills, walkthrough, scrimmage) ── */
+interface SessionItem {
+  index: number; // 0 = warmup
+  name: string;
+  duration: string;
+  description: string;
+  videoUrl?: string;
+  drillBankUrl?: string;
+  progression?: string;
+}
+
+function buildSessionItems(week: WeekPlan): SessionItem[] {
+  const items: SessionItem[] = [];
+  let idx = 0;
+
+  // Warmup as #0
+  items.push({
+    index: idx++,
+    name: "Oppvarming",
+    duration: week.warmup.duration,
+    description: week.warmup.description,
+  });
+
+  // Drills as #1..N
+  for (const drill of week.drills) {
+    items.push({
+      index: idx++,
+      name: drill.name,
+      duration: drill.duration,
+      description: drill.description,
+      videoUrl: drill.videoUrl,
+      drillBankUrl: drill.drillBankUrl,
+      progression: drill.progression,
+    });
+  }
+
+  // Walkthrough
+  items.push({
+    index: idx++,
+    name: "Walkthrough",
+    duration: week.walkthrough.duration,
+    description: week.walkthrough.description,
+  });
+
+  // Scrimmage
+  items.push({
+    index: idx++,
+    name: "Scrimmage",
+    duration: week.scrimmage.duration,
+    description: week.scrimmage.description,
+  });
+
+  return items;
+}
+
+const SessionItemCard = ({ item }: { item: SessionItem }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const hasVideo = !!item.videoUrl;
 
   return (
     <div className="rounded-lg border border-border bg-card overflow-hidden">
       <button
-        onClick={() => setShowVideo(!showVideo)}
+        onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between p-4 hover:bg-secondary/50 transition-colors text-left"
       >
         <div className="flex items-center gap-3 min-w-0">
           <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-heading font-bold text-sm shrink-0">
-            {index + 1}
+            {item.index}
           </span>
           <div className="min-w-0">
-            <h4 className="font-heading text-base md:text-lg text-foreground">{drill.name}</h4>
+            <h4 className="font-heading text-base md:text-lg text-foreground">{item.name}</h4>
             <div className="flex items-center gap-2 text-muted-foreground text-sm">
               <Clock className="w-3.5 h-3.5 shrink-0" />
-              <span>{drill.duration}</span>
-              {drill.progression && (
+              <span>{item.duration}</span>
+              {item.progression && (
                 <span className="text-primary text-xs font-medium">● Progresjon</span>
               )}
             </div>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Play className="w-4 h-4 text-primary" />
-          <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${showVideo ? "rotate-180" : ""}`} />
+          {hasVideo && <Play className="w-4 h-4 text-primary" />}
+          <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`} />
         </div>
       </button>
 
-      <div className={`grid transition-all duration-300 ${showVideo ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
+      <div className={`grid transition-all duration-300 ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
         <div className="min-h-0 overflow-hidden">
           <div className="px-4 pb-4 space-y-3">
-            <p className="text-muted-foreground text-sm">{drill.description}</p>
-            {drill.progression && (
+            <p className="text-muted-foreground text-sm">{item.description}</p>
+            {item.progression && (
               <div className="rounded-md bg-primary/10 border border-primary/20 px-3 py-2">
-                <p className="text-primary text-sm font-medium">📈 Progresjon: {drill.progression}</p>
+                <p className="text-primary text-sm font-medium">📈 Progresjon: {item.progression}</p>
               </div>
             )}
-            <div className="aspect-video rounded-md overflow-hidden bg-background">
-              {showVideo && (
+            {hasVideo && isOpen && (
+              <div className="aspect-video rounded-md overflow-hidden bg-background">
                 <video
                   controls
                   className="w-full h-full"
-                  src={drill.videoUrl}
+                  src={item.videoUrl}
                   preload="metadata"
                 >
                   Nettleseren din støtter ikke video.
                 </video>
-              )}
-            </div>
-            <a
-              href={drill.drillBankUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-primary text-sm hover:underline"
-            >
-              <ExternalLink className="w-3.5 h-3.5" />
-              Se i øvelsesbanken
-            </a>
+              </div>
+            )}
+            {item.drillBankUrl && (
+              <a
+                href={item.drillBankUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-primary text-sm hover:underline"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                Se i øvelsesbanken
+              </a>
+            )}
           </div>
         </div>
       </div>
@@ -74,6 +131,7 @@ const DrillCard = ({ drill, index }: { drill: Drill; index: number }) => {
 /* ── Week Card ──────────────────────────────────────────── */
 const WeekPlanCard = ({ weekPlan, defaultOpen = false }: { weekPlan: WeekPlan; defaultOpen?: boolean }) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
+  const sessionItems = buildSessionItems(weekPlan);
 
   return (
     <div className="rounded-xl border border-border bg-card/50 overflow-hidden">
@@ -106,41 +164,10 @@ const WeekPlanCard = ({ weekPlan, defaultOpen = false }: { weekPlan: WeekPlan; d
 
       <div className={`grid transition-all duration-300 ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
         <div className="min-h-0 overflow-hidden">
-          <div className="px-4 md:px-5 pb-4 md:pb-5 space-y-4">
-            {/* Warmup */}
-            <div className="rounded-lg border border-border bg-secondary/20 p-3">
-              <p className="text-sm text-muted-foreground italic">
-                🏃 {weekPlan.warmup}
-              </p>
-            </div>
-
-            {/* Drills */}
-            <div className="space-y-3">
-              <h4 className="font-heading text-sm text-muted-foreground uppercase tracking-wider">
-                Øvelser
-              </h4>
-              {weekPlan.drills.map((drill, i) => (
-                <DrillCard key={drill.name + i} drill={drill} index={i} />
-              ))}
-            </div>
-
-            {/* Walkthrough */}
-            <div className="rounded-lg border border-border bg-muted/30 p-4">
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-base">📋</span>
-                <span className="font-heading text-foreground uppercase text-sm">Walkthrough</span>
-              </div>
-              <p className="text-muted-foreground text-sm">{weekPlan.walkthrough}</p>
-            </div>
-
-            {/* Scrimmage */}
-            <div className="rounded-lg border border-border bg-secondary/30 p-4">
-              <div className="flex items-center gap-2 mb-1.5">
-                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                <span className="font-heading text-foreground uppercase text-sm">Scrimmage</span>
-              </div>
-              <p className="text-muted-foreground text-sm">{weekPlan.scrimmage}</p>
-            </div>
+          <div className="px-4 md:px-5 pb-4 md:pb-5 space-y-3">
+            {sessionItems.map((item) => (
+              <SessionItemCard key={item.index} item={item} />
+            ))}
           </div>
         </div>
       </div>

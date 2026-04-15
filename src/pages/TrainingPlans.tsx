@@ -13,15 +13,18 @@ const DrillCard = ({ drill, index }: { drill: Drill; index: number }) => {
         onClick={() => setShowVideo(!showVideo)}
         className="w-full flex items-center justify-between p-4 hover:bg-secondary/50 transition-colors text-left"
       >
-        <div className="flex items-center gap-3">
-          <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-heading font-bold text-sm">
+        <div className="flex items-center gap-3 min-w-0">
+          <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-heading font-bold text-sm shrink-0">
             {index + 1}
           </span>
-          <div>
+          <div className="min-w-0">
             <h4 className="font-heading text-base md:text-lg text-foreground">{drill.name}</h4>
             <div className="flex items-center gap-2 text-muted-foreground text-sm">
-              <Clock className="w-3.5 h-3.5" />
+              <Clock className="w-3.5 h-3.5 shrink-0" />
               <span>{drill.duration}</span>
+              {drill.progression && (
+                <span className="text-primary text-xs font-medium">● Progresjon</span>
+              )}
             </div>
           </div>
         </div>

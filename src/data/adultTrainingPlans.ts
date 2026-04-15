@@ -1,10 +1,10 @@
 export interface Drill {
   name: string;
   duration: string;
-  videoUrl: string;
-  drillBankUrl: string;
+  videoUrl?: string;
+  drillBankUrl?: string;
   description: string;
-  progression?: string; // extra note for repeated drills showing what's new this week
+  progression?: string;
 }
 
 export interface WeekPlan {
@@ -12,10 +12,10 @@ export interface WeekPlan {
   title: string;
   equipment: string[];
   totalDuration: string;
-  warmup: string;
+  warmup: { duration: string; description: string };
   drills: Drill[];
-  walkthrough: string;
-  scrimmage: string;
+  walkthrough: { duration: string; description: string };
+  scrimmage: { duration: string; description: string };
 }
 
 export interface PhasePlan {
@@ -30,7 +30,6 @@ export interface PhasePlan {
 const DB = "https://amerikanskeidretter.brik.no/folder/amerikansk_fotball/flaggfotball/flaggfotball_ovelser";
 const CF = "https://d1gumj4ccylcw8.cloudfront.net";
 
-// ── Reusable video URLs ──────────────────────────────────
 const V = {
   partnerPass:  `${CF}/19c98ddb-5d9c-4a6b-9119-0ecbae93cae4_1625332826969-222s5n`,
   boxDrill:     `${CF}/fb78f4fa-f45d-4b55-bcb9-fc6ea07a1b18_1625332826969-222s5n`,
@@ -42,6 +41,8 @@ const V = {
   handoff:      `${CF}/8b99ab50-cfad-4aef-83aa-a0acc9b8b8e2_1625332826969-222s5n`,
   defense:      `${CF}/d6568772-00d2-4cbd-87f2-ef6fccf49f0d_1625332826969-222s5n`,
 };
+
+const WARMUP_TEXT = "Fullkropps dynamisk oppvarming: lett jogging, dynamiske tøyninger, armrotasjoner og bevegelsesmønstre som forbereder kroppen på trening.";
 
 export const adultTrainingPlans: PhasePlan[] = [
   // ═══════════════════════════════════════════════════════════
@@ -59,7 +60,7 @@ export const adultTrainingPlans: PhasePlan[] = [
         title: "Første berøring",
         equipment: ["Kjegler", "Flaggsett", "Baller"],
         totalDuration: "90 min",
-        warmup: "Dynamisk strekking i bevegelse, lett jogging med retningsskifter. Avslutt med 2 min armrotasjoner og håndleddstrekk.",
+        warmup: { duration: "10 min", description: WARMUP_TEXT },
         drills: [
           {
             name: "Partner Pass",
@@ -83,15 +84,15 @@ export const adultTrainingPlans: PhasePlan[] = [
             description: "Forsvarsspillere står i en rekke som en 'bom'. Angripere løper gjennom én om gangen. Forsvar øver på å trekke flagg med riktig håndplassering.",
           },
         ],
-        walkthrough: "Gjennomgang av grunnregler: ned-system (4 forsøk), hvordan poeng scores, og flaggets rolle. Vis posisjoner på banen.",
-        scrimmage: "25 min fri scrimmage. Treneren stopper spillet for å forklare situasjoner når det trengs.",
+        walkthrough: { duration: "15 min", description: "Gjennomgang av grunnregler: ned-system (4 forsøk), hvordan poeng scores, og flaggets rolle. Vis posisjoner på banen." },
+        scrimmage: { duration: "35 min", description: "Fri scrimmage. Treneren stopper spillet for å forklare situasjoner når det trengs." },
       },
       {
         week: 2,
         title: "Kast og mottak",
         equipment: ["Kjegler", "Flaggsett", "Baller"],
         totalDuration: "90 min",
-        warmup: "Lett jogging med baller – kast til hverandre i gang. Dynamisk strekking.",
+        warmup: { duration: "10 min", description: WARMUP_TEXT },
         drills: [
           {
             name: "Partner Pass",
@@ -117,15 +118,15 @@ export const adultTrainingPlans: PhasePlan[] = [
             description: "Ny øvelse: Mottaksøvelse på tre nivåer – lavt (knehøyde), medium (bryst), høyt (over hodet). Kasteren varierer bevisst.",
           },
         ],
-        walkthrough: "Grunnleggende offensive formasjoner. Vis hvor QB, center og mottakere stiller seg. Introduser snap.",
-        scrimmage: "25 min fri scrimmage. Spillerne prøver å bruke formasjonene fra walkthrough.",
+        walkthrough: { duration: "15 min", description: "Grunnleggende offensive formasjoner. Vis hvor QB, center og mottakere stiller seg. Introduser snap." },
+        scrimmage: { duration: "35 min", description: "Fri scrimmage. Spillerne prøver å bruke formasjonene fra walkthrough." },
       },
       {
         week: 3,
         title: "Bevegelse og unnamanøver",
         equipment: ["Kjegler", "Flaggsett", "Baller"],
         totalDuration: "90 min",
-        warmup: "Smidighetsløype mellom kjegler. Kast parvis i bevegelse.",
+        warmup: { duration: "10 min", description: WARMUP_TEXT },
         drills: [
           {
             name: "Partner Pass",
@@ -151,15 +152,15 @@ export const adultTrainingPlans: PhasePlan[] = [
             description: "Ny øvelse: Angriperen løper gjennom en rekke med 3-4 forsvarsspillere som prøver å trekke flagget. Øver på unnvikelse og raske retningsskifter under press.",
           },
         ],
-        walkthrough: "Defensiv oppstilling. Vis mann-mot-mann vs. enkel sonedekning. Hvem dekker hvem?",
-        scrimmage: "25 min fri scrimmage. Forsvaret prøver å bruke det de lærte om oppstilling.",
+        walkthrough: { duration: "15 min", description: "Defensiv oppstilling. Vis mann-mot-mann vs. enkel sonedekning. Hvem dekker hvem?" },
+        scrimmage: { duration: "35 min", description: "Fri scrimmage. Forsvaret prøver å bruke det de lærte om oppstilling." },
       },
       {
         week: 4,
         title: "Fase 1 – oppsummering",
         equipment: ["Kjegler", "Flaggsett", "Baller"],
         totalDuration: "90 min",
-        warmup: "Partneøvelser: kast og mottak i bevegelse, deretter dynamisk strekking.",
+        warmup: { duration: "10 min", description: WARMUP_TEXT },
         drills: [
           {
             name: "Partner Pass",
@@ -184,8 +185,8 @@ export const adultTrainingPlans: PhasePlan[] = [
             description: "Ny øvelse: Dype kast med bue. Kasteren øver på å legge ballen over forsvareren. Mottaker posisjonerer seg under ballen.",
           },
         ],
-        walkthrough: "Signaler og kommunikasjon. Hvordan kalle et play i huddle, snap-count, og audibles. Oppsummering av fase 1.",
-        scrimmage: "30 min fri scrimmage. Bruk alt fra de fire første ukene.",
+        walkthrough: { duration: "10 min", description: "Signaler og kommunikasjon. Hvordan kalle et play i huddle, snap-count, og audibles. Oppsummering av fase 1." },
+        scrimmage: { duration: "40 min", description: "Fri scrimmage. Bruk alt fra de fire første ukene." },
       },
     ],
   },
@@ -205,7 +206,7 @@ export const adultTrainingPlans: PhasePlan[] = [
         title: "Snap og kast",
         equipment: ["Kjegler", "Flaggsett", "Baller"],
         totalDuration: "90 min",
-        warmup: "Partner Pass i bevegelse (fra fase 1). Dynamisk strekking.",
+        warmup: { duration: "10 min", description: WARMUP_TEXT },
         drills: [
           {
             name: "The Drop (snapping)",
@@ -231,15 +232,15 @@ export const adultTrainingPlans: PhasePlan[] = [
             progression: "Øk tempo. Tidtaking – hvem klarer løypen raskest med ball?",
           },
         ],
-        walkthrough: "Snap-til-kast-sekvensen. Fotarbeid for QB etter snap. Timing mellom snap og rute.",
-        scrimmage: "25 min fri scrimmage. Alle lag skal snappe ballen skikkelig.",
+        walkthrough: { duration: "15 min", description: "Snap-til-kast-sekvensen. Fotarbeid for QB etter snap. Timing mellom snap og rute." },
+        scrimmage: { duration: "35 min", description: "Fri scrimmage. Alle lag skal snappe ballen skikkelig." },
       },
       {
         week: 6,
         title: "Hand-off og løpespill",
         equipment: ["Kjegler", "Flaggsett", "Baller"],
         totalDuration: "90 min",
-        warmup: "Smidighetsløype + lett kast. Dynamisk strekking.",
+        warmup: { duration: "10 min", description: WARMUP_TEXT },
         drills: [
           {
             name: "The Drop (snapping)",
@@ -265,15 +266,15 @@ export const adultTrainingPlans: PhasePlan[] = [
             progression: "Kombiner med hand-off: QB snapper, gir hand-off, RB løper i bestemt bane.",
           },
         ],
-        walkthrough: "Løpespill: når brukes hand-off vs. pass? Vis 2-3 enkle løpespill lagene kan bruke.",
-        scrimmage: "25 min fri scrimmage. Oppfordre lagene til å prøve hand-offs i spillet.",
+        walkthrough: { duration: "15 min", description: "Løpespill: når brukes hand-off vs. pass? Vis 2-3 enkle løpespill lagene kan bruke." },
+        scrimmage: { duration: "35 min", description: "Fri scrimmage. Oppfordre lagene til å prøve hand-offs i spillet." },
       },
       {
         week: 7,
         title: "Pasningsruter",
         equipment: ["Kjegler", "Flaggsett", "Baller"],
         totalDuration: "90 min",
-        warmup: "Kast i bevegelse parvis. Dynamisk strekking med fokus på hofter.",
+        warmup: { duration: "10 min", description: WARMUP_TEXT },
         drills: [
           {
             name: "Rain Makers",
@@ -307,15 +308,15 @@ export const adultTrainingPlans: PhasePlan[] = [
             description: "Ny øvelse: Lagstafett med hand-offs. Raskeste lag vinner. Bygger hand-off-automatikk under press.",
           },
         ],
-        walkthrough: "Tre grunnruter: slant, hitch og go. Tegn dem opp og la spillerne gå gjennom dem uten ball først.",
-        scrimmage: "20 min fri scrimmage.",
+        walkthrough: { duration: "10 min", description: "Tre grunnruter: slant, hitch og go. Tegn dem opp og la spillerne gå gjennom dem uten ball først." },
+        scrimmage: { duration: "30 min", description: "Fri scrimmage." },
       },
       {
         week: 8,
         title: "Fase 2 – oppsummering",
         equipment: ["Kjegler", "Flaggsett", "Baller"],
         totalDuration: "90 min",
-        warmup: "Snap-kast-sekvenser i tremannsgrupper. Dynamisk strekking.",
+        warmup: { duration: "10 min", description: WARMUP_TEXT },
         drills: [
           {
             name: "Snap, Toss, and Tuck",
@@ -341,8 +342,8 @@ export const adultTrainingPlans: PhasePlan[] = [
             progression: "Legg til en forsvarsspiller/rusher. QB må lese: hand-off eller kast?",
           },
         ],
-        walkthrough: "Play-calling: hvert lag lager 3 plays (2 pass, 1 løp) de kan kalle i huddle. Øv på å kalle og gjennomføre.",
-        scrimmage: "30 min fri scrimmage. Lagene bruker sine egne plays.",
+        walkthrough: { duration: "10 min", description: "Play-calling: hvert lag lager 3 plays (2 pass, 1 løp) de kan kalle i huddle. Øv på å kalle og gjennomføre." },
+        scrimmage: { duration: "40 min", description: "Fri scrimmage. Lagene bruker sine egne plays." },
       },
     ],
   },
@@ -362,7 +363,7 @@ export const adultTrainingPlans: PhasePlan[] = [
         title: "Mann-mot-mann",
         equipment: ["Kjegler", "Flaggsett", "Baller"],
         totalDuration: "90 min",
-        warmup: "Sprint-øvelser: 3 × 20m med retningsskifter. Dynamisk strekking.",
+        warmup: { duration: "10 min", description: WARMUP_TEXT },
         drills: [
           {
             name: "The Chase (flaggtrekking)",
@@ -387,15 +388,15 @@ export const adultTrainingPlans: PhasePlan[] = [
             progression: "Full rute: mottaker løper slant/hitch fra forrige fase, kaster og mottaker i kampliknende tempo.",
           },
         ],
-        walkthrough: "Mann-mot-mann-dekning i praksis: hvem dekker hvem, posisjonering, og hvordan kommunisere tilordning.",
-        scrimmage: "25 min fri scrimmage. Fokus på at forsvarsspillerne prøver mann-mot-mann.",
+        walkthrough: { duration: "15 min", description: "Mann-mot-mann-dekning i praksis: hvem dekker hvem, posisjonering, og hvordan kommunisere tilordning." },
+        scrimmage: { duration: "35 min", description: "Fri scrimmage. Fokus på at forsvarsspillerne prøver mann-mot-mann." },
       },
       {
         week: 10,
         title: "Sonedekning",
         equipment: ["Kjegler", "Flaggsett", "Baller"],
         totalDuration: "90 min",
-        warmup: "Lateral bevegelse: sidesteg-øvelser mellom kjegler. Dynamisk strekking.",
+        warmup: { duration: "10 min", description: WARMUP_TEXT },
         drills: [
           {
             name: "The Chase (flaggtrekking)",
@@ -421,15 +422,15 @@ export const adultTrainingPlans: PhasePlan[] = [
             progression: "Reaksjonsvariant: trener peker retning, spilleren reagerer og skifter. Simulerer lesing av spill.",
           },
         ],
-        walkthrough: "Sonedekning: del banen i soner. Vis forskjellen på mann-mot-mann og sone. Når brukes hva?",
-        scrimmage: "25 min fri scrimmage. Forsvarene prøver sonedekning.",
+        walkthrough: { duration: "15 min", description: "Sonedekning: del banen i soner. Vis forskjellen på mann-mot-mann og sone. Når brukes hva?" },
+        scrimmage: { duration: "35 min", description: "Fri scrimmage. Forsvarene prøver sonedekning." },
       },
       {
         week: 11,
         title: "Press og avbrudd",
         equipment: ["Kjegler", "Flaggsett", "Baller"],
         totalDuration: "90 min",
-        warmup: "Akselerasjonsøvelser: korte sprinter fra ulike startposisjoner.",
+        warmup: { duration: "10 min", description: WARMUP_TEXT },
         drills: [
           {
             name: "The Break Up (forsvar)",
@@ -454,15 +455,15 @@ export const adultTrainingPlans: PhasePlan[] = [
             progression: "Mottakeren løper nå fulle ruter (slant, hitch, go). Forsvareren må lese ruten og reagere.",
           },
         ],
-        walkthrough: "Rusher-rollen: når og hvordan rushe QB. Telletid (7-sekunder). Vinkler og timing.",
-        scrimmage: "25 min fri scrimmage. En spiller per lag prøver rusher-rollen.",
+        walkthrough: { duration: "15 min", description: "Rusher-rollen: når og hvordan rushe QB. Telletid (7-sekunder). Vinkler og timing." },
+        scrimmage: { duration: "35 min", description: "Fri scrimmage. En spiller per lag prøver rusher-rollen." },
       },
       {
         week: 12,
         title: "Fase 3 – oppsummering",
         equipment: ["Kjegler", "Flaggsett", "Baller"],
         totalDuration: "90 min",
-        warmup: "Kombinert oppvarming: flaggøvelser + kast i bevegelse.",
+        warmup: { duration: "10 min", description: WARMUP_TEXT },
         drills: [
           {
             name: "The Chase (flaggtrekking)",
@@ -489,8 +490,8 @@ export const adultTrainingPlans: PhasePlan[] = [
             progression: "Med forsvarer: kan QB legge ballen over forsvareren og treffe mottakeren? Les dekningen.",
           },
         ],
-        walkthrough: "Forsvarsformasjoner: oppsummering av mann, sone, og rush. Hvert lag velger en primær forsvarsform.",
-        scrimmage: "30 min fri scrimmage. Forsvarene bruker sine valgte formasjoner.",
+        walkthrough: { duration: "10 min", description: "Forsvarsformasjoner: oppsummering av mann, sone, og rush. Hvert lag velger en primær forsvarsform." },
+        scrimmage: { duration: "40 min", description: "Fri scrimmage. Forsvarene bruker sine valgte formasjoner." },
       },
     ],
   },
@@ -510,7 +511,7 @@ export const adultTrainingPlans: PhasePlan[] = [
         title: "Angrepssystem",
         equipment: ["Kjegler", "Flaggsett", "Baller", "Whiteboard"],
         totalDuration: "90 min",
-        warmup: "Snap-kast-rute-sekvenser i tremannsgrupper. Dynamisk strekking.",
+        warmup: { duration: "10 min", description: WARMUP_TEXT },
         drills: [
           {
             name: "The Drop (snapping)",
@@ -536,15 +537,15 @@ export const adultTrainingPlans: PhasePlan[] = [
             progression: "Full rute med forsvarer. Mottaker må skape separasjon, finne åpning, og ta imot under press.",
           },
         ],
-        walkthrough: "Angrepssystem: hvert lag bygger en playbook med 4-5 plays. Tegn opp, gå gjennom, og øv uten forsvar.",
-        scrimmage: "25 min fri scrimmage. Lagene bruker sin playbook.",
+        walkthrough: { duration: "15 min", description: "Angrepssystem: hvert lag bygger en playbook med 4-5 plays. Tegn opp, gå gjennom, og øv uten forsvar." },
+        scrimmage: { duration: "30 min", description: "Fri scrimmage. Lagene bruker sin playbook." },
       },
       {
         week: 14,
         title: "Forsvarssystem",
         equipment: ["Kjegler", "Flaggsett", "Baller"],
         totalDuration: "90 min",
-        warmup: "Sprint og smidighetsøvelser. Kast i bevegelse.",
+        warmup: { duration: "10 min", description: WARMUP_TEXT },
         drills: [
           {
             name: "Zone Pass Defend",
@@ -571,15 +572,15 @@ export const adultTrainingPlans: PhasePlan[] = [
             progression: "Presisjonskast: sett opp mål (ring/kjegle) i ulike høyder. Hvem treffer flest?",
           },
         ],
-        walkthrough: "Forsvarssystem: hvert lag velger primærdekning (mann/sone) og øver på å sette opp forsvaret raskt mellom plays.",
-        scrimmage: "30 min fri scrimmage. Begge lag bruker sine systemer.",
+        walkthrough: { duration: "10 min", description: "Forsvarssystem: hvert lag velger primærdekning (mann/sone) og øver på å sette opp forsvaret raskt mellom plays." },
+        scrimmage: { duration: "40 min", description: "Fri scrimmage. Begge lag bruker sine systemer." },
       },
       {
         week: 15,
         title: "Kampforberedelse",
         equipment: ["Kjegler", "Flaggsett", "Baller"],
         totalDuration: "90 min",
-        warmup: "Full oppvarming: alle elementer. Sprint, smidighet, kast.",
+        warmup: { duration: "10 min", description: WARMUP_TEXT },
         drills: [
           {
             name: "The Chase (flaggtrekking)",
@@ -604,15 +605,15 @@ export const adultTrainingPlans: PhasePlan[] = [
             progression: "Kampfart med forsvar. Gjennomkjør plays fra playbooken mot motstand.",
           },
         ],
-        walkthrough: "Kampformat: gjennomgang av turneringsregler, tidsstyring, og strategi i sluttfasen av kamper.",
-        scrimmage: "30 min scrimmage med full regelhåndhevelse og tidtaking.",
+        walkthrough: { duration: "10 min", description: "Kampformat: gjennomgang av turneringsregler, tidsstyring, og strategi i sluttfasen av kamper." },
+        scrimmage: { duration: "40 min", description: "Scrimmage med full regelhåndhevelse og tidtaking." },
       },
       {
         week: 16,
         title: "Sesongavslutning",
         equipment: ["Kjegler", "Flaggsett", "Baller"],
         totalDuration: "90 min",
-        warmup: "Lett oppvarming og lagsamling. Gjennomgang av sesongen.",
+        warmup: { duration: "10 min", description: WARMUP_TEXT },
         drills: [
           {
             name: "Partner Pass – avstandstest",
@@ -636,8 +637,8 @@ export const adultTrainingPlans: PhasePlan[] = [
             description: "Ny øvelse: Intens kaosøvelse – alle mot alle med flagg. Siste person med flagg igjen vinner. Energisk avslutning.",
           },
         ],
-        walkthrough: "Sesongoppsummering: hva har vi lært? Evaluering og tilbakemelding. Hva vil vi jobbe med neste sesong?",
-        scrimmage: "30 min avslutningskamper. Full innsats, feiring etterpå!",
+        walkthrough: { duration: "10 min", description: "Sesongoppsummering: hva har vi lært? Evaluering og tilbakemelding. Hva vil vi jobbe med neste sesong?" },
+        scrimmage: { duration: "40 min", description: "Avslutningskamper. Full innsats, feiring etterpå!" },
       },
     ],
   },

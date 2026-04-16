@@ -188,6 +188,15 @@ const offensePositions = positions.filter((p) => p.side === "offense");
 const defensePositions = positions.filter((p) => p.side === "defense");
 
 const Posisjoner = () => {
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (hash) {
+      const el = document.getElementById(hash.slice(1));
+      if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 100);
+    }
+  }, [hash]);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}

@@ -1,10 +1,21 @@
 import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair, Menu, X, UserPlus, ShieldCheck, Megaphone, ConeIcon } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import heroBg from "@/assets/hero-bg.png";
 import FieldDiagram from "@/components/FieldDiagram";
 
-const POSITIONS_URL = "https://flaggfotball.no/pages/posisjoner-i-flaggfotball";
+const POSITIONS_URL = "/posisjoner";
+
+const positionSlugMap: Record<string, string> = {
+  "Quarterback": "quarterback",
+  "Running Back": "running-back",
+  "Center": "center",
+  "Wide Receiver": "wide-receiver",
+  "Rusher": "rusher",
+  "Defensive Back": "defensive-back",
+  "Safety": "safety",
+};
 
 const navItems = [
   { id: "om", label: "Om sporten" },

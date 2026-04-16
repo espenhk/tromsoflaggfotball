@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { ArrowLeft, Star, Zap, Users, Target, Crosshair, Shield, Eye } from "lucide-react";
 import logo from "@/assets/logo.png";
 

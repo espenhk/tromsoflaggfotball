@@ -491,14 +491,12 @@ const GameSection = () => {
           {/* Field diagram - center */}
           <div>
             <FieldDiagram />
-            <a
-              href={POSITIONS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to={POSITIONS_URL}
               className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-4"
             >
-              Les mer om alle posisjoner på flaggfotball.no →
-            </a>
+              Les mer om alle posisjoner →
+            </Link>
           </div>
 
           {/* Defense positions - right */}
@@ -516,14 +514,12 @@ const GameSection = () => {
         <div className="space-y-6 md:hidden">
           <div>
             <FieldDiagram />
-            <a
-              href={POSITIONS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to={POSITIONS_URL}
               className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-4"
             >
-              Les mer om alle posisjoner på flaggfotball.no →
-            </a>
+              Les mer om alle posisjoner →
+            </Link>
           </div>
 
           <div className="space-y-5">

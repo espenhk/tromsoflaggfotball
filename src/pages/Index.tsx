@@ -729,6 +729,12 @@ const PositionCard = ({
                 <span className="text-foreground font-semibold">NFL:</span> {nflExamples}
               </p>
             )}
+            <Link
+              to={`/posisjoner#${positionSlugMap[name] || name.toLowerCase()}`}
+              className="inline-flex items-center gap-1 text-xs font-body text-primary hover:underline mt-1"
+            >
+              Les mer om {name.toLowerCase()} →
+            </Link>
           </div>
         </div>
       </div>

@@ -1,10 +1,21 @@
 import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair, Menu, X, UserPlus, ShieldCheck, Megaphone, ConeIcon } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import heroBg from "@/assets/hero-bg.png";
 import FieldDiagram from "@/components/FieldDiagram";
 
-const POSITIONS_URL = "https://flaggfotball.no/pages/posisjoner-i-flaggfotball";
+const POSITIONS_URL = "/posisjoner";
+
+const positionSlugMap: Record<string, string> = {
+  "Quarterback": "quarterback",
+  "Running Back": "running-back",
+  "Center": "center",
+  "Wide Receiver": "wide-receiver",
+  "Rusher": "rusher",
+  "Defensive Back": "defensive-back",
+  "Safety": "safety",
+};
 
 const navItems = [
   { id: "om", label: "Om sporten" },
@@ -480,14 +491,12 @@ const GameSection = () => {
           {/* Field diagram - center */}
           <div>
             <FieldDiagram />
-            <a
-              href={POSITIONS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to={POSITIONS_URL}
               className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-4"
             >
-              Les mer om alle posisjoner på flaggfotball.no →
-            </a>
+              Les mer om alle posisjoner →
+            </Link>
           </div>
 
           {/* Defense positions - right */}
@@ -505,14 +514,12 @@ const GameSection = () => {
         <div className="space-y-6 md:hidden">
           <div>
             <FieldDiagram />
-            <a
-              href={POSITIONS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to={POSITIONS_URL}
               className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-4"
             >
-              Les mer om alle posisjoner på flaggfotball.no →
-            </a>
+              Les mer om alle posisjoner →
+            </Link>
           </div>
 
           <div className="space-y-5">
@@ -718,6 +725,12 @@ const PositionCard = ({
                 <span className="text-foreground font-semibold">NFL:</span> {nflExamples}
               </p>
             )}
+            <Link
+              to={`/posisjoner#${positionSlugMap[name] || name.toLowerCase()}`}
+              className="inline-flex items-center gap-1 text-xs font-body text-primary hover:underline mt-1"
+            >
+              Les mer om {name.toLowerCase()} →
+            </Link>
           </div>
         </div>
       </div>

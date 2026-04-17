@@ -1,6 +1,6 @@
 import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair, Menu, X, UserPlus, ShieldCheck, Megaphone, ConeIcon } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import heroBg from "@/assets/hero-bg.png";
 import FieldDiagram from "@/components/FieldDiagram";

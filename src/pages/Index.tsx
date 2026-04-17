@@ -466,6 +466,9 @@ const LinkCard = ({
 );
 
 const GameSection = () => {
+  const navigate = useNavigate();
+  const goToPosition = (slug: string) => navigate(`/posisjoner#${slug}`);
+
   return (
     <section id="spillet" className="py-16 px-6 scroll-mt-16 bg-card/50">
       <div className="max-w-6xl mx-auto">

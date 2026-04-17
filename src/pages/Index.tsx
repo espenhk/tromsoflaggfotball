@@ -493,7 +493,7 @@ const GameSection = () => {
 
           {/* Field diagram - center */}
           <div>
-            <FieldDiagram />
+            <FieldDiagram onPositionNavigate={goToPosition} />
             <Link
               to={POSITIONS_URL}
               className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-4"
@@ -516,7 +516,7 @@ const GameSection = () => {
         {/* Mobile: stacked layout */}
         <div className="space-y-6 md:hidden">
           <div>
-            <FieldDiagram />
+            <FieldDiagram onPositionNavigate={goToPosition} />
             <Link
               to={POSITIONS_URL}
               className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-4"

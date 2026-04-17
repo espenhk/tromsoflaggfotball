@@ -109,7 +109,11 @@ const getManAssignments = (tab: OffenseTabId): Record<string, string> => {
 
 const ANIMATION_DURATION = 400;
 
-const FieldDiagram = () => {
+const FieldDiagram = ({
+  onPositionNavigate,
+}: {
+  onPositionNavigate?: (slug: string) => void;
+} = {}) => {
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<OffenseTabId>("formasjon");
   const [pendingTab, setPendingTab] = useState<OffenseTabId | null>(null);

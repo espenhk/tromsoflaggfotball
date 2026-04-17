@@ -322,6 +322,8 @@ const FieldDiagram = ({
             setActiveTooltip={setActiveTooltip}
             id={p.id}
             isAnimating={false}
+            navSlug={idToSlug[p.id]}
+            onPositionNavigate={onPositionNavigate}
           />
         ))}
 

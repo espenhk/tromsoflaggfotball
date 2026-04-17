@@ -212,19 +212,24 @@ const FieldDiagram = ({
         </svg>
 
         {/* Offense players */}
-        {offensePlayers.map((p) => (
-          <AnimatedPlayerDot
-            key={p.id}
-            label={p.label}
-            color={p.color}
-            top={p.top}
-            left={p.left}
-            activeTooltip={activeTooltip}
-            setActiveTooltip={setActiveTooltip}
-            id={p.id}
-            isAnimating={isAnimating}
-          />
-        ))}
+        {offensePlayers.map((p) => {
+          const slug = p.id === "WR-S" && activeTab === "løpespill" ? "running-back" : idToSlug[p.id];
+          return (
+            <AnimatedPlayerDot
+              key={p.id}
+              label={p.label}
+              color={p.color}
+              top={p.top}
+              left={p.left}
+              activeTooltip={activeTooltip}
+              setActiveTooltip={setActiveTooltip}
+              id={p.id}
+              isAnimating={isAnimating}
+              navSlug={slug}
+              onPositionNavigate={onPositionNavigate}
+            />
+          );
+        })}
 
         {/* SVG overlay - always visible (rush arrow, zones, man-to-man) */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ zIndex: 1 }}>

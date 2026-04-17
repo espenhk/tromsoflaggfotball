@@ -215,8 +215,12 @@ const positions: PositionData[] = [
   },
 ];
 
-const offensePositions = positions.filter((p) => p.side === "offense");
-const defensePositions = positions.filter((p) => p.side === "defense");
+// Order matches the main page (Index.tsx)
+const offenseOrder = ["quarterback", "running-back", "center", "wide-receiver"];
+const defenseOrder = ["rusher", "defensive-back", "safety"];
+const byId = Object.fromEntries(positions.map((p) => [p.id, p]));
+const offensePositions = offenseOrder.map((id) => byId[id]);
+const defensePositions = defenseOrder.map((id) => byId[id]);
 
 const Posisjoner = () => {
   const { hash } = useLocation();

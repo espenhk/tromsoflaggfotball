@@ -1,4 +1,19 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { ArrowUpRight } from "lucide-react";
+
+// Map field-diagram dot ids → /posisjoner slugs
+const idToSlug: Record<string, string> = {
+  QB: "quarterback",
+  C: "center",
+  "WR-L": "wide-receiver",
+  "WR-R": "wide-receiver",
+  "WR-S": "wide-receiver",
+  R: "rusher",
+  "DB-L": "defensive-back",
+  "DB-R": "defensive-back",
+  "DB-S": "safety",
+  "DB-SA": "safety",
+};
 
 const positionFullNames: Record<string, string> = {
   QB: "QB – Quarterback",
@@ -94,7 +109,11 @@ const getManAssignments = (tab: OffenseTabId): Record<string, string> => {
 
 const ANIMATION_DURATION = 400;
 
-const FieldDiagram = () => {
+const FieldDiagram = ({
+  onPositionNavigate,
+}: {
+  onPositionNavigate?: (slug: string) => void;
+} = {}) => {
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<OffenseTabId>("formasjon");
   const [pendingTab, setPendingTab] = useState<OffenseTabId | null>(null);
@@ -193,19 +212,24 @@ const FieldDiagram = () => {
         </svg>
 
         {/* Offense players */}
-        {offensePlayers.map((p) => (
-          <AnimatedPlayerDot
-            key={p.id}
-            label={p.label}
-            color={p.color}
-            top={p.top}
-            left={p.left}
-            activeTooltip={activeTooltip}
-            setActiveTooltip={setActiveTooltip}
-            id={p.id}
-            isAnimating={isAnimating}
-          />
-        ))}
+        {offensePlayers.map((p) => {
+          const slug = p.id === "WR-S" && activeTab === "løpespill" ? "running-back" : idToSlug[p.id];
+          return (
+            <AnimatedPlayerDot
+              key={p.id}
+              label={p.label}
+              color={p.color}
+              top={p.top}
+              left={p.left}
+              activeTooltip={activeTooltip}
+              setActiveTooltip={setActiveTooltip}
+              id={p.id}
+              isAnimating={isAnimating}
+              navSlug={slug}
+              onPositionNavigate={onPositionNavigate}
+            />
+          );
+        })}
 
         {/* SVG overlay - always visible (rush arrow, zones, man-to-man) */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ zIndex: 1 }}>
@@ -298,6 +322,8 @@ const FieldDiagram = () => {
             setActiveTooltip={setActiveTooltip}
             id={p.id}
             isAnimating={false}
+            navSlug={idToSlug[p.id]}
+            onPositionNavigate={onPositionNavigate}
           />
         ))}
 
@@ -344,10 +370,13 @@ const FieldDiagram = () => {
 // Animated player dot that transitions smoothly when position changes
 const AnimatedPlayerDot = ({
   label, color, top, left, activeTooltip, setActiveTooltip, id, isAnimating,
+  navSlug, onPositionNavigate,
 }: {
   label: string; color: string; top: number; left: number;
   activeTooltip: string | null; setActiveTooltip: (id: string | null) => void; id: string;
   isAnimating: boolean;
+  navSlug?: string;
+  onPositionNavigate?: (slug: string) => void;
 }) => {
   const [pos, setPos] = useState({ top, left });
   const [displayLabel, setDisplayLabel] = useState(label);
@@ -389,6 +418,19 @@ const AnimatedPlayerDot = ({
   const fullName = positionFullNames[displayLabel] || displayLabel;
   const tooltipAlign = pos.left > 60 ? "right-0" : pos.left < 40 ? "left-0" : "left-1/2 -translate-x-1/2";
 
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // If primed (active) and navigation is wired up → navigate
+    if (isActive && onPositionNavigate && navSlug) {
+      onPositionNavigate(navSlug);
+      setActiveTooltip(null);
+      return;
+    }
+    setActiveTooltip(isActive ? null : id);
+  };
+
+  const showNavArrow = isActive && !!onPositionNavigate && !!navSlug;
+
   return (
     <div
       className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-0.5 cursor-pointer"
@@ -398,25 +440,29 @@ const AnimatedPlayerDot = ({
         zIndex: isActive ? 20 : 2,
         transition: "top 0.4s ease-in-out, left 0.4s ease-in-out",
       }}
-      onClick={(e) => {
-        e.stopPropagation();
-        setActiveTooltip(isActive ? null : id);
-      }}
+      onClick={handleClick}
     >
       <div
-        className={`w-6 h-6 rounded-full border-2 border-white/80 shadow-lg ${isActive ? "scale-125 ring-2 ring-white/60" : "hover:scale-110"}`}
+        className={`relative w-6 h-6 rounded-full border-2 border-white/80 shadow-lg flex items-center justify-center ${isActive ? "scale-150 ring-2 ring-white/60" : "hover:scale-110"}`}
         style={{
           backgroundColor: resolvedColor,
           transition: "background-color 0.4s ease-in-out, transform 0.2s",
         }}
-      />
+      >
+        {showNavArrow && (
+          <ArrowUpRight
+            className="w-3.5 h-3.5 text-black/80"
+            strokeWidth={3}
+          />
+        )}
+      </div>
       <span
         className="text-[10px] font-heading font-bold text-white drop-shadow-md"
         style={{ opacity: labelOpacity, transition: "opacity 0.2s ease-in-out" }}
       >
         {displayLabel}
       </span>
-      {isActive && description && (
+      {isActive && description && !showNavArrow && (
         <div className={`absolute top-full mt-1 w-48 bg-black/90 text-white text-[11px] leading-snug rounded-lg px-3 py-2 shadow-xl ${tooltipAlign}`}>
           <div className="font-bold mb-0.5">{fullName}</div>
           {description}

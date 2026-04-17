@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ArrowLeft, ChevronDown, Star, Zap, Users, Target, Crosshair, Shield, Eye } from "lucide-react";
 import logo from "@/assets/logo.png";
+import FieldDiagram from "@/components/FieldDiagram";
 import qbImg from "@/assets/positions/quarterback.png";
 import centerImg from "@/assets/positions/center.png";
 import rbImg from "@/assets/positions/running-back.png";
@@ -215,19 +216,29 @@ const positions: PositionData[] = [
   },
 ];
 
-const offensePositions = positions.filter((p) => p.side === "offense");
-const defensePositions = positions.filter((p) => p.side === "defense");
+// Order matches the main page (Index.tsx)
+const offenseOrder = ["quarterback", "running-back", "center", "wide-receiver"];
+const defenseOrder = ["rusher", "defensive-back", "safety"];
+const byId = Object.fromEntries(positions.map((p) => [p.id, p]));
+const offensePositions = offenseOrder.map((id) => byId[id]);
+const defensePositions = defenseOrder.map((id) => byId[id]);
 
 const Posisjoner = () => {
   const { hash } = useLocation();
   const [openId, setOpenId] = useState<string | null>(null);
 
+  const openAndScroll = (id: string) => {
+    setOpenId(id);
+    const el = document.getElementById(id);
+    if (el) {
+      // wait for the row to start expanding before scrolling
+      setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
+    }
+  };
+
   useEffect(() => {
     if (hash) {
-      const id = hash.slice(1);
-      setOpenId(id);
-      const el = document.getElementById(id);
-      if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 100);
+      openAndScroll(hash.slice(1));
     }
   }, [hash]);
 
@@ -246,13 +257,18 @@ const Posisjoner = () => {
 
       <main className="max-w-4xl mx-auto px-6 py-12 space-y-12">
         {/* Intro */}
-        <section className="space-y-3">
-          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
-            Posisjoner i flaggfotball
-          </h2>
-          <p className="text-muted-foreground font-body leading-relaxed max-w-2xl">
-            I flaggfotball spilles det 5 mot 5, og posisjonene er i hovedsak de samme som i tackle-fotball, men uten linjemenn. Hver posisjon har en unik rolle, og hvert spill er en maskin der alle må gjøre sin del. Trykk på en posisjon for å lese mer.
-          </p>
+        <section className="space-y-6">
+          <div className="space-y-3">
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
+              Posisjoner i flaggfotball
+            </h2>
+            <p className="text-muted-foreground font-body leading-relaxed max-w-2xl">
+              I flaggfotball spilles det 5 mot 5, og posisjonene er i hovedsak de samme som i tackle-fotball, men uten linjemenn. Hver posisjon har en unik rolle, og hvert spill er en maskin der alle må gjøre sin del. Trykk på en spiller på banen — eller en posisjon i listen — for å lese mer.
+            </p>
+          </div>
+
+          {/* Field diagram — clicks scroll to & expand the matching position */}
+          <FieldDiagram onPositionNavigate={openAndScroll} />
         </section>
 
         {/* Offense */}

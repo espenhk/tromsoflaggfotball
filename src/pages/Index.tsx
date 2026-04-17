@@ -1,6 +1,6 @@
 import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair, Menu, X, UserPlus, ShieldCheck, Megaphone, ConeIcon } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import heroBg from "@/assets/hero-bg.png";
 import FieldDiagram from "@/components/FieldDiagram";
@@ -466,6 +466,9 @@ const LinkCard = ({
 );
 
 const GameSection = () => {
+  const navigate = useNavigate();
+  const goToPosition = (slug: string) => navigate(`/posisjoner#${slug}`);
+
   return (
     <section id="spillet" className="py-16 px-6 scroll-mt-16 bg-card/50">
       <div className="max-w-6xl mx-auto">
@@ -490,7 +493,7 @@ const GameSection = () => {
 
           {/* Field diagram - center */}
           <div>
-            <FieldDiagram />
+            <FieldDiagram onPositionNavigate={goToPosition} />
             <Link
               to={POSITIONS_URL}
               className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-4"
@@ -513,7 +516,7 @@ const GameSection = () => {
         {/* Mobile: stacked layout */}
         <div className="space-y-6 md:hidden">
           <div>
-            <FieldDiagram />
+            <FieldDiagram onPositionNavigate={goToPosition} />
             <Link
               to={POSITIONS_URL}
               className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-4"

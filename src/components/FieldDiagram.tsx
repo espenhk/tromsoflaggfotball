@@ -1,4 +1,19 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { ArrowUpRight } from "lucide-react";
+
+// Map field-diagram dot ids → /posisjoner slugs
+const idToSlug: Record<string, string> = {
+  QB: "quarterback",
+  C: "center",
+  "WR-L": "wide-receiver",
+  "WR-R": "wide-receiver",
+  "WR-S": "wide-receiver",
+  R: "rusher",
+  "DB-L": "defensive-back",
+  "DB-R": "defensive-back",
+  "DB-S": "safety",
+  "DB-SA": "safety",
+};
 
 const positionFullNames: Record<string, string> = {
   QB: "QB – Quarterback",

@@ -1,7 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ArrowLeft, Star, Zap, Users, Target, Crosshair, Shield, Eye } from "lucide-react";
+import { ArrowLeft, ChevronDown, Star, Zap, Users, Target, Crosshair, Shield, Eye } from "lucide-react";
 import logo from "@/assets/logo.png";
+import qbImg from "@/assets/positions/quarterback.png";
+import centerImg from "@/assets/positions/center.png";
+import rbImg from "@/assets/positions/running-back.png";
+import wrImg from "@/assets/positions/wide-receiver.png";
+import dbImg from "@/assets/positions/defensive-back.png";
+import rusherImg from "@/assets/positions/rusher.png";
+import safetyImg from "@/assets/positions/safety.png";
 
 type PositionData = {
   id: string;
@@ -10,6 +17,9 @@ type PositionData = {
   side: "offense" | "defense";
   tagline: string;
   icon: React.ReactNode;
+  accentColor: string;
+  glowBg: string;
+  image: string;
   intro: string;
   description: string[];
   skills: { label: string; detail: string }[];
@@ -24,7 +34,10 @@ const positions: PositionData[] = [
     abbr: "QB",
     side: "offense",
     tagline: "Lagets hjerne og leder",
-    icon: <Star className="w-6 h-6" />,
+    icon: <Star className="w-5 h-5" />,
+    accentColor: "text-amber-400",
+    glowBg: "bg-amber-400/10",
+    image: qbImg,
     intro:
       "Quarterbacken er lagets offensive leder og den viktigste posisjonen på banen. Tenk på QBen som hjernen i angrepet – det er denne spilleren som mottar ballen ved hvert eneste spill, leser forsvaret og tar avgjørelsen om ballen skal kastes eller leveres videre.",
     description: [
@@ -48,7 +61,10 @@ const positions: PositionData[] = [
     abbr: "C",
     side: "offense",
     tagline: "Den allsidige starteren",
-    icon: <Users className="w-6 h-6" />,
+    icon: <Users className="w-5 h-5" />,
+    accentColor: "text-sky-400",
+    glowBg: "bg-sky-400/10",
+    image: centerImg,
     intro:
       "Centeren er spilleren som setter i gang hvert eneste spill ved å snappe ballen til quarterbacken. Men i flaggfotball stopper ikke jobben der – centeren blir umiddelbart en mottaker etter snappet!",
     description: [
@@ -71,7 +87,10 @@ const positions: PositionData[] = [
     abbr: "WR",
     side: "offense",
     tagline: "Fartsdemonen og fangstartisten",
-    icon: <Target className="w-6 h-6" />,
+    icon: <Target className="w-5 h-5" />,
+    accentColor: "text-sky-400",
+    glowBg: "bg-sky-400/10",
+    image: wrImg,
     intro:
       "Wide receiverens hovedjobb er å fange pasninger fra quarterbacken og avansere nedover banen – eller score! Mottakerne løper presise og ofte komplekse løpsruter for å komme fri fra forsvarerne sine.",
     description: [
@@ -94,7 +113,10 @@ const positions: PositionData[] = [
     abbr: "RB",
     side: "offense",
     tagline: "Den smidige allrounderen",
-    icon: <Zap className="w-6 h-6" />,
+    icon: <Zap className="w-5 h-5" />,
+    accentColor: "text-emerald-400",
+    glowBg: "bg-emerald-400/10",
+    image: rbImg,
     intro:
       "Running backen er ansvarlig for å bære ballen under løpespill. Etter at ballen er snappet, mottar de en hand-off fra quarterbacken og løper med ballen for å avansere nedover banen. Får de ikke ballen, blir de en mottaker.",
     description: [
@@ -112,35 +134,15 @@ const positions: PositionData[] = [
     nflExamples: "Derrick Henry, Saquon Barkley, Christian McCaffrey",
   },
   {
-    id: "defensive-back",
-    name: "Defensive Back",
-    abbr: "DB",
-    side: "defense",
-    tagline: "Skyggen som klistrer seg til mottakerne",
-    icon: <Shield className="w-6 h-6" />,
-    intro:
-      "En defensive backs primære mål er å forsvare wide receivers og enten snappe en pasning i luften (interception) eller dra flaggene av ballbæreren.",
-    description: [
-      "Defensive backs kan spille enten mann-mot-mann eller soneforsvar, avhengig av trenerens strategi. I mann-mot-mann følger du én spesifikk mottaker over hele banen – du er skyggen deres. I soneforsvar dekker du et bestemt område og reagerer på hvem som kommer inn i din sone.",
-      "Denne posisjonen krever en sjelden kombinasjon av fysisk fart og mental skarphet. Du må kunne løpe baklengs, snu raskt, lese QBens øyne og reagere lynraskt når ballen er i luften.",
-    ],
-    skills: [
-      { label: "Rask og smidig", detail: "For å forsvare motstanderens raskeste spillere" },
-      { label: "Mental skarphet", detail: "Lese banen og reagere på kaste- eller løpespill" },
-      { label: "Ballreaksjon", detail: "Fange (intercepte) pasninger i luften" },
-      { label: "Flaggteknikk", detail: "Korrekt posisjonering og bevegelse for å rive flagget av ballbæreren" },
-    ],
-    whoFits:
-      "Du er konkurranseinstinkt i menneskeform. Du elsker en-mot-en-dueller, har raske føtter og øyne som alltid følger ballen. Du trives med å ødelegge for motstanderens angrep.",
-    nflExamples: "Sauce Gardner, Patrick Surtain II, Jalen Ramsey",
-  },
-  {
     id: "rusher",
     name: "Rusher",
     abbr: "R",
     side: "defense",
     tagline: "Pressmaskinen",
-    icon: <Crosshair className="w-6 h-6" />,
+    icon: <Crosshair className="w-5 h-5" />,
+    accentColor: "text-orange-400",
+    glowBg: "bg-orange-400/10",
+    image: rusherImg,
     intro:
       "Rusheren er forsvarets presselement – oppgaven er å stresse quarterbacken og forhindre at pasningen blir fullført. Rusheren starter syv yards bak scrimmage-linjen ved snappet, og QBen har en syv-sekunders klokke til å kaste ballen.",
     description: [
@@ -159,12 +161,41 @@ const positions: PositionData[] = [
     nflExamples: "Myles Garrett, Micah Parsons, T.J. Watt",
   },
   {
+    id: "defensive-back",
+    name: "Defensive Back",
+    abbr: "DB",
+    side: "defense",
+    tagline: "Skyggen som klistrer seg til mottakerne",
+    icon: <Shield className="w-5 h-5" />,
+    accentColor: "text-rose-400",
+    glowBg: "bg-rose-400/10",
+    image: dbImg,
+    intro:
+      "En defensive backs primære mål er å forsvare wide receivers og enten snappe en pasning i luften (interception) eller dra flaggene av ballbæreren.",
+    description: [
+      "Defensive backs kan spille enten mann-mot-mann eller soneforsvar, avhengig av trenerens strategi. I mann-mot-mann følger du én spesifikk mottaker over hele banen – du er skyggen deres. I soneforsvar dekker du et bestemt område og reagerer på hvem som kommer inn i din sone.",
+      "Denne posisjonen krever en sjelden kombinasjon av fysisk fart og mental skarphet. Du må kunne løpe baklengs, snu raskt, lese QBens øyne og reagere lynraskt når ballen er i luften.",
+    ],
+    skills: [
+      { label: "Rask og smidig", detail: "For å forsvare motstanderens raskeste spillere" },
+      { label: "Mental skarphet", detail: "Lese banen og reagere på kaste- eller løpespill" },
+      { label: "Ballreaksjon", detail: "Fange (intercepte) pasninger i luften" },
+      { label: "Flaggteknikk", detail: "Korrekt posisjonering og bevegelse for å rive flagget av ballbæreren" },
+    ],
+    whoFits:
+      "Du er konkurranseinstinkt i menneskeform. Du elsker en-mot-en-dueller, har raske føtter og øyne som alltid følger ballen. Du trives med å ødelegge for motstanderens angrep.",
+    nflExamples: "Sauce Gardner, Patrick Surtain II, Jalen Ramsey",
+  },
+  {
     id: "safety",
     name: "Safety",
     abbr: "S",
     side: "defense",
     tagline: "Siste skanse",
-    icon: <Eye className="w-6 h-6" />,
+    icon: <Eye className="w-5 h-5" />,
+    accentColor: "text-rose-400",
+    glowBg: "bg-rose-400/10",
+    image: safetyImg,
     intro:
       "Safetyen står lengre bak fra scrimmage-linjen og fungerer som et sikkerhetsnett – ansvarlig for å stoppe motstandere som slipper løs.",
     description: [
@@ -189,10 +220,13 @@ const defensePositions = positions.filter((p) => p.side === "defense");
 
 const Posisjoner = () => {
   const { hash } = useLocation();
+  const [openId, setOpenId] = useState<string | null>(null);
 
   useEffect(() => {
     if (hash) {
-      const el = document.getElementById(hash.slice(1));
+      const id = hash.slice(1);
+      setOpenId(id);
+      const el = document.getElementById(id);
       if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 100);
     }
   }, [hash]);
@@ -201,8 +235,8 @@ const Posisjoner = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="max-w-3xl mx-auto px-4 flex items-center gap-3 py-3">
-          <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+        <div className="max-w-4xl mx-auto px-6 flex items-center gap-3 py-3">
+          <Link to="/#spillet" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
             <ArrowLeft className="w-4 h-4" />
             <img src={logo} alt="Logo" className="w-5 h-5" />
           </Link>
@@ -210,56 +244,61 @@ const Posisjoner = () => {
         </div>
       </nav>
 
-      <main className="max-w-3xl mx-auto px-4 py-8 space-y-6">
+      <main className="max-w-4xl mx-auto px-6 py-12 space-y-12">
         {/* Intro */}
         <section className="space-y-3">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
             Posisjoner i flaggfotball
           </h2>
-          <p className="text-sm text-muted-foreground font-body leading-relaxed">
-            I flaggfotball spilles det 5 mot 5, og posisjonene er i hovedsak de samme som i tackle-fotball, men uten linjemenn. Hver posisjon har en unik rolle, og hvert spill er designet som en maskin der alle må gjøre sin del.
+          <p className="text-muted-foreground font-body leading-relaxed max-w-2xl">
+            I flaggfotball spilles det 5 mot 5, og posisjonene er i hovedsak de samme som i tackle-fotball, men uten linjemenn. Hver posisjon har en unik rolle, og hvert spill er en maskin der alle må gjøre sin del. Trykk på en posisjon for å lese mer.
           </p>
         </section>
 
         {/* Offense */}
         <section className="space-y-4">
-          <h2 className="font-heading text-lg font-bold text-sky-400 flex items-center gap-2">
-            🏈 Angrep <span className="text-xs text-muted-foreground font-body font-normal">(Offense)</span>
-          </h2>
-          <div className="space-y-6">
+          <h3 className="font-heading text-lg font-bold text-sky-400">Angrep</h3>
+          <div>
             {offensePositions.map((pos) => (
-              <PositionSection key={pos.id} pos={pos} accentColor="text-sky-400" glowColor="bg-sky-400" />
+              <PositionRow
+                key={pos.id}
+                pos={pos}
+                open={openId === pos.id}
+                onToggle={() => setOpenId(openId === pos.id ? null : pos.id)}
+              />
             ))}
           </div>
         </section>
 
         {/* Defense */}
         <section className="space-y-4">
-          <h2 className="font-heading text-lg font-bold text-rose-400 flex items-center gap-2">
-            🛡️ Forsvar <span className="text-xs text-muted-foreground font-body font-normal">(Defense)</span>
-          </h2>
-          <div className="space-y-6">
+          <h3 className="font-heading text-lg font-bold text-rose-400">Forsvar</h3>
+          <div>
             {defensePositions.map((pos) => (
-              <PositionSection key={pos.id} pos={pos} accentColor="text-rose-400" glowColor="bg-rose-400" />
+              <PositionRow
+                key={pos.id}
+                pos={pos}
+                open={openId === pos.id}
+                onToggle={() => setOpenId(openId === pos.id ? null : pos.id)}
+              />
             ))}
           </div>
         </section>
 
         {/* Closing message */}
-        <section className="bg-card/50 border border-border rounded-xl p-5 space-y-2">
-          <p className="text-sm text-foreground font-body leading-relaxed font-semibold">
+        <section className="space-y-2 pt-4 border-t border-border">
+          <p className="text-foreground font-body leading-relaxed font-semibold">
             Alle posisjoner i flaggfotball har fordeler – og det beste er at spillere ikke trenger en bestemt kroppsbygning for å lykkes.
           </p>
-          <p className="text-xs text-muted-foreground font-body leading-relaxed">
+          <p className="text-sm text-muted-foreground font-body leading-relaxed">
             Flaggfotball er utrolig inkluderende, og mange spillere med ulik utvikling finner en posisjon der de kan være konkurransedyktige. I flaggfotball spiller hver spiller både angrep og forsvar, noe som betyr at allsidige spillere som behersker flere ferdigheter har størst suksess.
           </p>
         </section>
 
-        {/* Back link */}
-        <div className="pt-4 pb-8">
+        <div className="pt-2 pb-8">
           <Link
             to="/#spillet"
-            className="text-sm text-primary hover:underline font-body flex items-center gap-1"
+            className="text-sm text-primary hover:underline font-body inline-flex items-center gap-1"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             Tilbake til hovedsiden
@@ -270,69 +309,108 @@ const Posisjoner = () => {
   );
 };
 
-const PositionSection = ({
+const PositionRow = ({
   pos,
-  accentColor,
-  glowColor,
+  open,
+  onToggle,
 }: {
   pos: PositionData;
-  accentColor: string;
-  glowColor: string;
-}) => (
-  <article id={pos.id} className="scroll-mt-20 group relative">
-    <div className="bg-card/50 border border-border rounded-xl p-5 space-y-4 transition-colors hover:border-border/80">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className={`${accentColor}`}>{pos.icon}</div>
-        <div>
-          <h3 className="font-heading text-lg font-bold text-foreground">
-            {pos.name}
-            <span className={`ml-1.5 text-sm font-normal ${accentColor} opacity-60`}>({pos.abbr})</span>
-          </h3>
-          <p className="text-xs text-muted-foreground font-body italic">{pos.tagline}</p>
+  open: boolean;
+  onToggle: () => void;
+}) => {
+  return (
+    <article id={pos.id} className="scroll-mt-20 group relative border-t border-white/5 last:border-b">
+      {/* Glow background on hover (desktop) */}
+      <div
+        className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${pos.glowBg} hidden md:block pointer-events-none`}
+        style={{ filter: "blur(12px)" }}
+      />
+      <button
+        onClick={onToggle}
+        className="relative w-full text-left py-3 md:py-4"
+        aria-expanded={open}
+      >
+        <div className="flex items-center gap-3">
+          <div className={pos.accentColor}>{pos.icon}</div>
+          <div className="flex-1 min-w-0">
+            <h4 className="font-heading font-bold text-foreground">
+              {pos.name}
+              <sup className={`ml-1 text-[0.7em] align-super ${pos.accentColor} opacity-60`}>
+                {pos.abbr}
+              </sup>
+            </h4>
+            <p className="text-xs text-muted-foreground font-body italic mt-0.5">{pos.tagline}</p>
+          </div>
+          <ChevronDown
+            className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+          />
         </div>
-      </div>
+      </button>
 
-      {/* Intro */}
-      <p className="text-sm text-foreground/90 font-body leading-relaxed">{pos.intro}</p>
+      <div
+        className={`relative grid transition-[grid-template-rows,opacity] duration-300 ease-out ${
+          open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+        }`}
+      >
+        <div className="min-h-0 overflow-hidden">
+          <div className="pb-6 md:pb-8 pl-8 pr-2 grid grid-cols-1 md:grid-cols-[1fr_180px] gap-6 md:gap-8 items-start">
+            <div className="space-y-4 order-2 md:order-1">
+              <p className="text-sm text-foreground/90 font-body leading-relaxed">{pos.intro}</p>
+              {pos.description.map((p, i) => (
+                <p key={i} className="text-sm text-muted-foreground font-body leading-relaxed">
+                  {p}
+                </p>
+              ))}
 
-      {/* Description */}
-      <div className="space-y-2">
-        {pos.description.map((p, i) => (
-          <p key={i} className="text-xs text-muted-foreground font-body leading-relaxed">
-            {p}
-          </p>
-        ))}
-      </div>
+              <div className="pt-1">
+                <h5 className={`text-xs font-heading font-bold uppercase tracking-wider ${pos.accentColor} mb-2`}>
+                  Ferdigheter & egenskaper
+                </h5>
+                <ul className="space-y-1.5">
+                  {pos.skills.map((skill) => (
+                    <li key={skill.label} className="flex items-start gap-2">
+                      <div className={`w-1 h-1 rounded-full ${pos.accentColor.replace("text-", "bg-")} mt-2 shrink-0`} />
+                      <p className="text-sm font-body">
+                        <span className="text-foreground font-semibold">{skill.label}</span>
+                        <span className="text-muted-foreground"> – {skill.detail}</span>
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-      {/* Skills */}
-      <div>
-        <h4 className={`text-xs font-heading font-bold ${accentColor} mb-2`}>Ferdigheter & egenskaper</h4>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-          {pos.skills.map((skill) => (
-            <div key={skill.label} className="flex items-start gap-2">
-              <div className={`w-1 h-1 rounded-full ${glowColor} mt-1.5 shrink-0`} />
               <div>
-                <span className="text-xs text-foreground font-body font-semibold">{skill.label}</span>
-                <span className="text-xs text-muted-foreground font-body"> – {skill.detail}</span>
+                <h5 className="text-xs font-heading font-bold uppercase tracking-wider text-foreground mb-1">
+                  Hvem passer som {pos.name.toLowerCase()}?
+                </h5>
+                <p className="text-sm text-muted-foreground font-body leading-relaxed">{pos.whoFits}</p>
+              </div>
+
+              <p className="text-xs font-body text-muted-foreground">
+                <span className="text-foreground font-semibold">NFL-forbilder:</span> {pos.nflExamples}
+              </p>
+            </div>
+
+            {/* Image */}
+            <div className="order-1 md:order-2 flex justify-center md:justify-end">
+              <div className="relative w-32 md:w-44">
+                <div
+                  className={`absolute inset-0 rounded-full ${pos.glowBg}`}
+                  style={{ filter: "blur(24px)" }}
+                />
+                <img
+                  src={pos.image}
+                  alt={`${pos.name}-spiller i aksjon`}
+                  className="relative w-full h-auto object-contain"
+                  loading="lazy"
+                />
               </div>
             </div>
-          ))}
+          </div>
         </div>
       </div>
-
-      {/* Who fits */}
-      <div className="bg-background/50 rounded-lg p-3">
-        <h4 className="text-xs font-heading font-bold text-foreground mb-1">Hvem passer som {pos.name.toLowerCase()}?</h4>
-        <p className="text-xs text-muted-foreground font-body leading-relaxed">{pos.whoFits}</p>
-      </div>
-
-      {/* NFL examples */}
-      <p className="text-xs font-body text-muted-foreground">
-        <span className="text-foreground font-semibold">NFL-forbilder:</span> {pos.nflExamples}
-      </p>
-    </div>
-  </article>
-);
+    </article>
+  );
+};
 
 export default Posisjoner;

@@ -114,10 +114,14 @@ type NavigateMode = "tooltip" | "direct";
 const FieldDiagram = ({
   onPositionNavigate,
   navigateMode = "tooltip",
+  fullscreen = false,
 }: {
   onPositionNavigate?: (slug: string) => void;
   navigateMode?: NavigateMode;
+  fullscreen?: boolean;
 } = {}) => {
+  // Width class applied to the navigator bars and field — full-bleed in fullscreen mode
+  const widthClass = fullscreen ? "w-full max-w-none" : "w-full max-w-md mx-auto";
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<OffenseTabId>("formasjon");
   const [pendingTab, setPendingTab] = useState<OffenseTabId | null>(null);

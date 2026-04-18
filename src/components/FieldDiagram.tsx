@@ -186,7 +186,7 @@ const FieldDiagram = ({
 
       {/* Field */}
       <div
-        className="relative w-full max-w-md mx-auto aspect-[3/4] bg-emerald-800 overflow-hidden border-2 border-t-0 border-b-0 border-emerald-600"
+        className={`relative ${widthClass} ${fullscreen ? "flex-1 min-h-0" : "aspect-[3/4]"} bg-emerald-800 overflow-hidden border-2 border-t-0 border-b-0 border-emerald-600`}
         onClick={() => setActiveTooltip(null)}
       >
         {/* Field lines */}

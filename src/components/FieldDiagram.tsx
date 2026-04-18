@@ -114,10 +114,14 @@ type NavigateMode = "tooltip" | "direct";
 const FieldDiagram = ({
   onPositionNavigate,
   navigateMode = "tooltip",
+  fullscreen = false,
 }: {
   onPositionNavigate?: (slug: string) => void;
   navigateMode?: NavigateMode;
+  fullscreen?: boolean;
 } = {}) => {
+  // Width class applied to the navigator bars and field — full-bleed in fullscreen mode
+  const widthClass = fullscreen ? "w-full max-w-none" : "w-full max-w-md mx-auto";
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<OffenseTabId>("formasjon");
   const [pendingTab, setPendingTab] = useState<OffenseTabId | null>(null);
@@ -154,10 +158,10 @@ const FieldDiagram = ({
   }, [pendingTab]);
 
   return (
-    <div className="mb-0">
+    <div className={fullscreen ? "h-full flex flex-col" : "mb-0"}>
 
       {/* Defense navigator */}
-      <div className="w-full max-w-md mx-auto">
+      <div className={widthClass}>
         <div className="bg-rose-950/30 border-2 border-b-0 border-rose-400/20 rounded-t-xl overflow-hidden">
           <div className="text-[10px] font-heading font-bold text-rose-300/50 tracking-widest uppercase text-center py-1 bg-rose-950/30">
             Forsvar
@@ -182,7 +186,7 @@ const FieldDiagram = ({
 
       {/* Field */}
       <div
-        className="relative w-full max-w-md mx-auto aspect-[3/4] bg-emerald-800 overflow-hidden border-2 border-t-0 border-b-0 border-emerald-600"
+        className={`relative ${widthClass} ${fullscreen ? "flex-1 min-h-0" : "aspect-[3/4]"} bg-emerald-800 overflow-hidden border-2 border-t-0 border-b-0 border-emerald-600`}
         onClick={() => setActiveTooltip(null)}
       >
         {/* Field lines */}
@@ -347,7 +351,7 @@ const FieldDiagram = ({
       </div>
 
       {/* Offense navigator */}
-      <div className="w-full max-w-md mx-auto">
+      <div className={widthClass}>
         <div className="bg-sky-950/30 border-2 border-t-0 border-sky-400/20 rounded-b-xl overflow-hidden">
           <div className="flex">
             {offenseTabs.map((tab) => (

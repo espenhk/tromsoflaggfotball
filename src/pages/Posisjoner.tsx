@@ -3,10 +3,11 @@ import { Link, useLocation } from "react-router-dom";
 import { ArrowLeft, ChevronDown, Star, Zap, Users, Target, Crosshair, Shield, Eye } from "lucide-react";
 import logo from "@/assets/logo.png";
 import FieldDiagram from "@/components/FieldDiagram";
-import qbImg from "@/assets/positions/quarterback.png";
+// Note: QB and WR photos are intentionally swapped vs. the PDF labels
+import qbImg from "@/assets/positions/wide-receiver.png";
 import centerImg from "@/assets/positions/center.png";
 import rbImg from "@/assets/positions/running-back.png";
-import wrImg from "@/assets/positions/wide-receiver.png";
+import wrImg from "@/assets/positions/quarterback.png";
 import dbImg from "@/assets/positions/defensive-back.png";
 import rusherImg from "@/assets/positions/rusher.png";
 import safetyImg from "@/assets/positions/safety.png";

@@ -109,10 +109,14 @@ const getManAssignments = (tab: OffenseTabId): Record<string, string> => {
 
 const ANIMATION_DURATION = 400;
 
+type NavigateMode = "tooltip" | "direct";
+
 const FieldDiagram = ({
   onPositionNavigate,
+  navigateMode = "tooltip",
 }: {
   onPositionNavigate?: (slug: string) => void;
+  navigateMode?: NavigateMode;
 } = {}) => {
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<OffenseTabId>("formasjon");

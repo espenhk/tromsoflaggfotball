@@ -231,6 +231,7 @@ const FieldDiagram = ({
               isAnimating={isAnimating}
               navSlug={slug}
               onPositionNavigate={onPositionNavigate}
+              navigateMode={navigateMode}
             />
           );
         })}

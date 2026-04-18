@@ -226,21 +226,65 @@ const defensePositions = defenseOrder.map((id) => byId[id]);
 const Posisjoner = () => {
   const { hash } = useLocation();
   const [openId, setOpenId] = useState<string | null>(null);
+  // Fullscreen diagram view shown when user lands on /posisjoner without a target hash
+  const [showFullscreen, setShowFullscreen] = useState<boolean>(!hash);
 
   const openAndScroll = (id: string) => {
+    // Leaving fullscreen view to reveal the page content
+    setShowFullscreen(false);
     setOpenId(id);
-    const el = document.getElementById(id);
-    if (el) {
-      // wait for the row to start expanding before scrolling
-      setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
-    }
+    // Wait for the page to render before scrolling
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
   };
 
   useEffect(() => {
     if (hash) {
+      setShowFullscreen(false);
       openAndScroll(hash.slice(1));
     }
   }, [hash]);
+
+  // Fullscreen diagram landing — shown when no specific position is requested
+  if (showFullscreen) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+          <div className="max-w-4xl mx-auto px-6 flex items-center gap-3 py-3">
+            <Link to="/#spillet" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+              <img src={logo} alt="Logo" className="w-5 h-5" />
+            </Link>
+            <h1 className="font-heading font-bold text-foreground text-sm">Posisjoner i flaggfotball</h1>
+          </div>
+        </nav>
+
+        <main className="flex-1 flex flex-col items-center justify-center px-6 py-8 gap-6">
+          <div className="text-center max-w-xl space-y-2">
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
+              Trykk på en spiller
+            </h2>
+            <p className="text-sm text-muted-foreground font-body">
+              Velg en posisjon på banen for å lese mer om rollen, ferdighetene og hvem som passer.
+            </p>
+          </div>
+
+          <div className="w-full max-w-md">
+            <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" />
+          </div>
+
+          <button
+            onClick={() => setShowFullscreen(false)}
+            className="text-sm text-muted-foreground hover:text-primary transition-colors font-body underline"
+          >
+            eller bla gjennom alle posisjoner ↓
+          </button>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -268,7 +312,7 @@ const Posisjoner = () => {
           </div>
 
           {/* Field diagram — clicks scroll to & expand the matching position */}
-          <FieldDiagram onPositionNavigate={openAndScroll} />
+          <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" />
         </section>
 
         {/* Offense */}

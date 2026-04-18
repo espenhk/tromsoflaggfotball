@@ -109,10 +109,14 @@ const getManAssignments = (tab: OffenseTabId): Record<string, string> => {
 
 const ANIMATION_DURATION = 400;
 
+type NavigateMode = "tooltip" | "direct";
+
 const FieldDiagram = ({
   onPositionNavigate,
+  navigateMode = "tooltip",
 }: {
   onPositionNavigate?: (slug: string) => void;
+  navigateMode?: NavigateMode;
 } = {}) => {
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<OffenseTabId>("formasjon");
@@ -227,6 +231,7 @@ const FieldDiagram = ({
               isAnimating={isAnimating}
               navSlug={slug}
               onPositionNavigate={onPositionNavigate}
+              navigateMode={navigateMode}
             />
           );
         })}
@@ -324,6 +329,7 @@ const FieldDiagram = ({
             isAnimating={false}
             navSlug={idToSlug[p.id]}
             onPositionNavigate={onPositionNavigate}
+            navigateMode={navigateMode}
           />
         ))}
 
@@ -370,13 +376,14 @@ const FieldDiagram = ({
 // Animated player dot that transitions smoothly when position changes
 const AnimatedPlayerDot = ({
   label, color, top, left, activeTooltip, setActiveTooltip, id, isAnimating,
-  navSlug, onPositionNavigate,
+  navSlug, onPositionNavigate, navigateMode = "tooltip",
 }: {
   label: string; color: string; top: number; left: number;
   activeTooltip: string | null; setActiveTooltip: (id: string | null) => void; id: string;
   isAnimating: boolean;
   navSlug?: string;
   onPositionNavigate?: (slug: string) => void;
+  navigateMode?: NavigateMode;
 }) => {
   const [pos, setPos] = useState({ top, left });
   const [displayLabel, setDisplayLabel] = useState(label);
@@ -403,7 +410,6 @@ const AnimatedPlayerDot = ({
     }
   }, [label]);
 
-  // Map tailwind color classes to actual colors for smooth CSS transitions
   const colorMap: Record<string, string> = {
     "bg-sky-400": "#38bdf8",
     "bg-amber-400": "#fbbf24",
@@ -420,16 +426,23 @@ const AnimatedPlayerDot = ({
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // If primed (active) and navigation is wired up → navigate
-    if (isActive && onPositionNavigate && navSlug) {
+    // Direct mode: single click navigates immediately (used on /posisjoner)
+    if (navigateMode === "direct" && onPositionNavigate && navSlug) {
       onPositionNavigate(navSlug);
       setActiveTooltip(null);
       return;
     }
+    // Tooltip mode (default): toggle tooltip; navigation happens via "Les mer" link inside it
     setActiveTooltip(isActive ? null : id);
   };
 
-  const showNavArrow = isActive && !!onPositionNavigate && !!navSlug;
+  const handleNavClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onPositionNavigate && navSlug) {
+      onPositionNavigate(navSlug);
+      setActiveTooltip(null);
+    }
+  };
 
   return (
     <div
@@ -443,29 +456,30 @@ const AnimatedPlayerDot = ({
       onClick={handleClick}
     >
       <div
-        className={`relative w-6 h-6 rounded-full border-2 border-white/80 shadow-lg flex items-center justify-center ${isActive ? "scale-150 ring-2 ring-white/60" : "hover:scale-110"}`}
+        className={`relative w-6 h-6 rounded-full border-2 border-white/80 shadow-lg flex items-center justify-center ${isActive ? "scale-125 ring-2 ring-white/60" : "hover:scale-110"}`}
         style={{
           backgroundColor: resolvedColor,
           transition: "background-color 0.4s ease-in-out, transform 0.2s",
         }}
-      >
-        {showNavArrow && (
-          <ArrowUpRight
-            className="w-3.5 h-3.5 text-black/80"
-            strokeWidth={3}
-          />
-        )}
-      </div>
+      />
       <span
         className="text-[10px] font-heading font-bold text-white drop-shadow-md"
         style={{ opacity: labelOpacity, transition: "opacity 0.2s ease-in-out" }}
       >
         {displayLabel}
       </span>
-      {isActive && description && !showNavArrow && (
-        <div className={`absolute top-full mt-1 w-48 bg-black/90 text-white text-[11px] leading-snug rounded-lg px-3 py-2 shadow-xl ${tooltipAlign}`}>
+      {isActive && description && (
+        <div className={`absolute top-full mt-1 w-52 bg-black/90 text-white text-[11px] leading-snug rounded-lg px-3 py-2 shadow-xl ${tooltipAlign}`}>
           <div className="font-bold mb-0.5">{fullName}</div>
-          {description}
+          <div className="mb-2">{description}</div>
+          {onPositionNavigate && navSlug && (
+            <button
+              onClick={handleNavClick}
+              className="inline-flex items-center gap-1 text-[11px] font-heading font-bold text-primary hover:underline"
+            >
+              Les mer <ArrowUpRight className="w-3 h-3" strokeWidth={2.5} />
+            </button>
+          )}
         </div>
       )}
     </div>

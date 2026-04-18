@@ -329,6 +329,7 @@ const FieldDiagram = ({
             isAnimating={false}
             navSlug={idToSlug[p.id]}
             onPositionNavigate={onPositionNavigate}
+            navigateMode={navigateMode}
           />
         ))}
 

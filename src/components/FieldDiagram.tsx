@@ -351,7 +351,7 @@ const FieldDiagram = ({
       </div>
 
       {/* Offense navigator */}
-      <div className="w-full max-w-md mx-auto">
+      <div className={widthClass}>
         <div className="bg-sky-950/30 border-2 border-t-0 border-sky-400/20 rounded-b-xl overflow-hidden">
           <div className="flex">
             {offenseTabs.map((tab) => (

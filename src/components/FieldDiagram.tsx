@@ -158,7 +158,7 @@ const FieldDiagram = ({
   }, [pendingTab]);
 
   return (
-    <div className="mb-0">
+    <div className={fullscreen ? "h-full flex flex-col" : "mb-0"}>
 
       {/* Defense navigator */}
       <div className={widthClass}>

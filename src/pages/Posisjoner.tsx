@@ -3,11 +3,10 @@ import { Link, useLocation } from "react-router-dom";
 import { ArrowLeft, ChevronDown, Star, Zap, Users, Target, Crosshair, Shield, Eye } from "lucide-react";
 import logo from "@/assets/logo.png";
 import FieldDiagram from "@/components/FieldDiagram";
-// Note: QB and WR photos are intentionally swapped vs. the PDF labels
-import qbImg from "@/assets/positions/wide-receiver.png";
+import qbImg from "@/assets/positions/quarterback.png";
 import centerImg from "@/assets/positions/center.png";
 import rbImg from "@/assets/positions/running-back.png";
-import wrImg from "@/assets/positions/quarterback.png";
+import wrImg from "@/assets/positions/wide-receiver.png";
 import dbImg from "@/assets/positions/defensive-back.png";
 import rusherImg from "@/assets/positions/rusher.png";
 import safetyImg from "@/assets/positions/safety.png";
@@ -227,12 +226,14 @@ const defensePositions = defenseOrder.map((id) => byId[id]);
 const Posisjoner = () => {
   const { hash } = useLocation();
   const [openId, setOpenId] = useState<string | null>(null);
-  // When user lands on /posisjoner without a hash, show the diagram filling the viewport.
-  // They can still scroll down to browse the full list.
-  const [diagramFullscreen] = useState<boolean>(!hash);
+  // Fullscreen diagram view shown when user lands on /posisjoner without a target hash
+  const [showFullscreen, setShowFullscreen] = useState<boolean>(!hash);
 
   const openAndScroll = (id: string) => {
+    // Leaving fullscreen view to reveal the page content
+    setShowFullscreen(false);
     setOpenId(id);
+    // Wait for the page to render before scrolling
     setTimeout(() => {
       const el = document.getElementById(id);
       if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -241,9 +242,49 @@ const Posisjoner = () => {
 
   useEffect(() => {
     if (hash) {
+      setShowFullscreen(false);
       openAndScroll(hash.slice(1));
     }
   }, [hash]);
+
+  // Fullscreen diagram landing — shown when no specific position is requested
+  if (showFullscreen) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+          <div className="max-w-4xl mx-auto px-6 flex items-center gap-3 py-3">
+            <Link to="/#spillet" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+              <img src={logo} alt="Logo" className="w-5 h-5" />
+            </Link>
+            <h1 className="font-heading font-bold text-foreground text-sm">Posisjoner i flaggfotball</h1>
+          </div>
+        </nav>
+
+        <main className="flex-1 flex flex-col items-center justify-center px-6 py-8 gap-6">
+          <div className="text-center max-w-xl space-y-2">
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
+              Trykk på en spiller
+            </h2>
+            <p className="text-sm text-muted-foreground font-body">
+              Velg en posisjon på banen for å lese mer om rollen, ferdighetene og hvem som passer.
+            </p>
+          </div>
+
+          <div className="w-full max-w-md">
+            <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" />
+          </div>
+
+          <button
+            onClick={() => setShowFullscreen(false)}
+            className="text-sm text-muted-foreground hover:text-primary transition-colors font-body underline"
+          >
+            eller bla gjennom alle posisjoner ↓
+          </button>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -258,37 +299,21 @@ const Posisjoner = () => {
         </div>
       </nav>
 
-      {/* Field diagram — fullscreen on landing, inline otherwise */}
-      <section
-        className={`px-6 ${
-          diagramFullscreen
-            ? "min-h-[calc(100vh-49px)] flex flex-col items-center justify-center gap-4 py-6"
-            : "max-w-4xl mx-auto pt-12 pb-6 space-y-6"
-        }`}
-      >
-        {!diagramFullscreen && (
+      <main className="max-w-4xl mx-auto px-6 py-12 space-y-12">
+        {/* Intro */}
+        <section className="space-y-6">
           <div className="space-y-3">
             <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
               Posisjoner i flaggfotball
             </h2>
             <p className="text-muted-foreground font-body leading-relaxed max-w-2xl">
-              I flaggfotball spilles det 5 mot 5, og posisjonene er i hovedsak de samme som i tackle-fotball, men uten linjemenn. Trykk på en spiller på banen — eller en posisjon i listen — for å lese mer.
+              I flaggfotball spilles det 5 mot 5, og posisjonene er i hovedsak de samme som i tackle-fotball, men uten linjemenn. Hver posisjon har en unik rolle, og hvert spill er en maskin der alle må gjøre sin del. Trykk på en spiller på banen — eller en posisjon i listen — for å lese mer.
             </p>
           </div>
-        )}
 
-        <div className="w-full max-w-md">
+          {/* Field diagram — clicks scroll to & expand the matching position */}
           <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" />
-        </div>
-
-        {diagramFullscreen && (
-          <p className="text-xs text-muted-foreground font-body text-center">
-            Trykk på en spiller — eller bla ned for å se alle posisjoner ↓
-          </p>
-        )}
-      </section>
-
-      <main className="max-w-4xl mx-auto px-6 pb-12 space-y-12">
+        </section>
 
         {/* Offense */}
         <section className="space-y-4">

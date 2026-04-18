@@ -251,38 +251,26 @@ const Posisjoner = () => {
   // Fullscreen diagram landing — shown when no specific position is requested
   if (showFullscreen) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
-        <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-          <div className="max-w-4xl mx-auto px-6 flex items-center gap-3 py-3">
+      <div className="h-screen w-screen bg-emerald-800 flex flex-col overflow-hidden">
+        <nav className="shrink-0 bg-background/80 backdrop-blur-md border-b border-border">
+          <div className="max-w-4xl mx-auto px-6 flex items-center justify-between gap-3 py-3">
             <Link to="/#spillet" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
               <ArrowLeft className="w-4 h-4" />
               <img src={logo} alt="Logo" className="w-5 h-5" />
+              <h1 className="font-heading font-bold text-foreground text-sm">Posisjoner i flaggfotball</h1>
             </Link>
-            <h1 className="font-heading font-bold text-foreground text-sm">Posisjoner i flaggfotball</h1>
+            <button
+              onClick={() => setShowFullscreen(false)}
+              className="text-xs text-muted-foreground hover:text-primary transition-colors font-body underline"
+            >
+              bla gjennom alle ↓
+            </button>
           </div>
         </nav>
 
-        <main className="flex-1 flex flex-col items-center justify-center px-6 py-8 gap-6">
-          <div className="text-center max-w-xl space-y-2">
-            <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
-              Trykk på en spiller
-            </h2>
-            <p className="text-sm text-muted-foreground font-body">
-              Velg en posisjon på banen for å lese mer om rollen, ferdighetene og hvem som passer.
-            </p>
-          </div>
-
-          <div className="w-full max-w-md">
-            <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" />
-          </div>
-
-          <button
-            onClick={() => setShowFullscreen(false)}
-            className="text-sm text-muted-foreground hover:text-primary transition-colors font-body underline"
-          >
-            eller bla gjennom alle posisjoner ↓
-          </button>
-        </main>
+        <div className="flex-1 min-h-0 flex flex-col">
+          <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" fullscreen />
+        </div>
       </div>
     );
   }

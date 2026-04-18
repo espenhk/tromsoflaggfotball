@@ -161,7 +161,7 @@ const FieldDiagram = ({
     <div className="mb-0">
 
       {/* Defense navigator */}
-      <div className="w-full max-w-md mx-auto">
+      <div className={widthClass}>
         <div className="bg-rose-950/30 border-2 border-b-0 border-rose-400/20 rounded-t-xl overflow-hidden">
           <div className="text-[10px] font-heading font-bold text-rose-300/50 tracking-widest uppercase text-center py-1 bg-rose-950/30">
             Forsvar

@@ -263,7 +263,7 @@ const Posisjoner = () => {
 
       {/* Fullscreen edge-to-edge field — shown when no specific position requested */}
       {showFullscreen && (
-        <section className="relative w-full bg-emerald-800 flex flex-col" style={{ height: "calc(100vh - 49px)" }}>
+        <section className="relative w-full bg-emerald-800">
           <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" fullscreen />
         </section>
       )}

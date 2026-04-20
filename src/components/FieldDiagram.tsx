@@ -190,7 +190,7 @@ const FieldDiagram = ({
 
       {/* Field — vertical 25w × 70h yards. Aspect 25:70 ≈ 0.357 */}
       <div
-        className={`relative ${widthClass} ${fullscreen ? "flex-1 min-h-0" : "aspect-[25/70]"} bg-emerald-800 overflow-hidden ${fullscreen ? "" : "border-2 border-t-0 border-b-0 border-emerald-600"}`}
+        className={`relative ${widthClass} aspect-[25/70] bg-emerald-800 overflow-hidden ${fullscreen ? "" : "border-2 border-t-0 border-b-0 border-emerald-600"}`}
         onClick={() => setActiveTooltip(null)}
       >
         {/* End zones (10 yd each = 14.29% of 70yd field) */}

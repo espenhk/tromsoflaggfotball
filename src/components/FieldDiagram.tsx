@@ -50,60 +50,61 @@ const defenseTabs: { id: DefenseTabId; label: string }[] = [
   { id: "mann-mot-mann", label: "Man-man" },
 ];
 
+// Field constants — vertical 25 yd wide × 70 yd tall (50 yd play + 2× 10 yd endzones)
+// Bottom endzone: 85.71%–100%; top endzone: 0%–14.29%; midfield: 50%
+// Ball on offense's own 5-yd line: 85.71 - (5/70)*100 = 78.57
+const LOS = 78.57;
+const RUSHER_Y = 68.57; // 7 yards beyond ball: LOS - (7/70)*100
+
 const zoneAreas: Record<string, { cx: number; cy: number; rx: number; ry: number; color: string; border: string }> = {
-  "DB-L": { cx: 15, cy: 35, rx: 16, ry: 12, color: "rgba(251,146,60,0.15)", border: "rgba(251,146,60,0.4)" },
-  "DB-R": { cx: 85, cy: 35, rx: 16, ry: 12, color: "rgba(96,165,250,0.15)", border: "rgba(96,165,250,0.4)" },
-  "DB-SA": { cx: 38, cy: 24, rx: 16, ry: 12, color: "rgba(74,222,128,0.15)", border: "rgba(74,222,128,0.4)" },
-  "DB-S": { cx: 68, cy: 20, rx: 16, ry: 12, color: "rgba(192,132,252,0.15)", border: "rgba(192,132,252,0.4)" },
+  "DB-L": { cx: 18, cy: LOS - 12, rx: 16, ry: 8, color: "rgba(251,146,60,0.15)", border: "rgba(251,146,60,0.4)" },
+  "DB-R": { cx: 82, cy: LOS - 12, rx: 16, ry: 8, color: "rgba(96,165,250,0.15)", border: "rgba(96,165,250,0.4)" },
+  "DB-SA": { cx: 38, cy: LOS - 18, rx: 16, ry: 8, color: "rgba(74,222,128,0.15)", border: "rgba(74,222,128,0.4)" },
+  "DB-S": { cx: 65, cy: LOS - 22, rx: 16, ry: 8, color: "rgba(192,132,252,0.15)", border: "rgba(192,132,252,0.4)" },
 };
 
 type PlayerPosition = { top: number; left: number; label: string; color: string; id: string };
 
 // WR-S is the slot WR that becomes RB in løpespill — same id so it animates
 const getOffensePlayers = (tab: OffenseTabId): PlayerPosition[] => {
-  const c: PlayerPosition = { top: 57, left: 50, label: "C", color: "bg-sky-400", id: "C" };
+  const c: PlayerPosition = { top: LOS, left: 50, label: "C", color: "bg-sky-400", id: "C" };
 
   if (tab === "løpespill") {
     return [
       c,
-      { top: 63, left: 50, label: "QB", color: "bg-amber-400", id: "QB" },
-      // WR-S moves down to become RB
-      { top: 72, left: 50, label: "RB", color: "bg-emerald-400", id: "WR-S" },
-      { top: 52, left: 15, label: "WR", color: "bg-sky-400", id: "WR-L" },
-      { top: 52, left: 85, label: "WR", color: "bg-sky-400", id: "WR-R" },
+      { top: LOS + 5, left: 50, label: "QB", color: "bg-amber-400", id: "QB" },
+      { top: LOS + 12, left: 50, label: "RB", color: "bg-emerald-400", id: "WR-S" },
+      { top: LOS - 5, left: 15, label: "WR", color: "bg-sky-400", id: "WR-L" },
+      { top: LOS - 5, left: 85, label: "WR", color: "bg-sky-400", id: "WR-R" },
     ];
   }
   if (tab === "kastespill") {
     return [
       c,
-      { top: 68, left: 50, label: "QB", color: "bg-amber-400", id: "QB" },
-      { top: 52, left: 30, label: "WR", color: "bg-sky-400", id: "WR-L" },
-      { top: 52, left: 85, label: "WR", color: "bg-sky-400", id: "WR-R" },
-      { top: 58, left: 72, label: "WR", color: "bg-sky-400", id: "WR-S" },
+      { top: LOS + 8, left: 50, label: "QB", color: "bg-amber-400", id: "QB" },
+      { top: LOS - 5, left: 30, label: "WR", color: "bg-sky-400", id: "WR-L" },
+      { top: LOS - 5, left: 85, label: "WR", color: "bg-sky-400", id: "WR-R" },
+      { top: LOS - 1, left: 72, label: "WR", color: "bg-sky-400", id: "WR-S" },
     ];
   }
-  // formasjon
   return [
     c,
-    { top: 68, left: 50, label: "QB", color: "bg-amber-400", id: "QB" },
-    { top: 52, left: 15, label: "WR", color: "bg-sky-400", id: "WR-L" },
-    { top: 52, left: 85, label: "WR", color: "bg-sky-400", id: "WR-R" },
-    { top: 58, left: 72, label: "WR", color: "bg-sky-400", id: "WR-S" },
+    { top: LOS + 8, left: 50, label: "QB", color: "bg-amber-400", id: "QB" },
+    { top: LOS - 5, left: 15, label: "WR", color: "bg-sky-400", id: "WR-L" },
+    { top: LOS - 5, left: 85, label: "WR", color: "bg-sky-400", id: "WR-R" },
+    { top: LOS - 1, left: 72, label: "WR", color: "bg-sky-400", id: "WR-S" },
   ];
 };
 
 const defensePlayersBase: PlayerPosition[] = [
-  { top: 36, left: 63, label: "R", color: "bg-orange-400", id: "R" },
-  { top: 38, left: 15, label: "DB", color: "bg-rose-400", id: "DB-L" },
-  { top: 38, left: 85, label: "DB", color: "bg-rose-400", id: "DB-R" },
-  { top: 22, left: 65, label: "S", color: "bg-rose-400", id: "DB-S" },
-  { top: 27, left: 40, label: "S", color: "bg-rose-400", id: "DB-SA" },
+  { top: RUSHER_Y, left: 63, label: "R", color: "bg-orange-400", id: "R" },
+  { top: LOS - 12, left: 18, label: "DB", color: "bg-rose-400", id: "DB-L" },
+  { top: LOS - 12, left: 82, label: "DB", color: "bg-rose-400", id: "DB-R" },
+  { top: LOS - 22, left: 65, label: "S", color: "bg-rose-400", id: "DB-S" },
+  { top: LOS - 18, left: 38, label: "S", color: "bg-rose-400", id: "DB-SA" },
 ];
 
-const getManAssignments = (tab: OffenseTabId): Record<string, string> => {
-  if (tab === "løpespill") {
-    return { "DB-L": "WR-L", "DB-SA": "C", "DB-S": "WR-S", "DB-R": "WR-R" };
-  }
+const getManAssignments = (_tab: OffenseTabId): Record<string, string> => {
   return { "DB-L": "WR-L", "DB-SA": "C", "DB-S": "WR-S", "DB-R": "WR-R" };
 };
 

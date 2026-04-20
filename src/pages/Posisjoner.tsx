@@ -265,17 +265,6 @@ const Posisjoner = () => {
       {showFullscreen && (
         <section className="relative w-full bg-emerald-800 flex flex-col" style={{ height: "calc(100vh - 49px)" }}>
           <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" fullscreen />
-          <button
-            onClick={() => {
-              setShowFullscreen(false);
-              setTimeout(() => {
-                document.getElementById("posisjoner-liste")?.scrollIntoView({ behavior: "smooth", block: "start" });
-              }, 50);
-            }}
-            className="absolute bottom-3 left-1/2 -translate-x-1/2 text-xs text-white/80 hover:text-white transition-colors font-body underline z-10"
-          >
-            bla ned ↓
-          </button>
         </section>
       )}
 

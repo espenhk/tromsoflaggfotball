@@ -248,33 +248,6 @@ const Posisjoner = () => {
     }
   }, [hash]);
 
-  // Fullscreen diagram landing — shown when no specific position is requested
-  if (showFullscreen) {
-    return (
-      <div className="h-screen w-screen bg-emerald-800 flex flex-col overflow-hidden">
-        <nav className="shrink-0 bg-background/80 backdrop-blur-md border-b border-border">
-          <div className="max-w-4xl mx-auto px-6 flex items-center justify-between gap-3 py-3">
-            <Link to="/#spillet" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
-              <ArrowLeft className="w-4 h-4" />
-              <img src={logo} alt="Logo" className="w-5 h-5" />
-              <h1 className="font-heading font-bold text-foreground text-sm">Posisjoner i flaggfotball</h1>
-            </Link>
-            <button
-              onClick={() => setShowFullscreen(false)}
-              className="text-xs text-muted-foreground hover:text-primary transition-colors font-body underline"
-            >
-              bla gjennom alle ↓
-            </button>
-          </div>
-        </nav>
-
-        <div className="flex-1 min-h-0 flex flex-col">
-          <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" fullscreen />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -288,7 +261,25 @@ const Posisjoner = () => {
         </div>
       </nav>
 
-      <main className="max-w-4xl mx-auto px-6 py-12 space-y-12">
+      {/* Fullscreen edge-to-edge field — shown when no specific position requested */}
+      {showFullscreen && (
+        <section className="relative w-full bg-emerald-800 flex flex-col" style={{ height: "calc(100vh - 49px)" }}>
+          <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" fullscreen />
+          <button
+            onClick={() => {
+              setShowFullscreen(false);
+              setTimeout(() => {
+                document.getElementById("posisjoner-liste")?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }, 50);
+            }}
+            className="absolute bottom-3 left-1/2 -translate-x-1/2 text-xs text-white/80 hover:text-white transition-colors font-body underline z-10"
+          >
+            bla ned ↓
+          </button>
+        </section>
+      )}
+
+      <main id="posisjoner-liste" className="max-w-4xl mx-auto px-6 py-12 space-y-12">
         {/* Intro */}
         <section className="space-y-6">
           <div className="space-y-3">
@@ -300,8 +291,10 @@ const Posisjoner = () => {
             </p>
           </div>
 
-          {/* Field diagram — clicks scroll to & expand the matching position */}
-          <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" />
+          {/* Compact field diagram for navigation while browsing the list */}
+          {!showFullscreen && (
+            <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" />
+          )}
         </section>
 
         {/* Offense */}

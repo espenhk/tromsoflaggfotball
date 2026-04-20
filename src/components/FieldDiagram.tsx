@@ -162,7 +162,7 @@ const FieldDiagram = ({
 
       {/* Defense navigator */}
       <div className={widthClass}>
-        <div className="bg-rose-950/30 border-2 border-b-0 border-rose-400/20 rounded-t-xl overflow-hidden">
+        <div className={`bg-rose-950/30 ${fullscreen ? "border-b-0" : "border-2 border-b-0 border-rose-400/20 rounded-t-xl"} overflow-hidden`}>
           <div className="text-[10px] font-heading font-bold text-rose-300/50 tracking-widest uppercase text-center py-1 bg-rose-950/30">
             Forsvar
           </div>
@@ -186,7 +186,7 @@ const FieldDiagram = ({
 
       {/* Field */}
       <div
-        className={`relative ${widthClass} ${fullscreen ? "flex-1 min-h-0" : "aspect-[3/4]"} bg-emerald-800 overflow-hidden border-2 border-t-0 border-b-0 border-emerald-600`}
+        className={`relative ${widthClass} ${fullscreen ? "flex-1 min-h-0" : "aspect-[3/4]"} bg-emerald-800 overflow-hidden ${fullscreen ? "" : "border-2 border-t-0 border-b-0 border-emerald-600"}`}
         onClick={() => setActiveTooltip(null)}
       >
         {/* Field lines */}
@@ -352,7 +352,7 @@ const FieldDiagram = ({
 
       {/* Offense navigator */}
       <div className={widthClass}>
-        <div className="bg-sky-950/30 border-2 border-t-0 border-sky-400/20 rounded-b-xl overflow-hidden">
+        <div className={`bg-sky-950/30 ${fullscreen ? "border-t-0" : "border-2 border-t-0 border-sky-400/20 rounded-b-xl"} overflow-hidden`}>
           <div className="flex">
             {offenseTabs.map((tab) => (
               <button

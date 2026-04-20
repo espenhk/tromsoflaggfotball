@@ -396,8 +396,8 @@ const FieldDiagram = ({
       </div>
 
       {/* Offense navigator */}
-      <div className={widthClass}>
-        <div className={`bg-sky-950/30 ${fullscreen ? "border-t-0" : "border-2 border-t-0 border-sky-400/20 rounded-b-xl"} overflow-hidden`}>
+      <div className={`${widthClass} ${fullscreen ? "sticky bottom-0 z-30" : ""}`}>
+        <div className={`bg-sky-950/80 backdrop-blur-md ${fullscreen ? "border-t-0" : "border-2 border-t-0 border-sky-400/20 rounded-b-xl"} overflow-hidden`}>
           <div className="flex">
             {offenseTabs.map((tab) => (
               <button

@@ -380,7 +380,7 @@ const FieldDiagram = ({
         ))}
 
         {/* Legend */}
-        <div className="absolute bottom-[17%] left-3 flex flex-col gap-1">
+        <div className="absolute bottom-[16%] right-3 flex flex-col gap-1">
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-sky-400 inline-block" />
             <span className="text-[10px] text-white/60 font-body">Angrep</span>

@@ -161,15 +161,12 @@ const FieldDiagram = ({
   }, [pendingTab]);
 
   return (
-    <div className={fullscreen ? "h-full w-full flex items-center justify-center" : "mb-0"}>
-      <div
-        className={fullscreen ? "h-full flex flex-col" : "contents"}
-        style={fullscreen ? { aspectRatio: "25 / 78" } : undefined}
-      >
+    <div className={fullscreen ? "w-full" : "mb-0"}>
+      <div className={fullscreen ? "w-full flex flex-col" : "contents"}>
 
       {/* Defense navigator */}
-      <div className={widthClass}>
-        <div className={`bg-rose-950/30 ${fullscreen ? "border-b-0" : "border-2 border-b-0 border-rose-400/20 rounded-t-xl"} overflow-hidden`}>
+      <div className={`${widthClass} ${fullscreen ? "sticky top-0 z-30" : ""}`}>
+        <div className={`bg-rose-950/80 backdrop-blur-md ${fullscreen ? "border-b-0" : "border-2 border-b-0 border-rose-400/20 rounded-t-xl"} overflow-hidden`}>
           <div className="text-[10px] font-heading font-bold text-rose-300/50 tracking-widest uppercase text-center py-1 bg-rose-950/30">
             Forsvar
           </div>
@@ -193,7 +190,7 @@ const FieldDiagram = ({
 
       {/* Field — vertical 25w × 70h yards. Aspect 25:70 ≈ 0.357 */}
       <div
-        className={`relative ${widthClass} ${fullscreen ? "flex-1 min-h-0" : "aspect-[25/70]"} bg-emerald-800 overflow-hidden ${fullscreen ? "" : "border-2 border-t-0 border-b-0 border-emerald-600"}`}
+        className={`relative ${widthClass} aspect-[25/70] bg-emerald-800 overflow-hidden ${fullscreen ? "" : "border-2 border-t-0 border-b-0 border-emerald-600"}`}
         onClick={() => setActiveTooltip(null)}
       >
         {/* End zones (10 yd each = 14.29% of 70yd field) */}
@@ -399,8 +396,8 @@ const FieldDiagram = ({
       </div>
 
       {/* Offense navigator */}
-      <div className={widthClass}>
-        <div className={`bg-sky-950/30 ${fullscreen ? "border-t-0" : "border-2 border-t-0 border-sky-400/20 rounded-b-xl"} overflow-hidden`}>
+      <div className={`${widthClass} ${fullscreen ? "sticky bottom-0 z-30" : ""}`}>
+        <div className={`bg-sky-950/80 backdrop-blur-md ${fullscreen ? "border-t-0" : "border-2 border-t-0 border-sky-400/20 rounded-b-xl"} overflow-hidden`}>
           <div className="flex">
             {offenseTabs.map((tab) => (
               <button

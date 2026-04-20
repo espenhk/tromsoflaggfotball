@@ -185,32 +185,75 @@ const FieldDiagram = ({
         </div>
       </div>
 
-      {/* Field */}
+      {/* Field — vertical 25w × 70h yards. Aspect 25:70 ≈ 0.357 */}
       <div
-        className={`relative ${widthClass} ${fullscreen ? "flex-1 min-h-0" : "aspect-[3/4]"} bg-emerald-800 overflow-hidden ${fullscreen ? "" : "border-2 border-t-0 border-b-0 border-emerald-600"}`}
+        className={`relative ${widthClass} ${fullscreen ? "flex-1 min-h-0" : "aspect-[25/70]"} bg-emerald-800 overflow-hidden ${fullscreen ? "" : "border-2 border-t-0 border-b-0 border-emerald-600"}`}
         onClick={() => setActiveTooltip(null)}
       >
-        {/* Field lines */}
-        <div className="absolute inset-x-0 top-1/2 border-t-2 border-dashed border-white/30" />
-        <div className="absolute inset-x-0 top-[15%] border-t-2 border-white/20" />
-        <div className="absolute inset-x-0 bottom-[15%] border-t-2 border-white/20" />
+        {/* End zones (10 yd each = 14.29% of 70yd field) */}
+        <div className="absolute inset-x-0 top-0 h-[14.29%] bg-emerald-900/70 flex items-center justify-center border-b-2 border-white/40">
+          <span className="text-white/50 font-heading text-xs font-bold tracking-[0.3em] uppercase rotate-180" style={{ writingMode: "vertical-rl" }}>Endesone</span>
+        </div>
+        <div className="absolute inset-x-0 bottom-0 h-[14.29%] bg-emerald-900/70 flex items-center justify-center border-t-2 border-white/40">
+          <span className="text-white/50 font-heading text-xs font-bold tracking-[0.3em] uppercase" style={{ writingMode: "vertical-rl" }}>Endesone</span>
+        </div>
 
-        {/* End zones */}
-        <div className="absolute inset-x-0 top-0 h-[15%] bg-emerald-900/60 flex items-center justify-center">
-          <span className="text-white/40 font-heading text-xs font-bold tracking-widest uppercase">Endesone</span>
+        {/* Yard lines every 5 yards (excluding endzone borders & midfield) */}
+        {[78.57, 71.43, 64.29, 57.14, 42.86, 35.71, 28.57, 21.43].map((y) => (
+          <div key={y} className="absolute inset-x-0 border-t border-white/25" style={{ top: `${y}%` }} />
+        ))}
+        {/* Midfield dashed */}
+        <div className="absolute inset-x-0 top-1/2 border-t-2 border-dashed border-white/40" />
+
+        {/* Yard numbers — left and right side */}
+        {[
+          { y: 71.43, num: "10" },
+          { y: 57.14, num: "20" },
+          { y: 42.86, num: "30" },
+          { y: 28.57, num: "20" },
+          { y: 14.4, num: "10" },
+        ].map((m) => (
+          <div key={`num-l-${m.y}`} className="absolute text-white/30 font-heading font-bold text-[9px] tracking-wider pointer-events-none select-none" style={{ top: `${m.y}%`, left: "5%", transform: "translateY(-50%)" }}>
+            {m.num}
+          </div>
+        ))}
+        {[
+          { y: 71.43, num: "10" },
+          { y: 57.14, num: "20" },
+          { y: 42.86, num: "30" },
+          { y: 28.57, num: "20" },
+          { y: 14.4, num: "10" },
+        ].map((m) => (
+          <div key={`num-r-${m.y}`} className="absolute text-white/30 font-heading font-bold text-[9px] tracking-wider pointer-events-none select-none" style={{ top: `${m.y}%`, right: "5%", transform: "translateY(-50%)" }}>
+            {m.num}
+          </div>
+        ))}
+
+        {/* Hash marks down the middle every 5 yards */}
+        {[78.57, 71.43, 64.29, 57.14, 50, 42.86, 35.71, 28.57, 21.43].map((y) => (
+          <div key={`hash-${y}`} className="absolute left-1/2 -translate-x-1/2 w-2 h-px bg-white/40" style={{ top: `${y}%` }} />
+        ))}
+
+        {/* Down marker — left sideline at midfield */}
+        <div className="absolute" style={{ top: "50%", left: "0%", transform: "translate(2px, -50%)", zIndex: 2 }}>
+          <div className="flex flex-col items-center gap-0.5">
+            <div className="w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[7px] border-b-amber-300" />
+            <div className="w-px h-2.5 bg-amber-300/80" />
+            <div className="w-3.5 h-3.5 rounded-sm bg-amber-300 text-emerald-950 font-heading font-black text-[9px] flex items-center justify-center shadow-md">
+              1
+            </div>
+          </div>
         </div>
-        <div className="absolute inset-x-0 bottom-0 h-[15%] bg-emerald-900/60 flex flex-col items-center justify-center">
-          <span className="text-white/40 font-heading text-xs font-bold tracking-widest uppercase">Endesone</span>
-        </div>
-        {/* Instruction text - positioned just above bottom end zone */}
-        <div className="absolute inset-x-0" style={{ bottom: "17%", zIndex: 3 }}>
+
+        {/* Instruction text - just above bottom end zone */}
+        <div className="absolute inset-x-0" style={{ bottom: "16%", zIndex: 3 }}>
           <p className="text-white/30 text-[9px] text-center">Trykk på en spiller for beskrivelse</p>
         </div>
 
-        {/* Ball */}
+        {/* Ball — placed exactly on the LOS (5-yard line at 78.57%) */}
         <svg
           className="absolute -translate-x-1/2 -translate-y-1/2"
-          style={{ top: "51%", left: "50%", zIndex: 1 }}
+          style={{ top: `${LOS}%`, left: "50%", zIndex: 1 }}
           width="11" height="18" viewBox="0 0 11 18"
         >
           <ellipse cx="5.5" cy="9" rx="5" ry="8.5" fill="#8B4513" stroke="#5C2D0A" strokeWidth="0.8" />
@@ -273,46 +316,44 @@ const FieldDiagram = ({
             );
           })}
 
-          {/* Rush arrow - always visible */}
-          <line x1="63" y1="36" x2="51" y2="63" stroke="white" strokeOpacity="0.5"
+          {/* Rush arrow — from rusher (RUSHER_Y) toward ball (LOS) */}
+          <line x1="63" y1={RUSHER_Y} x2="51" y2={LOS - 1} stroke="white" strokeOpacity="0.5"
             strokeWidth="1.5" strokeDasharray="4 3" markerEnd="url(#arrowhead)" vectorEffect="non-scaling-stroke" />
 
           {/* Route arrows - fade in/out */}
           <g style={{ opacity: showRoutes ? 1 : 0, transition: "opacity 0.15s ease-in-out" }}>
 
-          {/* Kastespill routes */}
           {activeTab === "kastespill" && (
             <>
-              <polyline points="85,52 85,38 60,22" fill="none" stroke="#facc15" strokeOpacity="0.6"
+              <polyline points={`85,${LOS - 5} 85,${LOS - 20} 60,${LOS - 30}`} fill="none" stroke="#facc15" strokeOpacity="0.6"
                 strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
                 markerEnd="url(#arrowhead-yellow)" vectorEffect="non-scaling-stroke" />
-              <polyline points="72,58 72,36 45,36" fill="none" stroke="#facc15" strokeOpacity="0.6"
+              <polyline points={`72,${LOS - 1} 72,${LOS - 18} 45,${LOS - 18}`} fill="none" stroke="#facc15" strokeOpacity="0.6"
                 strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
                 markerEnd="url(#arrowhead-yellow)" vectorEffect="non-scaling-stroke" />
-              <polyline points="50,57 50,46 46,50" fill="none" stroke="#facc15" strokeOpacity="0.6"
+              <polyline points={`50,${LOS} 50,${LOS - 10} 40,${LOS - 8}`} fill="none" stroke="#facc15" strokeOpacity="0.6"
                 strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
                 markerEnd="url(#arrowhead-yellow)" vectorEffect="non-scaling-stroke" />
-              <polyline points="30,52 30,40 12,40" fill="none" stroke="#facc15" strokeOpacity="0.6"
+              <polyline points={`30,${LOS - 5} 30,${LOS - 15} 12,${LOS - 15}`} fill="none" stroke="#facc15" strokeOpacity="0.6"
                 strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
                 markerEnd="url(#arrowhead-yellow)" vectorEffect="non-scaling-stroke" />
             </>
           )}
 
-          {/* Løpespill routes */}
           {activeTab === "løpespill" && (
             <>
-              <line x1="50" y1="63" x2="52" y2="68" stroke="#4ade80" strokeOpacity="0.6"
+              <line x1="50" y1={LOS} x2="50" y2={LOS + 4} stroke="#4ade80" strokeOpacity="0.6"
                 strokeWidth="1.5" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-              <polyline points="50,72 56,62 56,30" fill="none" stroke="#4ade80" strokeOpacity="0.7"
+              <polyline points={`50,${LOS + 12} 56,${LOS + 2} 56,${LOS - 30}`} fill="none" stroke="#4ade80" strokeOpacity="0.7"
                 strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                 markerEnd="url(#arrowhead-green)" vectorEffect="non-scaling-stroke" />
-              <polyline points="50,57 50,48" fill="none" stroke="white" strokeOpacity="0.5"
+              <polyline points={`50,${LOS} 50,${LOS - 8}`} fill="none" stroke="white" strokeOpacity="0.5"
                 strokeWidth="1.5" strokeLinecap="round" markerEnd="url(#arrowhead)"
                 vectorEffect="non-scaling-stroke" />
-              <polyline points="15,52 15,40 6,34" fill="none" stroke="white" strokeOpacity="0.4"
+              <polyline points={`15,${LOS - 5} 15,${LOS - 15} 6,${LOS - 20}`} fill="none" stroke="white" strokeOpacity="0.4"
                 strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"
                 markerEnd="url(#arrowhead)" vectorEffect="non-scaling-stroke" />
-              <polyline points="85,52 85,40 94,34" fill="none" stroke="white" strokeOpacity="0.4"
+              <polyline points={`85,${LOS - 5} 85,${LOS - 15} 94,${LOS - 20}`} fill="none" stroke="white" strokeOpacity="0.4"
                 strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"
                 markerEnd="url(#arrowhead)" vectorEffect="non-scaling-stroke" />
             </>

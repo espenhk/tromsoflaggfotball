@@ -122,11 +122,9 @@ const FieldDiagram = ({
   fullscreen?: boolean;
 } = {}) => {
   // Width class applied to the navigator bars and field — full-bleed in fullscreen mode
-  // In fullscreen we keep the field at its natural 25:70 aspect, centered.
-  // The surrounding container provides the edge-to-edge green background.
-  const widthClass = fullscreen
-    ? "w-auto h-full mx-auto"
-    : "w-full max-w-md mx-auto";
+  // In fullscreen the field keeps its 25:70 aspect and fills available height;
+  // navigator bars stretch to its width via flex layout.
+  const widthClass = fullscreen ? "" : "w-full max-w-md mx-auto";
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<OffenseTabId>("formasjon");
   const [pendingTab, setPendingTab] = useState<OffenseTabId | null>(null);

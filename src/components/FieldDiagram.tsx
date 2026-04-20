@@ -161,15 +161,12 @@ const FieldDiagram = ({
   }, [pendingTab]);
 
   return (
-    <div className={fullscreen ? "h-full w-full flex items-center justify-center" : "mb-0"}>
-      <div
-        className={fullscreen ? "h-full flex flex-col" : "contents"}
-        style={fullscreen ? { aspectRatio: "25 / 78" } : undefined}
-      >
+    <div className={fullscreen ? "w-full" : "mb-0"}>
+      <div className={fullscreen ? "w-full flex flex-col" : "contents"}>
 
       {/* Defense navigator */}
-      <div className={widthClass}>
-        <div className={`bg-rose-950/30 ${fullscreen ? "border-b-0" : "border-2 border-b-0 border-rose-400/20 rounded-t-xl"} overflow-hidden`}>
+      <div className={`${widthClass} ${fullscreen ? "sticky top-0 z-30" : ""}`}>
+        <div className={`bg-rose-950/80 backdrop-blur-md ${fullscreen ? "border-b-0" : "border-2 border-b-0 border-rose-400/20 rounded-t-xl"} overflow-hidden`}>
           <div className="text-[10px] font-heading font-bold text-rose-300/50 tracking-widest uppercase text-center py-1 bg-rose-950/30">
             Forsvar
           </div>

@@ -161,7 +161,11 @@ const FieldDiagram = ({
   }, [pendingTab]);
 
   return (
-    <div className={fullscreen ? "h-full flex flex-col" : "mb-0"}>
+    <div className={fullscreen ? "h-full w-full flex items-center justify-center" : "mb-0"}>
+      <div
+        className={fullscreen ? "h-full flex flex-col" : "contents"}
+        style={fullscreen ? { aspectRatio: "25 / 78" } : undefined}
+      >
 
       {/* Defense navigator */}
       <div className={widthClass}>

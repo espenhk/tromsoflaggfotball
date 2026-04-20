@@ -417,7 +417,6 @@ const FieldDiagram = ({
           </div>
         </div>
       </div>
-      </div>
     </div>
   );
 };

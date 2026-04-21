@@ -249,11 +249,6 @@ const FieldDiagram = ({
           </div>
         ))}
 
-        {/* Hash marks down the middle every 5 yards */}
-        {[78.57, 71.43, 64.29, 57.14, 50, 42.86, 35.71, 28.57, 21.43].map((y) => (
-          <div key={`hash-${y}`} className="absolute left-1/2 -translate-x-1/2 w-2 h-px bg-white/40" style={{ top: `${y}%` }} />
-        ))}
-
         {/* Down marker — left sideline at midfield */}
         <div className="absolute" style={{ top: "50%", left: "0%", transform: "translate(2px, -50%)", zIndex: 2 }}>
           <div className="flex flex-col items-center gap-0.5">

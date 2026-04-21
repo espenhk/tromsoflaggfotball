@@ -195,17 +195,34 @@ const FieldDiagram = ({
       >
         {/* End zones (10 yd each = 14.29% of 70yd field) */}
         <div className="absolute inset-x-0 top-0 h-[14.29%] bg-emerald-900/70 flex items-center justify-center border-b-2 border-white/40">
-          <span className="text-white/50 font-heading text-xs font-bold tracking-[0.3em] uppercase rotate-180" style={{ writingMode: "vertical-rl" }}>Endesone</span>
+          <span className="text-white/50 font-heading text-xs font-bold tracking-[0.3em] uppercase">Endesone</span>
         </div>
         <div className="absolute inset-x-0 bottom-0 h-[14.29%] bg-emerald-900/70 flex items-center justify-center border-t-2 border-white/40">
-          <span className="text-white/50 font-heading text-xs font-bold tracking-[0.3em] uppercase" style={{ writingMode: "vertical-rl" }}>Endesone</span>
+          <span className="text-white/50 font-heading text-xs font-bold tracking-[0.3em] uppercase">Endesone</span>
         </div>
 
-        {/* Yard lines every 5 yards (excluding endzone borders & midfield) */}
-        {[78.57, 71.43, 64.29, 57.14, 42.86, 35.71, 28.57, 21.43].map((y) => (
-          <div key={y} className="absolute inset-x-0 border-t border-white/25" style={{ top: `${y}%` }} />
-        ))}
-        {/* Midfield dashed */}
+        {/* Yard tick marks: every 1 yd (short) from sidelines & center; every 5 yd (longer) */}
+        {Array.from({ length: 49 }, (_, i) => {
+          const yd = i + 1; // 1..49 yards from top endzone edge
+          if (yd === 25) return null; // midfield handled separately
+          // top% within the play field: top endzone ends at 14.29%, plays span 14.29 → 85.71
+          const y = 14.2857 + (yd / 50) * (85.7143 - 14.2857);
+          const isFive = yd % 5 === 0;
+          const sideLen = isFive ? "w-[4%]" : "w-[1.5%]";
+          const centerLen = isFive ? "w-[3%]" : "w-[1.2%]";
+          return (
+            <div key={`tick-${yd}`}>
+              {/* Left sideline tick */}
+              <div className={`absolute left-0 ${sideLen} h-px bg-white/40`} style={{ top: `${y}%` }} />
+              {/* Right sideline tick */}
+              <div className={`absolute right-0 ${sideLen} h-px bg-white/40`} style={{ top: `${y}%` }} />
+              {/* Center hash ticks (two short marks straddling center) */}
+              <div className={`absolute ${centerLen} h-px bg-white/40`} style={{ top: `${y}%`, left: "50%", transform: "translateX(-110%)" }} />
+              <div className={`absolute ${centerLen} h-px bg-white/40`} style={{ top: `${y}%`, left: "50%", transform: "translateX(10%)" }} />
+            </div>
+          );
+        })}
+        {/* Midfield dashed line across the field */}
         <div className="absolute inset-x-0 top-1/2 border-t-2 border-dashed border-white/40" />
 
         {/* Yard numbers — left and right side */}

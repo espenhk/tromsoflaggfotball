@@ -195,17 +195,34 @@ const FieldDiagram = ({
       >
         {/* End zones (10 yd each = 14.29% of 70yd field) */}
         <div className="absolute inset-x-0 top-0 h-[14.29%] bg-emerald-900/70 flex items-center justify-center border-b-2 border-white/40">
-          <span className="text-white/50 font-heading text-xs font-bold tracking-[0.3em] uppercase rotate-180" style={{ writingMode: "vertical-rl" }}>Endesone</span>
+          <span className="text-white/50 font-heading text-xs font-bold tracking-[0.3em] uppercase">Endesone</span>
         </div>
         <div className="absolute inset-x-0 bottom-0 h-[14.29%] bg-emerald-900/70 flex items-center justify-center border-t-2 border-white/40">
-          <span className="text-white/50 font-heading text-xs font-bold tracking-[0.3em] uppercase" style={{ writingMode: "vertical-rl" }}>Endesone</span>
+          <span className="text-white/50 font-heading text-xs font-bold tracking-[0.3em] uppercase">Endesone</span>
         </div>
 
-        {/* Yard lines every 5 yards (excluding endzone borders & midfield) */}
-        {[78.57, 71.43, 64.29, 57.14, 42.86, 35.71, 28.57, 21.43].map((y) => (
-          <div key={y} className="absolute inset-x-0 border-t border-white/25" style={{ top: `${y}%` }} />
-        ))}
-        {/* Midfield dashed */}
+        {/* Yard tick marks: every 1 yd (short) from sidelines & center; every 5 yd (longer) */}
+        {Array.from({ length: 49 }, (_, i) => {
+          const yd = i + 1; // 1..49 yards from top endzone edge
+          if (yd === 25) return null; // midfield handled separately
+          // top% within the play field: top endzone ends at 14.29%, plays span 14.29 → 85.71
+          const y = 14.2857 + (yd / 50) * (85.7143 - 14.2857);
+          const isFive = yd % 5 === 0;
+          const sideLen = isFive ? "w-[4%]" : "w-[1.5%]";
+          const centerLen = isFive ? "w-[3%]" : "w-[1.2%]";
+          return (
+            <div key={`tick-${yd}`}>
+              {/* Left sideline tick */}
+              <div className={`absolute left-0 ${sideLen} h-px bg-white/40`} style={{ top: `${y}%` }} />
+              {/* Right sideline tick */}
+              <div className={`absolute right-0 ${sideLen} h-px bg-white/40`} style={{ top: `${y}%` }} />
+              {/* Center hash ticks (two short marks straddling center) */}
+              <div className={`absolute ${centerLen} h-px bg-white/40`} style={{ top: `${y}%`, left: "50%", transform: "translateX(-110%)" }} />
+              <div className={`absolute ${centerLen} h-px bg-white/40`} style={{ top: `${y}%`, left: "50%", transform: "translateX(10%)" }} />
+            </div>
+          );
+        })}
+        {/* Midfield dashed line across the field */}
         <div className="absolute inset-x-0 top-1/2 border-t-2 border-dashed border-white/40" />
 
         {/* Yard numbers — left and right side */}
@@ -230,11 +247,6 @@ const FieldDiagram = ({
           <div key={`num-r-${m.y}`} className="absolute text-white/30 font-heading font-bold text-[9px] tracking-wider pointer-events-none select-none" style={{ top: `${m.y}%`, right: "5%", transform: "translateY(-50%)" }}>
             {m.num}
           </div>
-        ))}
-
-        {/* Hash marks down the middle every 5 yards */}
-        {[78.57, 71.43, 64.29, 57.14, 50, 42.86, 35.71, 28.57, 21.43].map((y) => (
-          <div key={`hash-${y}`} className="absolute left-1/2 -translate-x-1/2 w-2 h-px bg-white/40" style={{ top: `${y}%` }} />
         ))}
 
         {/* Down marker — left sideline at midfield */}
@@ -287,17 +299,19 @@ const FieldDiagram = ({
           );
         })}
 
-        {/* SVG overlay - always visible (rush arrow, zones, man-to-man) */}
+        {/* SVG overlay - always visible (rush arrow, zones, man-to-man).
+            Markers use markerUnits="strokeWidth" + vectorEffect="non-scaling-stroke"
+            so arrowheads stay symmetric regardless of the SVG's non-uniform stretch. */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ zIndex: 1 }}>
           <defs>
-            <marker id="arrowhead" markerWidth="4" markerHeight="4" refX="4" refY="2" orient="auto" markerUnits="userSpaceOnUse">
-              <polygon points="0 0, 4 2, 0 4" fill="white" fillOpacity="0.6" />
+            <marker id="arrowhead" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto" markerUnits="strokeWidth">
+              <polygon points="0 0, 5 2.5, 0 5" fill="white" fillOpacity="0.6" />
             </marker>
-            <marker id="arrowhead-yellow" markerWidth="4" markerHeight="4" refX="4" refY="2" orient="auto" markerUnits="userSpaceOnUse">
-              <polygon points="0 0, 4 2, 0 4" fill="#facc15" fillOpacity="0.7" />
+            <marker id="arrowhead-yellow" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto" markerUnits="strokeWidth">
+              <polygon points="0 0, 5 2.5, 0 5" fill="#facc15" fillOpacity="0.7" />
             </marker>
-            <marker id="arrowhead-green" markerWidth="4" markerHeight="4" refX="4" refY="2" orient="auto" markerUnits="userSpaceOnUse">
-              <polygon points="0 0, 4 2, 0 4" fill="#4ade80" fillOpacity="0.8" />
+            <marker id="arrowhead-green" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto" markerUnits="strokeWidth">
+              <polygon points="0 0, 5 2.5, 0 5" fill="#4ade80" fillOpacity="0.8" />
             </marker>
           </defs>
 

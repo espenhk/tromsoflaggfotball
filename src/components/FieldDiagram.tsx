@@ -300,22 +300,20 @@ const FieldDiagram = ({
         })}
 
         {/* SVG overlay - always visible (rush arrow, zones, man-to-man).
-            viewBox matches field aspect (25 wide × 70 tall) so arrow markers
-            don't get distorted. Inner <g> scales the legacy 0–100 coord space
-            (x:0–100, y:0–100) into 25×70. */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 25 70" preserveAspectRatio="none" style={{ zIndex: 1 }}>
+            Markers use markerUnits="strokeWidth" + vectorEffect="non-scaling-stroke"
+            so arrowheads stay symmetric regardless of the SVG's non-uniform stretch. */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ zIndex: 1 }}>
           <defs>
-            <marker id="arrowhead" markerWidth="1.2" markerHeight="1.2" refX="1.2" refY="0.6" orient="auto" markerUnits="userSpaceOnUse">
-              <polygon points="0 0, 1.2 0.6, 0 1.2" fill="white" fillOpacity="0.6" />
+            <marker id="arrowhead" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto" markerUnits="strokeWidth">
+              <polygon points="0 0, 5 2.5, 0 5" fill="white" fillOpacity="0.6" />
             </marker>
-            <marker id="arrowhead-yellow" markerWidth="1.2" markerHeight="1.2" refX="1.2" refY="0.6" orient="auto" markerUnits="userSpaceOnUse">
-              <polygon points="0 0, 1.2 0.6, 0 1.2" fill="#facc15" fillOpacity="0.7" />
+            <marker id="arrowhead-yellow" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto" markerUnits="strokeWidth">
+              <polygon points="0 0, 5 2.5, 0 5" fill="#facc15" fillOpacity="0.7" />
             </marker>
-            <marker id="arrowhead-green" markerWidth="1.2" markerHeight="1.2" refX="1.2" refY="0.6" orient="auto" markerUnits="userSpaceOnUse">
-              <polygon points="0 0, 1.2 0.6, 0 1.2" fill="#4ade80" fillOpacity="0.8" />
+            <marker id="arrowhead-green" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto" markerUnits="strokeWidth">
+              <polygon points="0 0, 5 2.5, 0 5" fill="#4ade80" fillOpacity="0.8" />
             </marker>
           </defs>
-          <g transform="scale(0.25 0.7)">
 
           {/* Zone coverage */}
           {defenseTab === "soneforsvar" && Object.entries(zoneAreas).map(([id, z]) => (
@@ -377,7 +375,6 @@ const FieldDiagram = ({
                 markerEnd="url(#arrowhead)" vectorEffect="non-scaling-stroke" />
             </>
           )}
-          </g>
           </g>
         </svg>
 

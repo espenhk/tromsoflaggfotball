@@ -299,8 +299,11 @@ const FieldDiagram = ({
           );
         })}
 
-        {/* SVG overlay - always visible (rush arrow, zones, man-to-man) */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ zIndex: 1 }}>
+        {/* SVG overlay - always visible (rush arrow, zones, man-to-man).
+            viewBox matches field aspect (25 wide × 70 tall) so arrow markers
+            don't get distorted. Inner <g> scales the legacy 0–100 coord space
+            (x:0–100, y:0–100) into 25×70. */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 25 70" preserveAspectRatio="none" style={{ zIndex: 1 }}>
           <defs>
             <marker id="arrowhead" markerWidth="4" markerHeight="4" refX="4" refY="2" orient="auto" markerUnits="userSpaceOnUse">
               <polygon points="0 0, 4 2, 0 4" fill="white" fillOpacity="0.6" />
@@ -312,6 +315,7 @@ const FieldDiagram = ({
               <polygon points="0 0, 4 2, 0 4" fill="#4ade80" fillOpacity="0.8" />
             </marker>
           </defs>
+          <g transform="scale(0.25 0.7)">
 
           {/* Zone coverage */}
           {defenseTab === "soneforsvar" && Object.entries(zoneAreas).map(([id, z]) => (
@@ -373,6 +377,7 @@ const FieldDiagram = ({
                 markerEnd="url(#arrowhead)" vectorEffect="non-scaling-stroke" />
             </>
           )}
+          </g>
           </g>
         </svg>
 

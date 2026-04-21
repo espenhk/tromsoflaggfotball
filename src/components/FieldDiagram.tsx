@@ -305,14 +305,14 @@ const FieldDiagram = ({
             (x:0–100, y:0–100) into 25×70. */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 25 70" preserveAspectRatio="none" style={{ zIndex: 1 }}>
           <defs>
-            <marker id="arrowhead" markerWidth="4" markerHeight="4" refX="4" refY="2" orient="auto" markerUnits="userSpaceOnUse">
-              <polygon points="0 0, 4 2, 0 4" fill="white" fillOpacity="0.6" />
+            <marker id="arrowhead" markerWidth="1.2" markerHeight="1.2" refX="1.2" refY="0.6" orient="auto" markerUnits="userSpaceOnUse">
+              <polygon points="0 0, 1.2 0.6, 0 1.2" fill="white" fillOpacity="0.6" />
             </marker>
-            <marker id="arrowhead-yellow" markerWidth="4" markerHeight="4" refX="4" refY="2" orient="auto" markerUnits="userSpaceOnUse">
-              <polygon points="0 0, 4 2, 0 4" fill="#facc15" fillOpacity="0.7" />
+            <marker id="arrowhead-yellow" markerWidth="1.2" markerHeight="1.2" refX="1.2" refY="0.6" orient="auto" markerUnits="userSpaceOnUse">
+              <polygon points="0 0, 1.2 0.6, 0 1.2" fill="#facc15" fillOpacity="0.7" />
             </marker>
-            <marker id="arrowhead-green" markerWidth="4" markerHeight="4" refX="4" refY="2" orient="auto" markerUnits="userSpaceOnUse">
-              <polygon points="0 0, 4 2, 0 4" fill="#4ade80" fillOpacity="0.8" />
+            <marker id="arrowhead-green" markerWidth="1.2" markerHeight="1.2" refX="1.2" refY="0.6" orient="auto" markerUnits="userSpaceOnUse">
+              <polygon points="0 0, 1.2 0.6, 0 1.2" fill="#4ade80" fillOpacity="0.8" />
             </marker>
           </defs>
           <g transform="scale(0.25 0.7)">

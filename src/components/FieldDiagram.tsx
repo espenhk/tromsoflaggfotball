@@ -63,8 +63,8 @@ type VariantGeo = {
 };
 
 const VARIANTS: Record<FieldVariant, VariantGeo> = {
-  // Front page: short stylised field
-  classic: { totalLength: 20, endzone: 4, losFromBottomEz: 4 },
+  // Front page: short stylised 20-yard field (3yd endzones + 14yd play + 3yd own side)
+  classic: { totalLength: 20, endzone: 3, losFromBottomEz: 3 },
   // Posisjoner: full 50-yard field (classic American football proportions)
   simple:  { totalLength: 70, endzone: 10, losFromBottomEz: 5 },
 };

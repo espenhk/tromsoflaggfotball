@@ -68,7 +68,8 @@ type PlayerPosition = { top: number; left: number; label: string; color: string;
 
 // WR-S is the slot WR that becomes RB in løpespill — same id so it animates
 const getOffensePlayers = (tab: OffenseTabId): PlayerPosition[] => {
-  const c: PlayerPosition = { top: LOS, left: 50, label: "C", color: "bg-sky-400", id: "C" };
+  // C lines up just behind the ball (slightly toward own endzone)
+  const c: PlayerPosition = { top: LOS + 2, left: 50, label: "C", color: "bg-sky-400", id: "C" };
 
   if (tab === "løpespill") {
     return [

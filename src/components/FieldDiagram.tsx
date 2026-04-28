@@ -50,11 +50,12 @@ const defenseTabs: { id: DefenseTabId; label: string }[] = [
   { id: "mann-mot-mann", label: "Man-man" },
 ];
 
-// Field constants — vertical 25 yd wide × 70 yd tall (50 yd play + 2× 10 yd endzones)
-// Bottom endzone: 85.71%–100%; top endzone: 0%–14.29%; midfield: 50%
-// Ball on offense's own 5-yd line: 85.71 - (5/70)*100 = 78.57
-const LOS = 78.57;
-const RUSHER_Y = 68.57; // 7 yards beyond ball: LOS - (7/70)*100
+// Field constants — vertical 25 yd wide × 24 yd tall (20 yd play + 2× 2 yd endzones)
+// Bottom endzone: 91.67%–100%; top endzone: 0%–8.33%
+// Ball on offense's own 5-yd line: 91.67 - (5/20)*(91.67-8.33) = 70.83
+// Rusher 7 yards beyond ball: 70.83 - (7/20)*83.33 = 41.67
+const LOS = 70.83;
+const RUSHER_Y = 41.67;
 
 const zoneAreas: Record<string, { cx: number; cy: number; rx: number; ry: number; color: string; border: string }> = {
   "DB-L": { cx: 18, cy: LOS - 12, rx: 16, ry: 8, color: "rgba(251,146,60,0.15)", border: "rgba(251,146,60,0.4)" },
@@ -67,7 +68,8 @@ type PlayerPosition = { top: number; left: number; label: string; color: string;
 
 // WR-S is the slot WR that becomes RB in løpespill — same id so it animates
 const getOffensePlayers = (tab: OffenseTabId): PlayerPosition[] => {
-  const c: PlayerPosition = { top: LOS, left: 50, label: "C", color: "bg-sky-400", id: "C" };
+  // C lines up just behind the ball (slightly toward own endzone)
+  const c: PlayerPosition = { top: LOS + 2, left: 50, label: "C", color: "bg-sky-400", id: "C" };
 
   if (tab === "løpespill") {
     return [
@@ -188,77 +190,26 @@ const FieldDiagram = ({
         </div>
       </div>
 
-      {/* Field — vertical 25w × 70h yards. Aspect 25:70 ≈ 0.357 */}
+      {/* Field — vertical 25w × 24h yards (20 play + 2× 2 endzones). Aspect 25:24 */}
       <div
-        className={`relative ${widthClass} aspect-[25/70] bg-emerald-800 overflow-hidden ${fullscreen ? "" : "border-2 border-t-0 border-b-0 border-emerald-600"}`}
+        className={`relative ${widthClass} aspect-[25/24] bg-emerald-800 overflow-hidden ${fullscreen ? "" : "border-2 border-t-0 border-b-0 border-emerald-600"}`}
         onClick={() => setActiveTooltip(null)}
       >
-        {/* End zones (10 yd each = 14.29% of 70yd field) */}
-        <div className="absolute inset-x-0 top-0 h-[14.29%] bg-emerald-900/70 flex items-center justify-center border-b-2 border-white/40">
-          <span className="text-white/50 font-heading text-xs font-bold tracking-[0.3em] uppercase">Endesone</span>
+        {/* End zones (2 yd each = 8.33% of 24yd field) */}
+        <div className="absolute inset-x-0 top-0 h-[8.33%] bg-emerald-900/70 flex items-center justify-center border-b-2 border-white/40">
+          <span className="text-white/50 font-heading text-[10px] font-bold tracking-[0.3em] uppercase">Endesone</span>
         </div>
-        <div className="absolute inset-x-0 bottom-0 h-[14.29%] bg-emerald-900/70 flex items-center justify-center border-t-2 border-white/40">
-          <span className="text-white/50 font-heading text-xs font-bold tracking-[0.3em] uppercase">Endesone</span>
+        <div className="absolute inset-x-0 bottom-0 h-[8.33%] bg-emerald-900/70 flex items-center justify-center border-t-2 border-white/40">
+          <span className="text-white/50 font-heading text-[10px] font-bold tracking-[0.3em] uppercase">Endesone</span>
         </div>
 
-        {/* Yard tick marks: every 1 yd (short) from sidelines & center; every 5 yd (longer) */}
-        {Array.from({ length: 49 }, (_, i) => {
-          const yd = i + 1; // 1..49 yards from top endzone edge
-          if (yd === 25) return null; // midfield handled separately
-          // top% within the play field: top endzone ends at 14.29%, plays span 14.29 → 85.71
-          const y = 14.2857 + (yd / 50) * (85.7143 - 14.2857);
-          const isFive = yd % 5 === 0;
-          const sideLen = isFive ? "w-[4%]" : "w-[1.5%]";
-          const centerLen = isFive ? "w-[3%]" : "w-[1.2%]";
+        {/* 5-yard lines — full lines straight across at 5, 10, 15 yards */}
+        {[5, 10, 15].map((yd) => {
+          const y = 8.3333 + (yd / 20) * (91.6667 - 8.3333);
           return (
-            <div key={`tick-${yd}`}>
-              {/* Left sideline tick */}
-              <div className={`absolute left-0 ${sideLen} h-px bg-white/40`} style={{ top: `${y}%` }} />
-              {/* Right sideline tick */}
-              <div className={`absolute right-0 ${sideLen} h-px bg-white/40`} style={{ top: `${y}%` }} />
-              {/* Center hash ticks (two short marks straddling center) */}
-              <div className={`absolute ${centerLen} h-px bg-white/40`} style={{ top: `${y}%`, left: "50%", transform: "translateX(-110%)" }} />
-              <div className={`absolute ${centerLen} h-px bg-white/40`} style={{ top: `${y}%`, left: "50%", transform: "translateX(10%)" }} />
-            </div>
+            <div key={`line-${yd}`} className="absolute inset-x-0 h-px bg-white/40" style={{ top: `${y}%` }} />
           );
         })}
-        {/* Midfield dashed line across the field */}
-        <div className="absolute inset-x-0 top-1/2 border-t-2 border-dashed border-white/40" />
-
-        {/* Yard numbers — left and right side */}
-        {[
-          { y: 71.43, num: "10" },
-          { y: 57.14, num: "20" },
-          { y: 42.86, num: "30" },
-          { y: 28.57, num: "20" },
-          { y: 14.4, num: "10" },
-        ].map((m) => (
-          <div key={`num-l-${m.y}`} className="absolute text-white/30 font-heading font-bold text-[9px] tracking-wider pointer-events-none select-none" style={{ top: `${m.y}%`, left: "5%", transform: "translateY(-50%)" }}>
-            {m.num}
-          </div>
-        ))}
-        {[
-          { y: 71.43, num: "10" },
-          { y: 57.14, num: "20" },
-          { y: 42.86, num: "30" },
-          { y: 28.57, num: "20" },
-          { y: 14.4, num: "10" },
-        ].map((m) => (
-          <div key={`num-r-${m.y}`} className="absolute text-white/30 font-heading font-bold text-[9px] tracking-wider pointer-events-none select-none" style={{ top: `${m.y}%`, right: "5%", transform: "translateY(-50%)" }}>
-            {m.num}
-          </div>
-        ))}
-
-        {/* Down marker — left sideline at midfield */}
-        <div className="absolute" style={{ top: "50%", left: "0%", transform: "translate(2px, -50%)", zIndex: 2 }}>
-          <div className="flex flex-col items-center gap-0.5">
-            <div className="w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[7px] border-b-amber-300" />
-            <div className="w-px h-2.5 bg-amber-300/80" />
-            <div className="w-3.5 h-3.5 rounded-sm bg-amber-300 text-emerald-950 font-heading font-black text-[9px] flex items-center justify-center shadow-md">
-              1
-            </div>
-          </div>
-        </div>
 
         {/* Instruction text - just above bottom end zone */}
         <div className="absolute inset-x-0" style={{ bottom: "16%", zIndex: 3 }}>

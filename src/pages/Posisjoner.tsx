@@ -263,7 +263,7 @@ const Posisjoner = () => {
 
       {/* Fullscreen edge-to-edge field — shown when no specific position requested */}
       {showFullscreen && (
-        <section className="relative w-full bg-emerald-800">
+        <section className="relative w-full">
           <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" fullscreen variant="simple" />
         </section>
       )}

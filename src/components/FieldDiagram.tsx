@@ -117,13 +117,26 @@ const baseOffense = (tab: OffenseTabId): PlayerPosition[] => {
 };
 
 // Defense — DBs/Safeties closer to the ball
-const defensePlayersBaseYd: PlayerPosition[] = [
-  { topYd: 7,  left: 63, label: "R",  color: "bg-orange-400", id: "R"    },
-  { topYd: 7,  left: 18, label: "DB", color: "bg-rose-400",   id: "DB-L" },
-  { topYd: 7,  left: 82, label: "DB", color: "bg-rose-400",   id: "DB-R" },
-  { topYd: 14, left: 65, label: "S",  color: "bg-rose-400",   id: "DB-S" },
-  { topYd: 11, left: 38, label: "S",  color: "bg-rose-400",   id: "DB-SA" },
-];
+// "simple" variant uses real distances; "classic" compresses them so they fit
+// the much shorter 20-yd front-page field.
+const defenseFor = (variant: FieldVariant): PlayerPosition[] => {
+  if (variant === "classic") {
+    return [
+      { topYd: 7, left: 63, label: "R",  color: "bg-orange-400", id: "R"    },
+      { topYd: 5, left: 18, label: "DB", color: "bg-rose-400",   id: "DB-L" },
+      { topYd: 5, left: 82, label: "DB", color: "bg-rose-400",   id: "DB-R" },
+      { topYd: 9, left: 65, label: "S",  color: "bg-rose-400",   id: "DB-S" },
+      { topYd: 7, left: 38, label: "S",  color: "bg-rose-400",   id: "DB-SA" },
+    ];
+  }
+  return [
+    { topYd: 7,  left: 63, label: "R",  color: "bg-orange-400", id: "R"    },
+    { topYd: 7,  left: 18, label: "DB", color: "bg-rose-400",   id: "DB-L" },
+    { topYd: 7,  left: 82, label: "DB", color: "bg-rose-400",   id: "DB-R" },
+    { topYd: 14, left: 65, label: "S",  color: "bg-rose-400",   id: "DB-S" },
+    { topYd: 11, left: 38, label: "S",  color: "bg-rose-400",   id: "DB-SA" },
+  ];
+};
 
 // Convert player to absolute % top
 const toAbs = (p: PlayerPosition, g: VariantGeo) => ({ ...p, top: losPct(g) - p.topYd * ydPct(g) });
@@ -391,7 +404,7 @@ const FieldDiagram = ({
   });
   const offenseAbs = offensePlayers.map(p => toAbs(p, geo));
   const offenseMap = Object.fromEntries(offenseAbs.map(p => [p.id, { top: p.top, left: p.left }]));
-  const defenseAbs = defensePlayersBaseYd.map(p => toAbs(p, geo));
+  const defenseAbs = defenseFor(variant).map(p => toAbs(p, geo));
   const manAssignments = getManAssignments(activeTab);
 
   const handleOffenseTabChange = useCallback((newTab: OffenseTabId) => {

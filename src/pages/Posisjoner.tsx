@@ -264,7 +264,7 @@ const Posisjoner = () => {
       {/* Fullscreen edge-to-edge field — shown when no specific position requested */}
       {showFullscreen && (
         <section className="relative w-full bg-emerald-800">
-          <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" fullscreen />
+          <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" fullscreen variant="simple" />
         </section>
       )}
 
@@ -282,7 +282,7 @@ const Posisjoner = () => {
 
           {/* Compact field diagram for navigation while browsing the list */}
           {!showFullscreen && (
-            <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" />
+            <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" variant="simple" />
           )}
         </section>
 

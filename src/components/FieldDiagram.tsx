@@ -50,11 +50,12 @@ const defenseTabs: { id: DefenseTabId; label: string }[] = [
   { id: "mann-mot-mann", label: "Man-man" },
 ];
 
-// Field constants — vertical 25 yd wide × 70 yd tall (50 yd play + 2× 10 yd endzones)
-// Bottom endzone: 85.71%–100%; top endzone: 0%–14.29%; midfield: 50%
-// Ball on offense's own 5-yd line: 85.71 - (5/70)*100 = 78.57
-const LOS = 78.57;
-const RUSHER_Y = 68.57; // 7 yards beyond ball: LOS - (7/70)*100
+// Field constants — vertical 25 yd wide × 24 yd tall (20 yd play + 2× 2 yd endzones)
+// Bottom endzone: 91.67%–100%; top endzone: 0%–8.33%
+// Ball on offense's own 5-yd line: 91.67 - (5/20)*(91.67-8.33) = 70.83
+// Rusher 7 yards beyond ball: 70.83 - (7/20)*83.33 = 41.67
+const LOS = 70.83;
+const RUSHER_Y = 41.67;
 
 const zoneAreas: Record<string, { cx: number; cy: number; rx: number; ry: number; color: string; border: string }> = {
   "DB-L": { cx: 18, cy: LOS - 12, rx: 16, ry: 8, color: "rgba(251,146,60,0.15)", border: "rgba(251,146,60,0.4)" },

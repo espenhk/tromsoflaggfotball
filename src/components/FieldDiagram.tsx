@@ -113,15 +113,18 @@ const getManAssignments = (_tab: OffenseTabId): Record<string, string> => {
 const ANIMATION_DURATION = 400;
 
 type NavigateMode = "tooltip" | "direct";
+type FieldVariant = "classic" | "simple";
 
 const FieldDiagram = ({
   onPositionNavigate,
   navigateMode = "tooltip",
   fullscreen = false,
+  variant = "classic",
 }: {
   onPositionNavigate?: (slug: string) => void;
   navigateMode?: NavigateMode;
   fullscreen?: boolean;
+  variant?: FieldVariant;
 } = {}) => {
   // Width class applied to the navigator bars and field — full-bleed in fullscreen mode
   // In fullscreen, the field gets natural 25:70 aspect via the field element itself
@@ -197,19 +200,77 @@ const FieldDiagram = ({
       >
         {/* End zones (10 yd each = 14.2857% of 70yd field) */}
         <div className="absolute inset-x-0 top-0 h-[14.2857%] bg-emerald-900/70 flex items-center justify-center border-b-2 border-white/40">
-          <span className="text-white/50 font-heading text-[10px] font-bold tracking-[0.3em] uppercase">Endesone</span>
+          {variant === "classic" ? (
+            <span className="text-white/50 font-heading text-xs font-bold tracking-[0.3em] uppercase rotate-180" style={{ writingMode: "vertical-rl" }}>Endesone</span>
+          ) : (
+            <span className="text-white/50 font-heading text-[10px] font-bold tracking-[0.3em] uppercase">Endesone</span>
+          )}
         </div>
         <div className="absolute inset-x-0 bottom-0 h-[14.2857%] bg-emerald-900/70 flex items-center justify-center border-t-2 border-white/40">
-          <span className="text-white/50 font-heading text-[10px] font-bold tracking-[0.3em] uppercase">Endesone</span>
+          {variant === "classic" ? (
+            <span className="text-white/50 font-heading text-xs font-bold tracking-[0.3em] uppercase" style={{ writingMode: "vertical-rl" }}>Endesone</span>
+          ) : (
+            <span className="text-white/50 font-heading text-[10px] font-bold tracking-[0.3em] uppercase">Endesone</span>
+          )}
         </div>
 
-        {/* 5-yard lines — full lines straight across every 5 yards */}
-        {[5, 10, 15, 20, 25, 30, 35, 40, 45].map((yd) => {
-          const y = 14.2857 + (yd / 50) * (85.7143 - 14.2857);
-          return (
-            <div key={`line-${yd}`} className="absolute inset-x-0 h-px bg-white/40" style={{ top: `${y}%` }} />
-          );
-        })}
+        {variant === "simple" ? (
+          /* Simple: full white lines straight across every 5 yards */
+          <>
+            {[5, 10, 15, 20, 25, 30, 35, 40, 45].map((yd) => {
+              const y = 14.2857 + (yd / 50) * (85.7143 - 14.2857);
+              return (
+                <div key={`line-${yd}`} className="absolute inset-x-0 h-px bg-white/40" style={{ top: `${y}%` }} />
+              );
+            })}
+          </>
+        ) : (
+          /* Classic: faint 5-yard lines, dashed midfield, side numbers, center hash marks, down marker */
+          <>
+            {[78.57, 71.43, 64.29, 57.14, 42.86, 35.71, 28.57, 21.43].map((y) => (
+              <div key={`line-${y}`} className="absolute inset-x-0 border-t border-white/25" style={{ top: `${y}%` }} />
+            ))}
+            <div className="absolute inset-x-0 top-1/2 border-t-2 border-dashed border-white/40" />
+
+            {[
+              { y: 71.43, num: "10" },
+              { y: 57.14, num: "20" },
+              { y: 42.86, num: "30" },
+              { y: 28.57, num: "20" },
+              { y: 14.4, num: "10" },
+            ].map((m) => (
+              <div key={`num-l-${m.y}`} className="absolute text-white/30 font-heading font-bold text-[9px] tracking-wider pointer-events-none select-none" style={{ top: `${m.y}%`, left: "5%", transform: "translateY(-50%)" }}>
+                {m.num}
+              </div>
+            ))}
+            {[
+              { y: 71.43, num: "10" },
+              { y: 57.14, num: "20" },
+              { y: 42.86, num: "30" },
+              { y: 28.57, num: "20" },
+              { y: 14.4, num: "10" },
+            ].map((m) => (
+              <div key={`num-r-${m.y}`} className="absolute text-white/30 font-heading font-bold text-[9px] tracking-wider pointer-events-none select-none" style={{ top: `${m.y}%`, right: "5%", transform: "translateY(-50%)" }}>
+                {m.num}
+              </div>
+            ))}
+
+            {[78.57, 71.43, 64.29, 57.14, 50, 42.86, 35.71, 28.57, 21.43].map((y) => (
+              <div key={`hash-${y}`} className="absolute left-1/2 -translate-x-1/2 w-2 h-px bg-white/40" style={{ top: `${y}%` }} />
+            ))}
+
+            {/* Down marker — left sideline at midfield */}
+            <div className="absolute" style={{ top: "50%", left: "0%", transform: "translate(2px, -50%)", zIndex: 2 }}>
+              <div className="flex flex-col items-center gap-0.5">
+                <div className="w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[7px] border-b-amber-300" />
+                <div className="w-px h-2.5 bg-amber-300/80" />
+                <div className="w-3.5 h-3.5 rounded-sm bg-amber-300 text-emerald-950 font-heading font-black text-[9px] flex items-center justify-center shadow-md">
+                  1
+                </div>
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Instruction text - just above bottom end zone */}
         <div className="absolute inset-x-0" style={{ bottom: "16%", zIndex: 3 }}>

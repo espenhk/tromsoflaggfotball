@@ -50,12 +50,12 @@ const defenseTabs: { id: DefenseTabId; label: string }[] = [
   { id: "mann-mot-mann", label: "Man-man" },
 ];
 
-// Field constants — vertical 25 yd wide × 24 yd tall (20 yd play + 2× 2 yd endzones)
-// Bottom endzone: 91.67%–100%; top endzone: 0%–8.33%
-// Ball on offense's own 5-yd line: 91.67 - (5/20)*(91.67-8.33) = 70.83
-// Rusher 7 yards beyond ball: 70.83 - (7/20)*83.33 = 41.67
-const LOS = 70.83;
-const RUSHER_Y = 41.67;
+// Field constants — vertical 25 yd wide × 70 yd tall (50 yd play + 2× 10 yd endzones)
+// Top endzone: 0%–14.2857%; bottom endzone: 85.7143%–100%
+// Ball on offense's own 5-yd line: 85.7143 - (5/50)*(85.7143-14.2857) = 78.5714
+// Rusher 7 yards beyond ball: 78.5714 - (7/50)*71.4286 = 68.5714
+const LOS = 78.5714;
+const RUSHER_Y = 68.5714;
 
 const zoneAreas: Record<string, { cx: number; cy: number; rx: number; ry: number; color: string; border: string }> = {
   "DB-L": { cx: 18, cy: LOS - 12, rx: 16, ry: 8, color: "rgba(251,146,60,0.15)", border: "rgba(251,146,60,0.4)" },
@@ -190,22 +190,22 @@ const FieldDiagram = ({
         </div>
       </div>
 
-      {/* Field — vertical 25w × 24h yards (20 play + 2× 2 endzones). Aspect 25:24 */}
+      {/* Field — vertical 25w × 70h yards (50 play + 2× 10 endzones). Aspect 25:70 */}
       <div
-        className={`relative ${widthClass} aspect-[25/24] bg-emerald-800 overflow-hidden ${fullscreen ? "" : "border-2 border-t-0 border-b-0 border-emerald-600"}`}
+        className={`relative ${widthClass} aspect-[25/70] bg-emerald-800 overflow-hidden ${fullscreen ? "" : "border-2 border-t-0 border-b-0 border-emerald-600"}`}
         onClick={() => setActiveTooltip(null)}
       >
-        {/* End zones (2 yd each = 8.33% of 24yd field) */}
-        <div className="absolute inset-x-0 top-0 h-[8.33%] bg-emerald-900/70 flex items-center justify-center border-b-2 border-white/40">
+        {/* End zones (10 yd each = 14.2857% of 70yd field) */}
+        <div className="absolute inset-x-0 top-0 h-[14.2857%] bg-emerald-900/70 flex items-center justify-center border-b-2 border-white/40">
           <span className="text-white/50 font-heading text-[10px] font-bold tracking-[0.3em] uppercase">Endesone</span>
         </div>
-        <div className="absolute inset-x-0 bottom-0 h-[8.33%] bg-emerald-900/70 flex items-center justify-center border-t-2 border-white/40">
+        <div className="absolute inset-x-0 bottom-0 h-[14.2857%] bg-emerald-900/70 flex items-center justify-center border-t-2 border-white/40">
           <span className="text-white/50 font-heading text-[10px] font-bold tracking-[0.3em] uppercase">Endesone</span>
         </div>
 
-        {/* 5-yard lines — full lines straight across at 5, 10, 15 yards */}
-        {[5, 10, 15].map((yd) => {
-          const y = 8.3333 + (yd / 20) * (91.6667 - 8.3333);
+        {/* 5-yard lines — full lines straight across every 5 yards */}
+        {[5, 10, 15, 20, 25, 30, 35, 40, 45].map((yd) => {
+          const y = 14.2857 + (yd / 50) * (85.7143 - 14.2857);
           return (
             <div key={`line-${yd}`} className="absolute inset-x-0 h-px bg-white/40" style={{ top: `${y}%` }} />
           );

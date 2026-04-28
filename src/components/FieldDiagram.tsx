@@ -190,77 +190,26 @@ const FieldDiagram = ({
         </div>
       </div>
 
-      {/* Field — vertical 25w × 70h yards. Aspect 25:70 ≈ 0.357 */}
+      {/* Field — vertical 25w × 24h yards (20 play + 2× 2 endzones). Aspect 25:24 */}
       <div
-        className={`relative ${widthClass} aspect-[25/70] bg-emerald-800 overflow-hidden ${fullscreen ? "" : "border-2 border-t-0 border-b-0 border-emerald-600"}`}
+        className={`relative ${widthClass} aspect-[25/24] bg-emerald-800 overflow-hidden ${fullscreen ? "" : "border-2 border-t-0 border-b-0 border-emerald-600"}`}
         onClick={() => setActiveTooltip(null)}
       >
-        {/* End zones (10 yd each = 14.29% of 70yd field) */}
-        <div className="absolute inset-x-0 top-0 h-[14.29%] bg-emerald-900/70 flex items-center justify-center border-b-2 border-white/40">
-          <span className="text-white/50 font-heading text-xs font-bold tracking-[0.3em] uppercase">Endesone</span>
+        {/* End zones (2 yd each = 8.33% of 24yd field) */}
+        <div className="absolute inset-x-0 top-0 h-[8.33%] bg-emerald-900/70 flex items-center justify-center border-b-2 border-white/40">
+          <span className="text-white/50 font-heading text-[10px] font-bold tracking-[0.3em] uppercase">Endesone</span>
         </div>
-        <div className="absolute inset-x-0 bottom-0 h-[14.29%] bg-emerald-900/70 flex items-center justify-center border-t-2 border-white/40">
-          <span className="text-white/50 font-heading text-xs font-bold tracking-[0.3em] uppercase">Endesone</span>
+        <div className="absolute inset-x-0 bottom-0 h-[8.33%] bg-emerald-900/70 flex items-center justify-center border-t-2 border-white/40">
+          <span className="text-white/50 font-heading text-[10px] font-bold tracking-[0.3em] uppercase">Endesone</span>
         </div>
 
-        {/* Yard tick marks: every 1 yd (short) from sidelines & center; every 5 yd (longer) */}
-        {Array.from({ length: 49 }, (_, i) => {
-          const yd = i + 1; // 1..49 yards from top endzone edge
-          if (yd === 25) return null; // midfield handled separately
-          // top% within the play field: top endzone ends at 14.29%, plays span 14.29 → 85.71
-          const y = 14.2857 + (yd / 50) * (85.7143 - 14.2857);
-          const isFive = yd % 5 === 0;
-          const sideLen = isFive ? "w-[4%]" : "w-[1.5%]";
-          const centerLen = isFive ? "w-[3%]" : "w-[1.2%]";
+        {/* 5-yard lines — full lines straight across at 5, 10, 15 yards */}
+        {[5, 10, 15].map((yd) => {
+          const y = 8.3333 + (yd / 20) * (91.6667 - 8.3333);
           return (
-            <div key={`tick-${yd}`}>
-              {/* Left sideline tick */}
-              <div className={`absolute left-0 ${sideLen} h-px bg-white/40`} style={{ top: `${y}%` }} />
-              {/* Right sideline tick */}
-              <div className={`absolute right-0 ${sideLen} h-px bg-white/40`} style={{ top: `${y}%` }} />
-              {/* Center hash ticks (two short marks straddling center) */}
-              <div className={`absolute ${centerLen} h-px bg-white/40`} style={{ top: `${y}%`, left: "50%", transform: "translateX(-110%)" }} />
-              <div className={`absolute ${centerLen} h-px bg-white/40`} style={{ top: `${y}%`, left: "50%", transform: "translateX(10%)" }} />
-            </div>
+            <div key={`line-${yd}`} className="absolute inset-x-0 h-px bg-white/40" style={{ top: `${y}%` }} />
           );
         })}
-        {/* Midfield dashed line across the field */}
-        <div className="absolute inset-x-0 top-1/2 border-t-2 border-dashed border-white/40" />
-
-        {/* Yard numbers — left and right side */}
-        {[
-          { y: 71.43, num: "10" },
-          { y: 57.14, num: "20" },
-          { y: 42.86, num: "30" },
-          { y: 28.57, num: "20" },
-          { y: 14.4, num: "10" },
-        ].map((m) => (
-          <div key={`num-l-${m.y}`} className="absolute text-white/30 font-heading font-bold text-[9px] tracking-wider pointer-events-none select-none" style={{ top: `${m.y}%`, left: "5%", transform: "translateY(-50%)" }}>
-            {m.num}
-          </div>
-        ))}
-        {[
-          { y: 71.43, num: "10" },
-          { y: 57.14, num: "20" },
-          { y: 42.86, num: "30" },
-          { y: 28.57, num: "20" },
-          { y: 14.4, num: "10" },
-        ].map((m) => (
-          <div key={`num-r-${m.y}`} className="absolute text-white/30 font-heading font-bold text-[9px] tracking-wider pointer-events-none select-none" style={{ top: `${m.y}%`, right: "5%", transform: "translateY(-50%)" }}>
-            {m.num}
-          </div>
-        ))}
-
-        {/* Down marker — left sideline at midfield */}
-        <div className="absolute" style={{ top: "50%", left: "0%", transform: "translate(2px, -50%)", zIndex: 2 }}>
-          <div className="flex flex-col items-center gap-0.5">
-            <div className="w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[7px] border-b-amber-300" />
-            <div className="w-px h-2.5 bg-amber-300/80" />
-            <div className="w-3.5 h-3.5 rounded-sm bg-amber-300 text-emerald-950 font-heading font-black text-[9px] flex items-center justify-center shadow-md">
-              1
-            </div>
-          </div>
-        </div>
 
         {/* Instruction text - just above bottom end zone */}
         <div className="absolute inset-x-0" style={{ bottom: "16%", zIndex: 3 }}>

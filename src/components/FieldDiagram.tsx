@@ -498,24 +498,21 @@ const FieldDiagram = ({
         {variant === "simple" ? (
           /* Simple: classic full-field markings */
           <>
-            {/* 5-yard lines across the play area */}
+            {/* 5-yard lines across the play area (yards from bottom goal-line) */}
             {[5, 10, 15, 20, 25, 30, 35, 40, 45].map((yd) => {
-              const y = (geo.endzone / geo.totalLength) * 100 + (yd / 50) * ((geo.totalLength - 2 * geo.endzone) / geo.totalLength) * 100;
+              const y = ((geo.endzone + (50 - yd)) / geo.totalLength) * 100;
               return (
                 <div key={`line-${yd}`} className="absolute inset-x-0 border-t border-white/25" style={{ top: `${y}%` }} />
               );
             })}
-            {/* Dashed midfield */}
-            <div className="absolute inset-x-0 top-1/2 border-t-2 border-dashed border-white/40" />
-            {/* Yard numbers (left + right) */}
+            {/* Yard numbers (left + right) — true distance from nearest goal */}
             {[
-              { yd: 5, num: "10" },
-              { yd: 15, num: "20" },
-              { yd: 25, num: "30" },
-              { yd: 35, num: "20" },
-              { yd: 45, num: "10" },
+              { yd: 10, num: "10" },
+              { yd: 20, num: "20" },
+              { yd: 30, num: "20" },
+              { yd: 40, num: "10" },
             ].map((m) => {
-              const y = (geo.endzone / geo.totalLength) * 100 + (m.yd / 50) * ((geo.totalLength - 2 * geo.endzone) / geo.totalLength) * 100;
+              const y = ((geo.endzone + (50 - m.yd)) / geo.totalLength) * 100;
               return (
                 <div key={`numlabels-${m.yd}`}>
                   <div className="absolute text-white/30 font-heading font-bold text-[9px] tracking-wider pointer-events-none select-none" style={{ top: `${y}%`, left: "5%", transform: "translateY(-50%)" }}>{m.num}</div>
@@ -523,9 +520,19 @@ const FieldDiagram = ({
                 </div>
               );
             })}
+            {/* Midfield "50" label */}
+            {(() => {
+              const y = ((geo.endzone + 25) / geo.totalLength) * 100;
+              return (
+                <>
+                  <div className="absolute text-white/30 font-heading font-bold text-[9px] tracking-wider pointer-events-none select-none" style={{ top: `${y}%`, left: "5%", transform: "translateY(-50%)" }}>50</div>
+                  <div className="absolute text-white/30 font-heading font-bold text-[9px] tracking-wider pointer-events-none select-none" style={{ top: `${y}%`, right: "5%", transform: "translateY(-50%)" }}>50</div>
+                </>
+              );
+            })()}
             {/* Center hash marks every 5 yards */}
             {[5, 10, 15, 20, 25, 30, 35, 40, 45].map((yd) => {
-              const y = (geo.endzone / geo.totalLength) * 100 + (yd / 50) * ((geo.totalLength - 2 * geo.endzone) / geo.totalLength) * 100;
+              const y = ((geo.endzone + (50 - yd)) / geo.totalLength) * 100;
               return (
                 <div key={`hash-${yd}`} className="absolute left-1/2 -translate-x-1/2 w-2 h-px bg-white/40" style={{ top: `${y}%` }} />
               );

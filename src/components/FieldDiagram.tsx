@@ -63,9 +63,9 @@ type VariantGeo = {
 };
 
 const VARIANTS: Record<FieldVariant, VariantGeo> = {
-  // Front page: short stylised 20-yard field (3yd endzones + 14yd play + 3yd own side)
-  classic: { totalLength: 20, endzone: 3, losFromBottomEz: 3 },
-  // Posisjoner: full 50-yard field (classic American football proportions)
+  // Front page: 30-yard field (5yd endzones + 20yd play area, ball at the 5)
+  classic: { totalLength: 30, endzone: 5, losFromBottomEz: 5 },
+  // Posisjoner: full 70-yard field (10yd endzones + 50yd play area, ball at the 5)
   simple:  { totalLength: 70, endzone: 10, losFromBottomEz: 5 },
 };
 
@@ -97,11 +97,13 @@ type PlayerPosition = { topYd: number; left: number; label: string; color: strin
 // QB exactly 5yd off the ball
 // WRs lined up at the LOS (0 yd)
 const baseOffense = (tab: OffenseTabId): PlayerPosition[] => {
-  const c: PlayerPosition = { topYd: -0.7, left: 50, label: "C", color: "bg-sky-400", id: "C" };
+  const c: PlayerPosition = { topYd: -1.6, left: 50, label: "C", color: "bg-sky-400", id: "C" };
   const qb: PlayerPosition = { topYd: -5,   left: 50, label: "QB", color: "bg-amber-400", id: "QB" };
   if (tab === "løpespill") {
     return [
-      c, qb,
+      c,
+      // QB lines up directly behind C in run formations
+      { ...qb, topYd: -3 },
       { topYd: -8, left: 50, label: "RB", color: "bg-emerald-400", id: "WR-S" },
       { topYd: 0,  left: 12, label: "WR", color: "bg-sky-400", id: "WR-L" },
       { topYd: 0,  left: 88, label: "WR", color: "bg-sky-400", id: "WR-R" },

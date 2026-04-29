@@ -177,7 +177,7 @@ const passPlays: Play[] = [
       "WR-L": { topYd: 0, left: 18, label: "X" },
       "WR-R": { topYd: 0, left: 82, label: "Z" },
       "WR-S": { topYd: -7, left: 50, label: "Y" },
-      C:      { topYd: -0.7, left: 50, label: "C" },
+      C:      { topYd: -1.6, left: 50, label: "C" },
       QB:     { topYd: -5, left: 50, label: "Q" },
     },
     routes: [
@@ -199,7 +199,7 @@ const passPlays: Play[] = [
       "WR-L": { topYd: 0,  left: 12, label: "X" },
       "WR-R": { topYd: 0,  left: 88, label: "Z" },
       "WR-S": { topYd: 0,  left: 65, label: "Y" },
-      C:      { topYd: -0.7, left: 50, label: "C" },
+      C:      { topYd: -1.6, left: 50, label: "C" },
       QB:     { topYd: -5, left: 50, label: "Q" },
     },
     routes: [
@@ -214,7 +214,7 @@ const passPlays: Play[] = [
     name: "Trips Formation – Play 1",
     kind: "pass",
     positions: {
-      C:      { topYd: -0.7, left: 38, label: "C" },
+      C:      { topYd: -1.6, left: 38, label: "C" },
       "WR-L": { topYd: 0,    left: 48, label: "X" },
       "WR-S": { topYd: 0,    left: 65, label: "Y" },
       "WR-R": { topYd: 0,    left: 82, label: "Z" },
@@ -233,7 +233,7 @@ const passPlays: Play[] = [
     kind: "pass",
     positions: {
       "WR-L": { topYd: 0,  left: 28, label: "X" },
-      C:      { topYd: -0.7, left: 38, label: "C" },
+      C:      { topYd: -1.6, left: 38, label: "C" },
       "WR-S": { topYd: 0,  left: 70, label: "Y" },
       "WR-R": { topYd: -3, left: 82, label: "Z" },
       QB:     { topYd: -5, left: 50, label: "Q" },
@@ -250,7 +250,7 @@ const passPlays: Play[] = [
     name: "I Formation – Play 1",
     kind: "pass",
     positions: {
-      C:      { topYd: -0.7, left: 50, label: "C" },
+      C:      { topYd: -1.6, left: 50, label: "C" },
       QB:     { topYd: -3,   left: 50, label: "Q" },
       "WR-S": { topYd: -6,   left: 50, label: "Y" },
       "WR-L": { topYd: 0,    left: 18, label: "X" },
@@ -273,7 +273,7 @@ const runPlays: Play[] = [
     kind: "run",
     positions: {
       "WR-L": { topYd: 0,    left: 25, label: "X" },
-      C:      { topYd: -0.7, left: 50, label: "C" },
+      C:      { topYd: -1.6, left: 50, label: "C" },
       "WR-R": { topYd: 0,    left: 75, label: "Z" },
       QB:     { topYd: -3,   left: 50, label: "Q" },
       "WR-S": { topYd: -7,   left: 55, label: "Y" }, // RB
@@ -292,7 +292,7 @@ const runPlays: Play[] = [
     kind: "run",
     positions: {
       "WR-L": { topYd: 0,    left: 28, label: "X" },
-      C:      { topYd: -0.7, left: 50, label: "C" },
+      C:      { topYd: -1.6, left: 50, label: "C" },
       "WR-S": { topYd: 0,    left: 62, label: "Y" },
       "WR-R": { topYd: 0,    left: 78, label: "Z" },
       QB:     { topYd: -5,   left: 50, label: "Q" },
@@ -311,7 +311,7 @@ const runPlays: Play[] = [
     kind: "run",
     positions: {
       "WR-L": { topYd: 0,    left: 18, label: "X" },
-      C:      { topYd: -0.7, left: 50, label: "C" },
+      C:      { topYd: -1.6, left: 50, label: "C" },
       "WR-S": { topYd: 0,    left: 60, label: "Y" },
       "WR-R": { topYd: 0,    left: 80, label: "Z" },
       QB:     { topYd: -5,   left: 50, label: "Q" },
@@ -330,7 +330,7 @@ const runPlays: Play[] = [
     kind: "run",
     positions: {
       "WR-L": { topYd: 0,    left: 22, label: "X" },
-      C:      { topYd: -0.7, left: 50, label: "C" },
+      C:      { topYd: -1.6, left: 50, label: "C" },
       "WR-R": { topYd: 0,    left: 78, label: "Z" },
       QB:     { topYd: -3,   left: 45, label: "Q" },
       "WR-S": { topYd: -3,   left: 55, label: "Y" },
@@ -350,7 +350,7 @@ const runPlays: Play[] = [
     kind: "run",
     positions: {
       "WR-L": { topYd: 0,    left: 28, label: "X" },
-      C:      { topYd: -0.7, left: 50, label: "C" },
+      C:      { topYd: -1.6, left: 50, label: "C" },
       "WR-S": { topYd: -3,   left: 45, label: "Y" },
       QB:     { topYd: -3,   left: 55, label: "Q" },
       "WR-R": { topYd: -5,   left: 60, label: "Z" },

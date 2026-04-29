@@ -63,9 +63,9 @@ type VariantGeo = {
 };
 
 const VARIANTS: Record<FieldVariant, VariantGeo> = {
-  // Front page: short stylised 20-yard field (3yd endzones + 14yd play + 3yd own side)
-  classic: { totalLength: 20, endzone: 3, losFromBottomEz: 3 },
-  // Posisjoner: full 50-yard field (classic American football proportions)
+  // Front page: 30-yard field (5yd endzones + 20yd play area, ball at the 5)
+  classic: { totalLength: 30, endzone: 5, losFromBottomEz: 5 },
+  // Posisjoner: full 70-yard field (10yd endzones + 50yd play area, ball at the 5)
   simple:  { totalLength: 70, endzone: 10, losFromBottomEz: 5 },
 };
 
@@ -97,11 +97,13 @@ type PlayerPosition = { topYd: number; left: number; label: string; color: strin
 // QB exactly 5yd off the ball
 // WRs lined up at the LOS (0 yd)
 const baseOffense = (tab: OffenseTabId): PlayerPosition[] => {
-  const c: PlayerPosition = { topYd: -0.7, left: 50, label: "C", color: "bg-sky-400", id: "C" };
+  const c: PlayerPosition = { topYd: -1.6, left: 50, label: "C", color: "bg-sky-400", id: "C" };
   const qb: PlayerPosition = { topYd: -5,   left: 50, label: "QB", color: "bg-amber-400", id: "QB" };
   if (tab === "løpespill") {
     return [
-      c, qb,
+      c,
+      // QB lines up directly behind C in run formations
+      { ...qb, topYd: -3 },
       { topYd: -8, left: 50, label: "RB", color: "bg-emerald-400", id: "WR-S" },
       { topYd: 0,  left: 12, label: "WR", color: "bg-sky-400", id: "WR-L" },
       { topYd: 0,  left: 88, label: "WR", color: "bg-sky-400", id: "WR-R" },
@@ -175,14 +177,14 @@ const passPlays: Play[] = [
       "WR-L": { topYd: 0, left: 18, label: "X" },
       "WR-R": { topYd: 0, left: 82, label: "Z" },
       "WR-S": { topYd: -7, left: 50, label: "Y" },
-      C:      { topYd: -0.7, left: 50, label: "C" },
+      C:      { topYd: -1.6, left: 50, label: "C" },
       QB:     { topYd: -5, left: 50, label: "Q" },
     },
     routes: [
       // X – slant in
       { id: "WR-L", color: ROUTE_BLUE,  points: [ {x:18,yYd:0}, {x:32,yYd:6} ] },
       // C – post up the seam then break right
-      { id: "C",    color: ROUTE_BLACK, points: [ {x:50,yYd:-0.7}, {x:50,yYd:14}, {x:60,yYd:18} ] },
+      { id: "C",    color: ROUTE_BLACK, points: [ {x:50,yYd:-1.6}, {x:50,yYd:14}, {x:60,yYd:18} ] },
       // Y – flat right
       { id: "WR-S", color: ROUTE_GREEN, points: [ {x:50,yYd:-7}, {x:42,yYd:-3}, {x:30,yYd:-1} ] },
       // Z – curl
@@ -197,12 +199,12 @@ const passPlays: Play[] = [
       "WR-L": { topYd: 0,  left: 12, label: "X" },
       "WR-R": { topYd: 0,  left: 88, label: "Z" },
       "WR-S": { topYd: 0,  left: 65, label: "Y" },
-      C:      { topYd: -0.7, left: 50, label: "C" },
+      C:      { topYd: -1.6, left: 50, label: "C" },
       QB:     { topYd: -5, left: 50, label: "Q" },
     },
     routes: [
       { id: "WR-L", color: ROUTE_BLUE,   points: [ {x:12,yYd:0}, {x:18,yYd:14} ] },          // go
-      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.7}, {x:80,yYd:5} ] },          // drag right
+      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-1.6}, {x:80,yYd:5} ] },          // drag right
       { id: "WR-S", color: ROUTE_GREEN,  points: [ {x:65,yYd:0}, {x:65,yYd:6}, {x:60,yYd:10} ] }, // post
       { id: "WR-R", color: ROUTE_ORANGE, points: [ {x:88,yYd:0}, {x:88,yYd:14} ] },         // go
     ],
@@ -212,14 +214,14 @@ const passPlays: Play[] = [
     name: "Trips Formation – Play 1",
     kind: "pass",
     positions: {
-      C:      { topYd: -0.7, left: 38, label: "C" },
+      C:      { topYd: -1.6, left: 38, label: "C" },
       "WR-L": { topYd: 0,    left: 48, label: "X" },
       "WR-S": { topYd: 0,    left: 65, label: "Y" },
       "WR-R": { topYd: 0,    left: 82, label: "Z" },
       QB:     { topYd: -5,   left: 38, label: "Q" },
     },
     routes: [
-      { id: "C",    color: ROUTE_BLACK,  points: [ {x:38,yYd:-0.7}, {x:38,yYd:8}, {x:48,yYd:8} ] },
+      { id: "C",    color: ROUTE_BLACK,  points: [ {x:38,yYd:-1.6}, {x:38,yYd:8}, {x:48,yYd:8} ] },
       { id: "WR-L", color: ROUTE_BLUE,   points: [ {x:48,yYd:0},  {x:55,yYd:4} ] },
       { id: "WR-S", color: ROUTE_GREEN,  points: [ {x:65,yYd:0},  {x:65,yYd:10}, {x:55,yYd:14} ] },
       { id: "WR-R", color: ROUTE_ORANGE, points: [ {x:82,yYd:0},  {x:82,yYd:6}, {x:88,yYd:12} ] },
@@ -231,14 +233,14 @@ const passPlays: Play[] = [
     kind: "pass",
     positions: {
       "WR-L": { topYd: 0,  left: 28, label: "X" },
-      C:      { topYd: -0.7, left: 38, label: "C" },
+      C:      { topYd: -1.6, left: 38, label: "C" },
       "WR-S": { topYd: 0,  left: 70, label: "Y" },
       "WR-R": { topYd: -3, left: 82, label: "Z" },
       QB:     { topYd: -5, left: 50, label: "Q" },
     },
     routes: [
       { id: "WR-L", color: ROUTE_BLUE,   points: [ {x:28,yYd:0}, {x:36,yYd:5}, {x:50,yYd:5} ] },
-      { id: "C",    color: ROUTE_BLACK,  points: [ {x:38,yYd:-0.7}, {x:20,yYd:4} ] },
+      { id: "C",    color: ROUTE_BLACK,  points: [ {x:38,yYd:-1.6}, {x:20,yYd:4} ] },
       { id: "WR-S", color: ROUTE_GREEN,  points: [ {x:70,yYd:0}, {x:70,yYd:14} ] },
       { id: "WR-R", color: ROUTE_ORANGE, points: [ {x:82,yYd:-3}, {x:78,yYd:6}, {x:62,yYd:10}, {x:78,yYd:14} ] },
     ],
@@ -248,7 +250,7 @@ const passPlays: Play[] = [
     name: "I Formation – Play 1",
     kind: "pass",
     positions: {
-      C:      { topYd: -0.7, left: 50, label: "C" },
+      C:      { topYd: -1.6, left: 50, label: "C" },
       QB:     { topYd: -3,   left: 50, label: "Q" },
       "WR-S": { topYd: -6,   left: 50, label: "Y" },
       "WR-L": { topYd: 0,    left: 18, label: "X" },
@@ -256,7 +258,7 @@ const passPlays: Play[] = [
     },
     routes: [
       { id: "WR-L", color: ROUTE_GREEN,  points: [ {x:18,yYd:0}, {x:30,yYd:8} ] },
-      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.7}, {x:55,yYd:8}, {x:65,yYd:14} ] },
+      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-1.6}, {x:55,yYd:8}, {x:65,yYd:14} ] },
       { id: "WR-S", color: ROUTE_ORANGE, points: [ {x:50,yYd:-6}, {x:42,yYd:0}, {x:50,yYd:5} ] },
       { id: "WR-R", color: ROUTE_BLUE,   points: [ {x:82,yYd:0}, {x:82,yYd:6}, {x:88,yYd:6} ] },
     ],
@@ -271,14 +273,14 @@ const runPlays: Play[] = [
     kind: "run",
     positions: {
       "WR-L": { topYd: 0,    left: 25, label: "X" },
-      C:      { topYd: -0.7, left: 50, label: "C" },
+      C:      { topYd: -1.6, left: 50, label: "C" },
       "WR-R": { topYd: 0,    left: 75, label: "Z" },
       QB:     { topYd: -3,   left: 50, label: "Q" },
       "WR-S": { topYd: -7,   left: 55, label: "Y" }, // RB
     },
     routes: [
       { id: "WR-L", color: ROUTE_BLUE,   points: [ {x:25,yYd:0},  {x:25,yYd:6} ] },
-      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.7}, {x:50,yYd:5}, {x:58,yYd:5} ] },
+      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-1.6}, {x:50,yYd:5}, {x:58,yYd:5} ] },
       { id: "WR-R", color: ROUTE_ORANGE, points: [ {x:75,yYd:0},  {x:75,yYd:8} ] },
       // RB takes handoff and runs upfield through right A-gap
       { id: "WR-S", color: ROUTE_GREEN,  points: [ {x:55,yYd:-7}, {x:50,yYd:-3}, {x:55,yYd:5} ] },
@@ -290,14 +292,14 @@ const runPlays: Play[] = [
     kind: "run",
     positions: {
       "WR-L": { topYd: 0,    left: 28, label: "X" },
-      C:      { topYd: -0.7, left: 50, label: "C" },
+      C:      { topYd: -1.6, left: 50, label: "C" },
       "WR-S": { topYd: 0,    left: 62, label: "Y" },
       "WR-R": { topYd: 0,    left: 78, label: "Z" },
       QB:     { topYd: -5,   left: 50, label: "Q" },
     },
     routes: [
       { id: "WR-L", color: ROUTE_BLUE,   points: [ {x:28,yYd:0}, {x:28,yYd:6} ] },
-      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.7}, {x:50,yYd:5} ] },
+      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-1.6}, {x:50,yYd:5} ] },
       { id: "WR-S", color: ROUTE_GREEN,  points: [ {x:62,yYd:0}, {x:62,yYd:6} ] },
       // QB sweep left
       { id: "QB",   color: ROUTE_ORANGE, points: [ {x:50,yYd:-5}, {x:30,yYd:-7}, {x:15,yYd:-3}, {x:15,yYd:6} ] },
@@ -309,13 +311,13 @@ const runPlays: Play[] = [
     kind: "run",
     positions: {
       "WR-L": { topYd: 0,    left: 18, label: "X" },
-      C:      { topYd: -0.7, left: 50, label: "C" },
+      C:      { topYd: -1.6, left: 50, label: "C" },
       "WR-S": { topYd: 0,    left: 60, label: "Y" },
       "WR-R": { topYd: 0,    left: 80, label: "Z" },
       QB:     { topYd: -5,   left: 50, label: "Q" },
     },
     routes: [
-      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.7}, {x:50,yYd:5} ] },
+      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-1.6}, {x:50,yYd:5} ] },
       { id: "WR-S", color: ROUTE_GREEN,  points: [ {x:60,yYd:0}, {x:60,yYd:6} ] },
       // QB sweep left then handoff to X who runs right
       { id: "QB",   color: ROUTE_ORANGE, points: [ {x:50,yYd:-5}, {x:30,yYd:-6}, {x:22,yYd:-4} ] },
@@ -328,14 +330,14 @@ const runPlays: Play[] = [
     kind: "run",
     positions: {
       "WR-L": { topYd: 0,    left: 22, label: "X" },
-      C:      { topYd: -0.7, left: 50, label: "C" },
+      C:      { topYd: -1.6, left: 50, label: "C" },
       "WR-R": { topYd: 0,    left: 78, label: "Z" },
       QB:     { topYd: -3,   left: 45, label: "Q" },
       "WR-S": { topYd: -3,   left: 55, label: "Y" },
     },
     routes: [
       { id: "WR-L", color: ROUTE_BLUE,   points: [ {x:22,yYd:0}, {x:22,yYd:6} ] },
-      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.7}, {x:50,yYd:5} ] },
+      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-1.6}, {x:50,yYd:5} ] },
       { id: "WR-R", color: ROUTE_ORANGE, points: [ {x:78,yYd:0}, {x:78,yYd:6} ] },
       // QB and Y mesh, QB keeps and runs right
       { id: "QB",   color: ROUTE_GREEN,  points: [ {x:45,yYd:-3}, {x:55,yYd:-2}, {x:65,yYd:2} ] },
@@ -348,14 +350,14 @@ const runPlays: Play[] = [
     kind: "run",
     positions: {
       "WR-L": { topYd: 0,    left: 28, label: "X" },
-      C:      { topYd: -0.7, left: 50, label: "C" },
+      C:      { topYd: -1.6, left: 50, label: "C" },
       "WR-S": { topYd: -3,   left: 45, label: "Y" },
       QB:     { topYd: -3,   left: 55, label: "Q" },
       "WR-R": { topYd: -5,   left: 60, label: "Z" },
     },
     routes: [
       { id: "WR-L", color: ROUTE_BLUE,   points: [ {x:28,yYd:0}, {x:28,yYd:6} ] },
-      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.7}, {x:50,yYd:5} ] },
+      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-1.6}, {x:50,yYd:5} ] },
       { id: "WR-S", color: ROUTE_GREEN,  points: [ {x:45,yYd:-3}, {x:55,yYd:1}, {x:65,yYd:5} ] },
       { id: "WR-R", color: ROUTE_ORANGE, points: [ {x:60,yYd:-5}, {x:50,yYd:-2}, {x:38,yYd:3} ] },
     ],
@@ -371,11 +373,13 @@ const FieldDiagram = ({
   navigateMode = "tooltip",
   fullscreen = false,
   variant = "classic",
+  stickyTopOffset = 0,
 }: {
   onPositionNavigate?: (slug: string) => void;
   navigateMode?: NavigateMode;
   fullscreen?: boolean;
   variant?: FieldVariant;
+  stickyTopOffset?: number;
 } = {}) => {
   const geo = VARIANTS[variant];
   const LOS_PCT = losPct(geo);
@@ -450,7 +454,10 @@ const FieldDiagram = ({
       <div className={fullscreen ? "w-full flex flex-col items-center" : "contents"}>
 
       {/* Defense navigator */}
-      <div className={`${widthClass} ${fullscreen ? "sticky top-0 z-30" : ""}`}>
+      <div
+        className={`${widthClass} ${fullscreen ? "sticky z-30" : ""}`}
+        style={fullscreen ? { top: stickyTopOffset } : undefined}
+      >
         <div className={`bg-rose-950/80 backdrop-blur-md ${fullscreen ? "border-b-0" : "border-2 border-b-0 border-rose-400/20 rounded-t-xl"} overflow-hidden`}>
           <div className="text-[10px] font-heading font-bold text-rose-300/50 tracking-widest uppercase text-center py-1 bg-rose-950/30">
             Forsvar
@@ -496,24 +503,21 @@ const FieldDiagram = ({
         {variant === "simple" ? (
           /* Simple: classic full-field markings */
           <>
-            {/* 5-yard lines across the play area */}
+            {/* 5-yard lines across the play area (yards from bottom goal-line) */}
             {[5, 10, 15, 20, 25, 30, 35, 40, 45].map((yd) => {
-              const y = (geo.endzone / geo.totalLength) * 100 + (yd / 50) * ((geo.totalLength - 2 * geo.endzone) / geo.totalLength) * 100;
+              const y = ((geo.endzone + (50 - yd)) / geo.totalLength) * 100;
               return (
                 <div key={`line-${yd}`} className="absolute inset-x-0 border-t border-white/25" style={{ top: `${y}%` }} />
               );
             })}
-            {/* Dashed midfield */}
-            <div className="absolute inset-x-0 top-1/2 border-t-2 border-dashed border-white/40" />
-            {/* Yard numbers (left + right) */}
+            {/* Yard numbers (left + right) — true distance from nearest goal */}
             {[
-              { yd: 5, num: "10" },
-              { yd: 15, num: "20" },
-              { yd: 25, num: "30" },
-              { yd: 35, num: "20" },
-              { yd: 45, num: "10" },
+              { yd: 10, num: "10" },
+              { yd: 20, num: "20" },
+              { yd: 30, num: "20" },
+              { yd: 40, num: "10" },
             ].map((m) => {
-              const y = (geo.endzone / geo.totalLength) * 100 + (m.yd / 50) * ((geo.totalLength - 2 * geo.endzone) / geo.totalLength) * 100;
+              const y = ((geo.endzone + (50 - m.yd)) / geo.totalLength) * 100;
               return (
                 <div key={`numlabels-${m.yd}`}>
                   <div className="absolute text-white/30 font-heading font-bold text-[9px] tracking-wider pointer-events-none select-none" style={{ top: `${y}%`, left: "5%", transform: "translateY(-50%)" }}>{m.num}</div>
@@ -521,9 +525,19 @@ const FieldDiagram = ({
                 </div>
               );
             })}
+            {/* Midfield "50" label */}
+            {(() => {
+              const y = ((geo.endzone + 25) / geo.totalLength) * 100;
+              return (
+                <>
+                  <div className="absolute text-white/30 font-heading font-bold text-[9px] tracking-wider pointer-events-none select-none" style={{ top: `${y}%`, left: "5%", transform: "translateY(-50%)" }}>50</div>
+                  <div className="absolute text-white/30 font-heading font-bold text-[9px] tracking-wider pointer-events-none select-none" style={{ top: `${y}%`, right: "5%", transform: "translateY(-50%)" }}>50</div>
+                </>
+              );
+            })()}
             {/* Center hash marks every 5 yards */}
             {[5, 10, 15, 20, 25, 30, 35, 40, 45].map((yd) => {
-              const y = (geo.endzone / geo.totalLength) * 100 + (yd / 50) * ((geo.totalLength - 2 * geo.endzone) / geo.totalLength) * 100;
+              const y = ((geo.endzone + (50 - yd)) / geo.totalLength) * 100;
               return (
                 <div key={`hash-${yd}`} className="absolute left-1/2 -translate-x-1/2 w-2 h-px bg-white/40" style={{ top: `${y}%` }} />
               );
@@ -536,6 +550,17 @@ const FieldDiagram = ({
                 <div className="w-3.5 h-3.5 rounded-sm bg-amber-300 text-emerald-950 font-heading font-black text-[9px] flex items-center justify-center shadow-md">1</div>
               </div>
             </div>
+          </>
+        ) : null}
+        {variant === "classic" ? (
+          /* Classic: simple 5-yard lines across the 20yd play area */
+          <>
+            {[5, 10, 15].map((yd) => {
+              const y = ((geo.endzone + (20 - yd)) / geo.totalLength) * 100;
+              return (
+                <div key={`cline-${yd}`} className="absolute inset-x-0 border-t border-white/20" style={{ top: `${y}%` }} />
+              );
+            })}
           </>
         ) : null}
 
@@ -643,7 +668,7 @@ const FieldDiagram = ({
                   {/* Generic kastespill arrows — yard-accurate */}
                   <polyline points={`88,${LOS_PCT} 88,${LOS_PCT - 12*YD_PCT} 70,${LOS_PCT - 18*YD_PCT}`} fill="none" stroke="#facc15" strokeOpacity="0.6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" markerEnd="url(#arrowhead-yellow)" vectorEffect="non-scaling-stroke" />
                   <polyline points={`72,${LOS_PCT} 72,${LOS_PCT - 10*YD_PCT} 50,${LOS_PCT - 10*YD_PCT}`} fill="none" stroke="#facc15" strokeOpacity="0.6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" markerEnd="url(#arrowhead-yellow)" vectorEffect="non-scaling-stroke" />
-                  <polyline points={`50,${LOS_PCT - 0.7*YD_PCT} 50,${LOS_PCT - 6*YD_PCT} 42,${LOS_PCT - 6*YD_PCT}`} fill="none" stroke="#facc15" strokeOpacity="0.6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" markerEnd="url(#arrowhead-yellow)" vectorEffect="non-scaling-stroke" />
+                  <polyline points={`50,${LOS_PCT - 1.6*YD_PCT} 50,${LOS_PCT - 6*YD_PCT} 42,${LOS_PCT - 6*YD_PCT}`} fill="none" stroke="#facc15" strokeOpacity="0.6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" markerEnd="url(#arrowhead-yellow)" vectorEffect="non-scaling-stroke" />
                   <polyline points={`12,${LOS_PCT} 12,${LOS_PCT - 8*YD_PCT} 28,${LOS_PCT - 8*YD_PCT}`} fill="none" stroke="#facc15" strokeOpacity="0.6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" markerEnd="url(#arrowhead-yellow)" vectorEffect="non-scaling-stroke" />
                 </>
               )}

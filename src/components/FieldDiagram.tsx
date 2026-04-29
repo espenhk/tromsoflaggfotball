@@ -547,6 +547,17 @@ const FieldDiagram = ({
             </div>
           </>
         ) : null}
+        {variant === "classic" ? (
+          /* Classic: simple 5-yard lines across the 20yd play area */
+          <>
+            {[5, 10, 15].map((yd) => {
+              const y = ((geo.endzone + (20 - yd)) / geo.totalLength) * 100;
+              return (
+                <div key={`cline-${yd}`} className="absolute inset-x-0 border-t border-white/20" style={{ top: `${y}%` }} />
+              );
+            })}
+          </>
+        ) : null}
 
         {/* Instruction text - just above bottom end zone */}
         <div className="absolute inset-x-0" style={{ bottom: `${(geo.endzone / geo.totalLength) * 100 + 1}%`, zIndex: 3 }}>

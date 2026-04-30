@@ -458,15 +458,15 @@ const passPlays: Play[] = [
 // 5 RUN PLAYS (løpespill)
 const runPlays: Play[] = [
   {
-    id: "hb-dive",
-    name: "HB Dive",
+    id: "rb-dive",
+    name: "RB Dive",
     kind: "run",
     positions: {
       "WR-L": { topYd: 0, left: 25, label: "X" },
       C: { topYd: -0.8, left: 50, label: "C" },
       "WR-R": { topYd: 0, left: 75, label: "Z" },
       QB: { topYd: -3, left: 50, label: "QB" },
-      "WR-S": { topYd: -7, left: 55, label: "HB" }, // RB
+      "WR-S": { topYd: -7, left: 55, label: "RB" },
     },
     routes: [
       {
@@ -513,7 +513,7 @@ const runPlays: Play[] = [
     positions: {
       "WR-L": { topYd: 0, left: 28, label: "X" },
       C: { topYd: -0.8, left: 50, label: "C" },
-      "WR-S": { topYd: 0, left: 62, label: "HB" },
+      "WR-S": { topYd: 0, left: 62, label: "RB" },
       "WR-R": { topYd: 0, left: 78, label: "Z" },
       QB: { topYd: -5, left: 50, label: "QB" },
     },
@@ -577,7 +577,7 @@ const runPlays: Play[] = [
     positions: {
       "WR-L": { topYd: 0, left: 28, label: "X" },
       C: { topYd: -0.8, left: 50, label: "C" },
-      "WR-S": { topYd: 0, left: 62, label: "HB" },
+      "WR-S": { topYd: 0, left: 62, label: "RB" },
       "WR-R": { topYd: 0, left: 78, label: "Z" },
       QB: { topYd: -5, left: 50, label: "QB" },
     },

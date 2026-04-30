@@ -208,8 +208,8 @@ const ROUTE_YELLOW = "#facc15";
 // 5 PASS PLAYS (kastespill)
 const passPlays: Play[] = [
   {
-    id: "single-back-1",
-    name: "Single Back – Play 1",
+    id: "single-back",
+    name: "Single Back",
     kind: "pass",
     positions: {
       "WR-L": { topYd: 0, left: 18, label: "X" },
@@ -260,8 +260,8 @@ const passPlays: Play[] = [
     ],
   },
   {
-    id: "spread-1",
-    name: "Spread Formation – Play 1",
+    id: "spread",
+    name: "Spread",
     kind: "pass",
     positions: {
       "WR-L": { topYd: 0, left: 12, label: "X" },
@@ -307,8 +307,8 @@ const passPlays: Play[] = [
     ],
   },
   {
-    id: "trips-1",
-    name: "Trips Formation – Play 1",
+    id: "trips",
+    name: "Trips",
     kind: "pass",
     positions: {
       C: { topYd: -0.8, left: 50, label: "C" },
@@ -356,8 +356,8 @@ const passPlays: Play[] = [
     ],
   },
   {
-    id: "twins-1",
-    name: "Twins Formation – Play 1",
+    id: "twins",
+    name: "Twins",
     kind: "pass",
     positions: {
       "WR-L": { topYd: 0, left: 28, label: "X" },
@@ -405,8 +405,8 @@ const passPlays: Play[] = [
     ],
   },
   {
-    id: "i-formation-1",
-    name: "I Formation – Play 1",
+    id: "i-formation",
+    name: "I Formation",
     kind: "pass",
     positions: {
       C: { topYd: -0.8, left: 50, label: "C" },

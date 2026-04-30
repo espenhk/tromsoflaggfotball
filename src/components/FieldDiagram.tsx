@@ -86,13 +86,13 @@ const behind = (g: VariantGeo, ydBehindLos: number) => losPct(g) + ydBehindLos *
 type ZoneRect = { x1: number; x2: number; y1Yd: number; y2Yd: number; color: string; border: string };
 const zoneRectsFor = (variant: FieldVariant): Record<string, ZoneRect> => {
   const dbLine = variant === "classic" ? 5 : 7;
-  const deepBack = dbLine + 15;
+  const deepBack = dbLine + 10;
   return {
     "DB-L": {
       x1: 0,
       x2: 50,
       y1Yd: 0,
-      y2Yd: dbLine,
+      y2Yd: dbLine + 3,
       color: "rgba(251,146,60,0.15)",
       border: "rgba(251,146,60,0.4)",
     },
@@ -100,14 +100,14 @@ const zoneRectsFor = (variant: FieldVariant): Record<string, ZoneRect> => {
       x1: 50,
       x2: 100,
       y1Yd: 0,
-      y2Yd: dbLine,
+      y2Yd: dbLine + 3,
       color: "rgba(96,165,250,0.15)",
       border: "rgba(96,165,250,0.4)",
     },
     "DB-SA": {
       x1: 0,
       x2: 50,
-      y1Yd: dbLine,
+      y1Yd: dbLine + 3,
       y2Yd: deepBack,
       color: "rgba(74,222,128,0.15)",
       border: "rgba(74,222,128,0.4)",
@@ -115,7 +115,7 @@ const zoneRectsFor = (variant: FieldVariant): Record<string, ZoneRect> => {
     "DB-S": {
       x1: 50,
       x2: 100,
-      y1Yd: dbLine,
+      y1Yd: dbLine + 3,
       y2Yd: deepBack,
       color: "rgba(192,132,252,0.15)",
       border: "rgba(192,132,252,0.4)",

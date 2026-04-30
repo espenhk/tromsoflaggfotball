@@ -88,8 +88,22 @@ const zoneRectsFor = (variant: FieldVariant): Record<string, ZoneRect> => {
   const dbLine = variant === "classic" ? 5 : 7;
   const deepBack = dbLine + 15;
   return {
-    "DB-L": { x1: 0, x2: 50, y1Yd: 0, y2Yd: dbLine, color: "rgba(251,146,60,0.15)", border: "rgba(251,146,60,0.4)" },
-    "DB-R": { x1: 50, x2: 100, y1Yd: 0, y2Yd: dbLine, color: "rgba(96,165,250,0.15)", border: "rgba(96,165,250,0.4)" },
+    "DB-L": {
+      x1: 0,
+      x2: 50,
+      y1Yd: 0,
+      y2Yd: dbLine,
+      color: "rgba(251,146,60,0.15)",
+      border: "rgba(251,146,60,0.4)",
+    },
+    "DB-R": {
+      x1: 50,
+      x2: 100,
+      y1Yd: 0,
+      y2Yd: dbLine,
+      color: "rgba(96,165,250,0.15)",
+      border: "rgba(96,165,250,0.4)",
+    },
     "DB-SA": {
       x1: 0,
       x2: 50,

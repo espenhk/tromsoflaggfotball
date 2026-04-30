@@ -203,6 +203,7 @@ const ROUTE_BLUE = "#60a5fa";
 const ROUTE_GREEN = "#4ade80";
 const ROUTE_ORANGE = "#fb923c";
 const ROUTE_BLACK = "#1f2937";
+const ROUTE_YELLOW = "#facc15";
 
 // 5 PASS PLAYS (kastespill)
 const passPlays: Play[] = [
@@ -221,7 +222,7 @@ const passPlays: Play[] = [
       // X – slant in
       {
         id: "WR-L",
-        color: ROUTE_BLUE,
+        color: ROUTE_YELLOW,
         points: [
           { x: 18, yYd: 0 },
           { x: 32, yYd: 6 },
@@ -230,7 +231,7 @@ const passPlays: Play[] = [
       // C – post up the seam then break right
       {
         id: "C",
-        color: ROUTE_BLACK,
+        color: ROUTE_YELLOW,
         points: [
           { x: 50, yYd: -0.8 },
           { x: 50, yYd: 14 },
@@ -240,7 +241,7 @@ const passPlays: Play[] = [
       // Y – flat right
       {
         id: "WR-S",
-        color: ROUTE_GREEN,
+        color: ROUTE_YELLOW,
         points: [
           { x: 50, yYd: -7 },
           { x: 42, yYd: -3 },
@@ -250,7 +251,7 @@ const passPlays: Play[] = [
       // Z – curl
       {
         id: "WR-R",
-        color: ROUTE_ORANGE,
+        color: ROUTE_YELLOW,
         points: [
           { x: 82, yYd: 0 },
           { x: 75, yYd: 7 },
@@ -272,7 +273,7 @@ const passPlays: Play[] = [
     routes: [
       {
         id: "WR-L",
-        color: ROUTE_BLUE,
+        color: ROUTE_YELLOW,
         points: [
           { x: 12, yYd: 0 },
           { x: 18, yYd: 14 },
@@ -280,7 +281,7 @@ const passPlays: Play[] = [
       }, // go
       {
         id: "C",
-        color: ROUTE_BLACK,
+        color: ROUTE_YELLOW,
         points: [
           { x: 50, yYd: -0.8 },
           { x: 80, yYd: 5 },
@@ -288,7 +289,7 @@ const passPlays: Play[] = [
       }, // drag right
       {
         id: "WR-S",
-        color: ROUTE_GREEN,
+        color: ROUTE_YELLOW,
         points: [
           { x: 65, yYd: 0 },
           { x: 65, yYd: 6 },
@@ -297,7 +298,7 @@ const passPlays: Play[] = [
       }, // post
       {
         id: "WR-R",
-        color: ROUTE_ORANGE,
+        color: ROUTE_YELLOW,
         points: [
           { x: 88, yYd: 0 },
           { x: 88, yYd: 14 },
@@ -319,7 +320,7 @@ const passPlays: Play[] = [
     routes: [
       {
         id: "C",
-        color: ROUTE_BLACK,
+        color: ROUTE_YELLOW,
         points: [
           { x: 50, yYd: -0.8 },
           { x: 38, yYd: 8 },
@@ -328,7 +329,7 @@ const passPlays: Play[] = [
       },
       {
         id: "WR-L",
-        color: ROUTE_BLUE,
+        color: ROUTE_YELLOW,
         points: [
           { x: 58, yYd: 0 },
           { x: 55, yYd: 4 },
@@ -336,7 +337,7 @@ const passPlays: Play[] = [
       },
       {
         id: "WR-S",
-        color: ROUTE_GREEN,
+        color: ROUTE_YELLOW,
         points: [
           { x: 65, yYd: 0 },
           { x: 65, yYd: 10 },
@@ -345,7 +346,7 @@ const passPlays: Play[] = [
       },
       {
         id: "WR-R",
-        color: ROUTE_ORANGE,
+        color: ROUTE_YELLOW,
         points: [
           { x: 82, yYd: 0 },
           { x: 82, yYd: 6 },
@@ -368,7 +369,7 @@ const passPlays: Play[] = [
     routes: [
       {
         id: "WR-L",
-        color: ROUTE_BLUE,
+        color: ROUTE_YELLOW,
         points: [
           { x: 28, yYd: 0 },
           { x: 36, yYd: 5 },
@@ -377,7 +378,7 @@ const passPlays: Play[] = [
       },
       {
         id: "C",
-        color: ROUTE_BLACK,
+        color: ROUTE_YELLOW,
         points: [
           { x: 50, yYd: -0.8 },
           { x: 20, yYd: 4 },
@@ -385,7 +386,7 @@ const passPlays: Play[] = [
       },
       {
         id: "WR-S",
-        color: ROUTE_GREEN,
+        color: ROUTE_YELLOW,
         points: [
           { x: 70, yYd: 0 },
           { x: 70, yYd: 14 },
@@ -393,7 +394,7 @@ const passPlays: Play[] = [
       },
       {
         id: "WR-R",
-        color: ROUTE_ORANGE,
+        color: ROUTE_YELLOW,
         points: [
           { x: 82, yYd: -3 },
           { x: 78, yYd: 6 },
@@ -417,7 +418,7 @@ const passPlays: Play[] = [
     routes: [
       {
         id: "WR-L",
-        color: ROUTE_GREEN,
+        color: ROUTE_YELLOW,
         points: [
           { x: 18, yYd: 0 },
           { x: 30, yYd: 8 },
@@ -425,7 +426,7 @@ const passPlays: Play[] = [
       },
       {
         id: "C",
-        color: ROUTE_BLACK,
+        color: ROUTE_YELLOW,
         points: [
           { x: 50, yYd: -0.8 },
           { x: 55, yYd: 8 },
@@ -434,7 +435,7 @@ const passPlays: Play[] = [
       },
       {
         id: "WR-S",
-        color: ROUTE_ORANGE,
+        color: ROUTE_YELLOW,
         points: [
           { x: 50, yYd: -6 },
           { x: 42, yYd: 0 },
@@ -443,7 +444,7 @@ const passPlays: Play[] = [
       },
       {
         id: "WR-R",
-        color: ROUTE_BLUE,
+        color: ROUTE_YELLOW,
         points: [
           { x: 82, yYd: 0 },
           { x: 82, yYd: 6 },
@@ -465,7 +466,7 @@ const runPlays: Play[] = [
       C: { topYd: -0.8, left: 50, label: "C" },
       "WR-R": { topYd: 0, left: 75, label: "Z" },
       QB: { topYd: -3, left: 50, label: "QB" },
-      "WR-S": { topYd: -7, left: 55, label: "Y" }, // RB
+      "WR-S": { topYd: -7, left: 55, label: "HB" }, // RB
     },
     routes: [
       {
@@ -478,7 +479,7 @@ const runPlays: Play[] = [
       },
       {
         id: "C",
-        color: ROUTE_BLACK,
+        color: ROUTE_BLUE,
         points: [
           { x: 50, yYd: -0.8 },
           { x: 50, yYd: 5 },
@@ -487,7 +488,7 @@ const runPlays: Play[] = [
       },
       {
         id: "WR-R",
-        color: ROUTE_ORANGE,
+        color: ROUTE_BLUE,
         points: [
           { x: 75, yYd: 0 },
           { x: 75, yYd: 8 },
@@ -512,7 +513,7 @@ const runPlays: Play[] = [
     positions: {
       "WR-L": { topYd: 0, left: 28, label: "X" },
       C: { topYd: -0.8, left: 50, label: "C" },
-      "WR-S": { topYd: 0, left: 62, label: "Y" },
+      "WR-S": { topYd: 0, left: 62, label: "HB" },
       "WR-R": { topYd: 0, left: 78, label: "Z" },
       QB: { topYd: -5, left: 50, label: "QB" },
     },
@@ -520,7 +521,7 @@ const runPlays: Play[] = [
       // C blocks downfield
       {
         id: "C",
-        color: ROUTE_BLACK,
+        color: ROUTE_BLUE,
         points: [
           { x: 50, yYd: -0.8 },
           { x: 50, yYd: 5 },
@@ -529,7 +530,7 @@ const runPlays: Play[] = [
       // Z runs decoy route
       {
         id: "WR-R",
-        color: ROUTE_GREEN,
+        color: ROUTE_BLUE,
         points: [
           { x: 78, yYd: 0 },
           { x: 78, yYd: 6 },
@@ -576,14 +577,14 @@ const runPlays: Play[] = [
     positions: {
       "WR-L": { topYd: 0, left: 28, label: "X" },
       C: { topYd: -0.8, left: 50, label: "C" },
-      "WR-S": { topYd: 0, left: 62, label: "Y" },
+      "WR-S": { topYd: 0, left: 62, label: "HB" },
       "WR-R": { topYd: 0, left: 78, label: "Z" },
       QB: { topYd: -5, left: 50, label: "QB" },
     },
     routes: [
       {
         id: "C",
-        color: ROUTE_BLACK,
+        color: ROUTE_BLUE,
         points: [
           { x: 50, yYd: -0.8 },
           { x: 50, yYd: 5 },
@@ -591,7 +592,7 @@ const runPlays: Play[] = [
       },
       {
         id: "WR-S",
-        color: ROUTE_GREEN,
+        color: ROUTE_BLUE,
         points: [
           { x: 62, yYd: 0 },
           { x: 60, yYd: 6 },
@@ -654,7 +655,7 @@ const runPlays: Play[] = [
       },
       {
         id: "C",
-        color: ROUTE_BLACK,
+        color: ROUTE_BLUE,
         points: [
           { x: 50, yYd: -0.8 },
           { x: 50, yYd: 5 },
@@ -662,7 +663,7 @@ const runPlays: Play[] = [
       },
       {
         id: "WR-R",
-        color: ROUTE_ORANGE,
+        color: ROUTE_BLUE,
         points: [
           { x: 78, yYd: 0 },
           { x: 78, yYd: 6 },
@@ -671,7 +672,7 @@ const runPlays: Play[] = [
       // QB and Y mesh, QB keeps and runs right
       {
         id: "QB",
-        color: ROUTE_GREEN,
+        color: ROUTE_ORANGE,
         points: [
           { x: 45, yYd: -3 },
           { x: 55, yYd: -2 },
@@ -711,7 +712,7 @@ const runPlays: Play[] = [
       },
       {
         id: "C",
-        color: ROUTE_BLACK,
+        color: ROUTE_BLUE,
         points: [
           { x: 50, yYd: -0.8 },
           { x: 50, yYd: 5 },

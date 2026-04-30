@@ -324,9 +324,12 @@ const runPlays: Play[] = [
     routes: [
       { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.8}, {x:50,yYd:5} ] },
       { id: "WR-S", color: ROUTE_GREEN,  points: [ {x:60,yYd:0}, {x:60,yYd:6} ] },
-      // QB sweep left then handoff to X who runs right
-      { id: "QB",   color: ROUTE_ORANGE, points: [ {x:50,yYd:-5}, {x:30,yYd:-6}, {x:22,yYd:-4} ] },
-      { id: "WR-L", color: ROUTE_BLUE,   points: [ {x:18,yYd:0}, {x:18,yYd:-3}, {x:55,yYd:-3}, {x:80,yYd:-2}, {x:88,yYd:6} ] },
+      // QB sweeps right and pitches to Z (first reverse)
+      { id: "QB",   color: ROUTE_ORANGE, points: [ {x:50,yYd:-5}, {x:68,yYd:-4}, {x:74,yYd:-3} ] },
+      // Z takes the pitch, runs left across the backfield, hands off to X (second reverse)
+      { id: "WR-R", color: ROUTE_BLUE,   points: [ {x:80,yYd:0}, {x:76,yYd:-3}, {x:45,yYd:-4}, {x:24,yYd:-3} ] },
+      // X receives the second handoff and runs around the right end upfield (final ball carrier)
+      { id: "WR-L", color: ROUTE_ORANGE, points: [ {x:18,yYd:0}, {x:22,yYd:-3}, {x:55,yYd:-4}, {x:82,yYd:-2}, {x:88,yYd:8} ] },
     ],
   },
   {

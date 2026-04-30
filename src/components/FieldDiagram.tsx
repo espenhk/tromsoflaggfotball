@@ -1126,12 +1126,12 @@ const FieldDiagram = ({
                 );
               })}
 
-            {/* Rush arrow — from rusher (7yd above LOS) toward ball (LOS-1yd) */}
+            {/* Rush arrow — from rusher (7yd above LOS) toward QB (LOS-5yd) */}
             <line
               x1="63"
               y1={LOS_PCT - 7 * YD_PCT}
               x2="51"
-              y2={LOS_PCT - 1 * YD_PCT}
+              y2={LOS_PCT - 5 * YD_PCT}
               stroke="white"
               strokeOpacity="0.5"
               strokeWidth="1.5"

@@ -253,18 +253,39 @@ const Posisjoner = () => {
       {/* Header */}
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="max-w-4xl mx-auto px-6 flex items-center gap-3 py-3">
-          <Link to="/#spillet" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+          <Link
+            to="/#spillet"
+            className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
+          >
             <ArrowLeft className="w-4 h-4" />
             <img src={logo} alt="Logo" className="w-5 h-5" />
           </Link>
           <h1 className="font-heading font-bold text-foreground text-sm">Posisjoner i flaggfotball</h1>
         </div>
       </nav>
+      {/* Closing message */}
+      <section className="space-y-2 pt-4 border-t border-border">
+        <p className="text-foreground font-body leading-relaxed font-semibold">
+          Alle posisjoner i flaggfotball har fordeler – og det beste er at spillere ikke trenger en bestemt
+          kroppsbygning for å lykkes.
+        </p>
+        <p className="text-sm text-muted-foreground font-body leading-relaxed">
+          Flaggfotball er utrolig inkluderende, og mange spillere med ulik utvikling finner en posisjon der de kan være
+          konkurransedyktige. I flaggfotball spiller hver spiller både angrep og forsvar, noe som betyr at allsidige
+          spillere som behersker flere ferdigheter har størst suksess.
+        </p>
+      </section>
 
       {/* Fullscreen edge-to-edge field — shown when no specific position requested */}
       {showFullscreen && (
         <section className="relative w-full">
-          <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" fullscreen variant="simple" stickyTopOffset={48} />
+          <FieldDiagram
+            onPositionNavigate={openAndScroll}
+            navigateMode="direct"
+            fullscreen
+            variant="simple"
+            stickyTopOffset={48}
+          />
         </section>
       )}
 
@@ -272,11 +293,11 @@ const Posisjoner = () => {
         {/* Intro */}
         <section className="space-y-6">
           <div className="space-y-3">
-            <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
-              Posisjoner i flaggfotball
-            </h2>
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">Posisjoner i flaggfotball</h2>
             <p className="text-muted-foreground font-body leading-relaxed max-w-2xl">
-              I flaggfotball spilles det 5 mot 5, og posisjonene er i hovedsak de samme som i tackle-fotball, men uten linjemenn. Hver posisjon har en unik rolle, og hvert spill er en maskin der alle må gjøre sin del. Trykk på en spiller på banen — eller en posisjon i listen — for å lese mer.
+              I flaggfotball spilles det 5 mot 5, og posisjonene er i hovedsak de samme som i tackle-fotball, men uten
+              linjemenn. Hver posisjon har en unik rolle, og hvert spill er en maskin der alle må gjøre sin del. Trykk
+              på en spiller på banen — eller en posisjon i listen — for å lese mer.
             </p>
           </div>
 
@@ -316,16 +337,6 @@ const Posisjoner = () => {
           </div>
         </section>
 
-        {/* Closing message */}
-        <section className="space-y-2 pt-4 border-t border-border">
-          <p className="text-foreground font-body leading-relaxed font-semibold">
-            Alle posisjoner i flaggfotball har fordeler – og det beste er at spillere ikke trenger en bestemt kroppsbygning for å lykkes.
-          </p>
-          <p className="text-sm text-muted-foreground font-body leading-relaxed">
-            Flaggfotball er utrolig inkluderende, og mange spillere med ulik utvikling finner en posisjon der de kan være konkurransedyktige. I flaggfotball spiller hver spiller både angrep og forsvar, noe som betyr at allsidige spillere som behersker flere ferdigheter har størst suksess.
-          </p>
-        </section>
-
         <div className="pt-2 pb-8">
           <Link
             to="/#spillet"
@@ -340,15 +351,7 @@ const Posisjoner = () => {
   );
 };
 
-const PositionRow = ({
-  pos,
-  open,
-  onToggle,
-}: {
-  pos: PositionData;
-  open: boolean;
-  onToggle: () => void;
-}) => {
+const PositionRow = ({ pos, open, onToggle }: { pos: PositionData; open: boolean; onToggle: () => void }) => {
   return (
     <article id={pos.id} className="scroll-mt-20 group relative border-t border-white/5 last:border-b">
       {/* Glow background on hover (desktop) */}
@@ -356,19 +359,13 @@ const PositionRow = ({
         className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${pos.glowBg} hidden md:block pointer-events-none`}
         style={{ filter: "blur(12px)" }}
       />
-      <button
-        onClick={onToggle}
-        className="relative w-full text-left py-3 md:py-4"
-        aria-expanded={open}
-      >
+      <button onClick={onToggle} className="relative w-full text-left py-3 md:py-4" aria-expanded={open}>
         <div className="flex items-center gap-3">
           <div className={pos.accentColor}>{pos.icon}</div>
           <div className="flex-1 min-w-0">
             <h4 className="font-heading font-bold text-foreground">
               {pos.name}
-              <sup className={`ml-1 text-[0.7em] align-super ${pos.accentColor} opacity-60`}>
-                {pos.abbr}
-              </sup>
+              <sup className={`ml-1 text-[0.7em] align-super ${pos.accentColor} opacity-60`}>{pos.abbr}</sup>
             </h4>
             <p className="text-xs text-muted-foreground font-body italic mt-0.5">{pos.tagline}</p>
           </div>
@@ -400,7 +397,9 @@ const PositionRow = ({
                 <ul className="space-y-1.5">
                   {pos.skills.map((skill) => (
                     <li key={skill.label} className="flex items-start gap-2">
-                      <div className={`w-1 h-1 rounded-full ${pos.accentColor.replace("text-", "bg-")} mt-2 shrink-0`} />
+                      <div
+                        className={`w-1 h-1 rounded-full ${pos.accentColor.replace("text-", "bg-")} mt-2 shrink-0`}
+                      />
                       <p className="text-sm font-body">
                         <span className="text-foreground font-semibold">{skill.label}</span>
                         <span className="text-muted-foreground"> – {skill.detail}</span>
@@ -425,10 +424,7 @@ const PositionRow = ({
             {/* Image */}
             <div className="order-1 md:order-2 flex justify-center md:justify-end">
               <div className="relative w-32 md:w-44">
-                <div
-                  className={`absolute inset-0 rounded-full ${pos.glowBg}`}
-                  style={{ filter: "blur(24px)" }}
-                />
+                <div className={`absolute inset-0 rounded-full ${pos.glowBg}`} style={{ filter: "blur(24px)" }} />
                 <img
                   src={pos.image}
                   alt={`${pos.name}-spiller i aksjon`}

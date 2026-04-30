@@ -263,18 +263,6 @@ const Posisjoner = () => {
           <h1 className="font-heading font-bold text-foreground text-sm">Posisjoner i flaggfotball</h1>
         </div>
       </nav>
-      {/* Closing message */}
-      <section className="space-y-2 pt-4 border-t border-border">
-        <p className="text-foreground font-body leading-relaxed font-semibold">
-          Alle posisjoner i flaggfotball har fordeler – og det beste er at spillere ikke trenger en bestemt
-          kroppsbygning for å lykkes.
-        </p>
-        <p className="text-sm text-muted-foreground font-body leading-relaxed">
-          Flaggfotball er utrolig inkluderende, og mange spillere med ulik utvikling finner en posisjon der de kan være
-          konkurransedyktige. I flaggfotball spiller hver spiller både angrep og forsvar, noe som betyr at allsidige
-          spillere som behersker flere ferdigheter har størst suksess.
-        </p>
-      </section>
 
       {/* Fullscreen edge-to-edge field — shown when no specific position requested */}
       {showFullscreen && (
@@ -305,6 +293,18 @@ const Posisjoner = () => {
           {!showFullscreen && (
             <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" variant="simple" />
           )}
+        </section>
+        {/* Closing message */}
+        <section className="space-y-2 pt-4 border-t border-border">
+          <p className="text-foreground font-body leading-relaxed font-semibold">
+            Alle posisjoner i flaggfotball har fordeler – og det beste er at spillere ikke trenger en bestemt
+            kroppsbygning for å lykkes.
+          </p>
+          <p className="text-sm text-muted-foreground font-body leading-relaxed">
+            Flaggfotball er utrolig inkluderende, og mange spillere med ulik utvikling finner en posisjon der de kan
+            være konkurransedyktige. I flaggfotball spiller hver spiller både angrep og forsvar, noe som betyr at
+            allsidige spillere som behersker flere ferdigheter har størst suksess.
+          </p>
         </section>
 
         {/* Offense */}

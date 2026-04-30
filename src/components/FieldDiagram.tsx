@@ -539,7 +539,7 @@ const runPlays: Play[] = [
       // QB takes snap, sweeps right and hands off to Y
       {
         id: "QB",
-        color: ROUTE_ORANGE,
+        color: ROUTE_BLUE,
         points: [
           { x: 50, yYd: -5 },
           { x: 60, yYd: -4 },

@@ -593,7 +593,7 @@ const runPlays: Play[] = [
         id: "WR-S",
         color: ROUTE_GREEN,
         points: [
-          { x: 60, yYd: 0 },
+          { x: 62, yYd: 0 },
           { x: 60, yYd: 6 },
         ],
       },
@@ -612,7 +612,7 @@ const runPlays: Play[] = [
         id: "WR-R",
         color: ROUTE_BLUE,
         points: [
-          { x: 80, yYd: 0 },
+          { x: 78, yYd: 0 },
           { x: 76, yYd: -3 },
           { x: 45, yYd: -4 },
           { x: 24, yYd: -3 },
@@ -623,7 +623,7 @@ const runPlays: Play[] = [
         id: "WR-L",
         color: ROUTE_ORANGE,
         points: [
-          { x: 18, yYd: 0 },
+          { x: 28, yYd: 0 },
           { x: 22, yYd: -3 },
           { x: 55, yYd: -4 },
           { x: 82, yYd: -2 },

@@ -218,7 +218,7 @@ const passPlays: Play[] = [
       "WR-L": { topYd: 0,    left: 58, label: "X" },
       "WR-S": { topYd: 0,    left: 65, label: "Y" },
       "WR-R": { topYd: 0,    left: 82, label: "Z" },
-      QB:     { topYd: -5,   left: 38, label: "Q" },
+      QB:     { topYd: -5,   left: 50, label: "Q" },
     },
     routes: [
       { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.8}, {x:38,yYd:8}, {x:48,yYd:8} ] },

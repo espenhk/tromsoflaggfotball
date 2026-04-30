@@ -543,7 +543,7 @@ const runPlays: Play[] = [
         points: [
           { x: 50, yYd: -5 },
           { x: 40, yYd: -4 },
-          { x: 35, yYd: -2 },
+          { x: 30, yYd: -2 },
         ],
       },
       // Y receives handoff, runs left across the formation, hands off to X (the reverse)
@@ -552,8 +552,7 @@ const runPlays: Play[] = [
         color: ROUTE_BLUE,
         points: [
           { x: 62, yYd: 0 },
-          { x: 55, yYd: -2 },
-          { x: 35, yYd: -3 },
+          { x: 60, yYd: 6 },
         ],
       },
       // X receives the reverse handoff and runs around the right end upfield (ball carrier)

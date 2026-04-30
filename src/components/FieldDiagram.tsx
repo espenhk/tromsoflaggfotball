@@ -97,7 +97,7 @@ type PlayerPosition = { topYd: number; left: number; label: string; color: strin
 // QB exactly 5yd off the ball
 // WRs lined up at the LOS (0 yd)
 const baseOffense = (tab: OffenseTabId): PlayerPosition[] => {
-  const c: PlayerPosition = { topYd: -1.6, left: 50, label: "C", color: "bg-sky-400", id: "C" };
+  const c: PlayerPosition = { topYd: -0.8, left: 50, label: "C", color: "bg-sky-400", id: "C" };
   const qb: PlayerPosition = { topYd: -5,   left: 50, label: "QB", color: "bg-amber-400", id: "QB" };
   if (tab === "løpespill") {
     return [

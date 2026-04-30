@@ -697,7 +697,7 @@ const runPlays: Play[] = [
     positions: {
       "WR-L": { topYd: 0, left: 28, label: "X" },
       C: { topYd: -0.8, left: 50, label: "C" },
-      "WR-S": { topYd: -3, left: 45, label: "Y" },
+      "WR-S": { topYd: -3, left: 45, label: "RB" },
       QB: { topYd: -3, left: 55, label: "QB" },
       "WR-R": { topYd: -5, left: 60, label: "Z" },
     },

@@ -218,7 +218,7 @@ const passPlays: Play[] = [
       "WR-L": { topYd: 0,    left: 58, label: "X" },
       "WR-S": { topYd: 0,    left: 65, label: "Y" },
       "WR-R": { topYd: 0,    left: 82, label: "Z" },
-      QB:     { topYd: -5,   left: 38, label: "Q" },
+      QB:     { topYd: -5,   left: 50, label: "Q" },
     },
     routes: [
       { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.8}, {x:38,yYd:8}, {x:48,yYd:8} ] },
@@ -298,11 +298,16 @@ const runPlays: Play[] = [
       QB:     { topYd: -5,   left: 50, label: "Q" },
     },
     routes: [
-      { id: "WR-L", color: ROUTE_BLUE,   points: [ {x:28,yYd:0}, {x:28,yYd:6} ] },
+      // C blocks downfield
       { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.8}, {x:50,yYd:5} ] },
-      { id: "WR-S", color: ROUTE_GREEN,  points: [ {x:62,yYd:0}, {x:62,yYd:6} ] },
-      // QB sweep left
-      { id: "QB",   color: ROUTE_ORANGE, points: [ {x:50,yYd:-5}, {x:30,yYd:-7}, {x:15,yYd:-3}, {x:15,yYd:6} ] },
+      // Z runs decoy route
+      { id: "WR-R", color: ROUTE_GREEN,  points: [ {x:78,yYd:0}, {x:78,yYd:6} ] },
+      // QB takes snap, sweeps right and hands off to Y
+      { id: "QB",   color: ROUTE_ORANGE, points: [ {x:50,yYd:-5}, {x:60,yYd:-4}, {x:65,yYd:-2} ] },
+      // Y receives handoff, runs left across the formation, hands off to X (the reverse)
+      { id: "WR-S", color: ROUTE_BLUE,   points: [ {x:62,yYd:0}, {x:55,yYd:-2}, {x:35,yYd:-3} ] },
+      // X receives the reverse handoff and runs around the right end upfield (ball carrier)
+      { id: "WR-L", color: ROUTE_ORANGE, points: [ {x:28,yYd:0}, {x:32,yYd:-3}, {x:55,yYd:-4}, {x:80,yYd:-2}, {x:88,yYd:8} ] },
     ],
   },
   {

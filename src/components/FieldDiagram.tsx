@@ -543,7 +543,7 @@ const runPlays: Play[] = [
         points: [
           { x: 50, yYd: -5 },
           { x: 40, yYd: -4 },
-          { x: 45, yYd: -2 },
+          { x: 35, yYd: -2 },
         ],
       },
       // Y receives handoff, runs left across the formation, hands off to X (the reverse)

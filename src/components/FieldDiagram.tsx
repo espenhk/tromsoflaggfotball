@@ -86,7 +86,7 @@ const behind = (g: VariantGeo, ydBehindLos: number) => losPct(g) + ydBehindLos *
 type ZoneRect = { x1: number; x2: number; y1Yd: number; y2Yd: number; color: string; border: string };
 const zoneRectsFor = (variant: FieldVariant): Record<string, ZoneRect> => {
   const dbLine = variant === "classic" ? 5 : 7;
-  const deepBack = dbLine + 10;
+  const deepBack = dbLine + 12;
   return {
     "DB-L": {
       x1: 0,

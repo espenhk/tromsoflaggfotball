@@ -78,13 +78,21 @@ const upfield = (g: VariantGeo, ydAboveLos: number) => losPct(g) - ydAboveLos * 
 const behind  = (g: VariantGeo, ydBehindLos: number) => losPct(g) + ydBehindLos * ydPct(g);
 
 // ------------------------------------------------------------------
-// Zones (defensive) — defined in yards relative to LOS
-// ------------------------------------------------------------------
-const zoneAreasYd: Record<string, { cx: number; cyYd: number; rx: number; ryYd: number; color: string; border: string }> = {
-  "DB-L":  { cx: 18, cyYd: 8,  rx: 16, ryYd: 6, color: "rgba(251,146,60,0.15)", border: "rgba(251,146,60,0.4)" },
-  "DB-R":  { cx: 82, cyYd: 8,  rx: 16, ryYd: 6, color: "rgba(96,165,250,0.15)", border: "rgba(96,165,250,0.4)" },
-  "DB-SA": { cx: 38, cyYd: 12, rx: 16, ryYd: 6, color: "rgba(74,222,128,0.15)", border: "rgba(74,222,128,0.4)" },
-  "DB-S":  { cx: 65, cyYd: 16, rx: 16, ryYd: 6, color: "rgba(192,132,252,0.15)", border: "rgba(192,132,252,0.4)" },
+// Zones (defensive) — rectangles defined in yards relative to LOS.
+// DBs split the short zone (2 yd behind LOS up to the DB line) at midfield.
+// Safeties split the deep zone (DB line up to DB line + 15 yd) at midfield.
+// Front-edge depth (DB line) depends on variant — DBs sit at 5 yd in classic
+// and 7 yd in simple.
+type ZoneRect = { x1: number; x2: number; y1Yd: number; y2Yd: number; color: string; border: string };
+const zoneRectsFor = (variant: FieldVariant): Record<string, ZoneRect> => {
+  const dbLine = variant === "classic" ? 5 : 7;
+  const deepBack = dbLine + 15;
+  return {
+    "DB-L":  { x1: 0,  x2: 50,  y1Yd: -2,     y2Yd: dbLine,  color: "rgba(251,146,60,0.15)", border: "rgba(251,146,60,0.4)" },
+    "DB-R":  { x1: 50, x2: 100, y1Yd: -2,     y2Yd: dbLine,  color: "rgba(96,165,250,0.15)", border: "rgba(96,165,250,0.4)" },
+    "DB-SA": { x1: 0,  x2: 50,  y1Yd: dbLine, y2Yd: deepBack, color: "rgba(74,222,128,0.15)", border: "rgba(74,222,128,0.4)" },
+    "DB-S":  { x1: 50, x2: 100, y1Yd: dbLine, y2Yd: deepBack, color: "rgba(192,132,252,0.15)", border: "rgba(192,132,252,0.4)" },
+  };
 };
 
 type PlayerPosition = { topYd: number; left: number; label: string; color: string; id: string };
@@ -628,11 +636,15 @@ const FieldDiagram = ({
             </marker>
           </defs>
 
-          {/* Zone coverage */}
-          {defenseTab === "soneforsvar" && Object.entries(zoneAreasYd).map(([id, z]) => (
-            <ellipse key={id} cx={z.cx} cy={LOS_PCT - z.cyYd * YD_PCT} rx={z.rx} ry={z.ryYd * YD_PCT}
-              fill={z.color} stroke={z.border} strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
-          ))}
+          {/* Zone coverage — rectangles split L/R at midfield, short/deep by depth */}
+          {defenseTab === "soneforsvar" && Object.entries(zoneRectsFor(variant)).map(([id, z]) => {
+            const yTop = LOS_PCT - z.y2Yd * YD_PCT;     // upfield edge (further from offense)
+            const yBot = LOS_PCT - z.y1Yd * YD_PCT;     // back edge (closer to / behind LOS)
+            return (
+              <rect key={id} x={z.x1} y={yTop} width={z.x2 - z.x1} height={yBot - yTop}
+                fill={z.color} stroke={z.border} strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+            );
+          })}
 
           {/* Man-to-man lines */}
           {defenseTab === "mann-mot-mann" && Object.entries(manAssignments).map(([dbId, offId]) => {

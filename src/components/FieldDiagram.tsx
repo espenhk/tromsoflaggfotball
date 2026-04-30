@@ -215,14 +215,14 @@ const passPlays: Play[] = [
     kind: "pass",
     positions: {
       C:      { topYd: -0.8, left: 50, label: "C" },
-      "WR-L": { topYd: 0,    left: 48, label: "X" },
+      "WR-L": { topYd: 0,    left: 58, label: "X" },
       "WR-S": { topYd: 0,    left: 65, label: "Y" },
       "WR-R": { topYd: 0,    left: 82, label: "Z" },
       QB:     { topYd: -5,   left: 38, label: "Q" },
     },
     routes: [
       { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.8}, {x:38,yYd:8}, {x:48,yYd:8} ] },
-      { id: "WR-L", color: ROUTE_BLUE,   points: [ {x:48,yYd:0},  {x:55,yYd:4} ] },
+      { id: "WR-L", color: ROUTE_BLUE,   points: [ {x:58,yYd:0},  {x:55,yYd:4} ] },
       { id: "WR-S", color: ROUTE_GREEN,  points: [ {x:65,yYd:0},  {x:65,yYd:10}, {x:55,yYd:14} ] },
       { id: "WR-R", color: ROUTE_ORANGE, points: [ {x:82,yYd:0},  {x:82,yYd:6}, {x:88,yYd:12} ] },
     ],

@@ -636,11 +636,15 @@ const FieldDiagram = ({
             </marker>
           </defs>
 
-          {/* Zone coverage */}
-          {defenseTab === "soneforsvar" && Object.entries(zoneAreasYd).map(([id, z]) => (
-            <ellipse key={id} cx={z.cx} cy={LOS_PCT - z.cyYd * YD_PCT} rx={z.rx} ry={z.ryYd * YD_PCT}
-              fill={z.color} stroke={z.border} strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
-          ))}
+          {/* Zone coverage — rectangles split L/R at midfield, short/deep by depth */}
+          {defenseTab === "soneforsvar" && Object.entries(zoneRectsFor(variant)).map(([id, z]) => {
+            const yTop = LOS_PCT - z.y2Yd * YD_PCT;     // upfield edge (further from offense)
+            const yBot = LOS_PCT - z.y1Yd * YD_PCT;     // back edge (closer to / behind LOS)
+            return (
+              <rect key={id} x={z.x1} y={yTop} width={z.x2 - z.x1} height={yBot - yTop}
+                fill={z.color} stroke={z.border} strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+            );
+          })}
 
           {/* Man-to-man lines */}
           {defenseTab === "mann-mot-mann" && Object.entries(manAssignments).map(([dbId, offId]) => {

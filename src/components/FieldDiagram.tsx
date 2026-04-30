@@ -601,7 +601,7 @@ const runPlays: Play[] = [
       // QB sweeps right and pitches to Z (first reverse)
       {
         id: "QB",
-        color: ROUTE_ORANGE,
+        color: ROUTE_BLUE,
         points: [
           { x: 50, yYd: -5 },
           { x: 68, yYd: -4 },
@@ -642,7 +642,7 @@ const runPlays: Play[] = [
       C: { topYd: -0.8, left: 50, label: "C" },
       "WR-R": { topYd: 0, left: 78, label: "Z" },
       QB: { topYd: -3, left: 45, label: "QB" },
-      "WR-S": { topYd: -3, left: 55, label: "Y" },
+      "WR-S": { topYd: -3, left: 55, label: "RB" },
     },
     routes: [
       {

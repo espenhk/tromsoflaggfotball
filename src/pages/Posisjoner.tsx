@@ -297,14 +297,12 @@ const Posisjoner = () => {
               allsidige spillere som behersker flere ferdigheter har størst suksess.
             </p>
           </div>
-        </section>
 
           {/* Compact field diagram for navigation while browsing the list */}
           {!showFullscreen && (
             <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" variant="simple" />
           )}
         </section>
-
 
         {/* Offense */}
         <section className="space-y-4">

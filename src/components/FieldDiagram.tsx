@@ -177,14 +177,14 @@ const passPlays: Play[] = [
       "WR-L": { topYd: 0, left: 18, label: "X" },
       "WR-R": { topYd: 0, left: 82, label: "Z" },
       "WR-S": { topYd: -7, left: 50, label: "Y" },
-      C:      { topYd: -1.6, left: 50, label: "C" },
+      C:      { topYd: -0.8, left: 50, label: "C" },
       QB:     { topYd: -5, left: 50, label: "Q" },
     },
     routes: [
       // X – slant in
       { id: "WR-L", color: ROUTE_BLUE,  points: [ {x:18,yYd:0}, {x:32,yYd:6} ] },
       // C – post up the seam then break right
-      { id: "C",    color: ROUTE_BLACK, points: [ {x:50,yYd:-1.6}, {x:50,yYd:14}, {x:60,yYd:18} ] },
+      { id: "C",    color: ROUTE_BLACK, points: [ {x:50,yYd:-0.8}, {x:50,yYd:14}, {x:60,yYd:18} ] },
       // Y – flat right
       { id: "WR-S", color: ROUTE_GREEN, points: [ {x:50,yYd:-7}, {x:42,yYd:-3}, {x:30,yYd:-1} ] },
       // Z – curl
@@ -199,12 +199,12 @@ const passPlays: Play[] = [
       "WR-L": { topYd: 0,  left: 12, label: "X" },
       "WR-R": { topYd: 0,  left: 88, label: "Z" },
       "WR-S": { topYd: 0,  left: 65, label: "Y" },
-      C:      { topYd: -1.6, left: 50, label: "C" },
+      C:      { topYd: -0.8, left: 50, label: "C" },
       QB:     { topYd: -5, left: 50, label: "Q" },
     },
     routes: [
       { id: "WR-L", color: ROUTE_BLUE,   points: [ {x:12,yYd:0}, {x:18,yYd:14} ] },          // go
-      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-1.6}, {x:80,yYd:5} ] },          // drag right
+      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.8}, {x:80,yYd:5} ] },          // drag right
       { id: "WR-S", color: ROUTE_GREEN,  points: [ {x:65,yYd:0}, {x:65,yYd:6}, {x:60,yYd:10} ] }, // post
       { id: "WR-R", color: ROUTE_ORANGE, points: [ {x:88,yYd:0}, {x:88,yYd:14} ] },         // go
     ],
@@ -214,14 +214,14 @@ const passPlays: Play[] = [
     name: "Trips Formation – Play 1",
     kind: "pass",
     positions: {
-      C:      { topYd: -1.6, left: 38, label: "C" },
+      C:      { topYd: -0.8, left: 50, label: "C" },
       "WR-L": { topYd: 0,    left: 48, label: "X" },
       "WR-S": { topYd: 0,    left: 65, label: "Y" },
       "WR-R": { topYd: 0,    left: 82, label: "Z" },
       QB:     { topYd: -5,   left: 38, label: "Q" },
     },
     routes: [
-      { id: "C",    color: ROUTE_BLACK,  points: [ {x:38,yYd:-1.6}, {x:38,yYd:8}, {x:48,yYd:8} ] },
+      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.8}, {x:38,yYd:8}, {x:48,yYd:8} ] },
       { id: "WR-L", color: ROUTE_BLUE,   points: [ {x:48,yYd:0},  {x:55,yYd:4} ] },
       { id: "WR-S", color: ROUTE_GREEN,  points: [ {x:65,yYd:0},  {x:65,yYd:10}, {x:55,yYd:14} ] },
       { id: "WR-R", color: ROUTE_ORANGE, points: [ {x:82,yYd:0},  {x:82,yYd:6}, {x:88,yYd:12} ] },
@@ -233,14 +233,14 @@ const passPlays: Play[] = [
     kind: "pass",
     positions: {
       "WR-L": { topYd: 0,  left: 28, label: "X" },
-      C:      { topYd: -1.6, left: 38, label: "C" },
+      C:      { topYd: -0.8, left: 50, label: "C" },
       "WR-S": { topYd: 0,  left: 70, label: "Y" },
       "WR-R": { topYd: -3, left: 82, label: "Z" },
       QB:     { topYd: -5, left: 50, label: "Q" },
     },
     routes: [
       { id: "WR-L", color: ROUTE_BLUE,   points: [ {x:28,yYd:0}, {x:36,yYd:5}, {x:50,yYd:5} ] },
-      { id: "C",    color: ROUTE_BLACK,  points: [ {x:38,yYd:-1.6}, {x:20,yYd:4} ] },
+      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.8}, {x:20,yYd:4} ] },
       { id: "WR-S", color: ROUTE_GREEN,  points: [ {x:70,yYd:0}, {x:70,yYd:14} ] },
       { id: "WR-R", color: ROUTE_ORANGE, points: [ {x:82,yYd:-3}, {x:78,yYd:6}, {x:62,yYd:10}, {x:78,yYd:14} ] },
     ],
@@ -250,7 +250,7 @@ const passPlays: Play[] = [
     name: "I Formation – Play 1",
     kind: "pass",
     positions: {
-      C:      { topYd: -1.6, left: 50, label: "C" },
+      C:      { topYd: -0.8, left: 50, label: "C" },
       QB:     { topYd: -3,   left: 50, label: "Q" },
       "WR-S": { topYd: -6,   left: 50, label: "Y" },
       "WR-L": { topYd: 0,    left: 18, label: "X" },
@@ -258,7 +258,7 @@ const passPlays: Play[] = [
     },
     routes: [
       { id: "WR-L", color: ROUTE_GREEN,  points: [ {x:18,yYd:0}, {x:30,yYd:8} ] },
-      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-1.6}, {x:55,yYd:8}, {x:65,yYd:14} ] },
+      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.8}, {x:55,yYd:8}, {x:65,yYd:14} ] },
       { id: "WR-S", color: ROUTE_ORANGE, points: [ {x:50,yYd:-6}, {x:42,yYd:0}, {x:50,yYd:5} ] },
       { id: "WR-R", color: ROUTE_BLUE,   points: [ {x:82,yYd:0}, {x:82,yYd:6}, {x:88,yYd:6} ] },
     ],
@@ -273,14 +273,14 @@ const runPlays: Play[] = [
     kind: "run",
     positions: {
       "WR-L": { topYd: 0,    left: 25, label: "X" },
-      C:      { topYd: -1.6, left: 50, label: "C" },
+      C:      { topYd: -0.8, left: 50, label: "C" },
       "WR-R": { topYd: 0,    left: 75, label: "Z" },
       QB:     { topYd: -3,   left: 50, label: "Q" },
       "WR-S": { topYd: -7,   left: 55, label: "Y" }, // RB
     },
     routes: [
       { id: "WR-L", color: ROUTE_BLUE,   points: [ {x:25,yYd:0},  {x:25,yYd:6} ] },
-      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-1.6}, {x:50,yYd:5}, {x:58,yYd:5} ] },
+      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.8}, {x:50,yYd:5}, {x:58,yYd:5} ] },
       { id: "WR-R", color: ROUTE_ORANGE, points: [ {x:75,yYd:0},  {x:75,yYd:8} ] },
       // RB takes handoff and runs upfield through right A-gap
       { id: "WR-S", color: ROUTE_GREEN,  points: [ {x:55,yYd:-7}, {x:50,yYd:-3}, {x:55,yYd:5} ] },
@@ -292,14 +292,14 @@ const runPlays: Play[] = [
     kind: "run",
     positions: {
       "WR-L": { topYd: 0,    left: 28, label: "X" },
-      C:      { topYd: -1.6, left: 50, label: "C" },
+      C:      { topYd: -0.8, left: 50, label: "C" },
       "WR-S": { topYd: 0,    left: 62, label: "Y" },
       "WR-R": { topYd: 0,    left: 78, label: "Z" },
       QB:     { topYd: -5,   left: 50, label: "Q" },
     },
     routes: [
       { id: "WR-L", color: ROUTE_BLUE,   points: [ {x:28,yYd:0}, {x:28,yYd:6} ] },
-      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-1.6}, {x:50,yYd:5} ] },
+      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.8}, {x:50,yYd:5} ] },
       { id: "WR-S", color: ROUTE_GREEN,  points: [ {x:62,yYd:0}, {x:62,yYd:6} ] },
       // QB sweep left
       { id: "QB",   color: ROUTE_ORANGE, points: [ {x:50,yYd:-5}, {x:30,yYd:-7}, {x:15,yYd:-3}, {x:15,yYd:6} ] },
@@ -311,13 +311,13 @@ const runPlays: Play[] = [
     kind: "run",
     positions: {
       "WR-L": { topYd: 0,    left: 18, label: "X" },
-      C:      { topYd: -1.6, left: 50, label: "C" },
+      C:      { topYd: -0.8, left: 50, label: "C" },
       "WR-S": { topYd: 0,    left: 60, label: "Y" },
       "WR-R": { topYd: 0,    left: 80, label: "Z" },
       QB:     { topYd: -5,   left: 50, label: "Q" },
     },
     routes: [
-      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-1.6}, {x:50,yYd:5} ] },
+      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.8}, {x:50,yYd:5} ] },
       { id: "WR-S", color: ROUTE_GREEN,  points: [ {x:60,yYd:0}, {x:60,yYd:6} ] },
       // QB sweep left then handoff to X who runs right
       { id: "QB",   color: ROUTE_ORANGE, points: [ {x:50,yYd:-5}, {x:30,yYd:-6}, {x:22,yYd:-4} ] },
@@ -330,14 +330,14 @@ const runPlays: Play[] = [
     kind: "run",
     positions: {
       "WR-L": { topYd: 0,    left: 22, label: "X" },
-      C:      { topYd: -1.6, left: 50, label: "C" },
+      C:      { topYd: -0.8, left: 50, label: "C" },
       "WR-R": { topYd: 0,    left: 78, label: "Z" },
       QB:     { topYd: -3,   left: 45, label: "Q" },
       "WR-S": { topYd: -3,   left: 55, label: "Y" },
     },
     routes: [
       { id: "WR-L", color: ROUTE_BLUE,   points: [ {x:22,yYd:0}, {x:22,yYd:6} ] },
-      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-1.6}, {x:50,yYd:5} ] },
+      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.8}, {x:50,yYd:5} ] },
       { id: "WR-R", color: ROUTE_ORANGE, points: [ {x:78,yYd:0}, {x:78,yYd:6} ] },
       // QB and Y mesh, QB keeps and runs right
       { id: "QB",   color: ROUTE_GREEN,  points: [ {x:45,yYd:-3}, {x:55,yYd:-2}, {x:65,yYd:2} ] },
@@ -350,14 +350,14 @@ const runPlays: Play[] = [
     kind: "run",
     positions: {
       "WR-L": { topYd: 0,    left: 28, label: "X" },
-      C:      { topYd: -1.6, left: 50, label: "C" },
+      C:      { topYd: -0.8, left: 50, label: "C" },
       "WR-S": { topYd: -3,   left: 45, label: "Y" },
       QB:     { topYd: -3,   left: 55, label: "Q" },
       "WR-R": { topYd: -5,   left: 60, label: "Z" },
     },
     routes: [
       { id: "WR-L", color: ROUTE_BLUE,   points: [ {x:28,yYd:0}, {x:28,yYd:6} ] },
-      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-1.6}, {x:50,yYd:5} ] },
+      { id: "C",    color: ROUTE_BLACK,  points: [ {x:50,yYd:-0.8}, {x:50,yYd:5} ] },
       { id: "WR-S", color: ROUTE_GREEN,  points: [ {x:45,yYd:-3}, {x:55,yYd:1}, {x:65,yYd:5} ] },
       { id: "WR-R", color: ROUTE_ORANGE, points: [ {x:60,yYd:-5}, {x:50,yYd:-2}, {x:38,yYd:3} ] },
     ],
@@ -668,7 +668,7 @@ const FieldDiagram = ({
                   {/* Generic kastespill arrows — yard-accurate */}
                   <polyline points={`88,${LOS_PCT} 88,${LOS_PCT - 12*YD_PCT} 70,${LOS_PCT - 18*YD_PCT}`} fill="none" stroke="#facc15" strokeOpacity="0.6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" markerEnd="url(#arrowhead-yellow)" vectorEffect="non-scaling-stroke" />
                   <polyline points={`72,${LOS_PCT} 72,${LOS_PCT - 10*YD_PCT} 50,${LOS_PCT - 10*YD_PCT}`} fill="none" stroke="#facc15" strokeOpacity="0.6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" markerEnd="url(#arrowhead-yellow)" vectorEffect="non-scaling-stroke" />
-                  <polyline points={`50,${LOS_PCT - 1.6*YD_PCT} 50,${LOS_PCT - 6*YD_PCT} 42,${LOS_PCT - 6*YD_PCT}`} fill="none" stroke="#facc15" strokeOpacity="0.6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" markerEnd="url(#arrowhead-yellow)" vectorEffect="non-scaling-stroke" />
+                  <polyline points={`50,${LOS_PCT - 0.8*YD_PCT} 50,${LOS_PCT - 6*YD_PCT} 42,${LOS_PCT - 6*YD_PCT}`} fill="none" stroke="#facc15" strokeOpacity="0.6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" markerEnd="url(#arrowhead-yellow)" vectorEffect="non-scaling-stroke" />
                   <polyline points={`12,${LOS_PCT} 12,${LOS_PCT - 8*YD_PCT} 28,${LOS_PCT - 8*YD_PCT}`} fill="none" stroke="#facc15" strokeOpacity="0.6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" markerEnd="url(#arrowhead-yellow)" vectorEffect="non-scaling-stroke" />
                 </>
               )}

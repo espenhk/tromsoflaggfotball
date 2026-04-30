@@ -849,11 +849,13 @@ const AnimatedPlayerDot = ({
 
   return (
     <div
-      className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-0.5 cursor-pointer"
+      className="absolute flex flex-col items-center gap-0.5 cursor-pointer"
       style={{
         top: `${pos.top}%`,
         left: `${pos.left}%`,
         zIndex: isActive ? 20 : 2,
+        // Center the *circle* (24px tall) on pos.top, not the circle+label group
+        transform: "translate(-50%, -12px)",
         transition: "top 0.4s ease-in-out, left 0.4s ease-in-out",
       }}
       onClick={handleClick}

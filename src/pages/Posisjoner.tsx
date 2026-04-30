@@ -287,15 +287,7 @@ const Posisjoner = () => {
               linjemenn. Hver posisjon har en unik rolle, og hvert spill er en maskin der alle må gjøre sin del. Trykk
               på en spiller på banen — eller en posisjon i listen — for å lese mer.
             </p>
-          </div>
 
-          {/* Compact field diagram for navigation while browsing the list */}
-          {!showFullscreen && (
-            <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" variant="simple" />
-          )}
-        </section>
-        {/* Closing message */}
-        <section className="space-y-2 pt-4 border-t border-border">
           <p className="text-foreground font-body leading-relaxed font-semibold">
             Alle posisjoner i flaggfotball har fordeler – og det beste er at spillere ikke trenger en bestemt
             kroppsbygning for å lykkes.
@@ -305,7 +297,16 @@ const Posisjoner = () => {
             være konkurransedyktige. I flaggfotball spiller hver spiller både angrep og forsvar, noe som betyr at
             allsidige spillere som behersker flere ferdigheter har størst suksess.
           </p>
+          </div>
+
         </section>
+
+          {/* Compact field diagram for navigation while browsing the list */}
+          {!showFullscreen && (
+            <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" variant="simple" />
+          )}
+        </section>
+
 
         {/* Offense */}
         <section className="space-y-4">

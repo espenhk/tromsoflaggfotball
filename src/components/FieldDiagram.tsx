@@ -613,7 +613,7 @@ const runPlays: Play[] = [
         color: ROUTE_BLUE,
         points: [
           { x: 78, yYd: 0 },
-          { x: 76, yYd: -3 },
+          { x: 72, yYd: -3 },
           { x: 45, yYd: -4 },
           { x: 24, yYd: -3 },
         ],
@@ -624,7 +624,7 @@ const runPlays: Play[] = [
         color: ROUTE_ORANGE,
         points: [
           { x: 28, yYd: 0 },
-          { x: 22, yYd: -3 },
+          { x: 34, yYd: -3 },
           { x: 55, yYd: -4 },
           { x: 82, yYd: -2 },
           { x: 88, yYd: 8 },

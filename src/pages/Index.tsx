@@ -492,23 +492,24 @@ const LinkCard = ({
 
 const GameSection = () => {
   const navigate = useNavigate();
+  const t = useT();
   const goToPosition = (slug: string) => navigate(`/posisjoner#${slug}`);
 
   return (
     <section id="spillet" className="py-16 px-6 scroll-mt-16 bg-card/50">
       <div className="max-w-6xl mx-auto">
         <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2">
-          Dette er flaggfotball
+          {t("game.h")}
         </h2>
         <p className="text-muted-foreground font-body mb-6">
-          Utforsk formasjoner, spilltyper og forsvarstaktikker.
+          {t("game.sub")}
         </p>
 
         {/* Desktop: 3-column layout with positions flanking the diagram */}
         <div className="hidden md:grid md:grid-cols-[1fr_2fr_1fr] gap-6 items-start">
           {/* Offense positions - left */}
           <div>
-            <h3 className="font-heading text-lg font-bold text-sky-400 mb-4">Angrep</h3>
+            <h3 className="font-heading text-lg font-bold text-sky-400 mb-4">{t("game.offense")}</h3>
             <div className="space-y-3">
               {offensePositions.map((pos) => (
                 <PositionCard key={pos.name} {...pos} variant="offense" />
@@ -523,13 +524,13 @@ const GameSection = () => {
               to={POSITIONS_URL}
               className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-4"
             >
-              Les mer om alle posisjoner →
+              {t("game.readMoreAll")}
             </Link>
           </div>
 
           {/* Defense positions - right */}
           <div>
-            <h3 className="font-heading text-lg font-bold text-rose-400 mb-4">Forsvar</h3>
+            <h3 className="font-heading text-lg font-bold text-rose-400 mb-4">{t("game.defense")}</h3>
             <div className="space-y-3">
               {defensePositions.map((pos) => (
                 <PositionCard key={pos.name} {...pos} variant="defense" />
@@ -546,13 +547,13 @@ const GameSection = () => {
               to={POSITIONS_URL}
               className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-4"
             >
-              Les mer om alle posisjoner →
+              {t("game.readMoreAll")}
             </Link>
           </div>
 
           <div className="space-y-5">
             <div>
-              <h3 className="font-heading text-base font-bold text-sky-400 mb-2.5">Angrep</h3>
+              <h3 className="font-heading text-base font-bold text-sky-400 mb-2.5">{t("game.offense")}</h3>
               <div className="space-y-0">
                 {offensePositions.map((pos) => (
                   <PositionCard key={pos.name} {...pos} variant="offense" />
@@ -561,7 +562,7 @@ const GameSection = () => {
             </div>
 
             <div>
-              <h3 className="font-heading text-base font-bold text-rose-400 mb-2.5">Forsvar</h3>
+              <h3 className="font-heading text-base font-bold text-rose-400 mb-2.5">{t("game.defense")}</h3>
               <div className="space-y-0">
                 {defensePositions.map((pos) => (
                   <PositionCard key={pos.name} {...pos} variant="defense" />
@@ -680,26 +681,27 @@ const CoachCard = ({
 const PositionCard = ({
   name,
   abbr,
-  tagline,
+  taglineKey,
   icon,
   glowBg,
-  role,
-  traits,
+  roleKey,
+  traitsKey,
   nflExamples,
   variant = "offense",
   supColor,
 }: {
   name: string;
   abbr: string;
-  tagline: string;
+  taglineKey: TranslationKey;
   icon: React.ReactNode;
   glowBg?: string;
-  role: string;
-  traits: string;
+  roleKey: TranslationKey;
+  traitsKey: TranslationKey;
   nflExamples?: string;
   variant?: "offense" | "defense";
   supColor?: string;
 }) => {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const isOffense = variant === "offense";
   const accentColor = isOffense ? "text-sky-400" : "text-rose-400";

@@ -734,7 +734,7 @@ const PositionCard = ({
               )}
             </h3>
             {/* Tagline: hidden on mobile when collapsed, always visible on desktop */}
-            <p className={`text-xs text-muted-foreground font-body mt-0.5 transition-all duration-300 overflow-hidden hidden md:block ${open ? "md:max-h-0 md:opacity-0 md:mt-0" : "md:max-h-10 md:opacity-100"}`}>{tagline}</p>
+            <p className={`text-xs text-muted-foreground font-body mt-0.5 transition-all duration-300 overflow-hidden hidden md:block ${open ? "md:max-h-0 md:opacity-0 md:mt-0" : "md:max-h-10 md:opacity-100"}`}>{t(taglineKey)}</p>
           </div>
           <ChevronDown
             className={`w-3.5 h-3.5 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
@@ -745,10 +745,10 @@ const PositionCard = ({
         <div className="min-h-0 overflow-hidden">
           <div className="space-y-1.5 pl-10 md:pl-7 pb-2 md:pb-1.5 pr-3">
             {/* Show tagline inside expanded content on mobile */}
-            <p className="text-xs text-muted-foreground font-body leading-relaxed italic md:hidden">{tagline}</p>
-            <p className="text-xs text-muted-foreground font-body leading-relaxed">{role}</p>
+            <p className="text-xs text-muted-foreground font-body leading-relaxed italic md:hidden">{t(taglineKey)}</p>
+            <p className="text-xs text-muted-foreground font-body leading-relaxed">{t(roleKey)}</p>
             <p className={`text-xs font-body ${accentColor}`}>
-              <span className="text-muted-foreground">Passer for:</span> {traits}
+              <span className="text-muted-foreground">{t("pos.card.fits")}</span> {t(traitsKey)}
             </p>
             {nflExamples && (
               <p className="text-xs font-body text-muted-foreground">

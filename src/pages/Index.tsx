@@ -126,6 +126,7 @@ const navItemKeyFor = (id: typeof navItemIds[number]): TranslationKey => {
 };
 
 const Index = () => {
+  const t = useT();
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
@@ -150,15 +151,18 @@ const Index = () => {
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border hidden md:block">
         <div className="max-w-4xl mx-auto px-4 flex items-center gap-1 py-2">
           <img src={logo} alt="Logo" className="w-6 h-6 shrink-0 mr-2" />
-          {navItems.map((item) => (
+          {navItemIds.map((id) => (
             <button
-              key={item.id}
-              onClick={() => scrollTo(item.id)}
+              key={id}
+              onClick={() => scrollTo(id)}
               className="text-xs font-heading font-bold text-muted-foreground hover:text-primary transition-colors whitespace-nowrap px-3 py-1.5 rounded-lg hover:bg-primary/5"
             >
-              {item.label}
+              {t(navItemKeyFor(id))}
             </button>
           ))}
+          <div className="ml-auto">
+            <LanguageToggle />
+          </div>
         </div>
       </nav>
 
@@ -167,7 +171,7 @@ const Index = () => {
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="flex items-center gap-2 px-3 py-2 rounded-2xl bg-background/40 backdrop-blur-xl border border-white/15 shadow-lg shadow-black/20"
-          aria-label="Meny"
+          aria-label={t("nav.menu")}
         >
           <img src={logo} alt="Logo" className="w-6 h-6" />
           {mobileMenuOpen ? (
@@ -180,15 +184,21 @@ const Index = () => {
         {/* Expanded menu bubble */}
         {mobileMenuOpen && (
           <div className="absolute top-full left-0 mt-2 min-w-[200px] rounded-2xl bg-background/50 backdrop-blur-xl border border-white/15 shadow-xl shadow-black/30 p-2 animate-in fade-in slide-in-from-top-2 duration-200">
-            {navItems.map((item) => (
+            {navItemIds.map((id) => (
               <button
-                key={item.id}
-                onClick={() => { scrollTo(item.id); setMobileMenuOpen(false); }}
+                key={id}
+                onClick={() => { scrollTo(id); setMobileMenuOpen(false); }}
                 className="w-full text-left text-sm font-heading font-bold text-foreground/80 hover:text-primary hover:bg-white/10 transition-colors px-4 py-2.5 rounded-xl"
               >
-                {item.label}
+                {t(navItemKeyFor(id))}
               </button>
             ))}
+            <div className="px-4 pt-2 pb-1 flex items-center justify-between">
+              <span className="text-[10px] uppercase tracking-wider font-heading font-bold text-muted-foreground">
+                {t("nav.languageLabel")}
+              </span>
+              <LanguageToggle />
+            </div>
           </div>
         )}
       </div>
@@ -204,17 +214,17 @@ const Index = () => {
         <div className="relative z-10 flex flex-col items-center text-center px-6">
           <img
             src={logo}
-            alt="Tromsø Flaggfotball logo"
+            alt={t("hero.logoAlt")}
             className="w-40 h-40 md:w-56 md:h-56 mb-8 drop-shadow-2xl"
           />
           <h1 className="font-heading text-3xl md:text-5xl font-extrabold tracking-tight text-foreground mb-2">
-            TROMSØ
+            {t("hero.title.line1")}
             <br />
-            FLAGGFOTBALL
+            {t("hero.title.line2")}
           </h1>
           <div className="w-16 h-px bg-primary/50 mb-4" />
           <p className="font-body text-muted-foreground text-sm tracking-widest uppercase mb-6">
-            Arktisk flaggfotball · 69°N
+            {t("hero.tagline")}
           </p>
           <div className="flex items-center gap-4">
             <a
@@ -243,17 +253,13 @@ const Index = () => {
       <section id="om" className="py-20 px-6 scroll-mt-16">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">
-            Hva er flaggfotball?
+            {t("om.h")}
           </h2>
           <p className="font-body text-muted-foreground text-lg leading-relaxed mb-4">
-            Flaggfotball er en kontaktfri variant av amerikansk fotball. I stedet for å tackle
-            drar du av et flagg som henger i beltet til motstanderen. Sporten er rask, taktisk
-            og inkluderende — og blir olympisk idrett i LA 2028.
+            {t("om.p1.pre")}
           </p>
           <p className="font-body text-muted-foreground leading-relaxed">
-            Det spilles <strong className="text-foreground">5 mot 5</strong> på en bane
-            som er omtrent 70 × 30 meter. Hvert lag har fire forsøk på å krysse
-            midtlinjen, og deretter fire nye forsøk for å score touchdown.
+            {t("om.p2.pre")}<strong className="text-foreground">{t("om.p2.strong")}</strong>{t("om.p2.post")}
           </p>
         </div>
       </section>

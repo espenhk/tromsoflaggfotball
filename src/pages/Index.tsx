@@ -4,6 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import heroBg from "@/assets/hero-bg.png";
 import FieldDiagram from "@/components/FieldDiagram";
+import LanguageToggle from "@/components/LanguageToggle";
+import { useT } from "@/i18n/LanguageProvider";
+import type { TranslationKey } from "@/i18n/dictionaries";
 
 const POSITIONS_URL = "/posisjoner";
 
@@ -17,94 +20,110 @@ const positionSlugMap: Record<string, string> = {
   "Safety": "safety",
 };
 
-const navItems = [
-  { id: "om", label: "Om sporten" },
-  { id: "treninger", label: "Treninger" },
-  { id: "spillet", label: "Dette er flaggfotball" },
-  { id: "coachene", label: "Coachene" },
-  { id: "kom-i-gang", label: "Kom i gang" },
-  { id: "video", label: "Video" },
-  { id: "faq", label: "FAQ" },
-];
+// Position cards source data — text fields are translation keys, resolved at render time.
+type PositionEntry = {
+  name: string;
+  abbr: string;
+  taglineKey: TranslationKey;
+  icon: React.ReactNode;
+  glowBg: string;
+  supColor?: string;
+  roleKey: TranslationKey;
+  traitsKey: TranslationKey;
+  nflExamples: string;
+};
 
-const offensePositions = [
+const offensePositions: PositionEntry[] = [
   {
     name: "Quarterback",
     abbr: "QB",
-    tagline: "Lagets playmaker og leder",
+    taglineKey: "pos.qb.tagline",
     icon: <Star className="w-5 h-5 text-amber-400" />,
     glowBg: "bg-amber-400/10",
     supColor: "text-amber-400",
-    role: "Styrer angrepet, leser forsvaret og kaster ballen til mottakerne. Handler om presise kast og rask beslutningstaking.",
-    traits: "God oversikt, presise kast, rask beslutningstaking.",
+    roleKey: "pos.qb.role",
+    traitsKey: "pos.qb.traits",
     nflExamples: "Patrick Mahomes, Josh Allen, Lamar Jackson",
   },
   {
     name: "Running Back",
     abbr: "RB",
-    tagline: "Eksplosiv løper med ballen",
+    taglineKey: "pos.rb.tagline",
     icon: <Zap className="w-5 h-5 text-emerald-400" />,
     glowBg: "bg-emerald-400/10",
     supColor: "text-emerald-400",
-    role: "Tar imot ballen fra QB og løper gjennom forsvaret. Brukes i løpespill og korte pasninger.",
-    traits: "Eksplosiv fart, god balanse, smidighet.",
+    roleKey: "pos.rb.role",
+    traitsKey: "pos.rb.traits",
     nflExamples: "Derrick Henry, Saquon Barkley, Christian McCaffrey",
   },
   {
     name: "Center",
     abbr: "C",
-    tagline: "Starter hvert spill",
+    taglineKey: "pos.c.tagline",
     icon: <Users className="w-5 h-5" />,
     glowBg: "bg-sky-400/10",
-    role: "Snapper ballen til QB og går deretter ut som mottaker eller blokkerer rusheren. Limet i laget.",
-    traits: "Pålitelig, god kommunikasjon, allsidig.",
+    roleKey: "pos.c.role",
+    traitsKey: "pos.c.traits",
     nflExamples: "Travis Kelce (TE), Jason Kelce",
   },
   {
     name: "Wide Receiver",
     abbr: "WR",
-    tagline: "Rask mottaker som fanger ballen",
+    taglineKey: "pos.wr.tagline",
     icon: <Target className="w-5 h-5" />,
     glowBg: "bg-sky-400/10",
-    role: "Løper planlagte ruter for å bli fri fra forsvareren og ta imot pasninger fra QB.",
-    traits: "Hurtighet, gode hender, raske vendinger.",
+    roleKey: "pos.wr.role",
+    traitsKey: "pos.wr.traits",
     nflExamples: "Tyreek Hill, Ja'Marr Chase, CeeDee Lamb",
   },
 ];
 
-const defensePositions = [
+const defensePositions: PositionEntry[] = [
   {
     name: "Rusher",
     abbr: "R",
-    tagline: "Jager quarterbacken",
+    taglineKey: "pos.r.tagline",
     icon: <Crosshair className="w-5 h-5 text-orange-400" />,
     glowBg: "bg-orange-400/10",
     supColor: "text-orange-400",
-    role: "Forsvarets mest aggressive spiller. Starter 7 yards fra ballen og presser QB til å kaste for tidlig.",
-    traits: "Eksplosiv fart, timing, aggressivitet.",
+    roleKey: "pos.r.role",
+    traitsKey: "pos.r.traits",
     nflExamples: "Myles Garrett, Micah Parsons, T.J. Watt",
   },
   {
     name: "Defensive Back",
     abbr: "DB",
-    tagline: "Dekker mottakerne tett",
+    taglineKey: "pos.db.tagline",
     icon: <Shield className="w-5 h-5" />,
     glowBg: "bg-rose-400/10",
-    role: "Speiler motstanderens bevegelser og prøver å hindre pasninger. Ofte i en-mot-en-dueller.",
-    traits: "Rask reaksjon, god fotarbeid, mental styrke.",
+    roleKey: "pos.db.role",
+    traitsKey: "pos.db.traits",
     nflExamples: "Sauce Gardner, Patrick Surtain II, Jalen Ramsey",
   },
   {
     name: "Safety",
     abbr: "S",
-    tagline: "Siste skanse bakfra",
+    taglineKey: "pos.s.tagline",
     icon: <Eye className="w-5 h-5" />,
     glowBg: "bg-rose-400/10",
-    role: "Forsvarets siste linje med best oversikt. Leser spillet og sikrer mot lange pasninger.",
-    traits: "God spilleforståelse, oversikt, allsidighet.",
+    roleKey: "pos.s.role",
+    traitsKey: "pos.s.traits",
     nflExamples: "Kyle Hamilton, Derwin James, Jessie Bates III",
   },
 ];
+
+const navItemIds = ["om", "treninger", "spillet", "coachene", "kom-i-gang", "video", "faq"] as const;
+const navItemKeyFor = (id: typeof navItemIds[number]): TranslationKey => {
+  switch (id) {
+    case "om": return "nav.om";
+    case "treninger": return "nav.treninger";
+    case "spillet": return "nav.spillet";
+    case "coachene": return "nav.coachene";
+    case "kom-i-gang": return "nav.komIGang";
+    case "video": return "nav.video";
+    case "faq": return "nav.faq";
+  }
+};
 
 const Index = () => {
   const scrollTo = (id: string) => {

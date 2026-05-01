@@ -4,6 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import heroBg from "@/assets/hero-bg.png";
 import FieldDiagram from "@/components/FieldDiagram";
+import LanguageToggle from "@/components/LanguageToggle";
+import { useT } from "@/i18n/LanguageProvider";
+import type { TranslationKey } from "@/i18n/dictionaries";
 
 const POSITIONS_URL = "/posisjoner";
 
@@ -17,96 +20,113 @@ const positionSlugMap: Record<string, string> = {
   "Safety": "safety",
 };
 
-const navItems = [
-  { id: "om", label: "Om sporten" },
-  { id: "treninger", label: "Treninger" },
-  { id: "spillet", label: "Dette er flaggfotball" },
-  { id: "coachene", label: "Coachene" },
-  { id: "kom-i-gang", label: "Kom i gang" },
-  { id: "video", label: "Video" },
-  { id: "faq", label: "FAQ" },
-];
+// Position cards source data — text fields are translation keys, resolved at render time.
+type PositionEntry = {
+  name: string;
+  abbr: string;
+  taglineKey: TranslationKey;
+  icon: React.ReactNode;
+  glowBg: string;
+  supColor?: string;
+  roleKey: TranslationKey;
+  traitsKey: TranslationKey;
+  nflExamples: string;
+};
 
-const offensePositions = [
+const offensePositions: PositionEntry[] = [
   {
     name: "Quarterback",
     abbr: "QB",
-    tagline: "Lagets playmaker og leder",
+    taglineKey: "pos.qb.tagline",
     icon: <Star className="w-5 h-5 text-amber-400" />,
     glowBg: "bg-amber-400/10",
     supColor: "text-amber-400",
-    role: "Styrer angrepet, leser forsvaret og kaster ballen til mottakerne. Handler om presise kast og rask beslutningstaking.",
-    traits: "God oversikt, presise kast, rask beslutningstaking.",
+    roleKey: "pos.qb.role",
+    traitsKey: "pos.qb.traits",
     nflExamples: "Patrick Mahomes, Josh Allen, Lamar Jackson",
   },
   {
     name: "Running Back",
     abbr: "RB",
-    tagline: "Eksplosiv løper med ballen",
+    taglineKey: "pos.rb.tagline",
     icon: <Zap className="w-5 h-5 text-emerald-400" />,
     glowBg: "bg-emerald-400/10",
     supColor: "text-emerald-400",
-    role: "Tar imot ballen fra QB og løper gjennom forsvaret. Brukes i løpespill og korte pasninger.",
-    traits: "Eksplosiv fart, god balanse, smidighet.",
+    roleKey: "pos.rb.role",
+    traitsKey: "pos.rb.traits",
     nflExamples: "Derrick Henry, Saquon Barkley, Christian McCaffrey",
   },
   {
     name: "Center",
     abbr: "C",
-    tagline: "Starter hvert spill",
+    taglineKey: "pos.c.tagline",
     icon: <Users className="w-5 h-5" />,
     glowBg: "bg-sky-400/10",
-    role: "Snapper ballen til QB og går deretter ut som mottaker eller blokkerer rusheren. Limet i laget.",
-    traits: "Pålitelig, god kommunikasjon, allsidig.",
+    roleKey: "pos.c.role",
+    traitsKey: "pos.c.traits",
     nflExamples: "Travis Kelce (TE), Jason Kelce",
   },
   {
     name: "Wide Receiver",
     abbr: "WR",
-    tagline: "Rask mottaker som fanger ballen",
+    taglineKey: "pos.wr.tagline",
     icon: <Target className="w-5 h-5" />,
     glowBg: "bg-sky-400/10",
-    role: "Løper planlagte ruter for å bli fri fra forsvareren og ta imot pasninger fra QB.",
-    traits: "Hurtighet, gode hender, raske vendinger.",
+    roleKey: "pos.wr.role",
+    traitsKey: "pos.wr.traits",
     nflExamples: "Tyreek Hill, Ja'Marr Chase, CeeDee Lamb",
   },
 ];
 
-const defensePositions = [
+const defensePositions: PositionEntry[] = [
   {
     name: "Rusher",
     abbr: "R",
-    tagline: "Jager quarterbacken",
+    taglineKey: "pos.r.tagline",
     icon: <Crosshair className="w-5 h-5 text-orange-400" />,
     glowBg: "bg-orange-400/10",
     supColor: "text-orange-400",
-    role: "Forsvarets mest aggressive spiller. Starter 7 yards fra ballen og presser QB til å kaste for tidlig.",
-    traits: "Eksplosiv fart, timing, aggressivitet.",
+    roleKey: "pos.r.role",
+    traitsKey: "pos.r.traits",
     nflExamples: "Myles Garrett, Micah Parsons, T.J. Watt",
   },
   {
     name: "Defensive Back",
     abbr: "DB",
-    tagline: "Dekker mottakerne tett",
+    taglineKey: "pos.db.tagline",
     icon: <Shield className="w-5 h-5" />,
     glowBg: "bg-rose-400/10",
-    role: "Speiler motstanderens bevegelser og prøver å hindre pasninger. Ofte i en-mot-en-dueller.",
-    traits: "Rask reaksjon, god fotarbeid, mental styrke.",
+    roleKey: "pos.db.role",
+    traitsKey: "pos.db.traits",
     nflExamples: "Sauce Gardner, Patrick Surtain II, Jalen Ramsey",
   },
   {
     name: "Safety",
     abbr: "S",
-    tagline: "Siste skanse bakfra",
+    taglineKey: "pos.s.tagline",
     icon: <Eye className="w-5 h-5" />,
     glowBg: "bg-rose-400/10",
-    role: "Forsvarets siste linje med best oversikt. Leser spillet og sikrer mot lange pasninger.",
-    traits: "God spilleforståelse, oversikt, allsidighet.",
+    roleKey: "pos.s.role",
+    traitsKey: "pos.s.traits",
     nflExamples: "Kyle Hamilton, Derwin James, Jessie Bates III",
   },
 ];
 
+const navItemIds = ["om", "treninger", "spillet", "coachene", "kom-i-gang", "video", "faq"] as const;
+const navItemKeyFor = (id: typeof navItemIds[number]): TranslationKey => {
+  switch (id) {
+    case "om": return "nav.om";
+    case "treninger": return "nav.treninger";
+    case "spillet": return "nav.spillet";
+    case "coachene": return "nav.coachene";
+    case "kom-i-gang": return "nav.komIGang";
+    case "video": return "nav.video";
+    case "faq": return "nav.faq";
+  }
+};
+
 const Index = () => {
+  const t = useT();
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
@@ -131,15 +151,18 @@ const Index = () => {
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border hidden md:block">
         <div className="max-w-4xl mx-auto px-4 flex items-center gap-1 py-2">
           <img src={logo} alt="Logo" className="w-6 h-6 shrink-0 mr-2" />
-          {navItems.map((item) => (
+          {navItemIds.map((id) => (
             <button
-              key={item.id}
-              onClick={() => scrollTo(item.id)}
+              key={id}
+              onClick={() => scrollTo(id)}
               className="text-xs font-heading font-bold text-muted-foreground hover:text-primary transition-colors whitespace-nowrap px-3 py-1.5 rounded-lg hover:bg-primary/5"
             >
-              {item.label}
+              {t(navItemKeyFor(id))}
             </button>
           ))}
+          <div className="ml-auto">
+            <LanguageToggle />
+          </div>
         </div>
       </nav>
 
@@ -148,7 +171,7 @@ const Index = () => {
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="flex items-center gap-2 px-3 py-2 rounded-2xl bg-background/40 backdrop-blur-xl border border-white/15 shadow-lg shadow-black/20"
-          aria-label="Meny"
+          aria-label={t("nav.menu")}
         >
           <img src={logo} alt="Logo" className="w-6 h-6" />
           {mobileMenuOpen ? (
@@ -161,15 +184,21 @@ const Index = () => {
         {/* Expanded menu bubble */}
         {mobileMenuOpen && (
           <div className="absolute top-full left-0 mt-2 min-w-[200px] rounded-2xl bg-background/50 backdrop-blur-xl border border-white/15 shadow-xl shadow-black/30 p-2 animate-in fade-in slide-in-from-top-2 duration-200">
-            {navItems.map((item) => (
+            {navItemIds.map((id) => (
               <button
-                key={item.id}
-                onClick={() => { scrollTo(item.id); setMobileMenuOpen(false); }}
+                key={id}
+                onClick={() => { scrollTo(id); setMobileMenuOpen(false); }}
                 className="w-full text-left text-sm font-heading font-bold text-foreground/80 hover:text-primary hover:bg-white/10 transition-colors px-4 py-2.5 rounded-xl"
               >
-                {item.label}
+                {t(navItemKeyFor(id))}
               </button>
             ))}
+            <div className="px-4 pt-2 pb-1 flex items-center justify-between">
+              <span className="text-[10px] uppercase tracking-wider font-heading font-bold text-muted-foreground">
+                {t("nav.languageLabel")}
+              </span>
+              <LanguageToggle />
+            </div>
           </div>
         )}
       </div>
@@ -185,17 +214,17 @@ const Index = () => {
         <div className="relative z-10 flex flex-col items-center text-center px-6">
           <img
             src={logo}
-            alt="Tromsø Flaggfotball logo"
+            alt={t("hero.logoAlt")}
             className="w-40 h-40 md:w-56 md:h-56 mb-8 drop-shadow-2xl"
           />
           <h1 className="font-heading text-3xl md:text-5xl font-extrabold tracking-tight text-foreground mb-2">
-            TROMSØ
+            {t("hero.title.line1")}
             <br />
-            FLAGGFOTBALL
+            {t("hero.title.line2")}
           </h1>
           <div className="w-16 h-px bg-primary/50 mb-4" />
           <p className="font-body text-muted-foreground text-sm tracking-widest uppercase mb-6">
-            Arktisk flaggfotball · 69°N
+            {t("hero.tagline")}
           </p>
           <div className="flex items-center gap-4">
             <a
@@ -224,17 +253,13 @@ const Index = () => {
       <section id="om" className="py-20 px-6 scroll-mt-16">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">
-            Hva er flaggfotball?
+            {t("om.h")}
           </h2>
           <p className="font-body text-muted-foreground text-lg leading-relaxed mb-4">
-            Flaggfotball er en kontaktfri variant av amerikansk fotball. I stedet for å tackle
-            drar du av et flagg som henger i beltet til motstanderen. Sporten er rask, taktisk
-            og inkluderende — og blir olympisk idrett i LA 2028.
+            {t("om.p1.pre")}
           </p>
           <p className="font-body text-muted-foreground leading-relaxed">
-            Det spilles <strong className="text-foreground">5 mot 5</strong> på en bane
-            som er omtrent 70 × 30 meter. Hvert lag har fire forsøk på å krysse
-            midtlinjen, og deretter fire nye forsøk for å score touchdown.
+            {t("om.p2.pre")}<strong className="text-foreground">{t("om.p2.strong")}</strong>{t("om.p2.post")}
           </p>
         </div>
       </section>
@@ -467,23 +492,24 @@ const LinkCard = ({
 
 const GameSection = () => {
   const navigate = useNavigate();
+  const t = useT();
   const goToPosition = (slug: string) => navigate(`/posisjoner#${slug}`);
 
   return (
     <section id="spillet" className="py-16 px-6 scroll-mt-16 bg-card/50">
       <div className="max-w-6xl mx-auto">
         <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2">
-          Dette er flaggfotball
+          {t("game.h")}
         </h2>
         <p className="text-muted-foreground font-body mb-6">
-          Utforsk formasjoner, spilltyper og forsvarstaktikker.
+          {t("game.sub")}
         </p>
 
         {/* Desktop: 3-column layout with positions flanking the diagram */}
         <div className="hidden md:grid md:grid-cols-[1fr_2fr_1fr] gap-6 items-start">
           {/* Offense positions - left */}
           <div>
-            <h3 className="font-heading text-lg font-bold text-sky-400 mb-4">Angrep</h3>
+            <h3 className="font-heading text-lg font-bold text-sky-400 mb-4">{t("game.offense")}</h3>
             <div className="space-y-3">
               {offensePositions.map((pos) => (
                 <PositionCard key={pos.name} {...pos} variant="offense" />
@@ -498,13 +524,13 @@ const GameSection = () => {
               to={POSITIONS_URL}
               className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-4"
             >
-              Les mer om alle posisjoner →
+              {t("game.readMoreAll")}
             </Link>
           </div>
 
           {/* Defense positions - right */}
           <div>
-            <h3 className="font-heading text-lg font-bold text-rose-400 mb-4">Forsvar</h3>
+            <h3 className="font-heading text-lg font-bold text-rose-400 mb-4">{t("game.defense")}</h3>
             <div className="space-y-3">
               {defensePositions.map((pos) => (
                 <PositionCard key={pos.name} {...pos} variant="defense" />
@@ -521,13 +547,13 @@ const GameSection = () => {
               to={POSITIONS_URL}
               className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-4"
             >
-              Les mer om alle posisjoner →
+              {t("game.readMoreAll")}
             </Link>
           </div>
 
           <div className="space-y-5">
             <div>
-              <h3 className="font-heading text-base font-bold text-sky-400 mb-2.5">Angrep</h3>
+              <h3 className="font-heading text-base font-bold text-sky-400 mb-2.5">{t("game.offense")}</h3>
               <div className="space-y-0">
                 {offensePositions.map((pos) => (
                   <PositionCard key={pos.name} {...pos} variant="offense" />
@@ -536,7 +562,7 @@ const GameSection = () => {
             </div>
 
             <div>
-              <h3 className="font-heading text-base font-bold text-rose-400 mb-2.5">Forsvar</h3>
+              <h3 className="font-heading text-base font-bold text-rose-400 mb-2.5">{t("game.defense")}</h3>
               <div className="space-y-0">
                 {defensePositions.map((pos) => (
                   <PositionCard key={pos.name} {...pos} variant="defense" />
@@ -655,26 +681,27 @@ const CoachCard = ({
 const PositionCard = ({
   name,
   abbr,
-  tagline,
+  taglineKey,
   icon,
   glowBg,
-  role,
-  traits,
+  roleKey,
+  traitsKey,
   nflExamples,
   variant = "offense",
   supColor,
 }: {
   name: string;
   abbr: string;
-  tagline: string;
+  taglineKey: TranslationKey;
   icon: React.ReactNode;
   glowBg?: string;
-  role: string;
-  traits: string;
+  roleKey: TranslationKey;
+  traitsKey: TranslationKey;
   nflExamples?: string;
   variant?: "offense" | "defense";
   supColor?: string;
 }) => {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const isOffense = variant === "offense";
   const accentColor = isOffense ? "text-sky-400" : "text-rose-400";
@@ -707,7 +734,7 @@ const PositionCard = ({
               )}
             </h3>
             {/* Tagline: hidden on mobile when collapsed, always visible on desktop */}
-            <p className={`text-xs text-muted-foreground font-body mt-0.5 transition-all duration-300 overflow-hidden hidden md:block ${open ? "md:max-h-0 md:opacity-0 md:mt-0" : "md:max-h-10 md:opacity-100"}`}>{tagline}</p>
+            <p className={`text-xs text-muted-foreground font-body mt-0.5 transition-all duration-300 overflow-hidden hidden md:block ${open ? "md:max-h-0 md:opacity-0 md:mt-0" : "md:max-h-10 md:opacity-100"}`}>{t(taglineKey)}</p>
           </div>
           <ChevronDown
             className={`w-3.5 h-3.5 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
@@ -718,10 +745,10 @@ const PositionCard = ({
         <div className="min-h-0 overflow-hidden">
           <div className="space-y-1.5 pl-10 md:pl-7 pb-2 md:pb-1.5 pr-3">
             {/* Show tagline inside expanded content on mobile */}
-            <p className="text-xs text-muted-foreground font-body leading-relaxed italic md:hidden">{tagline}</p>
-            <p className="text-xs text-muted-foreground font-body leading-relaxed">{role}</p>
+            <p className="text-xs text-muted-foreground font-body leading-relaxed italic md:hidden">{t(taglineKey)}</p>
+            <p className="text-xs text-muted-foreground font-body leading-relaxed">{t(roleKey)}</p>
             <p className={`text-xs font-body ${accentColor}`}>
-              <span className="text-muted-foreground">Passer for:</span> {traits}
+              <span className="text-muted-foreground">{t("pos.card.fits")}</span> {t(traitsKey)}
             </p>
             {nflExamples && (
               <p className="text-xs font-body text-muted-foreground">

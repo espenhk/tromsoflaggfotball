@@ -1,0 +1,228 @@
+/* ============================================================
+   Tromsø Flaggfotball — Instagram frame system v3
+   Universal SVG chrome (curve OR diagonal). Edge-anchored so
+   any tile arrangement (horizontal, vertical, mixed) shows a
+   continuous, repeating rhythm.
+   ============================================================ */
+@import url('colors_and_type.css');
+
+/* ---------- TILE SHELL ---------- */
+.tile {
+  position: relative;
+  width: 1080px;
+  height: 1080px;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  overflow: hidden;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  --chrome: var(--primary);
+}
+.tile.acc-qb      { --chrome: #fbbf24; }
+.tile.acc-rb      { --chrome: #34d399; }
+.tile.acc-def     { --chrome: #fb7185; }
+.tile.acc-rusher  { --chrome: #fb923c; }
+.tile.acc-blue    { --chrome: #38bdf8; }
+
+/* ---------- TEXT CARD ----------
+   Soft transparent backdrop for text that sits over a photo.
+   Apply .card to any text container — gives it just enough
+   contrast to stay readable regardless of the image behind it.
+*/
+.tile .card {
+  background: rgba(0, 8, 13, 0.62);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 24px 28px;
+}
+.tile .card.tight { padding: 14px 18px; }
+.tile .card.solid { background: rgba(0, 8, 13, 0.82); }
+
+/* ---------- WORDMARK ---------- */
+.tile .wordmark {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 56px;
+  font-family: var(--font-heading); font-weight: 700; font-size: 17px;
+  letter-spacing: 0.24em; text-transform: uppercase; color: var(--fg-muted);
+  z-index: 10; border-top: 1px solid rgba(13,106,106,0.4); background: var(--bg);
+}
+.tile .wordmark .left { color: var(--fg); }
+.tile .wordmark .right { color: var(--chrome); }
+
+/* ---------- STAGE & PHOTO ---------- */
+.tile .stage { position: absolute; inset: 0 0 48px 0; display: flex; z-index: 4; box-sizing: border-box; }
+.tile .photo { position: absolute; inset: 0; background-size: cover; background-position: center; z-index: 2; }
+.tile .photo::after { content:''; position:absolute; inset:0;
+  background: linear-gradient(180deg, rgba(0,8,13,0) 35%, rgba(0,8,13,0.85) 100%); }
+
+/* ---------- PAGE CHROME (preview only) ---------- */
+body { margin: 0; background: #050a0d; color: var(--fg); font-family: var(--font-body); }
+.page-head { padding: 80px 48px 40px; border-bottom: 1px solid rgba(13,106,106,0.4); margin-bottom: 24px; }
+.page-head h1 { font-family: var(--font-heading); font-weight: 800; font-size: 56px; line-height: 1.05;
+  margin: 0 0 16px 0; letter-spacing: -0.02em; color: var(--fg); }
+.page-head p { font-size: 16px; line-height: 1.6; color: var(--fg-muted); max-width: 760px; margin: 0 0 16px 0; }
+.page-head a { color: var(--primary); }
+
+.section { padding: 48px 48px 32px; border-bottom: 1px solid rgba(13,106,106,0.25); }
+.section h2 { font-family: var(--font-heading); font-weight: 700; font-size: 32px; margin: 0 0 8px 0; color: var(--fg); }
+.section h2 .num { color: var(--primary); font-size: 14px; letter-spacing: 0.24em; vertical-align: middle; margin-right: 16px; }
+.section .meta { color: var(--fg-muted); font-size: 14px; margin: 0 0 24px 0; max-width: 760px; line-height: 1.6; }
+.section .meta strong { color: var(--fg); }
+
+.scaled-wrap { height: calc(1080px * 0.4); margin-bottom: 16px; overflow: visible; }
+.scaled-wrap.row3 { height: calc(1080px * 0.286); }
+.row { display: flex; gap: 16px; width: max-content; transform-origin: top left; }
+.row.scaled-1 { transform: scale(0.4); }
+.row.scaled-3 { transform: scale(0.286); }
+
+.grid-section { margin-top: 24px; display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; }
+.grid-section h3 { font-family: var(--font-heading); font-size: 14px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--fg-muted); margin: 0 0 12px 0; }
+.grid-sim { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; background: #0a0a0a;
+  padding: 4px; border-radius: 4px; width: 600px; }
+.grid-sim.tall { grid-template-rows: repeat(3, 1fr); height: 600px; }
+.grid-sim .cell { aspect-ratio: 1; position: relative; overflow: hidden; }
+.grid-sim .cell .tile { transform: scale(0.184); transform-origin: top left; }
+
+/* ---------- PHOTO PLACEHOLDER ---------- */
+.ph { position: absolute; inset: 0; background-image:
+  radial-gradient(at 30% 30%, rgba(84,197,158,0.18) 0%, transparent 55%),
+  radial-gradient(at 70% 70%, rgba(56,189,248,0.18) 0%, transparent 55%),
+  linear-gradient(180deg, #042f2e 0%, #021212 100%); }
+.ph::before { content: attr(data-label); position: absolute; inset: 0; display:flex;
+  align-items:center; justify-content:center; font-family: var(--font-body); font-size: 20px;
+  color: var(--fg-muted); letter-spacing: 0.24em; text-transform: uppercase; opacity: 0.5; }
+.ph::after { content:''; position:absolute; inset:0;
+  background: linear-gradient(180deg, rgba(0,8,13,0) 30%, rgba(0,8,13,0.85) 100%); }
+
+/* ---------- TYPE HELPERS ---------- */
+.eyebrow { font-family: var(--font-body); font-size: 22px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--chrome); font-weight: 500; }
+.eyebrow.muted { color: var(--fg-muted); }
+.h-display { font-family: var(--font-heading); font-weight: 800; font-size: 140px;
+  line-height: 1; color: var(--fg); letter-spacing: -0.02em; margin: 0; }
+
+/* ---------- TEMPLATE LAYOUTS ---------- */
+.t-player .stage { padding: 0; align-items: stretch; flex-direction: row; }
+.t-player .left-col { width: 55%; position: relative;
+  background: radial-gradient(at 50% 30%, rgba(84,197,158,0.2) 0%, transparent 55%),
+              linear-gradient(180deg, #04231f 0%, #021212 100%); }
+.t-player .right-col { width: 45%; padding: 80px 56px 64px; background: var(--bg);
+  display: flex; flex-direction: column; justify-content: center; gap: 20px; }
+/* Jersey number: left edge aligns with right border of the photo column (55%).
+   Number bleeds rightward into the white panel; z-index lifts it above right-col bg. */
+.t-player .jersey { position: absolute; bottom: 32px; left: 55%;
+  font-family: var(--font-heading); font-weight: 800; font-size: 320px; line-height: 0.8;
+  color: var(--chrome); letter-spacing: -0.04em; z-index: 5;
+  transform: translateX(-0.04em); /* optical: pull back the side-bearing of the first digit */
+  text-shadow: 0 4px 24px rgba(0,8,13,0.4); pointer-events: none; }
+
+.t-pos101 .stage { padding: 80px 64px 64px; flex-direction: column; gap: 32px; }
+.t-schedule .stage { padding: 80px 64px 64px; flex-direction: column; gap: 24px; }
+
+.t-event .stage { padding: 0; align-items: stretch; }
+.t-event .photo { background:
+  radial-gradient(at 70% 30%, rgba(84,197,158,0.3) 0%, transparent 50%),
+  radial-gradient(at 30% 70%, rgba(56,189,248,0.18) 0%, transparent 55%),
+  linear-gradient(180deg, #022529 0%, #02141c 100%); }
+.t-event .content { position: relative; z-index: 2; padding: 80px 64px 64px;
+  display: flex; flex-direction: column; justify-content: flex-end; height: 100%; width: 100%; box-sizing: border-box; }
+
+.t-nm .stage { padding: 0; flex-direction: column; }
+.t-nm .body-area { flex: 1; padding: 48px 64px 64px; display: flex; flex-direction: column; justify-content: center; gap: 24px; }
+
+.t-rule .stage { padding: 0; flex-direction: column; gap: 0; }
+.t-rule .rule-header { padding: 64px 64px 20px; }
+.t-rule .diagram { flex: 1; background: #0d2f24;
+  border-top: 1px solid rgba(13,106,106,0.4);
+  border-bottom: 1px solid rgba(13,106,106,0.4);
+  position: relative; overflow: hidden; }
+.t-rule .rule-title-card { position: absolute; top: 40px; left: 48px; right: 48px;
+  padding: 28px 36px; background: rgba(0,0,0,0.62); backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px); border-radius: 12px; z-index: 3; }
+.t-rule .rule-desc-card { position: absolute; bottom: 40px; left: 48px; right: 48px;
+  padding: 22px 32px; background: rgba(0,0,0,0.62); backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px); border-radius: 12px; z-index: 3;
+  font-family: var(--font-body); font-size: 24px; color: var(--fg); line-height: 1.5; }
+.t-rule .rule-desc-card strong { color: var(--fg); font-weight: 700; }
+
+.t-drill .stage { padding: 80px 64px 64px; flex-direction: column; gap: 24px; }
+.t-drill .field { flex: 1; background: linear-gradient(180deg, #042f2e 0%, #03241f 100%);
+  border-radius: 12px; position: relative; overflow: hidden; }
+.t-drill .field .yard { position: absolute; left: 0; right: 0; height: 1px; background: rgba(255,255,255,0.15); }
+
+.t-welcome .stage { padding: 80px 64px 64px; flex-direction: column; gap: 32px; justify-content: center; }
+.t-bts .stage { padding: 0; align-items: stretch; }
+.t-bts .photo { background:
+  radial-gradient(at 40% 40%, rgba(255,255,255,0.06) 0%, transparent 60%),
+  linear-gradient(180deg, #08283a 0%, #021018 100%); }
+.t-bts .content { position: relative; z-index: 2; padding: 80px 64px 64px;
+  display: flex; flex-direction: column; justify-content: flex-end; height: 100%; width: 100%; box-sizing: border-box; }
+.t-fact .stage { padding: 80px 64px 64px; flex-direction: column; gap: 24px; justify-content: center; }
+
+/* T11 — OFFENSE VS DEFENSE matchup (uses sky + rose accents) */
+.t-matchup .stage { padding: 0; flex-direction: row; }
+.t-matchup .half { flex: 1; padding: 80px 56px 64px; display: flex; flex-direction: column;
+  justify-content: space-between; position: relative; overflow: hidden; }
+.t-matchup .half.off { background: linear-gradient(180deg, rgba(56,189,248,0.18) 0%, rgba(56,189,248,0.04) 100%); }
+.t-matchup .half.def { background: linear-gradient(180deg, rgba(251,113,133,0.18) 0%, rgba(251,113,133,0.04) 100%); }
+/* Photo sits as a background band: opaque through the middle, fading to transparent
+   at the top of the stats section so stats read on a clean tinted background. */
+.t-matchup .matchup-bg { position: absolute; inset: 0; background-size: cover;
+  background-position: center 35%; z-index: 0; pointer-events: none;
+  -webkit-mask-image: linear-gradient(180deg,
+    rgba(0,0,0,0)    0%,
+    rgba(0,0,0,0)   22%,
+    rgba(0,0,0,1)   38%,
+    rgba(0,0,0,1)   60%,
+    rgba(0,0,0,0)   78%);
+          mask-image: linear-gradient(180deg,
+    rgba(0,0,0,0)    0%,
+    rgba(0,0,0,0)   22%,
+    rgba(0,0,0,1)   38%,
+    rgba(0,0,0,1)   60%,
+    rgba(0,0,0,0)   78%); }
+.t-matchup .matchup-bg.placeholder { display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.10); font-family: var(--font-heading); font-size: 20px;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-muted); font-weight: 700; }
+.t-matchup .matchup-content { position: relative; z-index: 1; display: flex; flex-direction: column;
+  justify-content: space-between; height: 100%; }
+.t-matchup .vs { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 140px; height: 140px; border-radius: 50%; background: var(--bg);
+  display: flex; align-items: center; justify-content: center; z-index: 5;
+  font-family: var(--font-heading); font-weight: 800; font-size: 56px; color: var(--fg);
+  border: 4px solid var(--primary); }
+
+/* ---------- NORWEGIAN FLAG (proportions 22x16; cross at cols 6-10, rows 6-10; blue inset cols 7-9, rows 7-9) ----------
+   The Scandinavian cross is the UNION of a vertical bar and a horizontal bar.
+   Layering (first = top): blue vert ∪ blue horiz over white vert ∪ white horiz over red base. */
+.no-flag {
+  display: inline-block; aspect-ratio: 22 / 16; height: 100%;
+  background:
+    /* Blue vertical bar — cols 7..9 (full height) */
+    linear-gradient(to right,
+      transparent 0, transparent calc(7/22*100%),
+      #00205b calc(7/22*100%), #00205b calc(9/22*100%),
+      transparent calc(9/22*100%), transparent 100%),
+    /* Blue horizontal bar — rows 7..9 (full width) */
+    linear-gradient(to bottom,
+      transparent 0, transparent calc(7/16*100%),
+      #00205b calc(7/16*100%), #00205b calc(9/16*100%),
+      transparent calc(9/16*100%), transparent 100%),
+    /* White vertical bar — cols 6..10 (full height) */
+    linear-gradient(to right,
+      transparent 0, transparent calc(6/22*100%),
+      #fff calc(6/22*100%), #fff calc(10/22*100%),
+      transparent calc(10/22*100%), transparent 100%),
+    /* White horizontal bar — rows 6..10 (full width) */
+    linear-gradient(to bottom,
+      transparent 0, transparent calc(6/16*100%),
+      #fff calc(6/16*100%), #fff calc(10/16*100%),
+      transparent calc(10/16*100%), transparent 100%),
+    /* Red field */
+    #ba0c2f;
+  position: relative;
+}

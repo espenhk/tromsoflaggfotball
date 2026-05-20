@@ -11,16 +11,16 @@ const LanguageContext = createContext<Ctx | undefined>(undefined);
 
 const STORAGE_KEY = "tflag-lang";
 
-const getStoredLang = (): Lang | null => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === "no" || stored === "en") return stored;
-  } catch { /* ignore */ }
-  return null;
-};
-
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [lang, setLangState] = useState<Lang>(getStoredLang() ?? "no");
+  const [lang, setLangState] = useState<Lang>("no");
+
+  // Hydrate from localStorage on mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored === "no" || stored === "en") setLangState(stored);
+    } catch { /* ignore */ }
+  }, []);
 
   // Reflect in <html lang>
   useEffect(() => {

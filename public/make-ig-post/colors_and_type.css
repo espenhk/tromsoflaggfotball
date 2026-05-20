@@ -1,0 +1,198 @@
+/* =========================================================
+   Tromsø Flaggfotball — Design Tokens
+   Colors, type, spacing, radii, shadows.
+   Source of truth: tailwind.config.ts + src/index.css in
+   espenhk/tromsoflaggfotball, plus the supplied Colors.png /
+   Fonts.png style sheets.
+   ========================================================= */
+
+/* Local variable fonts — preferred over the Google Fonts import below. */
+@font-face {
+  font-family: 'Syne';
+  src: url('fonts/Syne-VariableFont_wght.ttf') format('truetype-variations');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Outfit';
+  src: url('fonts/Outfit-VariableFont_wght.ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Online fallback — kept so consumers without the local /fonts folder still render correctly. */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Outfit:wght@300;400;500;700&display=swap');
+
+:root {
+  /* ---------- COLOR SCALES ----------
+     Four named families inspired by the arctic landscape:
+       NATT     — night sky.       Primary dark. Backgrounds.
+       FJORD    — fjord water.     Primary mid. Cards, borders.
+       NORDLYS  — northern lights. Accent. CTAs, highlights.
+       IS       — sea ice.         Secondary light. Body text on dark, soft surfaces.
+  */
+
+  --natt-50:  #e6f2f7;
+  --natt-200: #92c5d8;
+  --natt-500: #021b27;   /* BASE */
+  --natt-700: #011018;
+  --natt-900: #00080d;
+
+  --fjord-50:  #e2f4f4;
+  --fjord-200: #78cacc;
+  --fjord-500: #0d6a6a;  /* BASE */
+  --fjord-700: #063636;
+  --fjord-900: #021212;
+
+  --nordlys-50:  #eaf8f3;
+  --nordlys-200: #95dcbc;
+  --nordlys-500: #54c59e; /* BASE — accent / CTA */
+  --nordlys-700: #226c4e;
+  --nordlys-900: #0e2c20;
+
+  --is-50:  #f5fbfa;     /* BASE in supplied chart */
+  --is-200: #c8e9e4;
+  --is-400: #8dccc6;
+  --is-600: #48999a;
+  --is-800: #1c5555;
+
+  /* ---------- SEMANTIC COLOR ALIASES ----------
+     These mirror the HSL tokens used by shadcn/Tailwind in
+     src/index.css — kept here as straight hex for easy use
+     in any HTML artifact.
+  */
+  --bg:              var(--natt-900);     /* page background */
+  --bg-elevated:     var(--fjord-900);    /* card surface (~hsl 185 100% 10%) */
+  --bg-muted:        #0a2a2e;             /* subtle band ~hsl 185 50% 14% */
+  --surface-card:    rgba(13, 106, 106, 0.18); /* fjord/18 used as bg-card/50 */
+
+  --fg:              #f0fcfa;             /* foreground hsl(165 80% 97%) */
+  --fg-muted:        #b6dcd6;             /* muted-foreground hsl(165 30% 75%) */
+  --fg-on-accent:    var(--natt-500);     /* dark text on bright primary */
+
+  --border:          #1d3e3f;             /* hsl(180 40% 18%) */
+  --input:           #1d3e3f;
+  --ring:            var(--nordlys-500);
+
+  --primary:         var(--nordlys-500);  /* CTA */
+  --primary-hover:   #6bd0ad;
+  --primary-fg:      var(--natt-500);
+  --secondary:       var(--fjord-500);
+  --secondary-fg:    var(--fg);
+  --accent:          var(--nordlys-200);  /* hsl(155 55% 68%) */
+  --accent-fg:       var(--natt-500);
+  --destructive:     hsl(0 84.2% 60.2%);
+  --destructive-fg:  hsl(210 40% 98%);
+
+  /* Position-card accent hues used in src/pages/Index.tsx */
+  --offense:    #38bdf8;  /* sky-400 */
+  --defense:    #fb7185;  /* rose-400 */
+  --qb:         #fbbf24;  /* amber-400 — Star */
+  --rb:         #34d399;  /* emerald-400 — Zap */
+  --rusher:     #fb923c;  /* orange-400 — Crosshair */
+  --safety:     #fb7185;  /* rose-400 — Eye */
+  --c:          #38bdf8;  /* sky-400 — Users */
+  --wr:         #38bdf8;  /* sky-400 — Target */
+  --db:         #fb7185;  /* rose-400 — Shield */
+
+  /* ---------- TYPE ---------- */
+  --font-heading: 'Syne', ui-sans-serif, system-ui, sans-serif;
+  --font-body:    'Outfit', ui-sans-serif, system-ui, sans-serif;
+
+  /* Display & heading scale (mirrors Fonts.png) */
+  --fs-display-xl: 72px;  --fw-display-xl: 800;  --lh-display-xl: 1.02;
+  --fs-display:    48px;  --fw-display:    800;  --lh-display:    1.05;
+  --fs-h1:         32px;  --fw-h1:         700;  --lh-h1:         1.1;
+  --fs-h2:         22px;  --fw-h2:         700;  --lh-h2:         1.2;
+  --fs-h3:         18px;  --fw-h3:         700;  --lh-h3:         1.3;
+
+  /* Body / utility scale (Outfit) */
+  --fs-lead:   18px;  --fw-lead:   500;  --lh-lead:  1.55;
+  --fs-body:   16px;  --fw-body:   400;  --lh-body:  1.6;
+  --fs-small:  13px;  --fw-small:  400;  --lh-small: 1.5;
+  --fs-label:  11px;  --fw-label:  500;  --lh-label: 1.3;
+  --tracking-label: 0.12em;
+  --tracking-eyebrow: 0.18em;
+
+  /* ---------- RADII ---------- */
+  --radius-sm: 8px;   /* calc(var(--radius) - 4px) */
+  --radius-md: 10px;  /* calc(var(--radius) - 2px) */
+  --radius-lg: 12px;  /* var(--radius) = 0.75rem */
+  --radius-xl: 16px;  /* rounded-2xl, mobile menu bubble */
+  --radius-pill: 9999px;
+
+  /* ---------- SPACING (Tailwind 4px base) ---------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* ---------- SHADOWS ---------- */
+  --shadow-sm:  0 1px 2px 0 rgba(0, 8, 13, 0.4);
+  --shadow-md:  0 4px 12px -2px rgba(0, 8, 13, 0.45);
+  --shadow-lg:  0 10px 30px -8px rgba(0, 8, 13, 0.55);   /* mobile bubble shadow-lg shadow-black/20 */
+  --shadow-xl:  0 20px 50px -12px rgba(0, 8, 13, 0.65);
+  --shadow-glow-primary: 0 0 32px -4px rgba(84, 197, 158, 0.45);
+
+  /* ---------- BLUR / GLASS ---------- */
+  --blur-bubble: 24px;   /* backdrop-blur-xl on mobile nav bubble */
+  --blur-nav:    12px;   /* backdrop-blur-md on desktop nav */
+  --glass-bg:    rgba(0, 8, 13, 0.5);
+  --glass-border: rgba(255, 255, 255, 0.15);
+
+  /* ---------- MOTION ---------- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 150ms;
+  --dur-base: 200ms;
+  --dur-slow: 300ms;
+}
+
+/* =========================================================
+   Semantic element styles
+   ========================================================= */
+html { color-scheme: dark; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--fg);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+h1 { font-size: var(--fs-display);    font-weight: var(--fw-display);    line-height: var(--lh-display); }
+h2 { font-size: var(--fs-h1);         font-weight: var(--fw-h1);         line-height: var(--lh-h1); }
+h3 { font-size: var(--fs-h2);         font-weight: var(--fw-h2);         line-height: var(--lh-h2); }
+h4 { font-size: var(--fs-h3);         font-weight: var(--fw-h3);         line-height: var(--lh-h3); }
+
+p     { font-size: var(--fs-body);  line-height: var(--lh-body);  color: var(--fg-muted); text-wrap: pretty; }
+small { font-size: var(--fs-small); line-height: var(--lh-small); color: var(--fg-muted); }
+strong { color: var(--fg); font-weight: 600; }
+
+.eyebrow,
+.label-uppercase {
+  font-family: var(--font-body);
+  font-size: var(--fs-label);
+  font-weight: var(--fw-label);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--fg-muted);
+}

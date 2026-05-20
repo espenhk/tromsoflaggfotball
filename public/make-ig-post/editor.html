@@ -1130,10 +1130,54 @@
     renderPreview();
   });
 
+  async function loadHtmlToImage() {
+    if (window.htmlToImage) return window.htmlToImage;
+    await new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js';
+      s.onload = resolve;
+      s.onerror = () => reject(new Error('Failed to load html-to-image'));
+      document.head.appendChild(s);
+    });
+    return window.htmlToImage;
+  }
+
   document.getElementById('export-btn').addEventListener('click', async () => {
-    // Open the tile in a print-friendly window for now; PNG export of a foreignObject SVG is complex.
-    // A simple path: use html2canvas via CDN. For now, give clear UX guidance.
-    alert('To export: right-click the preview tile → "Save image as" via browser screenshot, OR use the page print dialog. For pixel-perfect 1080×1080 PNG, hook this to your team\'s asset pipeline.');
+    const btn = document.getElementById('export-btn');
+    const tile = document.querySelector('#preview-wrap .tile');
+    if (!tile) { alert('Nothing to export yet.'); return; }
+    const originalLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Exporting…';
+    const prevTransform = tile.style.transform;
+    try {
+      const htmlToImage = await loadHtmlToImage();
+      // Render at full 1080×1080 (tile is scaled 0.5 for preview).
+      tile.style.transform = 'none';
+      // Allow layout to flush.
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      const dataUrl = await htmlToImage.toPng(tile, {
+        width: 1080,
+        height: 1080,
+        pixelRatio: 1,
+        cacheBust: true,
+        skipFonts: false,
+      });
+      const a = document.createElement('a');
+      const tplName = (state.tpl || 'post').replace(/[^a-z0-9-_]+/gi, '-').toLowerCase();
+      a.href = dataUrl;
+      a.download = `tff-${tplName}-1080.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (err) {
+      console.error(err);
+      alert('Export failed: ' + (err && err.message ? err.message : err));
+    } finally {
+      tile.style.transform = prevTransform;
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
   });
 
   renderForm();

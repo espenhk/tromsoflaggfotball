@@ -161,7 +161,7 @@ const Index = () => {
             </button>
           ))}
           <div className="ml-auto">
-            <LanguageToggle />
+            <LanguageToggle showLabel />
           </div>
         </div>
       </nav>

@@ -1142,6 +1142,35 @@
     return window.htmlToImage;
   }
 
+  async function fetchAsDataUrl(url, mime) {
+    const res = await fetch(url, { cache: 'force-cache' });
+    if (!res.ok) throw new Error('Fetch failed: ' + url);
+    const buf = await res.arrayBuffer();
+    let bin = '';
+    const bytes = new Uint8Array(buf);
+    for (let i = 0; i < bytes.byteLength; i++) bin += String.fromCharCode(bytes[i]);
+    return `data:${mime};base64,` + btoa(bin);
+  }
+
+  let _embeddedFontCSS = null;
+  async function buildEmbeddedFontCSS() {
+    if (_embeddedFontCSS !== null) return _embeddedFontCSS;
+    try {
+      const [syne, outfit] = await Promise.all([
+        fetchAsDataUrl(new URL('fonts/Syne-VariableFont_wght.ttf', location.href).href, 'font/ttf'),
+        fetchAsDataUrl(new URL('fonts/Outfit-VariableFont_wght.ttf', location.href).href, 'font/ttf'),
+      ]);
+      _embeddedFontCSS = `
+        @font-face { font-family: 'Syne'; src: url(${syne}) format('truetype-variations'); font-weight: 400 800; font-style: normal; }
+        @font-face { font-family: 'Outfit'; src: url(${outfit}) format('truetype-variations'); font-weight: 100 900; font-style: normal; }
+      `;
+    } catch (e) {
+      console.warn('Font embed failed', e);
+      _embeddedFontCSS = '';
+    }
+    return _embeddedFontCSS;
+  }
+
   document.getElementById('export-btn').addEventListener('click', async () => {
     const btn = document.getElementById('export-btn');
     const tile = document.querySelector('#preview-wrap .tile');
@@ -1169,8 +1198,9 @@
       } catch (_) {}
       // Allow layout to flush.
       await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-      // Pre-embed font CSS once so html-to-image doesn't need to refetch per node.
-      const fontEmbedCSS = await htmlToImage.getFontEmbedCSS(tile).catch(() => '');
+      // Pre-embed font CSS ourselves (html-to-image's own resolver chokes on the
+      // relative truetype-variations URL in colors_and_type.css).
+      const fontEmbedCSS = await buildEmbeddedFontCSS();
       const dataUrl = await htmlToImage.toPng(tile, {
         width: 1080,
         height: 1080,

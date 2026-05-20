@@ -273,15 +273,13 @@ const Index = () => {
             </div>
             <div>
               <h3 className="font-heading text-xl md:text-2xl font-bold text-foreground mb-3">
-                Åpent for alle
+                {t("open.h")}
               </h3>
               <p className="text-muted-foreground font-body leading-relaxed mb-3">
-                I Norge spilles flaggfotball ofte <strong className="text-foreground">mixed</strong> — med
-                spillere av alle kjønn på samme lag. Fart, teknikk og spilleforståelse betyr mer enn fysisk styrke.
+                {t("open.p1.pre")}<strong className="text-foreground">{t("open.p1.strong")}</strong>{t("open.p1.post")}
               </p>
               <p className="text-muted-foreground font-body leading-relaxed">
-                I Tromsø trener vi alltid sammen — og det er nettopp det som gjør det gøy.
-                Ingen erfaring nødvendig, bare møt opp.
+                {t("open.p2")}
               </p>
             </div>
           </div>
@@ -298,12 +296,12 @@ const Index = () => {
       <section id="coachene" className="py-16 px-6 scroll-mt-16">
         <div className="max-w-3xl mx-auto">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
-            Coachene
+            {t("coaches.h")}
           </h2>
           <div className="space-y-0">
             {[
-              { icon: <Megaphone className="w-5 h-5" />, title: "Head Coach", name: "Espen Haukeland Kristensen", phone: "958 48 889", bio: "Espen har fire sesonger som spiller i Vålerenga Trolls (amerikansk fotball) bak seg, der han spilte quarterback, wide receiver og linebacker. Etter spillerkarrieren gikk han over til trenerbenken — tre år som coach for seniorer, U13 og damelag, med spesialfelt som QB-coach. Tok NM-bronse i flaggfotball i 2025." },
-              { icon: <ConeIcon className="w-5 h-5" />, title: "Assistentcoach", name: "Martin Sand Monsen", phone: "952 99 706", bio: "Martin er en av de sentrale figurene fra Tromsø Trailblazers og har spilt flaggfotball i 3–4 år — på alle posisjoner. Til daglig jobber han som lærer, noe som gjør ham til en naturlig pedagog på banen. Flink til å bryte ned spillet og gjøre det forståelig for alle, uansett nivå." },
+              { icon: <Megaphone className="w-5 h-5" />, title: t("coaches.headTitle"), name: "Espen Haukeland Kristensen", phone: "958 48 889", bio: t("coaches.head.bio") },
+              { icon: <ConeIcon className="w-5 h-5" />, title: t("coaches.assistantTitle"), name: "Martin Sand Monsen", phone: "952 99 706", bio: t("coaches.assistant.bio") },
             ].map((coach) => (
               <CoachCard key={coach.name} {...coach} />
             ))}
@@ -315,13 +313,13 @@ const Index = () => {
       <section id="kom-i-gang" className="py-16 px-6 scroll-mt-16 bg-card/50">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
-            Kom i gang
+            {t("links.h")}
           </h2>
           <div className="grid md:grid-cols-2 gap-4">
             <LinkCard
               href="https://www.facebook.com/profile.php?id=61587334652354&locale=nb_NO"
-              title="Facebook"
-              description="Lik siden vår for aktuell info om treninger."
+              title={t("links.fb.title")}
+              description={t("links.fb.desc")}
               icon={<Facebook className="w-5 h-5" />}
               iconColor="text-[#4267B2]"
               glowColor="bg-[#4267B2]/15"
@@ -329,8 +327,8 @@ const Index = () => {
             />
             <LinkCard
               href="https://www.instagram.com/tromsoflaggfotball/"
-              title="Instagram"
-              description="Bilder og videoer fra trening og kamper."
+              title={t("links.ig.title")}
+              description={t("links.ig.desc")}
               icon={<Instagram className="w-5 h-5" />}
               iconColor="text-[#C13584]"
               glowColor="bg-[#C13584]/15"
@@ -338,8 +336,8 @@ const Index = () => {
             />
             <LinkCard
               href="https://flaggfotball.no"
-              title="Flaggfotball.no"
-              description="Lær mer om sporten, regler og turneringer i Norge."
+              title={t("links.flag.title")}
+              description={t("links.flag.desc")}
               icon={<Flag className="w-5 h-5" />}
               iconColor="text-emerald-400"
               glowColor="bg-emerald-400/15"
@@ -347,8 +345,8 @@ const Index = () => {
             />
             <LinkCard
               href="https://club.spond.com/landing/signup/naik/form/0A2A60617F184406B7FFEAA4EDC61409"
-              title="Bli medlem"
-              description="Meld deg inn i Amerikanske Idretters klubb via Spond."
+              title={t("links.member.title")}
+              description={t("links.member.desc")}
               icon={<UserPlus className="w-5 h-5" />}
               iconColor="text-sky-400"
               glowColor="bg-sky-400/15"
@@ -356,8 +354,8 @@ const Index = () => {
             />
             <LinkCard
               href="https://amerikanskeidretter.no/forbund/klubbdrift/lisens-og-forsikring/#amerikansk-fotball-lisens"
-              title="Lisens & forsikring"
-              description="Forsikring for deltakere i flaggfotball via Min Idrett."
+              title={t("links.license.title")}
+              description={t("links.license.desc")}
               icon={<ShieldCheck className="w-5 h-5" />}
               iconColor="text-amber-400"
               glowColor="bg-amber-400/15"
@@ -371,10 +369,10 @@ const Index = () => {
       <section id="video" className="py-16 px-6 scroll-mt-16">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2">
-            Se flaggfotball i aksjon
+            {t("video.h")}
           </h2>
           <p className="text-muted-foreground font-body text-sm mb-6">
-            Fanatics Flag Football Classic — Wildcats FFC vs. Team USA
+            {t("video.sub")}
           </p>
           <div className="aspect-video rounded-xl overflow-hidden border border-border">
             <iframe
@@ -392,28 +390,28 @@ const Index = () => {
       <section id="faq" className="py-16 px-6 scroll-mt-16 bg-card/50">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
-            Ofte stilte spørsmål
+            {t("faq.h")}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 items-start">
             <FaqItem
-              q="Hvem kan være med?"
-              a="Alle fra 16 år og oppover er velkommen! Ingen erfaring nødvendig — vi tilpasser treningene slik at alle kan delta og utvikle seg."
+              q={t("faq.q1")}
+              a={t("faq.a1")}
             />
             <FaqItem
-              q="Trenger jeg erfaring?"
-              a="Nei! Vi tar imot alle, fra nybegynnere til de med erfaring. Treningene er tilpasset slik at du lærer underveis."
+              q={t("faq.q2")}
+              a={t("faq.a2")}
             />
             <FaqItem
-              q="Hva koster det?"
-              a="Trening er helt gratis! Du trenger medlemskap i Amerikanske Idretters klubb (ca 80 kr) og lisens/forsikring via Min Idrett (ca 100 kr)."
+              q={t("faq.q3")}
+              a={t("faq.a3")}
             />
             <FaqItem
-              q="Hva må jeg ta med?"
-              a="Sportklær og joggesko. Alt annet utstyr har vi. Ta gjerne med en vannflaske."
+              q={t("faq.q4")}
+              a={t("faq.a4")}
             />
             <FaqItem
-              q="Hvor mange på laget?"
-              a="Flaggfotball spilles 5 mot 5 på banen. Vi deler inn i lag på trening."
+              q={t("faq.q5")}
+              a={t("faq.a5")}
             />
           </div>
         </div>
@@ -425,11 +423,11 @@ const Index = () => {
           <div className="flex items-center gap-3">
             <img src={logo} alt="Logo" className="w-6 h-6" />
             <span className="font-heading text-sm font-bold text-muted-foreground">
-              Tromsø Flaggfotball
+              {t("footer.brand")}
             </span>
           </div>
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Tromsø Flaggfotball
+            © {new Date().getFullYear()} {t("footer.brand")}
           </p>
         </div>
       </footer>
@@ -577,18 +575,19 @@ const GameSection = () => {
 };
 
 const TrainingSection = () => {
+  const t = useT();
   return (
     <section id="treninger" className="py-16 px-6 scroll-mt-16">
       <div className="max-w-4xl mx-auto">
         <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-6">
-          Treninger
+          {t("training.h")}
         </h2>
 
         <div className="flex flex-col md:flex-row md:items-start gap-6">
           <div className="flex flex-col gap-4 md:w-1/3 shrink-0">
-            <InfoCard icon={<Calendar className="w-5 h-5" />} label="Dag" value="Mandager" />
-            <InfoCard icon={<Clock className="w-5 h-5" />} label="Tid" value="20:30 – 22:00" />
-            <InfoCard icon={<MapPin className="w-5 h-5" />} label="Sted" value="Mellomvegen 110" />
+            <InfoCard icon={<Calendar className="w-5 h-5" />} label={t("training.day")} value={t("training.dayValue")} />
+            <InfoCard icon={<Clock className="w-5 h-5" />} label={t("training.time")} value={t("training.timeValue")} />
+            <InfoCard icon={<MapPin className="w-5 h-5" />} label={t("training.place")} value={t("training.placeValue")} />
           </div>
 
           <div className="rounded-xl overflow-hidden border border-border flex-1 h-[180px] md:h-[160px]">
@@ -759,7 +758,7 @@ const PositionCard = ({
               to={`/posisjoner#${positionSlugMap[name] || name.toLowerCase()}`}
               className="inline-flex items-center gap-1 text-xs font-body text-primary hover:underline mt-1"
             >
-              Les mer om {name.toLowerCase()} →
+              {t("pos.card.readMorePrefix")} {name.toLowerCase()} →
             </Link>
           </div>
         </div>

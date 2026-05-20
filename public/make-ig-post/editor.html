@@ -1154,14 +1154,30 @@
       const htmlToImage = await loadHtmlToImage();
       // Render at full 1080×1080 (tile is scaled 0.5 for preview).
       tile.style.transform = 'none';
+      // Make sure fonts are actually loaded before snapshotting.
+      try {
+        if (document.fonts) {
+          await Promise.all([
+            document.fonts.load('700 48px "Syne"'),
+            document.fonts.load('800 72px "Syne"'),
+            document.fonts.load('400 16px "Outfit"'),
+            document.fonts.load('500 18px "Outfit"'),
+            document.fonts.load('700 18px "Outfit"'),
+          ]);
+          await document.fonts.ready;
+        }
+      } catch (_) {}
       // Allow layout to flush.
       await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      // Pre-embed font CSS once so html-to-image doesn't need to refetch per node.
+      const fontEmbedCSS = await htmlToImage.getFontEmbedCSS(tile).catch(() => '');
       const dataUrl = await htmlToImage.toPng(tile, {
         width: 1080,
         height: 1080,
         pixelRatio: 1,
         cacheBust: true,
         skipFonts: false,
+        fontEmbedCSS,
       });
       const a = document.createElement('a');
       const tplName = (state.tpl || 'post').replace(/[^a-z0-9-_]+/gi, '-').toLowerCase();

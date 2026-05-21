@@ -1879,7 +1879,8 @@
     const v = slide.values || {};
     const title = v.titleA || v.first || v.name || v.abbr || v.big || v.eyebrow ||
       v.oFirst || v.oLast || (T[slide.tpl]?.label) || tpl;
-    return `tff-${String(idx + 1).padStart(2, '0')}-${tpl}-${slugify(title)}.png`;
+    const suffix = arguments.length > 2 ? `-${arguments[2]}` : '';
+    return `tff-${String(idx + 1).padStart(2, '0')}-${tpl}-${slugify(title)}${suffix}.png`;
   }
 
   async function exportCurrentTile() {

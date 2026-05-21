@@ -1234,6 +1234,23 @@
         renderPreview();
       });
     });
+    area.querySelectorAll('[data-origin]').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const [fid, axis] = e.target.dataset.origin.split('|');
+        const n = parseFloat(e.target.value);
+        if (!state.values[fid] || typeof state.values[fid] !== 'object') state.values[fid] = { x:15, y:12.5 };
+        state.values[fid][axis] = isNaN(n) ? 0 : n;
+        renderPreview();
+      });
+    });
+    area.querySelectorAll('[data-scale]').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const fid = e.target.dataset.scale;
+        state.values[fid] = parseFloat(e.target.value) || 1;
+        renderForm();
+        renderPreview();
+      });
+    });
   }
 
   // ----------------------------------------------------------------

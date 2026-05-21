@@ -624,55 +624,72 @@
     return { type:'point', x:35, y:12.5, color:'qb' };
   }
 
-  // ---------- PLAY (player + route) FIGURE ----------
-  // A "player" entry: { label, color, x, y, route: [[x,y], ...] }
-  // The route is drawn as a polyline from (x,y) through each waypoint, with an
-  // arrowhead at the last point oriented along the final segment.
+  // ---------- PLAY (origin + player + route) FIGURE ----------
+  // Coordinate system for plays is relative:
+  //   origin = { x, y }                    -- the ball (anchor point)
+  //   player = { label, color, x, y, ... } -- x,y are OFFSETS from origin
+  //   route  = [[dx, dy], …]               -- each waypoint is an OFFSET from the player
+  // The route is drawn as a polyline player → wp1 → wp2 …, with an arrowhead
+  // on the final segment, oriented along the last direction.
   function newPlayer(seed) {
     return Object.assign({
       label: '',
       color: 'wr',
-      x: 15,
-      y: 12.5,
-      r: 0.95,
+      x: 0,
+      y: 0,
+      r: 1.0,        // multiplied by the play-wide pointScale at render
       width: 0.32,
-      route: [[20, 12.5]],
+      route: [[4, 0]],
     }, seed || {});
   }
 
-  function renderPlayPlayer(p) {
+  function renderBall(origin) {
+    const t = figTx(origin.x, origin.y);
+    // Brown football lozenge with a white seam — sized to read at 1080.
+    const rx = 0.85, ry = 0.55;
+    return `<g style="pointer-events:none;">
+      <ellipse cx="${t.sx}" cy="${t.sy}" rx="${rx}" ry="${ry}" fill="#7c3a1f" stroke="#3b1d11" stroke-width="0.08"/>
+      <line x1="${t.sx - rx*0.55}" y1="${t.sy}" x2="${t.sx + rx*0.55}" y2="${t.sy}" stroke="#f0fcfa" stroke-width="0.1" stroke-linecap="round"/>
+      ${[-0.3,-0.1,0.1,0.3].map(dx => `<line x1="${t.sx+dx}" y1="${t.sy-0.12}" x2="${t.sx+dx}" y2="${t.sy+0.12}" stroke="#f0fcfa" stroke-width="0.07"/>`).join('')}
+    </g>`;
+  }
+
+  function renderPlayPlayer(p, origin, pointScale) {
     const c = figColor(p.color);
     const w = p.width || 0.32;
-    const r = p.r || 0.95;
-    const start = figTx(p.x, p.y);
-    const route = (p.route || []).map(pt => figTx(pt[0], pt[1]));
+    const r = (p.r || 1.0) * (pointScale || 1.6);
+    // Player absolute = origin + offset
+    const px0 = origin.x + (p.x || 0), py0 = origin.y + (p.y || 0);
+    const start = figTx(px0, py0);
+    // Waypoints: each offset is relative to the player start
+    const wps = (p.route || []).map(([dx, dy]) => figTx(px0 + dx, py0 + dy));
     let path = '';
-    if (route.length) {
-      const pts = [start, ...route];
-      // All segments except the last drawn as a polyline.
-      const head = route[route.length - 1];
+    if (wps.length) {
+      const pts = [start, ...wps];
+      const head = wps[wps.length - 1];
       const beforeHead = pts[pts.length - 2];
       const polyPts = pts.slice(0, -1).map(pt => `${pt.sx},${pt.sy}`).join(' ');
       path += `<polyline points="${polyPts}" stroke="${c}" stroke-width="${w}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
-      // Final segment with arrowhead at the last waypoint.
-      const dx = head.sx - beforeHead.sx, dy = head.sy - beforeHead.sy;
-      const len = Math.hypot(dx, dy) || 1;
-      const ux = dx / len, uy = dy / len;
-      const headLen = 1.4;
+      const ddx = head.sx - beforeHead.sx, ddy = head.sy - beforeHead.sy;
+      const len = Math.hypot(ddx, ddy) || 1;
+      const ux = ddx / len, uy = ddy / len;
+      const headLen = Math.max(1.0, w * 4);
       const bx = head.sx - ux * headLen, by = head.sy - uy * headLen;
-      const px = -uy * headLen * 0.55, py = ux * headLen * 0.55;
+      const pxh = -uy * headLen * 0.55, pyh = ux * headLen * 0.55;
       path += `<line x1="${beforeHead.sx}" y1="${beforeHead.sy}" x2="${bx}" y2="${by}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>
-        <polygon points="${head.sx},${head.sy} ${bx + px},${by + py} ${bx - px},${by - py}" fill="${c}"/>`;
+        <polygon points="${head.sx},${head.sy} ${bx + pxh},${by + pyh} ${bx - pxh},${by - pyh}" fill="${c}"/>`;
     }
     const dot = `<circle cx="${start.sx}" cy="${start.sy}" r="${r}" fill="${c}" stroke="#021018" stroke-width="0.14"/>` +
-      (p.label ? `<text x="${start.sx}" y="${start.sy + 0.38}" fill="#021018" font-family="Syne, sans-serif" font-weight="800" font-size="1.1" text-anchor="middle" style="pointer-events:none;">${p.label}</text>` : '');
+      (p.label ? `<text x="${start.sx}" y="${start.sy + r*0.4}" fill="#021018" font-family="Syne, sans-serif" font-weight="800" font-size="${r*1.15}" text-anchor="middle" style="pointer-events:none;">${p.label}</text>` : '');
     return path + dot;
   }
 
-  function renderPlay(players) {
+  function renderPlay(players, origin, pointScale) {
+    const o = origin || { x: 15, y: 12.5 };
     return `<svg viewBox="0 0 ${FIG_VIEW_W} ${FIG_VIEW_H}" preserveAspectRatio="xMidYMid meet" style="position:absolute; inset:0; width:100%; height:100%;">
       ${renderFootballField()}
-      ${(players || []).map(renderPlayPlayer).join('')}
+      ${(players || []).map(p => renderPlayPlayer(p, o, pointScale)).join('')}
+      ${renderBall(o)}
     </svg>`;
   }
 

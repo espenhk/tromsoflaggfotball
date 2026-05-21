@@ -6,9 +6,10 @@
 <link rel="stylesheet" href="frames.css">
 <script src="chrome.js"></script>
 <style>
-  body { display: grid; grid-template-columns: 480px 1fr; min-height: 100vh; }
+  html, body { overflow-x: hidden; }
+  body { display: grid; grid-template-columns: 420px minmax(0, 1fr); min-height: 100vh; max-width: 100vw; }
   .sidebar { background: #08141a; border-right: 1px solid rgba(13,106,106,0.4);
-    padding: 32px 28px; overflow-y: auto; max-height: 100vh; }
+    padding: 32px 24px; overflow-y: auto; max-height: 100vh; min-width: 0; }
   .sidebar h1 { font-family: var(--font-heading); font-weight: 800; font-size: 28px;
     margin: 0 0 4px 0; color: var(--fg); letter-spacing: -0.01em; }
   .sidebar .lead { font-size: 13px; color: var(--fg-muted); margin: 0 0 24px 0; line-height:1.5; }
@@ -45,9 +46,13 @@
   .actions button.secondary { background:transparent; color:var(--fg-muted); border:1px solid rgba(13,106,106,0.6); }
   .actions button:hover { opacity:0.9; }
   .preview-area { padding: 32px; display:flex; align-items:flex-start; justify-content:center;
-    background:radial-gradient(at center, #08141a 0%, #02080c 100%); }
-  .preview-wrap { width: 540px; height: 540px; }
-  .preview-wrap .tile { transform: scale(0.5); transform-origin: top left; }
+    background:radial-gradient(at center, #08141a 0%, #02080c 100%); min-width: 0; overflow: hidden; }
+  .preview-wrap { width: var(--prev-size, 540px); height: var(--prev-size, 540px); }
+  .preview-wrap .tile { transform: scale(calc(var(--prev-size, 540px) / 1080px)); transform-origin: top left; }
+  @media (max-width: 900px) {
+    body { grid-template-columns: 1fr; }
+    .sidebar { max-height: none; }
+  }
   .chrome-row { display:flex; gap:6px; }
   .chrome-row button { flex:1; padding:8px; background:transparent; color:var(--fg-muted);
     border:1px solid rgba(13,106,106,0.5); border-radius:6px; cursor:pointer;
@@ -992,6 +997,7 @@
   function renderPreview() {
     const t = T[state.tpl];
     const wrap = document.getElementById('preview-wrap');
+    fitPreview();
     const accCls = state.accent !== 'primary' ? `acc-${state.accent}` : '';
     const wmRight = state.values.wm_right || '';
     const chromeHtml = state.chrome === 'none' ? '' : window.tileChrome(state.chrome);
@@ -1246,7 +1252,23 @@
     }
   });
 
+  function fitPreview() {
+    const area = document.querySelector('.preview-area');
+    const wrap = document.getElementById('preview-wrap');
+    if (!area || !wrap) return;
+    const cs = getComputedStyle(area);
+    const padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+    const padY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+    const avail = Math.max(160, Math.min(
+      area.clientWidth - padX,
+      window.innerHeight - padY,
+      540
+    ));
+    wrap.style.setProperty('--prev-size', avail + 'px');
+  }
+  window.addEventListener('resize', fitPreview);
   renderForm();
+  fitPreview();
   renderPreview();
 </script>
 </body>

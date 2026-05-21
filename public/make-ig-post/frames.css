@@ -309,17 +309,17 @@ body[data-aspect="story"] .t-game .half {
   flex-direction: column; text-align: left;
 }
 body[data-aspect="story"] .t-game .half.home {
-  clip-path: polygon(0 0, 100% 0, 100% 37%, 0 63%);
+  clip-path: polygon(0 0, 100% 0, 100% 26%, 0 52%);
   align-items: flex-start; justify-content: flex-start;
   padding: 120px 80px 0 80px;
 }
 body[data-aspect="story"] .t-game .half.away {
-  clip-path: polygon(0 63%, 100% 37%, 100% 100%, 0 100%);
+  clip-path: polygon(0 52%, 100% 26%, 100% 100%, 0 100%);
   align-items: flex-end; justify-content: flex-end;
-  padding: 0 80px 300px 80px;
+  padding: 0 80px 460px 80px;
   text-align: right;
 }
-body[data-aspect="story"] .t-game .vs { top: 960px; }
+body[data-aspect="story"] .t-game .vs { top: 750px; }
 
 
 /* ---------- NORWEGIAN FLAG (proportions 22x16; cross at cols 6-10, rows 6-10; blue inset cols 7-9, rows 7-9) ----------

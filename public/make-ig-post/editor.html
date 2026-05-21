@@ -1597,19 +1597,37 @@
     setTimeout(() => URL.revokeObjectURL(url), 4000);
   }
 
-  document.getElementById('export-btn').addEventListener('click', async () => {
-    const btn = document.getElementById('export-btn');
+  // Slugify a string for filename use. Keeps letters/digits, swaps anything
+  // else for "-", and trims duplicates/edges.
+  function slugify(s, maxLen = 28) {
+    return String(s || '')
+      // strip HTML tags first so titles like "<span>X</span>" become "X"
+      .replace(/<[^>]*>/g, ' ')
+      .normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[æÆ]/g, 'ae').replace(/[øØ]/g, 'o').replace(/[åÅ]/g, 'a')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, maxLen) || 'post';
+  }
+
+  function slideFilename(slide, idx) {
+    const tpl = (slide.tpl || 'post').replace(/[^a-z0-9-_]+/gi, '-').toLowerCase();
+    // Pick the most representative text field for the title slug.
+    const v = slide.values || {};
+    const title = v.titleA || v.first || v.name || v.abbr || v.big || v.eyebrow ||
+      v.oFirst || v.oLast || (T[slide.tpl]?.label) || tpl;
+    return `tff-${String(idx + 1).padStart(2, '0')}-${tpl}-${slugify(title)}.png`;
+  }
+
+  async function exportCurrentTile() {
     const tile = document.querySelector('#preview-wrap .tile');
-    if (!tile) { alert('Nothing to export yet.'); return; }
-    const originalLabel = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = 'Exporting…';
+    if (!tile) throw new Error('Nothing to export yet.');
+    const dims = ASPECT_DIMS[state.aspect] || ASPECT_DIMS.square;
     const prevTransform = tile.style.transform;
     try {
       const htmlToImage = await loadHtmlToImage();
-      // Render at full 1080×1080 (tile is scaled 0.5 for preview).
       tile.style.transform = 'none';
-      // Make sure fonts are actually loaded before snapshotting.
       try {
         if (document.fonts) {
           await Promise.all([
@@ -1622,28 +1640,55 @@
           await document.fonts.ready;
         }
       } catch (_) {}
-      // Allow layout to flush.
       await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-      // Pre-embed font CSS ourselves (html-to-image's own resolver chokes on the
-      // relative truetype-variations URL in colors_and_type.css).
       const fontEmbedCSS = await buildEmbeddedFontCSS();
       const dataUrl = await htmlToImage.toPng(tile, {
-        width: 1080,
-        height: 1080,
+        width: dims.w,
+        height: dims.h,
         pixelRatio: 1,
         cacheBust: true,
         skipFonts: false,
         fontEmbedCSS,
       });
-      const tplName = (state.tpl || 'post').replace(/[^a-z0-9-_]+/gi, '-').toLowerCase();
-      const filename = `tff-${tplName}-1080.png`;
-      const blob = await (await fetch(dataUrl)).blob();
-      await saveOrShareImage(blob, filename);
+      return await (await fetch(dataUrl)).blob();
+    } finally {
+      tile.style.transform = prevTransform;
+    }
+  }
+
+  document.getElementById('export-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('export-btn');
+    const originalLabel = btn.textContent;
+    btn.disabled = true;
+    // Walk slides starting from the current one. After each save we ask the
+    // user whether to continue to the next slide.
+    try {
+      snapshotSlide();
+      const total = state.slides.length;
+      for (let i = state.currentSlide; i < total; i++) {
+        if (i !== state.currentSlide) {
+          // Switch to the next slide so its tile is in the DOM.
+          loadSlide(i);
+          renderForm();
+          renderPreview();
+          // Give the browser two frames to commit layout before snapshotting.
+          await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+        }
+        btn.textContent = `Exporting ${i+1}/${total}…`;
+        const blob = await exportCurrentTile();
+        const filename = slideFilename(state.slides[i], i);
+        await saveOrShareImage(blob, filename);
+        if (i < total - 1) {
+          const go = confirm(`Saved slide ${i+1}/${total} as "${filename}".\n\nContinue to slide ${i+2}?`);
+          if (!go) break;
+        } else if (total > 1) {
+          alert(`Saved slide ${i+1}/${total} as "${filename}".\nAll slides exported.`);
+        }
+      }
     } catch (err) {
       console.error(err);
       alert('Export failed: ' + (err && err.message ? err.message : err));
     } finally {
-      tile.style.transform = prevTransform;
       btn.disabled = false;
       btn.textContent = originalLabel;
     }

@@ -1197,6 +1197,31 @@
     return _embeddedFontCSS;
   }
 
+  async function saveOrShareImage(blob, filename) {
+    const file = new File([blob], filename, { type: 'image/png' });
+    // Prefer native share sheet on mobile (iOS/Android) so user can "Save to Photos".
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file], title: filename });
+        return;
+      } catch (err) {
+        if (err && err.name === 'AbortError') return;
+        // fall through to download fallback
+        console.warn('Share failed, falling back to download', err);
+      }
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.rel = 'noopener';
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  }
+
   document.getElementById('export-btn').addEventListener('click', async () => {
     const btn = document.getElementById('export-btn');
     const tile = document.querySelector('#preview-wrap .tile');

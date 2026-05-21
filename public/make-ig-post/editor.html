@@ -591,6 +591,7 @@
     const sideInset = 0.6;
     // End-zone bands — lighter than the field surface.
     const EZ_FILL = '#175545';
+    const EZ_TOP_FILL = '#227a60';   // slightly lighter / brighter than bottom end zone
     const ezNear = FIG_XMIN < 10
       ? `<rect x="0" y="${FIG_XMAX - 10}" width="${W}" height="${Math.min(10, FIG_XMAX) - FIG_XMIN}" fill="${EZ_FILL}"/>`
       : '';
@@ -599,14 +600,14 @@
       : '';
     // Optional "top end zone" for cropped (non-full) aspects — fills from the
     // top of the visible field down to the first solid yard line (major 10-yd
-    // line). Lighter than the field surface, mirroring the bottom end zone.
+    // line). Distinct from the bottom end zone so it pops as a design element.
     let ezTop = '';
     if (!FIG_FULL && state.topEndZone) {
       const majors = yardXs.filter(x => x % 10 === 0);
       if (majors.length) {
         const topX = Math.max(...majors);
         const ezH = FIG_XMAX - topX; // sy of that line == height from top
-        ezTop = `<rect x="0" y="0" width="${W}" height="${ezH}" fill="${EZ_FILL}"/>`;
+        ezTop = `<rect x="0" y="0" width="${W}" height="${ezH}" fill="${EZ_TOP_FILL}"/>`;
       }
     }
     // Yard numbers at every 10 yd line (skip midfield, it gets the marker)

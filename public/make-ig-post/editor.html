@@ -735,10 +735,13 @@
       { id:'eyebrow', label:'Eyebrow', type:'text', default:'Ukens konsept · 08 av 30' },
       { id:'titleA', label:'Title 1', type:'text', default:'Slant-Flat' },
       { id:'titleB', label:'Title 2 (HTML ok)', type:'text', default:'<span style="color:var(--chrome);">combination.</span>' },
+      { id:'origin', label:'Ball position (anchor)', type:'origin', default: { x:15, y:12.5 } },
+      { id:'pointScale', label:'Circle size', type:'scale', default: 1.8 },
       { id:'players', label:'Players & routes', type:'players', default: [
-        { label:'Q', color:'qb', x:15,   y:12.5, r:1.0, width:0.32, route: [] },
-        { label:'1', color:'wr', x:15,   y:4,    r:0.95, width:0.32, route: [[18,8],[24,12]] },
-        { label:'2', color:'wr', x:15,   y:21,   r:0.95, width:0.32, route: [[18,21],[18,24]] },
+        // All player x,y are OFFSETS from the ball; route waypoints are offsets from the player.
+        { label:'Q', color:'qb', x:0, y:0,    r:1.0, width:0.32, route: [] },
+        { label:'1', color:'wr', x:0, y:-8.5, r:1.0, width:0.32, route: [[3,4],[9,8]] },
+        { label:'2', color:'wr', x:0, y:8.5,  r:1.0, width:0.32, route: [[3,0],[3,3]] },
       ]},
       { id:'desc', label:'Explanation (HTML ok)', type:'textarea', default:'<strong style="color:var(--fg);">Hvorfor:</strong> Slant tvinger nær-CB innover. Flat utnytter rommet han forlot.' },
       { id:'wm_right', label:'Wordmark right', type:'text', default:'UKENS KONSEPT' },
@@ -746,7 +749,7 @@
     render: d => `<div class="stage">
       <div class="rule-header"><div class="eyebrow">${d.eyebrow}</div></div>
       <div class="diagram">
-        ${renderPlay(d.players)}
+        ${renderPlay(d.players, d.origin, d.pointScale)}
         <div class="rule-title-card">
           <div class="h-display" style="font-size:72px; line-height:0.95;">${d.titleA}<br>${d.titleB}</div>
         </div>

@@ -296,7 +296,9 @@ body[data-aspect="story"] .t-game .vs { top: 746px; }
 
 /* Story aspect: banner taller, sits above safe-zone overlay area */
 body[data-aspect="story"] .t-game .game-banner { min-height: 320px; padding: 56px 56px; }
-body[data-aspect="story"] .t-game .game-banner.meta .gb-when { font-size: 80px; }
+body[data-aspect="story"] .t-game .game-banner.meta .gb-when { font-size: 96px; }
+body[data-aspect="story"] .t-game .game-banner.meta.stacked { gap: 6px; min-height: 420px; }
+body[data-aspect="story"] .t-game .game-banner.meta .gb-venue { font-size: 40px; margin-top: 14px; }
 body[data-aspect="story"] .t-game .game-banner.score .gb-score { font-size: 220px; }
 
 

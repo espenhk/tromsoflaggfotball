@@ -558,20 +558,21 @@
   const figColor = name => (FIG_COLORS[name] || FIG_COLORS.white).hex;
 
   function renderFootballField() {
-    // Vertical, cropped field: 25 wide × 27 tall (yards).
-    // Own end zone occupies SVG y:25→27 (the 2 yards of x∈[8,10]).
-    // Goal line at SVG y = 35 - 10 = 25.
-    // Yard lines at x = 15,20,25,30 (own 5/10/15/20-yd lines).
+    // Vertical, cropped field. Width = FIG_VIEW_W yards (cross-field).
+    // Height = FIG_VIEW_H yards (down-field, grows with aspect ratio).
+    // Goal line at x=10. Yard lines every 5 yd from x=15 up to FIG_XMAX.
+    const yardXs = [];
+    for (let x = 15; x <= FIG_XMAX - 1; x += 5) yardXs.push(x);
     return `
       <rect x="0" y="0" width="${FIG_VIEW_W}" height="${FIG_VIEW_H}" fill="#0d2f24"/>
       <rect x="0" y="${FIG_XMAX - 10}" width="${FIG_VIEW_W}" height="2" fill="rgba(84,197,158,0.22)"/>
-      ${[15,20,25,30].map(x => {
+      ${yardXs.map(x => {
         const sy = FIG_XMAX - x;
         return `<line x1="0.6" y1="${sy}" x2="${FIG_VIEW_W - 0.6}" y2="${sy}" stroke="rgba(255,255,255,0.14)" stroke-width="${x%10===0?0.08:0.05}"${x%10===0?'':' stroke-dasharray="0.5 0.7"'}/>`;
       }).join('')}
       <line x1="0" y1="${FIG_XMAX - 10}" x2="${FIG_VIEW_W}" y2="${FIG_XMAX - 10}" stroke="#f0fcfa" stroke-width="0.18"/>
       <rect x="0" y="0" width="${FIG_VIEW_W}" height="${FIG_VIEW_H}" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="0.12"/>
-      ${[15,20,25,30].map(x => `<circle cx="${FIG_VIEW_W/2}" cy="${FIG_XMAX - x}" r="0.14" fill="rgba(255,255,255,0.4)"/>`).join('')}
+      ${yardXs.map(x => `<circle cx="${FIG_VIEW_W/2}" cy="${FIG_XMAX - x}" r="0.14" fill="rgba(255,255,255,0.4)"/>`).join('')}
     `;
   }
 

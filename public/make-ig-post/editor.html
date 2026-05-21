@@ -900,7 +900,7 @@
           ${photo(photoSrc, photoLabel)}
           <div class="matchup-info" style="padding-top:40px;">
             <div style="font-family:var(--font-body); font-size:24px; color:${c}; letter-spacing:0.18em; text-transform:uppercase; font-weight:700; margin-bottom:16px;">${label}</div>
-            <div class="h-display" style="font-size:68px; line-height:0.95;">${first}<br>${last}</div>
+            <div class="h-display matchup-name" style="font-size:68px; line-height:0.95;">${first}<br>${last}</div>
             <div style="display:inline-block; padding:8px 18px; background:rgba(${r},0.15); border:1px solid ${c}; color:${c}; font-family:var(--font-heading); font-weight:800; letter-spacing:0.18em; font-size:20px; border-radius:999px; margin-top:16px;">${tag}</div>
           </div>
           <div style="display:flex; flex-direction:column; gap:8px; margin-top:24px;">
@@ -1485,6 +1485,41 @@
         el.style.fontSize = size + 'px';
       }
     });
+
+    // Matchup names: shrink-to-fit so both sides use the same font size.
+    // Measure each name's scrollWidth against its container, compute the
+    // required size for every line, then apply the smallest size to ALL
+    // names so both halves stay visually balanced.
+    const matchupNames = wrap.querySelectorAll('.matchup-name');
+    if (matchupNames.length) {
+      const startSize = 68;
+      const minSize = 32;
+      let sharedSize = startSize;
+      matchupNames.forEach(el => {
+        const parent = el.parentElement;
+        if (!parent) return;
+        const cs = getComputedStyle(parent);
+        const padL = parseFloat(cs.paddingLeft) || 0;
+        const padR = parseFloat(cs.paddingRight) || 0;
+        const maxW = parent.clientWidth - padL - padR;
+        if (maxW <= 0) return;
+        el.style.whiteSpace = 'nowrap';
+        const lines = el.innerHTML.split(/<br\s*\/?>/i);
+        el.innerHTML = lines.map(t => `<span class="mn-line" style="display:block;">${t}</span>`).join('');
+        let size = startSize;
+        el.style.fontSize = size + 'px';
+        const lineEls = el.querySelectorAll('.mn-line');
+        for (let i = 1; i <= 30; i++) {
+          let widest = 0;
+          lineEls.forEach(l => { if (l.scrollWidth > widest) widest = l.scrollWidth; });
+          if (widest <= maxW || size <= minSize) break;
+          size = Math.max(minSize, Math.floor(size * (maxW / widest) * 0.98));
+          el.style.fontSize = size + 'px';
+        }
+        if (size < sharedSize) sharedSize = size;
+      });
+      matchupNames.forEach(el => { el.style.fontSize = sharedSize + 'px'; });
+    }
   }
   document.querySelectorAll('#picker button').forEach(b => {
     b.addEventListener('click', () => {

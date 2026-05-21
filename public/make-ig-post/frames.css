@@ -243,19 +243,6 @@ body[data-aspect="story"] .t-matchup .half { padding-bottom: 280px; }
   font-family: var(--font-heading); font-weight: 800; font-size: 48px; color: var(--fg);
   border: 4px solid var(--primary); }
 
-/* Optional time/place header band */
-.t-matchup .stage.has-meta { flex-direction: column; }
-.t-matchup .stage.has-meta .matchup-row { flex: 1; display: flex; flex-direction: row;
-  position: relative; min-height: 0; width: 100%; }
-.t-matchup .matchup-meta { display: flex; align-items: center; justify-content: space-between;
-  gap: 24px; padding: 18px 56px; background: rgba(0,0,0,0.35);
-  border-bottom: 1px solid hsl(var(--primary) / 0.5);
-  font-family: var(--font-body); font-weight: 700; font-size: 22px;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg);
-  flex: 0 0 auto; z-index: 6; }
-.t-matchup .matchup-meta .mm-dot { color: hsl(var(--primary)); opacity: 0.7; }
-body[data-aspect="story"] .t-matchup .matchup-meta { padding: 28px 72px; font-size: 30px; gap: 32px; }
-
 
 /* ---------- NORWEGIAN FLAG (proportions 22x16; cross at cols 6-10, rows 6-10; blue inset cols 7-9, rows 7-9) ----------
    The Scandinavian cross is the UNION of a vertical bar and a horizontal bar.

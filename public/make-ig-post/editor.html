@@ -885,9 +885,6 @@
       { id:'dS2v', label:'Def stat 2 value', type:'text', default:'19' },
       { id:'dS3l', label:'Def stat 3 label', type:'text', default:'40-yd' },
       { id:'dS3v', label:'Def stat 3 value', type:'text', default:'4.5s' },
-      { id:'showMeta', label:'Add time and place', type:'checkbox', default:false },
-      { id:'gameWhen', label:'When', type:'text', default:'LØR 14. JUN · 14:00' },
-      { id:'gameWhere', label:'Where', type:'text', default:'TUIL Kunstgress, Tromsø' },
       { id:'wm_right', label:'Wordmark right', type:'text', default:'RUNDE 04 · LØRDAG' },
     ],
     render: d => {
@@ -912,21 +909,11 @@
         </div>`;
       const oStats = [[d.oS1l,d.oS1v],[d.oS2l,d.oS2v],[d.oS3l,d.oS3v]];
       const dStats = [[d.dS1l,d.dS1v],[d.dS2l,d.dS2v],[d.dS3l,d.dS3v]];
-      const halves = `
+      return `<div class="stage">
         ${half('off', oC, oR, d.oPhoto, 'angrep · photo', 'ANGREP', d.oFirst, d.oLast, d.oTag, oStats)}
         <div class="vs">VS</div>
-        ${half('def', dC, dR, d.dPhoto, 'forsvar · photo', 'FORSVAR', d.dFirst, d.dLast, d.dTag, dStats)}`;
-      if (d.showMeta) {
-        return `<div class="stage has-meta">
-          <div class="matchup-meta">
-            <span class="mm-when">${d.gameWhen || ''}</span>
-            <span class="mm-dot">·</span>
-            <span class="mm-where">${d.gameWhere || ''}</span>
-          </div>
-          <div class="matchup-row">${halves}</div>
-        </div>`;
-      }
-      return `<div class="stage">${halves}</div>`;
+        ${half('def', dC, dR, d.dPhoto, 'forsvar · photo', 'FORSVAR', d.dFirst, d.dLast, d.dTag, dStats)}
+      </div>`;
     },
     cls: 't-matchup',
   };

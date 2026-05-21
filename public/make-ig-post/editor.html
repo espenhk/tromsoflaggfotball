@@ -213,6 +213,10 @@
     <button data-aspect="portrait">4:5 Portrait</button>
     <button data-aspect="story">9:16 Story</button>
   </div>
+  <label id="top-ez-toggle" style="display:flex; align-items:center; gap:8px; margin-top:10px; font-size:13px; color:var(--fg-muted); cursor:pointer;">
+    <input type="checkbox" id="top-ez-input" style="accent-color:var(--primary);">
+    End zone on top
+  </label>
 
   <h3>3. Chrome</h3>
   <div class="chrome-row">
@@ -593,6 +597,18 @@
     const ezFar = FIG_XMAX > 60
       ? `<rect x="0" y="0" width="${W}" height="${FIG_XMAX - 60}" fill="${EZ_FILL}"/>`
       : '';
+    // Optional "top end zone" for cropped (non-full) aspects — fills from the
+    // top of the visible field down to the first solid yard line (major 10-yd
+    // line). Lighter than the field surface, mirroring the bottom end zone.
+    let ezTop = '';
+    if (!FIG_FULL && state.topEndZone) {
+      const majors = yardXs.filter(x => x % 10 === 0);
+      if (majors.length) {
+        const topX = Math.max(...majors);
+        const ezH = FIG_XMAX - topX; // sy of that line == height from top
+        ezTop = `<rect x="0" y="0" width="${W}" height="${ezH}" fill="${EZ_FILL}"/>`;
+      }
+    }
     // Yard numbers at every 10 yd line (skip midfield, it gets the marker)
     const numbersFor = x => {
       if (x === 35) return '';
@@ -630,7 +646,7 @@
       ? `<line x1="0" y1="${FIG_XMAX - 60}" x2="${W}" y2="${FIG_XMAX - 60}" stroke="#f0fcfa" stroke-width="0.22"/>` : '';
     return `
       <rect x="0" y="0" width="${W}" height="${H}" fill="#0d2f24"/>
-      ${ezNear}${ezFar}
+      ${ezNear}${ezFar}${ezTop}
       ${yardXs.map(x => {
         const sy = FIG_XMAX - x;
         const major = x % 10 === 0;
@@ -909,6 +925,7 @@
   // so flipping between slides preserves everything.
   const state = {
     aspect: 'square',
+    topEndZone: false,
     currentSlide: 0,
     slides: [],
     tpl: 'player',
@@ -1388,6 +1405,10 @@
     const wrap = document.getElementById('preview-wrap');
     applyAspect(state.aspect);
     fitPreview();
+    const ezToggle = document.getElementById('top-ez-toggle');
+    const ezInput = document.getElementById('top-ez-input');
+    if (ezToggle) ezToggle.style.display = (state.aspect === 'story') ? 'none' : 'flex';
+    if (ezInput) ezInput.checked = !!state.topEndZone;
     snapshotSlide();
     renderSlideBar();
     const accCls = state.accent !== 'primary' ? `acc-${state.accent}` : '';
@@ -1500,6 +1521,11 @@
       state.aspect = b.dataset.aspect;
       renderPreview();
     });
+  });
+
+  document.getElementById('top-ez-input').addEventListener('change', e => {
+    state.topEndZone = e.target.checked;
+    renderPreview();
   });
 
   // ---------- SLIDE BAR ----------

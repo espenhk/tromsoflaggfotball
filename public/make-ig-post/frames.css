@@ -316,7 +316,7 @@ body[data-aspect="story"] .t-game .half.home {
 body[data-aspect="story"] .t-game .half.away {
   clip-path: polygon(0 63%, 100% 37%, 100% 100%, 0 100%);
   align-items: flex-end; justify-content: flex-end;
-  padding: 0 80px 500px 80px;
+  padding: 0 80px 300px 80px;
   text-align: right;
 }
 body[data-aspect="story"] .t-game .vs { top: 960px; }

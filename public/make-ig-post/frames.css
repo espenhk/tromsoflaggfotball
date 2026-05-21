@@ -291,13 +291,16 @@ body[data-aspect="story"] .t-game .half { padding-bottom: 280px; }
    top of each half and scale them up. VS sits centered on the logo row. */
 body[data-aspect="portrait"] .t-game .half,
 body[data-aspect="story"] .t-game .half { justify-content: flex-start; }
-body[data-aspect="portrait"] .t-game .half { padding-top: 72px; }
-body[data-aspect="story"] .t-game .half    { padding-top: 110px; }
-body[data-aspect="portrait"] .t-game .game-logo { width: 380px; height: 380px; }
-body[data-aspect="story"] .t-game .game-logo    { width: 460px; height: 460px; }
-/* VS centered vertically on the logo (padding-top + logo/2) */
-body[data-aspect="portrait"] .t-game .vs { top: calc(72px + 190px); }
-body[data-aspect="story"] .t-game .vs    { top: calc(110px + 230px); }
+/* Logo ~90% of its half (half-width = 540px on both aspects). Padding-top
+   equals the logo-to-text gap so the logo splits the space between the
+   screen top and the top of the team name. */
+body[data-aspect="portrait"] .t-game .half,
+body[data-aspect="story"] .t-game .half { padding-top: 28px; }
+body[data-aspect="portrait"] .t-game .game-logo,
+body[data-aspect="story"] .t-game .game-logo { width: 486px; height: 486px; border-radius: 32px; }
+/* VS centered vertically on the logo (padding-top + logo/2 = 28 + 243 = 271) */
+body[data-aspect="portrait"] .t-game .vs,
+body[data-aspect="story"] .t-game .vs { top: 271px; }
 
 /* Story aspect: banner taller, sits above safe-zone overlay area */
 body[data-aspect="story"] .t-game .game-banner { min-height: 320px; padding: 56px 56px; }

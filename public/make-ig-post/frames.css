@@ -134,18 +134,19 @@ body { margin: 0; background: #050a0d; color: var(--fg); font-family: var(--font
 .t-nm .stage { padding: 0; flex-direction: column; }
 .t-nm .body-area { flex: 1; padding: 48px 64px 64px; display: flex; flex-direction: column; justify-content: center; gap: 24px; }
 
-/* Field templates (rule / play-concept). The diagram fills the entire stage
-   so the field reaches the wordmark on bottom and the very top of the tile.
-   The eyebrow row floats as an absolute card so it doesn't steal vertical
-   space from the field. */
+/* Field templates (rule / play-concept). The diagram fills the area between
+   the top eyebrow bar and the bottom wordmark, edge-to-edge horizontally
+   and vertically. The eyebrow bar mirrors the footer wordmark in style. */
 .t-rule .stage { padding: 0; flex-direction: column; gap: 0; position: absolute;
-  inset: 0 0 48px 0; }
-.t-rule .rule-header { position: absolute; top: 28px; left: 48px; right: 48px;
-  z-index: 4; padding: 14px 22px; background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  border-radius: 10px; }
+  inset: 48px 0 48px 0; }
+.t-rule .rule-header { position: absolute; top: 0; left: 0; right: 0; height: 48px;
+  display: flex; align-items: center; padding: 0 56px;
+  font-family: var(--font-heading); font-weight: 700; font-size: 17px;
+  letter-spacing: 0.24em; text-transform: uppercase; color: var(--chrome);
+  z-index: 10; border-bottom: 1px solid rgba(13,106,106,0.4); background: var(--bg); }
+.t-rule .rule-header .eyebrow { font-size: 17px; letter-spacing: 0.24em;
+  color: var(--chrome); font-weight: 700; }
 .t-rule .diagram { position: absolute; inset: 0; background: #0d2f24;
-  border-bottom: 1px solid rgba(13,106,106,0.4);
   overflow: hidden; }
 .t-rule .rule-title-card { position: absolute; top: 110px; left: 48px; right: 48px;
   padding: 28px 36px; background: rgba(0,0,0,0.62); backdrop-filter: blur(8px);
@@ -160,7 +161,6 @@ body { margin: 0; background: #050a0d; color: var(--fg); font-family: var(--font
    more breathing room from the vertical edges. */
 body[data-aspect="story"] .t-rule .stage { inset: 0; }
 body[data-aspect="story"] .t-rule .rule-header { display: none; }
-body[data-aspect="story"] .t-rule .diagram { border-bottom: none; }
 body[data-aspect="story"] .t-rule .rule-title-card { top: 120px; }
 body[data-aspect="story"] .t-rule .rule-desc-card { bottom: 120px; }
 body[data-aspect="story"] .tile .wordmark { display: none; }

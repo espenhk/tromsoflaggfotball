@@ -256,6 +256,9 @@
     <button class="secondary" id="reset-btn">Reset fields</button>
     <button id="export-btn">Export PNG</button>
   </div>
+  <div class="actions">
+    <button class="secondary" id="export-all-aspects-btn">Export all aspect ratios</button>
+  </div>
 </aside>
 
 <main class="preview-area">
@@ -1876,7 +1879,8 @@
     const v = slide.values || {};
     const title = v.titleA || v.first || v.name || v.abbr || v.big || v.eyebrow ||
       v.oFirst || v.oLast || (T[slide.tpl]?.label) || tpl;
-    return `tff-${String(idx + 1).padStart(2, '0')}-${tpl}-${slugify(title)}.png`;
+    const suffix = arguments.length > 2 ? `-${arguments[2]}` : '';
+    return `tff-${String(idx + 1).padStart(2, '0')}-${tpl}-${slugify(title)}${suffix}.png`;
   }
 
   async function exportCurrentTile() {
@@ -1948,6 +1952,46 @@
       console.error(err);
       alert('Export failed: ' + (err && err.message ? err.message : err));
     } finally {
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
+  });
+
+  document.getElementById('export-all-aspects-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('export-all-aspects-btn');
+    const originalLabel = btn.textContent;
+    btn.disabled = true;
+    const aspects = ['square', 'portrait', 'story'];
+    const originalAspect = state.aspect;
+    try {
+      snapshotSlide();
+      const slide = state.slides[state.currentSlide];
+      for (let i = 0; i < aspects.length; i++) {
+        const a = aspects[i];
+        state.aspect = a;
+        document.querySelectorAll('#aspect-row button').forEach(x =>
+          x.classList.toggle('active', x.dataset.aspect === a));
+        renderPreview();
+        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+        btn.textContent = `Exporting ${a} (${i+1}/${aspects.length})…`;
+        const blob = await exportCurrentTile();
+        const filename = slideFilename(slide, state.currentSlide, a);
+        await saveOrShareImage(blob, filename);
+        if (i < aspects.length - 1) {
+          const go = confirm(`Saved "${filename}".\n\nContinue to ${aspects[i+1]}?`);
+          if (!go) break;
+        } else {
+          alert(`Saved "${filename}".\nAll aspect ratios exported.`);
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Export failed: ' + (err && err.message ? err.message : err));
+    } finally {
+      state.aspect = originalAspect;
+      document.querySelectorAll('#aspect-row button').forEach(x =>
+        x.classList.toggle('active', x.dataset.aspect === originalAspect));
+      renderPreview();
       btn.disabled = false;
       btn.textContent = originalLabel;
     }

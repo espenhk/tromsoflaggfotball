@@ -1252,7 +1252,23 @@
     }
   });
 
+  function fitPreview() {
+    const area = document.querySelector('.preview-area');
+    const wrap = document.getElementById('preview-wrap');
+    if (!area || !wrap) return;
+    const cs = getComputedStyle(area);
+    const padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+    const padY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+    const avail = Math.max(160, Math.min(
+      area.clientWidth - padX,
+      window.innerHeight - padY,
+      540
+    ));
+    wrap.style.setProperty('--prev-size', avail + 'px');
+  }
+  window.addEventListener('resize', fitPreview);
   renderForm();
+  fitPreview();
   renderPreview();
 </script>
 </body>

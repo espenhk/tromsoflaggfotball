@@ -134,13 +134,20 @@ body { margin: 0; background: #050a0d; color: var(--fg); font-family: var(--font
 .t-nm .stage { padding: 0; flex-direction: column; }
 .t-nm .body-area { flex: 1; padding: 48px 64px 64px; display: flex; flex-direction: column; justify-content: center; gap: 24px; }
 
-.t-rule .stage { padding: 0; flex-direction: column; gap: 0; }
-.t-rule .rule-header { padding: 64px 64px 20px; }
-.t-rule .diagram { flex: 1; background: #0d2f24;
-  border-top: 1px solid rgba(13,106,106,0.4);
+/* Field templates (rule / play-concept). The diagram fills the entire stage
+   so the field reaches the wordmark on bottom and the very top of the tile.
+   The eyebrow row floats as an absolute card so it doesn't steal vertical
+   space from the field. */
+.t-rule .stage { padding: 0; flex-direction: column; gap: 0; position: absolute;
+  inset: 0 0 48px 0; }
+.t-rule .rule-header { position: absolute; top: 28px; left: 48px; right: 48px;
+  z-index: 4; padding: 14px 22px; background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  border-radius: 10px; }
+.t-rule .diagram { position: absolute; inset: 0; background: #0d2f24;
   border-bottom: 1px solid rgba(13,106,106,0.4);
-  position: relative; overflow: hidden; }
-.t-rule .rule-title-card { position: absolute; top: 40px; left: 48px; right: 48px;
+  overflow: hidden; }
+.t-rule .rule-title-card { position: absolute; top: 110px; left: 48px; right: 48px;
   padding: 28px 36px; background: rgba(0,0,0,0.62); backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px); border-radius: 12px; z-index: 3; }
 .t-rule .rule-desc-card { position: absolute; bottom: 40px; left: 48px; right: 48px;
@@ -148,6 +155,15 @@ body { margin: 0; background: #050a0d; color: var(--fg); font-family: var(--font
   -webkit-backdrop-filter: blur(8px); border-radius: 12px; z-index: 3;
   font-family: var(--font-body); font-size: 24px; color: var(--fg); line-height: 1.5; }
 .t-rule .rule-desc-card strong { color: var(--fg); font-weight: 700; }
+
+/* 9:16 story: drop the eyebrow header and wordmark entirely; give text cards
+   more breathing room from the vertical edges. */
+body[data-aspect="story"] .t-rule .stage { inset: 0; }
+body[data-aspect="story"] .t-rule .rule-header { display: none; }
+body[data-aspect="story"] .t-rule .diagram { border-bottom: none; }
+body[data-aspect="story"] .t-rule .rule-title-card { top: 120px; }
+body[data-aspect="story"] .t-rule .rule-desc-card { bottom: 120px; }
+body[data-aspect="story"] .tile .wordmark { display: none; }
 
 .t-drill .stage { padding: 80px 64px 64px; flex-direction: column; gap: 24px; }
 .t-drill .field { flex: 1; background: linear-gradient(180deg, #042f2e 0%, #03241f 100%);

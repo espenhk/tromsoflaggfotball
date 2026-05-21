@@ -1405,6 +1405,10 @@
     const wrap = document.getElementById('preview-wrap');
     applyAspect(state.aspect);
     fitPreview();
+    const ezToggle = document.getElementById('top-ez-toggle');
+    const ezInput = document.getElementById('top-ez-input');
+    if (ezToggle) ezToggle.style.display = (state.aspect === 'story') ? 'none' : 'flex';
+    if (ezInput) ezInput.checked = !!state.topEndZone;
     snapshotSlide();
     renderSlideBar();
     const accCls = state.accent !== 'primary' ? `acc-${state.accent}` : '';

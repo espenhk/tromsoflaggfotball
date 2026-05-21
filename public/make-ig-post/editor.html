@@ -530,19 +530,19 @@
   let FIG_VIEW_H = FIG_XMAX - FIG_XMIN;       // visible yards down-field
   let FIG_YMIN = FIG_CENTER_Y - FIG_VIEW_W / 2;
 
-  // Per-aspect tile + diagram dims. Tile width stays 1080. The diagram aspect
-  // (figW / figH) is tuned to roughly match the diagram container so the field
-  // bleeds to the horizontal edges with minimal letterboxing.
-  //   square   diagram ≈ 1080 × 920  → ratio ~1.17
-  //   portrait diagram ≈ 1080 × 1180 → ratio ~0.91
-  //   story    diagram ≈ 1080 × 1750 → ratio ~0.62 — fits 5+50+5 = 60 yd
+  // Per-aspect tile + diagram dims. Tile width stays 1080. figW/figH matches
+  // the actual diagram box so the SVG field reaches every edge with no
+  // preserveAspectRatio letterboxing.
+  //   square   diagram = 1080 × 984  → ratio ~1.098
+  //   portrait diagram = 1080 × 1254 → ratio ~0.861
+  //   story    diagram = 1080 × 1920 → ratio 0.5625 — fits 5+50+5 = 60 yd
   const ASPECT_DIMS = {
     // `full` = show full 50-yd field + end-zone numbering/midfield marker.
     // Non-full aspects show a cropped slice of the field — short 3 yd end
     // zone peeking up, no numbering, no midfield marker.
-    square:   { w: 1080, h: 1080, xmin: 7, figH: 30, figW: 36, full: false },
-    portrait: { w: 1080, h: 1350, xmin: 7, figH: 42, figW: 40, full: false },
-    story:    { w: 1080, h: 1920, xmin: 5, figH: 60, figW: 38, full: true  },
+    square:   { w: 1080, h: 1080, xmin: 7, figH: 30, figW: 32.93, full: false },
+    portrait: { w: 1080, h: 1350, xmin: 7, figH: 42, figW: 36.17, full: false },
+    story:    { w: 1080, h: 1920, xmin: 5, figH: 60, figW: 33.75, full: true  },
   };
   let FIG_FULL = false;
   function applyAspect(aspect) {

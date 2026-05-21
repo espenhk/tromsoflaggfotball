@@ -920,6 +920,61 @@
   };
 
   // ----------------------------------------------------------------
+  // T12 — GAME (head-to-head with logos; pre-game time/place OR post-game score)
+  // ----------------------------------------------------------------
+  T.game = {
+    label: 'Game',
+    fields: [
+      { id:'isPostGame', label:'Post-game (show score instead of time/place)', type:'checkbox', default:false },
+      { id:'hColor', label:'Home — accent color', type:'colorPick', default:'#54c59e' },
+      { id:'hLogo',  label:'Home — logo',  type:'image', default:'' },
+      { id:'hName',  label:'Home — name',  type:'text', default:'TROMSØ' },
+      { id:'hTag',   label:'Home — tag',   type:'text', default:'FLAGGFOTBALL' },
+      { id:'hScore', label:'Home — score', type:'text', default:'28' },
+      { id:'aColor', label:'Away — accent color', type:'colorPick', default:'#fb7185' },
+      { id:'aLogo',  label:'Away — logo',  type:'image', default:'' },
+      { id:'aName',  label:'Away — name',  type:'text', default:'BODØ' },
+      { id:'aTag',   label:'Away — tag',   type:'text', default:'GLIMT FLAG' },
+      { id:'aScore', label:'Away — score', type:'text', default:'14' },
+      { id:'gDate',  label:'Date',         type:'text', default:'LØR 14. JUNI' },
+      { id:'gTime',  label:'Time',         type:'text', default:'KL 14:00' },
+      { id:'gVenue', label:'Venue',        type:'text', default:'TROMSDALEN KUNSTGRESS' },
+      { id:'gResult',label:'Result label (post-game)', type:'text', default:'FULL TID' },
+      { id:'wm_right', label:'Wordmark right', type:'text', default:'RUNDE 04 · LØRDAG' },
+    ],
+    render: d => {
+      const hC = d.hColor || '#54c59e', aC = d.aColor || '#fb7185';
+      const hR = hexToRgb(hC),          aR = hexToRgb(aC);
+      const logo = (src, label) => src
+        ? `<div class="game-logo has-image" style='background-image:url("${String(src).replace(/"/g, "%22")}");'></div>`
+        : `<div class="game-logo"><span>[ ${label} ]</span></div>`;
+      const half = (side, c, r, src, label, name, tag) => `
+        <div class="half ${side}" style="background:linear-gradient(180deg, rgba(${r},0.20) 0%, rgba(${r},0.04) 100%);">
+          ${logo(src, label)}
+          <div class="h-display game-name" style="color:${c};">${name}</div>
+          <div class="game-tag" style="background:rgba(${r},0.15); border:1px solid ${c}; color:${c};">${tag}</div>
+        </div>`;
+      const banner = d.isPostGame
+        ? `<div class="game-banner score">
+             <div class="gb-score" style="color:${hC};">${d.hScore}</div>
+             <div class="gb-mid">${d.gResult || ''}</div>
+             <div class="gb-score" style="color:${aC};">${d.aScore}</div>
+           </div>`
+        : `<div class="game-banner meta">
+             <div class="gb-when"><span class="gb-date">${d.gDate}</span><span class="gb-dot">·</span><span class="gb-time">${d.gTime}</span></div>
+             <div class="gb-venue">${d.gVenue}</div>
+           </div>`;
+      return `<div class="stage${d.isPostGame ? ' is-post' : ''}">
+        ${half('home', hC, hR, d.hLogo, 'home · logo', d.hName, d.hTag)}
+        <div class="vs">VS</div>
+        ${half('away', aC, aR, d.aLogo, 'away · logo', d.aName, d.aTag)}
+        ${banner}
+      </div>`;
+    },
+    cls: 't-game',
+  };
+
+  // ----------------------------------------------------------------
   // App state
   // ----------------------------------------------------------------
   // Top-level state. Per-slide stuff (tpl/chrome/accent/photo/values) lives

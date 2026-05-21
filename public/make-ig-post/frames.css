@@ -276,7 +276,8 @@ body[data-aspect="story"] .t-game .half { padding-bottom: 280px; }
   gap: 12px; min-height: 220px; }
 .t-game .game-banner.meta .gb-when { font-family: var(--font-heading); font-weight: 800;
   font-size: 64px; line-height: 1; color: var(--fg); letter-spacing: 0.02em;
-  display: flex; align-items: center; gap: 24px; text-transform: uppercase; }
+  display: flex; align-items: center; gap: 24px; text-transform: uppercase;
+  white-space: nowrap; }
 .t-game .game-banner.meta .gb-dot { color: var(--primary); }
 .t-game .game-banner.meta .gb-venue { font-family: var(--font-body); font-weight: 600;
   font-size: 28px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-muted); }

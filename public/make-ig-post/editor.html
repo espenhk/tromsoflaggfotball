@@ -983,7 +983,17 @@
         : (() => {
             const whenLen = (d.gDate||'').length + (d.gTime||'').length + 3; // " · "
             const isStory = document.body.getAttribute('data-aspect') === 'story';
-            const fs = whenSize(whenLen, isStory ? 80 : 64);
+            if (isStory) {
+              // Stack date over time on its own line; size each line independently.
+              const dateFS = whenSize((d.gDate||'').length, 96);
+              const timeFS = whenSize((d.gTime||'').length, 96);
+              return `<div class="game-banner meta stacked">
+                <div class="gb-when" style="font-size:${dateFS}px;"><span class="gb-date">${d.gDate}</span></div>
+                <div class="gb-when" style="font-size:${timeFS}px;"><span class="gb-time">${d.gTime}</span></div>
+                <div class="gb-venue">${d.gVenue}</div>
+              </div>`;
+            }
+            const fs = whenSize(whenLen, 64);
             return `<div class="game-banner meta">
               <div class="gb-when" style="font-size:${fs}px;"><span class="gb-date">${d.gDate}</span><span class="gb-dot">·</span><span class="gb-time">${d.gTime}</span></div>
               <div class="gb-venue">${d.gVenue}</div>

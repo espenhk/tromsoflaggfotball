@@ -182,7 +182,8 @@ body[data-aspect="story"] .t-drill .stage,
 body[data-aspect="story"] .t-welcome .stage,
 body[data-aspect="story"] .t-fact .stage,
 body[data-aspect="story"] .t-nm .body-area,
-body[data-aspect="story"] .t-matchup .half { padding-bottom: 280px; }
+body[data-aspect="story"] .t-matchup .half,
+body[data-aspect="story"] .t-game .half { padding-bottom: 280px; }
 
 .t-drill .stage { padding: 80px 64px 64px; flex-direction: column; gap: 24px; }
 .t-drill .field { flex: 1; background: linear-gradient(180deg, #042f2e 0%, #03241f 100%);
@@ -242,6 +243,55 @@ body[data-aspect="story"] .t-matchup .half { padding-bottom: 280px; }
   display: flex; align-items: center; justify-content: center; z-index: 5;
   font-family: var(--font-heading); font-weight: 800; font-size: 48px; color: var(--fg);
   border: 4px solid var(--primary); }
+
+/* T12 — GAME (head-to-head, logo + prominent meta/score banner) */
+.t-game .stage { padding: 0; flex-direction: row; }
+.t-game .half { flex: 1; padding: 80px 56px 260px; display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-start; gap: 28px; position: relative;
+  overflow: hidden; text-align: center; }
+.t-game .game-logo { width: 280px; height: 280px; border-radius: 24px;
+  background-size: contain; background-repeat: no-repeat; background-position: center;
+  border: 2px dashed rgba(255,255,255,0.22);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-heading); font-size: 14px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--fg-muted); font-weight: 700; }
+.t-game .game-logo.has-image { border: none; }
+.t-game .game-logo.has-image span { display: none; }
+.t-game .game-name { font-size: 72px; line-height: 0.95; letter-spacing: -0.01em;
+  margin: 0; text-transform: uppercase; }
+.t-game .game-tag { display: inline-block; padding: 10px 22px; border-radius: 999px;
+  font-family: var(--font-body); font-weight: 700; font-size: 20px; letter-spacing: 0.12em;
+  text-transform: uppercase; }
+.t-game .vs { position: absolute; top: 36%; left: 50%; transform: translate(-50%,-50%);
+  width: 120px; height: 120px; border-radius: 50%; background: var(--bg);
+  display: flex; align-items: center; justify-content: center; z-index: 5;
+  font-family: var(--font-heading); font-weight: 800; font-size: 48px; color: var(--fg);
+  border: 4px solid var(--primary); }
+
+/* Prominent bottom banner */
+.t-game .game-banner { position: absolute; left: 0; right: 0; bottom: 0;
+  background: var(--bg); border-top: 1px solid rgba(13,106,106,0.5);
+  padding: 36px 56px; z-index: 6; box-sizing: border-box;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; min-height: 220px; }
+.t-game .game-banner.meta .gb-when { font-family: var(--font-heading); font-weight: 800;
+  font-size: 64px; line-height: 1; color: var(--fg); letter-spacing: 0.02em;
+  display: flex; align-items: center; gap: 24px; text-transform: uppercase; }
+.t-game .game-banner.meta .gb-dot { color: var(--primary); }
+.t-game .game-banner.meta .gb-venue { font-family: var(--font-body); font-weight: 600;
+  font-size: 28px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-muted); }
+.t-game .game-banner.score { flex-direction: row; gap: 48px; min-height: 240px; }
+.t-game .game-banner.score .gb-score { font-family: var(--font-heading); font-weight: 800;
+  font-size: 180px; line-height: 0.9; letter-spacing: -0.03em; flex: 1; text-align: center; }
+.t-game .game-banner.score .gb-mid { font-family: var(--font-heading); font-weight: 700;
+  font-size: 22px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--fg-muted);
+  white-space: nowrap; }
+
+/* Story aspect: banner taller, sits above safe-zone overlay area */
+body[data-aspect="story"] .t-game .game-banner { min-height: 320px; padding: 56px 56px; }
+body[data-aspect="story"] .t-game .game-banner.meta .gb-when { font-size: 80px; }
+body[data-aspect="story"] .t-game .game-banner.score .gb-score { font-size: 220px; }
+body[data-aspect="story"] .t-game .vs { top: 30%; }
 
 
 /* ---------- NORWEGIAN FLAG (proportions 22x16; cross at cols 6-10, rows 6-10; blue inset cols 7-9, rows 7-9) ----------

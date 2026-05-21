@@ -1392,7 +1392,6 @@
       inp.addEventListener('input', e => {
         const fid = e.target.dataset.scale;
         state.values[fid] = parseFloat(e.target.value) || 1;
-        renderForm();
         renderPreview();
       });
     });

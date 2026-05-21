@@ -471,6 +471,8 @@
   const figTx = (x, y) => ({ sx: y, sy: FIG_XMAX - x });
   const FIG_COLORS = {
     white:   { hex: '#f0fcfa', label: 'White' },
+    lightgrey: { hex: '#d4d4d4', label: 'Light grey' },
+    black:   { hex: '#0a0a0a', label: 'Black' },
     primary: { hex: '#54c59e', label: 'Primary' },
     chrome:  { hex: 'var(--chrome)', label: 'Chrome (accent)' },
     qb:      { hex: '#fbbf24', label: 'QB Yellow' },
@@ -525,7 +527,8 @@
     }
     if (s.type === 'area') {
       const pts = (s.points || []).map(p => { const t = figTx(p[0], p[1]); return `${t.sx},${t.sy}`; }).join(' ');
-      return `<polygon points="${pts}" fill="${c}" fill-opacity="0.24" stroke="${c}" stroke-width="0.14"/>`;
+      const sw = s.width || 0.14;
+      return `<polygon points="${pts}" fill="${c}" fill-opacity="0.24" stroke="${c}" stroke-width="${sw}"/>`;
     }
     return '';
   }

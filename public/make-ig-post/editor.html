@@ -108,6 +108,19 @@
   .fig-field .fig-add-row button { padding:8px 14px; background:var(--chrome); color:var(--natt-500);
     border:none; border-radius:6px; font-family:var(--font-heading); font-weight:800; font-size:12px;
     letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; }
+  .fig-field .fig-add-row { flex-wrap:wrap; }
+  .fig-field .fig-add-pill { flex:1 1 calc(50% - 6px); padding:8px 6px; background:transparent;
+    color:var(--chrome); border:1px dashed rgba(13,106,106,0.6); border-radius:6px;
+    font-family:var(--font-heading); font-weight:700; font-size:11px; letter-spacing:0.08em;
+    text-transform:uppercase; cursor:pointer; }
+  .fig-field .fig-add-pill:hover { border-style:solid; background:rgba(84,197,158,0.05); }
+  .fig-field .fig-type-pills { display:flex; gap:4px; margin-bottom:8px; flex-wrap:wrap; }
+  .fig-field .fig-type-pill { flex:1 1 0; min-width:60px; padding:6px 4px; background:transparent;
+    color:var(--fg-muted); border:1px solid rgba(13,106,106,0.5); border-radius:6px;
+    font-family:var(--font-heading); font-weight:700; font-size:11px; letter-spacing:0.08em;
+    text-transform:uppercase; cursor:pointer; }
+  .fig-field .fig-type-pill:hover { color:var(--fg); border-color:var(--primary); }
+  .fig-field .fig-type-pill.active { background:var(--primary); color:var(--natt-500); border-color:var(--primary); }
   .fig-field .fig-legend { font-family:var(--font-body); font-size:11px; color:var(--fg-muted);
     margin:2px 0 8px 0; line-height:1.5; }
   .fig-field .fig-legend code { background:#08141a; padding:1px 5px; border-radius:3px; color:var(--chrome); font-size:11px; }

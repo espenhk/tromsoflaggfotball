@@ -537,10 +537,14 @@
   //   portrait diagram ≈ 1080 × 1180 → ratio ~0.91
   //   story    diagram ≈ 1080 × 1750 → ratio ~0.62 — fits 5+50+5 = 60 yd
   const ASPECT_DIMS = {
-    square:   { w: 1080, h: 1080, xmin: 8, figH: 30, figW: 36 },
-    portrait: { w: 1080, h: 1350, xmin: 8, figH: 42, figW: 40 },
-    story:    { w: 1080, h: 1920, xmin: 5, figH: 60, figW: 38 },
+    // `full` = show full 50-yd field + end-zone numbering/midfield marker.
+    // Non-full aspects show a cropped slice of the field — short 3 yd end
+    // zone peeking up, no numbering, no midfield marker.
+    square:   { w: 1080, h: 1080, xmin: 7, figH: 30, figW: 36, full: false },
+    portrait: { w: 1080, h: 1350, xmin: 7, figH: 42, figW: 40, full: false },
+    story:    { w: 1080, h: 1920, xmin: 5, figH: 60, figW: 38, full: true  },
   };
+  let FIG_FULL = false;
   function applyAspect(aspect) {
     const d = ASPECT_DIMS[aspect] || ASPECT_DIMS.square;
     FIG_XMIN = d.xmin;
@@ -548,6 +552,7 @@
     FIG_XMAX = FIG_XMIN + FIG_VIEW_H;
     FIG_VIEW_W = d.figW;
     FIG_YMIN = FIG_CENTER_Y - FIG_VIEW_W / 2;
+    FIG_FULL = !!d.full;
     document.documentElement.style.setProperty('--tile-w', d.w + 'px');
     document.documentElement.style.setProperty('--tile-h', d.h + 'px');
     document.body.dataset.aspect = aspect;

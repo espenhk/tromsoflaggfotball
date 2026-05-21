@@ -932,13 +932,13 @@
             `<label class="fig-mini">${lab}<input type="number" step="${step}" data-ply-num="${f.id}|${i}|${key}" value="${val ?? def}"></label>`;
           const start =
             `<label class="fig-mini">label<input type="text" data-ply-text="${f.id}|${i}|label" value="${escAttr(p.label||'')}"></label>` +
-            num('x','x',p.x,0.5,15) + num('y','y',p.y,0.5,12.5) +
-            num('size','r',p.r,0.1,0.95) + num('weight','width',p.width,0.05,0.32);
+            num('Δx (from ball)','x',p.x,0.5,0) + num('Δy (from ball)','y',p.y,0.5,0) +
+            num('size×','r',p.r,0.1,1.0) + num('line w','width',p.width,0.05,0.32);
           const route = (p.route || []).map((pt, j) => `
             <div class="fig-route-row">
               <span class="fig-route-tag">${j+1}</span>
-              <label class="fig-mini">x<input type="number" step="0.5" data-ply-pt="${f.id}|${i}|${j}|0" value="${pt[0]}"></label>
-              <label class="fig-mini">y<input type="number" step="0.5" data-ply-pt="${f.id}|${i}|${j}|1" value="${pt[1]}"></label>
+              <label class="fig-mini">Δx<input type="number" step="0.5" data-ply-pt="${f.id}|${i}|${j}|0" value="${pt[0]}"></label>
+              <label class="fig-mini">Δy<input type="number" step="0.5" data-ply-pt="${f.id}|${i}|${j}|1" value="${pt[1]}"></label>
               <button type="button" class="fig-remove" data-ply-pt-remove="${f.id}|${i}|${j}" title="Remove point">×</button>
             </div>`).join('');
           return `<div class="fig-row">
@@ -949,18 +949,33 @@
             </div>
             <div class="fig-coords">${start}</div>
             <div class="fig-route">
-              <div class="fig-route-label">Route waypoints (arrow on last)</div>
+              <div class="fig-route-label">Route waypoints — Δ from this player (arrow on last)</div>
               ${route || '<div class="fig-route-empty">No waypoints — player stays put.</div>'}
               <button type="button" class="fig-add-pill fig-add-pt" data-ply-pt-add="${f.id}|${i}">＋ waypoint</button>
             </div>
           </div>`;
         }).join('');
         return `<div class="field fig-field"><label>${f.label}</label>
-          <div class="fig-legend">Same field as Rule. Default view shows <code>x: 8–35</code>, <code>y: 0–25</code> (own end zone + 25 yd).</div>
+          <div class="fig-legend">Ball anchors the play. Player <code>Δx,Δy</code> are offsets from the ball. Route waypoints are offsets from the player. Yards.</div>
           ${rows}
           <div class="fig-add-row">
             <button type="button" class="fig-add-pill" data-ply-add="${f.id}">＋ player</button>
           </div>
+        </div>`;
+      }
+      if (f.type === 'origin') {
+        const o = v || { x: 15, y: 12.5 };
+        return `<div class="field fig-field"><label>${f.label}</label>
+          <div class="fig-legend">All player positions are relative to this point. <code>x</code> = down-field (10 = own goal line, 60 = opposing), <code>y</code> = cross-field (0–25).</div>
+          <div class="fig-coords" style="background:#021018; border:1px solid rgba(13,106,106,0.4); border-radius:8px; padding:10px;">
+            <label class="fig-mini">x (down-field)<input type="number" step="0.5" data-origin="${f.id}|x" value="${o.x}"></label>
+            <label class="fig-mini">y (cross-field)<input type="number" step="0.5" data-origin="${f.id}|y" value="${o.y}"></label>
+          </div>
+        </div>`;
+      }
+      if (f.type === 'scale') {
+        return `<div class="field"><label>${f.label} <span style="font-weight:400; color:var(--fg-muted); font-size:11px;">(${(+v).toFixed(2)}×)</span></label>
+          <input type="range" min="0.8" max="3.5" step="0.05" data-scale="${f.id}" value="${v}" style="width:100%; accent-color:var(--primary);">
         </div>`;
       }
       if (f.type === 'drawing') {

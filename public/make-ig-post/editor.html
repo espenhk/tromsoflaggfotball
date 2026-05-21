@@ -285,7 +285,7 @@
     ],
     render: d => {
       // Initial guess; we measure-and-shrink after render (see fitPlayerName in renderPreview).
-      return `<div class="stage">
+      return `<div class="stage${d.showMeta ? ' has-meta' : ''}">
       <div class="left-col"><div class="ph photo" data-photo data-label="[ player photo ]"></div></div>
       <div class="jersey">${d.jersey}</div>
       <div class="right-col">

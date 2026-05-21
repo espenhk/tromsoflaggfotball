@@ -301,6 +301,26 @@ body[data-aspect="story"] .t-game .game-banner.meta.stacked { gap: 6px; min-heig
 body[data-aspect="story"] .t-game .game-banner.meta .gb-venue { font-size: 40px; margin-top: 14px; }
 body[data-aspect="story"] .t-game .game-banner.score .gb-score { font-size: 220px; }
 
+/* Story aspect: diagonal split (home top-left, away bottom-right).
+   Diagonal tilts ~15° off horizontal — gentle, not a 45° split. */
+body[data-aspect="story"] .t-game .stage { display: block; position: absolute; inset: 0; }
+body[data-aspect="story"] .t-game .half {
+  position: absolute; inset: 0; padding: 80px; gap: 24px;
+  flex-direction: column; text-align: left;
+}
+body[data-aspect="story"] .t-game .half.home {
+  clip-path: polygon(0 0, 100% 0, 100% 37.5%, 0 52.5%);
+  align-items: flex-start; justify-content: flex-start;
+  padding: 120px 80px 0 80px;
+}
+body[data-aspect="story"] .t-game .half.away {
+  clip-path: polygon(0 52.5%, 100% 37.5%, 100% 100%, 0 100%);
+  align-items: flex-end; justify-content: flex-end;
+  padding: 0 80px 500px 80px;
+  text-align: right;
+}
+body[data-aspect="story"] .t-game .vs { top: 864px; }
+
 
 /* ---------- NORWEGIAN FLAG (proportions 22x16; cross at cols 6-10, rows 6-10; blue inset cols 7-9, rows 7-9) ----------
    The Scandinavian cross is the UNION of a vertical bar and a horizontal bar.

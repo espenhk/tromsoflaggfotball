@@ -1653,15 +1653,18 @@
     const area = document.querySelector('.preview-area');
     const wrap = document.getElementById('preview-wrap');
     if (!area || !wrap) return;
+    const dims = ASPECT_DIMS[state.aspect] || ASPECT_DIMS.square;
+    const tileW = dims.w, tileH = dims.h;
     const cs = getComputedStyle(area);
     const padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
     const padY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
-    const avail = Math.max(160, Math.min(
-      area.clientWidth - padX,
-      window.innerHeight - padY,
-      540
-    ));
-    wrap.style.setProperty('--prev-size', avail + 'px');
+    // Reserve ~64px under the preview for the slide-bar.
+    const availW = Math.max(160, area.clientWidth - padX);
+    const availH = Math.max(200, window.innerHeight - padY - 80);
+    const scale = Math.min(availW / tileW, availH / tileH, 0.55);
+    wrap.style.setProperty('--prev-scale', String(scale));
+    wrap.style.setProperty('--prev-w', (tileW * scale) + 'px');
+    wrap.style.setProperty('--prev-h', (tileH * scale) + 'px');
   }
   window.addEventListener('resize', fitPreview);
   renderForm();

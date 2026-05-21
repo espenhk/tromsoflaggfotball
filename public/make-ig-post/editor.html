@@ -836,21 +836,81 @@
   // ----------------------------------------------------------------
   // App state
   // ----------------------------------------------------------------
+  // Top-level state. Per-slide stuff (tpl/chrome/accent/photo/values) lives
+  // both at the top level (for live editing/rendering) AND mirrored into
+  // slides[currentSlide]. snapshotSlide() / loadSlide() keep them in sync
+  // so flipping between slides preserves everything.
   const state = {
+    aspect: 'square',
+    currentSlide: 0,
+    slides: [],
     tpl: 'player',
     chrome: 'curve',
     accent: 'primary',
     photo: null,
+    photoCutout: false,
     values: {},
   };
 
   function loadDefaults(tplId) {
     const t = T[tplId];
     state.values = {};
-    // Deep-clone defaults so list edits don't mutate the schema.
     t.fields.forEach(f => state.values[f.id] = JSON.parse(JSON.stringify(f.default)));
   }
-  loadDefaults('player');
+
+  function blankSlide(tplId) {
+    const t = T[tplId];
+    const values = {};
+    t.fields.forEach(f => values[f.id] = JSON.parse(JSON.stringify(f.default)));
+    return { tpl: tplId, chrome: 'curve', accent: 'primary', photo: null, photoCutout: false, values };
+  }
+
+  function snapshotSlide() {
+    state.slides[state.currentSlide] = {
+      tpl: state.tpl,
+      chrome: state.chrome,
+      accent: state.accent,
+      photo: state.photo,
+      photoCutout: state.photoCutout,
+      values: JSON.parse(JSON.stringify(state.values)),
+    };
+  }
+
+  function loadSlide(idx) {
+    const s = state.slides[idx];
+    if (!s) return;
+    state.currentSlide = idx;
+    state.tpl = s.tpl;
+    state.chrome = s.chrome;
+    state.accent = s.accent;
+    state.photo = s.photo;
+    state.photoCutout = s.photoCutout;
+    state.values = JSON.parse(JSON.stringify(s.values));
+    // Sync the sidebar pickers' .active state to match this slide.
+    syncPickerUI();
+  }
+
+  function syncPickerUI() {
+    document.querySelectorAll('#picker button').forEach(b =>
+      b.classList.toggle('active', b.dataset.tpl === state.tpl));
+    document.querySelectorAll('.chrome-row button').forEach(b =>
+      b.classList.toggle('active', b.dataset.chrome === state.chrome));
+    document.querySelectorAll('#accent-row button').forEach(b =>
+      b.classList.toggle('active', b.dataset.acc === state.accent));
+    document.querySelectorAll('#aspect-row button').forEach(b =>
+      b.classList.toggle('active', b.dataset.aspect === state.aspect));
+    // Photo upload widget
+    const up = document.getElementById('upload');
+    const lbl = document.getElementById('upload-label');
+    if (up && lbl) {
+      if (state.photo) { up.classList.add('has-image'); lbl.textContent = state.photoCutout ? '✓ Background removed' : '✓ Image loaded'; }
+      else { up.classList.remove('has-image'); lbl.textContent = 'Drop or click to upload'; }
+    }
+  }
+
+  // Seed with one blank slide.
+  state.slides.push(blankSlide('player'));
+  loadSlide(0);
 
   // ----------------------------------------------------------------
   // Render form for current template

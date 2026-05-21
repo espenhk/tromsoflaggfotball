@@ -570,7 +570,7 @@
   T.rule = {
     label: 'Rule',
     fields: [
-      { id:'eyebrow', label:'Eyebrow', type:'text', default:'Regelfredag · 12 av 24' },
+      { id:'eyebrow', label:'Eyebrow', type:'text', default:'Regeltorsdag · 12 av 24' },
       { id:'titleA', label:'Title 1', type:'text', default:'Hva er' },
       { id:'titleB', label:'Title 2 (HTML ok)', type:'text', default:'en <span style="color:var(--chrome);">first down?</span>' },
       { id:'figure', label:'Figure', type:'figure', default: [
@@ -588,7 +588,7 @@
         { type:'point', x:25, y:12.5, color:'qb',    label:'10' },
       ]},
       { id:'desc', label:'Explanation (HTML ok)', type:'textarea', default:'<strong style="color:var(--fg);">Du får 4 forsøk («downs») til å rykke ballen 10 yards.</strong> Klarer du det, får du 4 nye forsøk fra det punktet.' },
-      { id:'wm_right', label:'Wordmark right', type:'text', default:'REGELFREDAG' },
+      { id:'wm_right', label:'Wordmark right', type:'text', default:'REGELTORSDAG' },
     ],
     render: d => `<div class="stage">
       <div class="rule-header"><div class="eyebrow">${d.eyebrow}</div></div>
@@ -1197,6 +1197,31 @@
     return _embeddedFontCSS;
   }
 
+  async function saveOrShareImage(blob, filename) {
+    const file = new File([blob], filename, { type: 'image/png' });
+    // Prefer native share sheet on mobile (iOS/Android) so user can "Save to Photos".
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file], title: filename });
+        return;
+      } catch (err) {
+        if (err && err.name === 'AbortError') return;
+        // fall through to download fallback
+        console.warn('Share failed, falling back to download', err);
+      }
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.rel = 'noopener';
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  }
+
   document.getElementById('export-btn').addEventListener('click', async () => {
     const btn = document.getElementById('export-btn');
     const tile = document.querySelector('#preview-wrap .tile');
@@ -1235,13 +1260,10 @@
         skipFonts: false,
         fontEmbedCSS,
       });
-      const a = document.createElement('a');
       const tplName = (state.tpl || 'post').replace(/[^a-z0-9-_]+/gi, '-').toLowerCase();
-      a.href = dataUrl;
-      a.download = `tff-${tplName}-1080.png`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+      const filename = `tff-${tplName}-1080.png`;
+      const blob = await (await fetch(dataUrl)).blob();
+      await saveOrShareImage(blob, filename);
     } catch (err) {
       console.error(err);
       alert('Export failed: ' + (err && err.message ? err.message : err));

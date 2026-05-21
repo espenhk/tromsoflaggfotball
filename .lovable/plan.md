@@ -1,75 +1,70 @@
+## Goal
 
-Mål
+Add a toggleable "time and place" line to the Matchup (T11) template that reads naturally and never overlaps the stats or the VS badge.
 
-- Fikse mobil-spacingen i posisjonslisten uten å ødelegge desktop, som allerede ser bra ut.
+## Where it goes — and why
 
-Hva som faktisk skjer nå
+Two layout zones were considered:
 
-- Koden ligger i `src/pages/Index.tsx`.
-- Mobiloppsettet for seksjonen ligger i `GameSection` (`ca. linje 501–534`).
-- Selve “havet av plass” kommer ikke fra containeren rundt lista. Mobil-listene bruker allerede `space-y-0`.
-- Problemet sitter i `PositionCard` (`ca. linje 637–709`), som brukes likt på desktop og mobil.
-- Den viktigste synderen er `tagline` på `ca. linje 687`: den er fortsatt synlig når kortet er lukket. På desktop ser det ut som bevisst kortinnhold. På mobil, i en smal og tett stack, leses den samme høyden som tomrom mellom elementene.
-- På mobil blir dette ekstra stygt fordi:
-  - teksten kan wrappe til flere linjer
-  - kortene ikke har tydelig “boks”-bakgrunn i lukket state
-  - samme desktop-orienterte komponent brukes i en helt annen mobilkontekst
-- Strukturen er også skjør: hele kortet er en `<button>` som inneholder `div`, `h3` og `p`. Det er dårlig/fragil button-markup og kan gi ulik oppførsel i mobilnettlesere.
+1. **Bottom banner (previous attempt)** — sat on top of the stats; even after trimming to 2 stats it felt cramped and arbitrary. Rejected.
+2. **Top header band, spanning both halves** — clean, symmetrical, and the photo+stats below simply shift down together. No stat overlap is possible because it's outside the half columns. This is what the plan uses.
 
-Plan for å fikse det
+The band lives in the stage as a sibling of the two halves, positioned above them. Halves remain `flex: 1` and continue to fill the remaining height, so layout naturally re-flows when the band is toggled on/off. Square and Story aspects both work because we use flex, not fixed offsets.
 
-1. Skille mobil og desktop tydelig
-- Ikke prøve flere mikrojuseringer i samme komponent.
-- Lage en egen kompakt mobilvariant for posisjonskortene, eller en tydelig mobilgren i `PositionCard`.
-- Desktop beholdes visuelt nesten urørt.
+## Visual design
 
-2. Gjøre lukket mobilkort mye enklere
-- I lukket mobilstate skal kortet kun vise:
-  - ikon
-  - navn
-  - forkortelse
-  - chevron
-- `tagline` flyttes inn i utvidet innhold på mobil.
-- Dette kutter den falske høyden som nå oppleves som mellomrom.
+A single slim band across the full top of the stage:
 
-3. Rydde HTML-strukturen
-- Bytte fra “hele kortet er en button” til:
-  - en ytre `article/div`
-  - en intern `button` kun for toggle-header
-  - et separat collapsible content-område under
-- Dette gjør høyden mer forutsigbar og reduserer mobilspesifikke rendering-avvik.
+```text
+┌──────────────────────────────────────────────────────────┐
+│  LØR 14. JUN · 14:00      ·      TUIL KUNSTGRESS, TROMSØ │
+└──────────────────────────────────────────────────────────┘
+│  ANGREP                  VS                     FORSVAR   │
+│  [photo]                                        [photo]   │
+│  Name                                              Name   │
+│  stats...                                       stats...  │
+```
 
-4. Gjøre collapse-state helt flat
-- Sørge for at lukket state ikke har noen synlig tekst, margin eller padding som fortsatt tar høyde.
-- Beholde grid-basert animasjon, men bare på detaljinnholdet.
-- Eventuell toppmargin på detaljinnhold skal kun eksistere når kortet er åpent.
+- Background: subtle dark surface (`rgba(0,0,0,0.35)` over the existing tinted halves) with a 1px bottom border in `var(--primary)` at low alpha — ties into existing chrome.
+- Two text segments separated by a centered dot:
+  - **Left:** when (date + time), uppercased, body font, letter-spacing 0.14em.
+  - **Right:** where (venue), uppercased, body font, letter-spacing 0.14em.
+- Type size: 22px square / 30px story. Padding 18px 56px (square) / 28px 72px (story).
+- The VS circle stays vertically centered on the **halves area** (not the whole stage), so the band does not collide with it. Achieved by making `.stage` a column flex (band on top, then a row container holding the two halves + VS) when meta is on; otherwise unchanged.
 
-5. Finjustere mobilvisuell rytme
-- Stramme inn `py`, `gap` og line-height eksplisitt på mobil.
-- Legge inn en svært subtil separator/border mellom mobilradene, så de oppleves som kompakte listeelementer i stedet for store luftlommer.
-- Desktop-spacingen rundt kortene beholdes.
+## Editor controls
 
-6. Verifisere på riktige størrelser
-- Kontrollere mobil på minst:
-  - 390px bredde
-  - 320px bredde
-- Teste både lukket og åpen state for alle posisjoner.
-- Kontrollere at desktop fortsatt ser ut som nå.
-- Sjekke at navn/forkortelser ikke wraper stygt.
+In `T.matchup.fields`, add three fields just before `wm_right`:
 
-Berørte kodeområder
+- `showMeta` — checkbox, default `false`
+- `gameWhen` — text, default `"LØR 14. JUN · 14:00"`
+- `gameWhere` — text, default `"TUIL Kunstgress, Tromsø"`
 
-- `src/pages/Index.tsx:501–534` — mobil-layout for “Dette er flaggfotball”
-- `src/pages/Index.tsx:637–709` — `PositionCard`
+## Implementation outline (technical)
 
-Hva jeg ikke planlegger å endre i denne runden
+**`public/make-ig-post/editor.html` (`T.matchup`):**
+- Add the 3 fields above.
+- In `render`, when `d.showMeta` is true, wrap the existing two halves + VS in an inner `<div class="matchup-row">` and prepend a `<div class="matchup-meta">` band inside `<div class="stage has-meta">`. When false, render exactly as today (no class, no wrapper) so the default looks identical to the current version.
+- Band markup:
+  ```html
+  <div class="matchup-meta">
+    <span class="mm-when">${gameWhen}</span>
+    <span class="mm-dot">·</span>
+    <span class="mm-where">${gameWhere}</span>
+  </div>
+  ```
 
-- `FieldDiagram`
-- global CSS i `src/index.css`
-- desktop-layouten rundt diagrammet, utover å koble inn den riktige card-varianten
+**`public/make-ig-post/frames.css`:**
+- `.t-matchup .stage.has-meta { flex-direction: column; }`
+- `.t-matchup .stage.has-meta .matchup-row { flex: 1; display: flex; flex-direction: row; position: relative; min-height: 0; }`
+- Move the `.vs` absolute centering to be relative to `.matchup-row` when `has-meta` is on (selector: `.t-matchup .stage.has-meta .vs` re-anchored; original `.vs` rule untouched for the non-meta case).
+- `.matchup-meta` rule: flex row, `justify-content: space-between`, padding, border-bottom in primary, dark translucent background, body font, uppercase, letter-spacing.
+- Story override: larger padding + font size.
+- No `padding-bottom` hacks on `.half` are needed — the band is outside the halves.
 
-Forventet resultat
+## What stays untouched
 
-- Mobil får en tett, ryddig og tydelig posisjonsliste uten kunstig luft mellom elementene.
-- Desktop beholder uttrykket som allerede fungerer.
-- Åpnede kort blir fortsatt lesbare, men de lukkede kortene slutter å se ut som om de har store tomrom mellom seg.
+- All 3 stats per side remain visible.
+- VS circle styling unchanged.
+- Wordmark/footer behavior unchanged.
+- When `showMeta` is off, the template renders byte-equivalently to today.

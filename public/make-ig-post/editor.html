@@ -1072,6 +1072,76 @@
         renderPreview();
       });
     });
+
+    // ---------- PLAYERS field handlers ----------
+    area.querySelectorAll('[data-ply]').forEach(sel => {
+      sel.addEventListener('change', e => {
+        const [fid, idx, key] = e.target.dataset.ply.split('|');
+        if (key === 'color') {
+          state.values[fid][+idx].color = e.target.value;
+          renderForm();
+          renderPreview();
+        }
+      });
+    });
+    area.querySelectorAll('[data-ply-num]').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const [fid, idx, key] = e.target.dataset.plyNum.split('|');
+        const n = parseFloat(e.target.value);
+        state.values[fid][+idx][key] = isNaN(n) ? 0 : n;
+        renderPreview();
+      });
+    });
+    area.querySelectorAll('[data-ply-text]').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const [fid, idx, key] = e.target.dataset.plyText.split('|');
+        state.values[fid][+idx][key] = e.target.value;
+        renderPreview();
+      });
+    });
+    area.querySelectorAll('[data-ply-pt]').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const [fid, idx, j, axis] = e.target.dataset.plyPt.split('|');
+        const n = parseFloat(e.target.value);
+        state.values[fid][+idx].route[+j][+axis] = isNaN(n) ? 0 : n;
+        renderPreview();
+      });
+    });
+    area.querySelectorAll('[data-ply-pt-add]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const [fid, idx] = e.currentTarget.dataset.plyPtAdd.split('|');
+        const p = state.values[fid][+idx];
+        const last = (p.route && p.route.length) ? p.route[p.route.length - 1] : [p.x, p.y];
+        p.route = p.route || [];
+        p.route.push([Math.min(60, (last[0] || 15) + 4), last[1] || 12.5]);
+        renderForm();
+        renderPreview();
+      });
+    });
+    area.querySelectorAll('[data-ply-pt-remove]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const [fid, idx, j] = e.currentTarget.dataset.plyPtRemove.split('|');
+        state.values[fid][+idx].route.splice(+j, 1);
+        renderForm();
+        renderPreview();
+      });
+    });
+    area.querySelectorAll('[data-ply-add]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const fid = e.currentTarget.dataset.plyAdd;
+        state.values[fid].push(newPlayer());
+        renderForm();
+        renderPreview();
+      });
+    });
+    area.querySelectorAll('[data-ply-remove]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const [fid, idx] = e.currentTarget.dataset.plyRemove.split('|');
+        state.values[fid].splice(+idx, 1);
+        renderForm();
+        renderPreview();
+      });
+    });
   }
 
   // ----------------------------------------------------------------

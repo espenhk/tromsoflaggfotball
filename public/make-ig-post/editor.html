@@ -607,12 +607,21 @@
     // Down marker (small flag/pole) on the left sideline at midfield
     const midVisible = FIG_FULL && 35 >= FIG_XMIN && 35 <= FIG_XMAX;
     const midSy = FIG_XMAX - 35;
+    // Poles plant their base ON the midfield line and lean slightly to the
+    // left so they read as "sticking up" out of the sideline.
+    const poleH = 2.8;       // total pole length
+    const leanX = 0.45;      // horizontal lean of the top toward the left
+    const lxBase = 0.9;      // left marker base inset (nudged in from edge)
+    const rxBase = W - 0.25; // right marker base near right sideline
+    const lxTop = lxBase - leanX;
+    const rxTop = rxBase - leanX;
+    const topY = midSy - poleH;
     const downMarker = midVisible ? `
       <g style="pointer-events:none;">
-        <line x1="0.25" y1="${midSy - 1.4}" x2="0.25" y2="${midSy + 1.4}" stroke="#f0fcfa" stroke-width="0.16" stroke-linecap="round"/>
-        <polygon points="0.25,${midSy - 1.4} 1.85,${midSy - 0.9} 0.25,${midSy - 0.4}" fill="#fb923c" stroke="#021018" stroke-width="0.08"/>
-        <line x1="${W - 0.25}" y1="${midSy - 1.4}" x2="${W - 0.25}" y2="${midSy + 1.4}" stroke="#f0fcfa" stroke-width="0.16" stroke-linecap="round"/>
-        <polygon points="${W - 0.25},${midSy - 1.4} ${W - 1.85},${midSy - 0.9} ${W - 0.25},${midSy - 0.4}" fill="#fb923c" stroke="#021018" stroke-width="0.08"/>
+        <line x1="${lxBase}" y1="${midSy}" x2="${lxTop}" y2="${topY}" stroke="#f0fcfa" stroke-width="0.16" stroke-linecap="round"/>
+        <polygon points="${lxTop},${topY} ${lxTop + 1.6},${topY + 0.5} ${lxTop},${topY + 1.0}" fill="#fb923c" stroke="#021018" stroke-width="0.08"/>
+        <line x1="${rxBase}" y1="${midSy}" x2="${rxTop}" y2="${topY}" stroke="#f0fcfa" stroke-width="0.16" stroke-linecap="round"/>
+        <polygon points="${rxTop},${topY} ${rxTop - 1.6},${topY + 0.5} ${rxTop},${topY + 1.0}" fill="#fb923c" stroke="#021018" stroke-width="0.08"/>
       </g>` : '';
     // Goal lines if visible
     const goalNear = (10 >= FIG_XMIN && 10 <= FIG_XMAX)

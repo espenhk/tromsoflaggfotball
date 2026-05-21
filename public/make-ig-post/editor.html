@@ -591,7 +591,7 @@
     const sideInset = 0.6;
     // End-zone bands — lighter than the field surface.
     const EZ_FILL = '#175545';
-    const EZ_TOP_FILL = '#227a60';   // slightly lighter / brighter than bottom end zone
+    const EZ_TOP_FILL = '#175545';   // same hue as bottom end zone
     const ezNear = FIG_XMIN < 10
       ? `<rect x="0" y="${FIG_XMAX - 10}" width="${W}" height="${Math.min(10, FIG_XMAX) - FIG_XMIN}" fill="${EZ_FILL}"/>`
       : '';
@@ -600,7 +600,7 @@
       : '';
     // Optional "top end zone" for cropped (non-full) aspects — fills from the
     // top of the visible field down to the first solid yard line (major 10-yd
-    // line). Distinct from the bottom end zone so it pops as a design element.
+    // line). Same hue as the bottom end zone.
     let ezTop = '';
     if (!FIG_FULL && state.topEndZone) {
       const majors = yardXs.filter(x => x % 10 === 0);

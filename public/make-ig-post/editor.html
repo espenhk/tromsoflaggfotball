@@ -1426,6 +1426,56 @@
     });
   });
 
+  document.querySelectorAll('#aspect-row button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('#aspect-row button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      state.aspect = b.dataset.aspect;
+      renderPreview();
+    });
+  });
+
+  // ---------- SLIDE BAR ----------
+  function renderSlideBar() {
+    const bar = document.getElementById('slide-bar');
+    if (!bar) return;
+    const tabs = state.slides.map((s, i) => {
+      const isActive = i === state.currentSlide;
+      const label = (T[s.tpl]?.label || s.tpl).split(' ')[0];
+      return `<button data-slide="${i}" class="${isActive ? 'active' : ''}" title="${T[s.tpl]?.label || ''}">Slide ${i+1} · ${label}</button>`;
+    }).join('');
+    const removeBtn = state.slides.length > 1
+      ? `<button class="remove" data-slide-remove="${state.currentSlide}" title="Remove current slide">× Slide ${state.currentSlide+1}</button>`
+      : '';
+    bar.innerHTML = tabs + `<button class="add" data-slide-add="1">＋ Add slide</button>` + removeBtn;
+    bar.querySelectorAll('[data-slide]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const idx = +e.currentTarget.dataset.slide;
+        if (idx === state.currentSlide) return;
+        snapshotSlide();
+        loadSlide(idx);
+        renderForm();
+        renderPreview();
+      });
+    });
+    bar.querySelector('[data-slide-add]')?.addEventListener('click', () => {
+      snapshotSlide();
+      state.slides.push(blankSlide(state.tpl));
+      loadSlide(state.slides.length - 1);
+      renderForm();
+      renderPreview();
+    });
+    bar.querySelector('[data-slide-remove]')?.addEventListener('click', () => {
+      if (state.slides.length <= 1) return;
+      if (!confirm(`Remove slide ${state.currentSlide+1}? This can't be undone.`)) return;
+      state.slides.splice(state.currentSlide, 1);
+      const next = Math.max(0, state.currentSlide - 1);
+      loadSlide(next);
+      renderForm();
+      renderPreview();
+    });
+  }
+
   document.getElementById('photo-input').addEventListener('change', async e => {
     const file = e.target.files[0];
     if (!file) return;

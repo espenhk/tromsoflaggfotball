@@ -932,6 +932,15 @@
     if (n <= 16) return 38;
     return 32;
   }
+  // Scale the date · time line so it always fits on one line.
+  // Length is the combined "DATE · TIME" string length.
+  function whenSize(n, base) {
+    if (n <= 22) return base;
+    if (n <= 26) return Math.round(base * 0.85);
+    if (n <= 30) return Math.round(base * 0.72);
+    if (n <= 36) return Math.round(base * 0.60);
+    return Math.round(base * 0.50);
+  }
   T.game = {
     label: 'Game',
     fields: [
@@ -971,10 +980,15 @@
              <div class="gb-mid">${d.gResult || ''}</div>
              <div class="gb-score" style="color:${aC};">${d.aScore}</div>
            </div>`
-        : `<div class="game-banner meta">
-             <div class="gb-when"><span class="gb-date">${d.gDate}</span><span class="gb-dot">·</span><span class="gb-time">${d.gTime}</span></div>
-             <div class="gb-venue">${d.gVenue}</div>
-           </div>`;
+        : (() => {
+            const whenLen = (d.gDate||'').length + (d.gTime||'').length + 3; // " · "
+            const isStory = document.body.getAttribute('data-aspect') === 'story';
+            const fs = whenSize(whenLen, isStory ? 80 : 64);
+            return `<div class="game-banner meta">
+              <div class="gb-when" style="font-size:${fs}px;"><span class="gb-date">${d.gDate}</span><span class="gb-dot">·</span><span class="gb-time">${d.gTime}</span></div>
+              <div class="gb-venue">${d.gVenue}</div>
+            </div>`;
+          })();
       return `<div class="stage${d.isPostGame ? ' is-post' : ''}">
         ${half('home', hC, hR, d.hLogo, 'home · logo', d.hName, d.hTag)}
         <div class="vs">VS</div>

@@ -885,6 +885,9 @@
       { id:'dS2v', label:'Def stat 2 value', type:'text', default:'19' },
       { id:'dS3l', label:'Def stat 3 label', type:'text', default:'40-yd' },
       { id:'dS3v', label:'Def stat 3 value', type:'text', default:'4.5s' },
+      { id:'showMeta', label:'Add time and place', type:'checkbox', default:false },
+      { id:'gameWhen', label:'When', type:'text', default:'Lørdag 14. juni · 14:00' },
+      { id:'gameWhere', label:'Where', type:'text', default:'Tromsdalen kunstgress' },
       { id:'wm_right', label:'Wordmark right', type:'text', default:'RUNDE 04 · LØRDAG' },
     ],
     render: d => {
@@ -913,6 +916,7 @@
         <div class="vs">VS</div>
         ${half('def', dC, dR, d.dPhoto, 'forsvar · photo', 'FORSVAR', d.dFirst, d.dLast, d.dTag,
           [[d.dS1l,d.dS1v],[d.dS2l,d.dS2v],[d.dS3l,d.dS3v]])}
+        ${d.showMeta ? `<div class="matchup-meta-banner"><span class="mm-when">${d.gameWhen||''}</span>${d.gameWhere ? `<span class="mm-dot">·</span><span class="mm-where">${d.gameWhere}</span>` : ''}</div>` : ''}
       </div>`;
     },
     cls: 't-matchup',
@@ -1176,12 +1180,22 @@
       if (f.type === 'textarea') {
         return `<div class="field"><label>${f.label}</label><textarea data-field="${f.id}">${esc}</textarea></div>`;
       }
+      if (f.type === 'checkbox') {
+        return `<div class="field"><label style="display:flex; align-items:center; gap:10px; cursor:pointer;"><input type="checkbox" data-field-check="${f.id}" ${v ? 'checked' : ''} style="width:auto; accent-color:var(--primary);">${f.label}</label></div>`;
+      }
       return `<div class="field"><label>${f.label}</label><input type="text" data-field="${f.id}" value="${esc}"></div>`;
     }).join('');
 
     area.querySelectorAll('[data-field]').forEach(inp => {
       inp.addEventListener('input', e => {
         state.values[e.target.dataset.field] = e.target.value;
+        renderPreview();
+      });
+    });
+    area.querySelectorAll('[data-field-check]').forEach(inp => {
+      inp.addEventListener('change', e => {
+        state.values[e.target.dataset.fieldCheck] = e.target.checked;
+        renderForm();
         renderPreview();
       });
     });

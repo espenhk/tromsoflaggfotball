@@ -108,6 +108,19 @@
   .fig-field .fig-add-row button { padding:8px 14px; background:var(--chrome); color:var(--natt-500);
     border:none; border-radius:6px; font-family:var(--font-heading); font-weight:800; font-size:12px;
     letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; }
+  .fig-field .fig-add-row { flex-wrap:wrap; }
+  .fig-field .fig-add-pill { flex:1 1 calc(50% - 6px); padding:8px 6px; background:transparent;
+    color:var(--chrome); border:1px dashed rgba(13,106,106,0.6); border-radius:6px;
+    font-family:var(--font-heading); font-weight:700; font-size:11px; letter-spacing:0.08em;
+    text-transform:uppercase; cursor:pointer; }
+  .fig-field .fig-add-pill:hover { border-style:solid; background:rgba(84,197,158,0.05); }
+  .fig-field .fig-type-pills { display:flex; gap:4px; margin-bottom:8px; flex-wrap:wrap; }
+  .fig-field .fig-type-pill { flex:1 1 0; min-width:60px; padding:6px 4px; background:transparent;
+    color:var(--fg-muted); border:1px solid rgba(13,106,106,0.5); border-radius:6px;
+    font-family:var(--font-heading); font-weight:700; font-size:11px; letter-spacing:0.08em;
+    text-transform:uppercase; cursor:pointer; }
+  .fig-field .fig-type-pill:hover { color:var(--fg); border-color:var(--primary); }
+  .fig-field .fig-type-pill.active { background:var(--primary); color:var(--natt-500); border-color:var(--primary); }
   .fig-field .fig-legend { font-family:var(--font-body); font-size:11px; color:var(--fg-muted);
     margin:2px 0 8px 0; line-height:1.5; }
   .fig-field .fig-legend code { background:#08141a; padding:1px 5px; border-radius:3px; color:var(--chrome); font-size:11px; }
@@ -471,6 +484,8 @@
   const figTx = (x, y) => ({ sx: y, sy: FIG_XMAX - x });
   const FIG_COLORS = {
     white:   { hex: '#f0fcfa', label: 'White' },
+    lightgrey: { hex: '#d4d4d4', label: 'Light grey' },
+    black:   { hex: '#0a0a0a', label: 'Black' },
     primary: { hex: '#54c59e', label: 'Primary' },
     chrome:  { hex: 'var(--chrome)', label: 'Chrome (accent)' },
     qb:      { hex: '#fbbf24', label: 'QB Yellow' },
@@ -525,7 +540,8 @@
     }
     if (s.type === 'area') {
       const pts = (s.points || []).map(p => { const t = figTx(p[0], p[1]); return `${t.sx},${t.sy}`; }).join(' ');
-      return `<polygon points="${pts}" fill="${c}" fill-opacity="0.24" stroke="${c}" stroke-width="0.14"/>`;
+      const sw = s.width || 0.14;
+      return `<polygon points="${pts}" fill="${c}" fill-opacity="0.24" stroke="${c}" stroke-width="${sw}"/>`;
     }
     return '';
   }
@@ -741,29 +757,35 @@
             Object.entries(FIG_COLORS).map(([k, c]) =>
               `<option value="${k}"${sh.color===k?' selected':''}>${c.label}</option>`).join('')
           }</select>`;
-          const typeSel = `<select data-fig="${f.id}|${i}|type">${
+          const typePills = `<div class="fig-type-pills">${
             ['point','line','arrow','area'].map(t =>
-              `<option value="${t}"${sh.type===t?' selected':''}>${t}</option>`).join('')
-          }</select>`;
+              `<button type="button" class="fig-type-pill${sh.type===t?' active':''}" data-fig-type="${f.id}|${i}|${t}">${t}</button>`).join('')
+          }</div>`;
           const num = (lab, key, val) =>
             `<label class="fig-mini">${lab}<input type="number" step="0.5" data-fig-num="${f.id}|${i}|${key}" value="${val ?? 0}"></label>`;
+          const numStep = (lab, key, val, step, def) =>
+            `<label class="fig-mini">${lab}<input type="number" step="${step}" min="0" data-fig-num="${f.id}|${i}|${key}" value="${val ?? def}"></label>`;
           let coords = '';
           if (sh.type === 'point') {
             coords = num('x','x',sh.x) + num('y','y',sh.y) +
+              numStep('size','r',sh.r,0.1,0.85) +
               `<label class="fig-mini fig-wide">label<input type="text" data-fig-text="${f.id}|${i}|label" value="${escAttr(sh.label||'')}"></label>`;
           } else if (sh.type === 'line' || sh.type === 'arrow') {
             coords = num('x1','x1',sh.x1) + num('y1','y1',sh.y1) +
-                     num('x2','x2',sh.x2) + num('y2','y2',sh.y2);
+                     num('x2','x2',sh.x2) + num('y2','y2',sh.y2) +
+                     numStep('weight','width',sh.width,0.05,0.28);
           } else if (sh.type === 'area') {
             const pv = (sh.points||[]).map(p => `${p[0]},${p[1]}`).join('; ');
-            coords = `<label class="fig-mini fig-wide">points (x,y; x,y; …)<input type="text" data-fig-pts="${f.id}|${i}" value="${escAttr(pv)}"></label>`;
+            coords = `<label class="fig-mini fig-wide">points (x,y; x,y; …)<input type="text" data-fig-pts="${f.id}|${i}" value="${escAttr(pv)}"></label>` +
+                     numStep('outline','width',sh.width,0.05,0.14);
           }
           return `<div class="fig-row">
             <div class="fig-row-head">
-              ${typeSel}${colorSel}${swatch}
+              ${colorSel}${swatch}
               <span class="fig-spacer"></span>
               <button type="button" class="fig-remove" data-fig-remove="${f.id}|${i}" title="Remove">×</button>
             </div>
+            ${typePills}
             <div class="fig-coords">${coords}</div>
           </div>`;
         }).join('');
@@ -771,13 +793,8 @@
           <div class="fig-legend">Football field is <code>70×25</code> yards. End zones <code>x: 0–10</code> and <code>x: 60–70</code>. Goal lines at <code>x=10</code> and <code>x=60</code>. Width runs <code>y: 0–25</code>.</div>
           ${rows}
           <div class="fig-add-row">
-            <select data-fig-add-type="${f.id}">
-              <option value="point">＋ Point</option>
-              <option value="line">＋ Line</option>
-              <option value="arrow">＋ Arrow</option>
-              <option value="area">＋ Area</option>
-            </select>
-            <button type="button" data-fig-add="${f.id}">Add</button>
+            ${['point','line','arrow','area'].map(t =>
+              `<button type="button" class="fig-add-pill" data-fig-add="${f.id}|${t}">＋ ${t}</button>`).join('')}
           </div>
         </div>`;
       }
@@ -905,18 +922,23 @@
       sel.addEventListener('change', e => {
         const [fid, idx, key] = e.target.dataset.fig.split('|');
         const shape = state.values[fid][+idx];
-        if (key === 'type') {
-          // Replace shape with a fresh blank of the new type, preserving color.
-          const fresh = newFigureShape(e.target.value);
-          fresh.color = shape.color || fresh.color;
-          state.values[fid][+idx] = fresh;
-          renderForm();
-          renderPreview();
-        } else if (key === 'color') {
+        if (key === 'color') {
           shape.color = e.target.value;
           renderForm();    // refresh swatch
           renderPreview();
         }
+      });
+    });
+    area.querySelectorAll('[data-fig-type]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const [fid, idx, type] = e.currentTarget.dataset.figType.split('|');
+        const shape = state.values[fid][+idx];
+        if (shape.type === type) return;
+        const fresh = newFigureShape(type);
+        fresh.color = shape.color || fresh.color;
+        state.values[fid][+idx] = fresh;
+        renderForm();
+        renderPreview();
       });
     });
     area.querySelectorAll('[data-fig-num]').forEach(inp => {
@@ -948,9 +970,7 @@
     });
     area.querySelectorAll('[data-fig-add]').forEach(btn => {
       btn.addEventListener('click', e => {
-        const fid = e.currentTarget.dataset.figAdd;
-        const sel = area.querySelector(`[data-fig-add-type="${fid}"]`);
-        const type = sel ? sel.value : 'point';
+        const [fid, type] = e.currentTarget.dataset.figAdd.split('|');
         state.values[fid].push(newFigureShape(type));
         renderForm();
         renderPreview();

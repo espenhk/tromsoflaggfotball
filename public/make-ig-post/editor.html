@@ -516,10 +516,30 @@
   //   { type:'area',   points:[[x,y],…], color }
   // color is a *named* token (white|primary|qb|rb|wr|def|rusher|chrome).
   // ----------------------------------------------------------------
-  const FIG_XMIN = 8;                         // bottom of view (2 yd into own end zone)
-  const FIG_XMAX = 35;                        // top of view (own 25-yd line)
-  const FIG_VIEW_W = 25;                      // cross-field yards
-  const FIG_VIEW_H = FIG_XMAX - FIG_XMIN;     // 27 yards visible
+  // The field crop is dynamic — we expand FIG_XMAX (more yards shown) when
+  // the tile is taller (4:5 portrait, 9:16 story) so yard lines just add
+  // instead of the field stretching.
+  let FIG_XMIN = 8;                           // bottom of view (2 yd into own end zone)
+  let FIG_XMAX = 35;                          // top of view (own 25-yd line)
+  let FIG_VIEW_W = 25;                        // cross-field yards
+  let FIG_VIEW_H = FIG_XMAX - FIG_XMIN;       // visible yards down-field
+
+  // Per-aspect tile + diagram dims. Tile width stays 1080. Diagram height grows.
+  const ASPECT_DIMS = {
+    square:   { w: 1080, h: 1080, figH: 27 },
+    portrait: { w: 1080, h: 1350, figH: 35 },
+    story:    { w: 1080, h: 1920, figH: 48 },
+  };
+  function applyAspect(aspect) {
+    const d = ASPECT_DIMS[aspect] || ASPECT_DIMS.square;
+    FIG_VIEW_W = 25;
+    FIG_XMIN = 8;
+    FIG_VIEW_H = d.figH;
+    FIG_XMAX = FIG_XMIN + FIG_VIEW_H;
+    document.documentElement.style.setProperty('--tile-w', d.w + 'px');
+    document.documentElement.style.setProperty('--tile-h', d.h + 'px');
+    document.body.dataset.aspect = aspect;
+  }
   // Logical (x = down-field, y = cross-field) → SVG (sx, sy).
   // Bottom of rendered field = own end zone, top = upfield toward opponent.
   const figTx = (x, y) => ({ sx: y, sy: FIG_XMAX - x });

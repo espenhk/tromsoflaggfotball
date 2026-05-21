@@ -285,7 +285,7 @@
     ],
     render: d => {
       // Initial guess; we measure-and-shrink after render (see fitPlayerName in renderPreview).
-      return `<div class="stage${d.showMeta ? ' has-meta' : ''}">
+      return `<div class="stage">
       <div class="left-col"><div class="ph photo" data-photo data-label="[ player photo ]"></div></div>
       <div class="jersey">${d.jersey}</div>
       <div class="right-col">
@@ -885,9 +885,6 @@
       { id:'dS2v', label:'Def stat 2 value', type:'text', default:'19' },
       { id:'dS3l', label:'Def stat 3 label', type:'text', default:'40-yd' },
       { id:'dS3v', label:'Def stat 3 value', type:'text', default:'4.5s' },
-      { id:'showMeta', label:'Add time and place', type:'checkbox', default:false },
-      { id:'gameWhen', label:'When', type:'text', default:'Lørdag 14. juni · 14:00' },
-      { id:'gameWhere', label:'Where', type:'text', default:'Tromsdalen kunstgress' },
       { id:'wm_right', label:'Wordmark right', type:'text', default:'RUNDE 04 · LØRDAG' },
     ],
     render: d => {
@@ -912,13 +909,10 @@
         </div>`;
       const oStats = [[d.oS1l,d.oS1v],[d.oS2l,d.oS2v],[d.oS3l,d.oS3v]];
       const dStats = [[d.dS1l,d.dS1v],[d.dS2l,d.dS2v],[d.dS3l,d.dS3v]];
-      const oShown = d.showMeta ? oStats.slice(0,2) : oStats;
-      const dShown = d.showMeta ? dStats.slice(0,2) : dStats;
       return `<div class="stage">
-        ${half('off', oC, oR, d.oPhoto, 'angrep · photo', 'ANGREP', d.oFirst, d.oLast, d.oTag, oShown)}
+        ${half('off', oC, oR, d.oPhoto, 'angrep · photo', 'ANGREP', d.oFirst, d.oLast, d.oTag, oStats)}
         <div class="vs">VS</div>
-        ${half('def', dC, dR, d.dPhoto, 'forsvar · photo', 'FORSVAR', d.dFirst, d.dLast, d.dTag, dShown)}
-        ${d.showMeta ? `<div class="matchup-meta-banner"><span class="mm-when">${d.gameWhen||''}</span>${d.gameWhere ? `<span class="mm-dot">·</span><span class="mm-where">${d.gameWhere}</span>` : ''}</div>` : ''}
+        ${half('def', dC, dR, d.dPhoto, 'forsvar · photo', 'FORSVAR', d.dFirst, d.dLast, d.dTag, dStats)}
       </div>`;
     },
     cls: 't-matchup',

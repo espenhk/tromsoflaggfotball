@@ -243,28 +243,6 @@ body[data-aspect="story"] .t-matchup .half { padding-bottom: 280px; }
   font-family: var(--font-heading); font-weight: 800; font-size: 48px; color: var(--fg);
   border: 4px solid var(--primary); }
 
-/* Optional "when · where" banner pinned to the bottom center of the matchup stage,
-   sitting between the stats and the footer wordmark.
-   Shown when the "Add time and place" checkbox is on. When active, the halves
-   get extra bottom padding so the last stat row clears the banner. */
-.t-matchup .stage.has-meta .half { padding-bottom: 110px; }
-.t-matchup .matchup-meta-banner { position: absolute; bottom: 40px; left: 50%;
-  transform: translateX(-50%); z-index: 6;
-  display: flex; align-items: center; gap: 14px; max-width: 88%;
-  padding: 14px 28px; border-radius: 999px;
-  background: rgba(0,8,13,0.82); backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.18);
-  font-family: var(--font-body); font-size: 24px; color: var(--fg);
-  letter-spacing: 0.04em; white-space: nowrap; }
-.t-matchup .matchup-meta-banner .mm-when { font-weight: 700; color: var(--fg); }
-.t-matchup .matchup-meta-banner .mm-where { color: var(--fg-muted); font-weight: 500; }
-.t-matchup .matchup-meta-banner .mm-dot { color: var(--fg-muted); opacity: 0.6; }
-
-/* 9:16 story safe-zone: nudge the banner up so it stays above the safe zone,
-   and increase the half bottom padding accordingly. */
-body[data-aspect="story"] .t-matchup .matchup-meta-banner { bottom: 290px; }
-body[data-aspect="story"] .t-matchup .stage.has-meta .half { padding-bottom: 340px; }
 
 /* ---------- NORWEGIAN FLAG (proportions 22x16; cross at cols 6-10, rows 6-10; blue inset cols 7-9, rows 7-9) ----------
    The Scandinavian cross is the UNION of a vertical bar and a horizontal bar.

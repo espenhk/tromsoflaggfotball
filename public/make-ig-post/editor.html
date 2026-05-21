@@ -519,30 +519,42 @@
   // The field crop is dynamic — we expand FIG_XMAX (more yards shown) when
   // the tile is taller (4:5 portrait, 9:16 story) so yard lines just add
   // instead of the field stretching.
-  let FIG_XMIN = 8;                           // bottom of view (2 yd into own end zone)
-  let FIG_XMAX = 35;                          // top of view (own 25-yd line)
-  let FIG_VIEW_W = 25;                        // cross-field yards
+  // Field convention: x = down-field, y = cross-field. Field is 50 yd long
+  // (goal lines at x=10 and x=60); end zones in this app are shortened to
+  // 5 yd (so x ∈ [5,10] = our end zone, [60,65] = far end zone). Cross-field
+  // center is pinned at y=12.5 so existing template defaults stay aligned.
+  const FIG_CENTER_Y = 12.5;
+  let FIG_XMIN = 8;
+  let FIG_XMAX = 38;
+  let FIG_VIEW_W = 30;                        // cross-field yards (fills tile width)
   let FIG_VIEW_H = FIG_XMAX - FIG_XMIN;       // visible yards down-field
+  let FIG_YMIN = FIG_CENTER_Y - FIG_VIEW_W / 2;
 
-  // Per-aspect tile + diagram dims. Tile width stays 1080. Diagram height grows.
+  // Per-aspect tile + diagram dims. Tile width stays 1080. The diagram aspect
+  // (figW / figH) is tuned to roughly match the diagram container so the field
+  // bleeds to the horizontal edges with minimal letterboxing.
+  //   square   diagram ≈ 1080 × 920  → ratio ~1.17
+  //   portrait diagram ≈ 1080 × 1180 → ratio ~0.91
+  //   story    diagram ≈ 1080 × 1750 → ratio ~0.62 — fits 5+50+5 = 60 yd
   const ASPECT_DIMS = {
-    square:   { w: 1080, h: 1080, figH: 27 },
-    portrait: { w: 1080, h: 1350, figH: 35 },
-    story:    { w: 1080, h: 1920, figH: 48 },
+    square:   { w: 1080, h: 1080, xmin: 8, figH: 30, figW: 36 },
+    portrait: { w: 1080, h: 1350, xmin: 8, figH: 42, figW: 40 },
+    story:    { w: 1080, h: 1920, xmin: 5, figH: 60, figW: 38 },
   };
   function applyAspect(aspect) {
     const d = ASPECT_DIMS[aspect] || ASPECT_DIMS.square;
-    FIG_VIEW_W = 25;
-    FIG_XMIN = 8;
+    FIG_XMIN = d.xmin;
     FIG_VIEW_H = d.figH;
     FIG_XMAX = FIG_XMIN + FIG_VIEW_H;
+    FIG_VIEW_W = d.figW;
+    FIG_YMIN = FIG_CENTER_Y - FIG_VIEW_W / 2;
     document.documentElement.style.setProperty('--tile-w', d.w + 'px');
     document.documentElement.style.setProperty('--tile-h', d.h + 'px');
     document.body.dataset.aspect = aspect;
   }
   // Logical (x = down-field, y = cross-field) → SVG (sx, sy).
   // Bottom of rendered field = own end zone, top = upfield toward opponent.
-  const figTx = (x, y) => ({ sx: y, sy: FIG_XMAX - x });
+  const figTx = (x, y) => ({ sx: y - FIG_YMIN, sy: FIG_XMAX - x });
   const FIG_COLORS = {
     white:   { hex: '#f0fcfa', label: 'White' },
     lightgrey: { hex: '#d4d4d4', label: 'Light grey' },
@@ -558,21 +570,61 @@
   const figColor = name => (FIG_COLORS[name] || FIG_COLORS.white).hex;
 
   function renderFootballField() {
-    // Vertical, cropped field. Width = FIG_VIEW_W yards (cross-field).
-    // Height = FIG_VIEW_H yards (down-field, grows with aspect ratio).
-    // Goal line at x=10. Yard lines every 5 yd from x=15 up to FIG_XMAX.
+    // Vertical, cropped field. Goal lines at x=10 and x=60. Yard lines every
+    // 5 yd between them. Numbered at every 10 yd (yards-to-nearest-goal).
+    // End-zone bands are darker. A flag down-marker sits on the left
+    // sideline at midfield (x=35).
     const yardXs = [];
-    for (let x = 15; x <= FIG_XMAX - 1; x += 5) yardXs.push(x);
+    for (let x = 15; x <= 55; x += 5) {
+      if (x >= FIG_XMIN + 1 && x <= FIG_XMAX - 1) yardXs.push(x);
+    }
+    const W = FIG_VIEW_W, H = FIG_VIEW_H;
+    const sideInset = 0.6;
+    // End-zone bands (only the visible portion of x<10 and x>60)
+    const ezNear = FIG_XMIN < 10
+      ? `<rect x="0" y="${FIG_XMAX - 10}" width="${W}" height="${Math.min(10, FIG_XMAX) - FIG_XMIN}" fill="#082018"/>`
+      : '';
+    const ezFar = FIG_XMAX > 60
+      ? `<rect x="0" y="0" width="${W}" height="${FIG_XMAX - 60}" fill="#082018"/>`
+      : '';
+    // Yard numbers at every 10 yd line (skip midfield, it gets the marker)
+    const numbersFor = x => {
+      if (x === 35) return '';
+      const v = Math.min(x - 10, 60 - x); // yards from nearest goal line
+      if (v <= 0 || v > 40) return '';
+      const sy = FIG_XMAX - x;
+      const fs = 1.6;
+      return `
+        <text x="${sideInset + 0.6}" y="${sy + fs*0.35}" fill="rgba(240,252,250,0.55)" font-family="Syne, sans-serif" font-weight="800" font-size="${fs}" text-anchor="start" style="pointer-events:none;">${v}</text>
+        <text x="${W - sideInset - 0.6}" y="${sy + fs*0.35}" fill="rgba(240,252,250,0.55)" font-family="Syne, sans-serif" font-weight="800" font-size="${fs}" text-anchor="end" style="pointer-events:none;">${v}</text>`;
+    };
+    // Down marker (small flag/pole) on the left sideline at midfield
+    const midVisible = 35 >= FIG_XMIN && 35 <= FIG_XMAX;
+    const midSy = FIG_XMAX - 35;
+    const downMarker = midVisible ? `
+      <g style="pointer-events:none;">
+        <line x1="0.25" y1="${midSy - 1.4}" x2="0.25" y2="${midSy + 1.4}" stroke="#f0fcfa" stroke-width="0.16" stroke-linecap="round"/>
+        <polygon points="0.25,${midSy - 1.4} 1.85,${midSy - 0.9} 0.25,${midSy - 0.4}" fill="#fb923c" stroke="#021018" stroke-width="0.08"/>
+        <line x1="${W - 0.25}" y1="${midSy - 1.4}" x2="${W - 0.25}" y2="${midSy + 1.4}" stroke="#f0fcfa" stroke-width="0.16" stroke-linecap="round"/>
+        <polygon points="${W - 0.25},${midSy - 1.4} ${W - 1.85},${midSy - 0.9} ${W - 0.25},${midSy - 0.4}" fill="#fb923c" stroke="#021018" stroke-width="0.08"/>
+      </g>` : '';
+    // Goal lines if visible
+    const goalNear = (10 >= FIG_XMIN && 10 <= FIG_XMAX)
+      ? `<line x1="0" y1="${FIG_XMAX - 10}" x2="${W}" y2="${FIG_XMAX - 10}" stroke="#f0fcfa" stroke-width="0.22"/>` : '';
+    const goalFar = (60 >= FIG_XMIN && 60 <= FIG_XMAX)
+      ? `<line x1="0" y1="${FIG_XMAX - 60}" x2="${W}" y2="${FIG_XMAX - 60}" stroke="#f0fcfa" stroke-width="0.22"/>` : '';
     return `
-      <rect x="0" y="0" width="${FIG_VIEW_W}" height="${FIG_VIEW_H}" fill="#0d2f24"/>
-      <rect x="0" y="${FIG_XMAX - 10}" width="${FIG_VIEW_W}" height="2" fill="rgba(84,197,158,0.22)"/>
+      <rect x="0" y="0" width="${W}" height="${H}" fill="#0d2f24"/>
+      ${ezNear}${ezFar}
       ${yardXs.map(x => {
         const sy = FIG_XMAX - x;
-        return `<line x1="0.6" y1="${sy}" x2="${FIG_VIEW_W - 0.6}" y2="${sy}" stroke="rgba(255,255,255,0.14)" stroke-width="${x%10===0?0.08:0.05}"${x%10===0?'':' stroke-dasharray="0.5 0.7"'}/>`;
+        const major = x % 10 === 0;
+        return `<line x1="${sideInset}" y1="${sy}" x2="${W - sideInset}" y2="${sy}" stroke="rgba(255,255,255,${major?0.22:0.12})" stroke-width="${major?0.08:0.05}"${major?'':' stroke-dasharray="0.5 0.7"'}/>`;
       }).join('')}
-      <line x1="0" y1="${FIG_XMAX - 10}" x2="${FIG_VIEW_W}" y2="${FIG_XMAX - 10}" stroke="#f0fcfa" stroke-width="0.18"/>
-      <rect x="0" y="0" width="${FIG_VIEW_W}" height="${FIG_VIEW_H}" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="0.12"/>
-      ${yardXs.map(x => `<circle cx="${FIG_VIEW_W/2}" cy="${FIG_XMAX - x}" r="0.14" fill="rgba(255,255,255,0.4)"/>`).join('')}
+      ${goalNear}${goalFar}
+      ${yardXs.filter(x => x % 10 === 0).map(numbersFor).join('')}
+      ${downMarker}
+      <rect x="0" y="0" width="${W}" height="${H}" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="0.12"/>
     `;
   }
 

@@ -1485,6 +1485,41 @@
         el.style.fontSize = size + 'px';
       }
     });
+
+    // Matchup names: shrink-to-fit so both sides use the same font size.
+    // Measure each name's scrollWidth against its container, compute the
+    // required size for every line, then apply the smallest size to ALL
+    // names so both halves stay visually balanced.
+    const matchupNames = wrap.querySelectorAll('.matchup-name');
+    if (matchupNames.length) {
+      const startSize = 68;
+      const minSize = 32;
+      let sharedSize = startSize;
+      matchupNames.forEach(el => {
+        const parent = el.parentElement;
+        if (!parent) return;
+        const cs = getComputedStyle(parent);
+        const padL = parseFloat(cs.paddingLeft) || 0;
+        const padR = parseFloat(cs.paddingRight) || 0;
+        const maxW = parent.clientWidth - padL - padR;
+        if (maxW <= 0) return;
+        el.style.whiteSpace = 'nowrap';
+        const lines = el.innerHTML.split(/<br\s*\/?>/i);
+        el.innerHTML = lines.map(t => `<span class="mn-line" style="display:block;">${t}</span>`).join('');
+        let size = startSize;
+        el.style.fontSize = size + 'px';
+        const lineEls = el.querySelectorAll('.mn-line');
+        for (let i = 1; i <= 30; i++) {
+          let widest = 0;
+          lineEls.forEach(l => { if (l.scrollWidth > widest) widest = l.scrollWidth; });
+          if (widest <= maxW || size <= minSize) break;
+          size = Math.max(minSize, Math.floor(size * (maxW / widest) * 0.98));
+          el.style.fontSize = size + 'px';
+        }
+        if (size < sharedSize) sharedSize = size;
+      });
+      matchupNames.forEach(el => { el.style.fontSize = sharedSize + 'px'; });
+    }
   }
   document.querySelectorAll('#picker button').forEach(b => {
     b.addEventListener('click', () => {

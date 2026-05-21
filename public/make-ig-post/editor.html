@@ -129,6 +129,16 @@
   .fig-field .fig-legend { font-family:var(--font-body); font-size:11px; color:var(--fg-muted);
     margin:2px 0 8px 0; line-height:1.5; }
   .fig-field .fig-legend code { background:#08141a; padding:1px 5px; border-radius:3px; color:var(--chrome); font-size:11px; }
+  .fig-field .fig-route { margin-top:10px; padding-top:8px; border-top:1px dashed rgba(13,106,106,0.4); }
+  .fig-field .fig-route-label { font-family:var(--font-body); font-size:11px; color:var(--fg-muted);
+    text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px; }
+  .fig-field .fig-route-empty { font-family:var(--font-body); font-size:11px; color:var(--fg-muted);
+    font-style:italic; padding:4px 0 6px; }
+  .fig-field .fig-route-row { display:flex; align-items:flex-end; gap:6px; margin-bottom:6px; }
+  .fig-field .fig-route-tag { display:inline-flex; align-items:center; justify-content:center;
+    width:22px; height:22px; border-radius:50%; background:#08141a; border:1px solid rgba(13,106,106,0.5);
+    color:var(--chrome); font-family:var(--font-heading); font-weight:800; font-size:11px; align-self:center; }
+  .fig-field .fig-add-pt { flex:1 1 100%; margin-top:4px; }
 
   /* Curated color-swatch picker (per-half team accent on T11 Matchup) */
   .colorpick-row { display:flex; gap:8px; flex-wrap:wrap; }
@@ -172,7 +182,7 @@
     <button data-tpl="event">T04 · Event ⭐</button>
     <button data-tpl="nm">T05 · NM</button>
     <button data-tpl="rule">T06 · Rule</button>
-    <button data-tpl="drill">T07 · Drill</button>
+    <button data-tpl="drill">T07 · Play</button>
     <button data-tpl="welcome">T08 · Bli med</button>
     <button data-tpl="bts">T09 · BTS</button>
     <button data-tpl="fact">T10 · Visste du?</button>
@@ -567,6 +577,58 @@
     return { type:'point', x:35, y:12.5, color:'qb' };
   }
 
+  // ---------- PLAY (player + route) FIGURE ----------
+  // A "player" entry: { label, color, x, y, route: [[x,y], ...] }
+  // The route is drawn as a polyline from (x,y) through each waypoint, with an
+  // arrowhead at the last point oriented along the final segment.
+  function newPlayer(seed) {
+    return Object.assign({
+      label: '',
+      color: 'wr',
+      x: 15,
+      y: 12.5,
+      r: 0.95,
+      width: 0.32,
+      route: [[20, 12.5]],
+    }, seed || {});
+  }
+
+  function renderPlayPlayer(p) {
+    const c = figColor(p.color);
+    const w = p.width || 0.32;
+    const r = p.r || 0.95;
+    const start = figTx(p.x, p.y);
+    const route = (p.route || []).map(pt => figTx(pt[0], pt[1]));
+    let path = '';
+    if (route.length) {
+      const pts = [start, ...route];
+      // All segments except the last drawn as a polyline.
+      const head = route[route.length - 1];
+      const beforeHead = pts[pts.length - 2];
+      const polyPts = pts.slice(0, -1).map(pt => `${pt.sx},${pt.sy}`).join(' ');
+      path += `<polyline points="${polyPts}" stroke="${c}" stroke-width="${w}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+      // Final segment with arrowhead at the last waypoint.
+      const dx = head.sx - beforeHead.sx, dy = head.sy - beforeHead.sy;
+      const len = Math.hypot(dx, dy) || 1;
+      const ux = dx / len, uy = dy / len;
+      const headLen = 1.4;
+      const bx = head.sx - ux * headLen, by = head.sy - uy * headLen;
+      const px = -uy * headLen * 0.55, py = ux * headLen * 0.55;
+      path += `<line x1="${beforeHead.sx}" y1="${beforeHead.sy}" x2="${bx}" y2="${by}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>
+        <polygon points="${head.sx},${head.sy} ${bx + px},${by + py} ${bx - px},${by - py}" fill="${c}"/>`;
+    }
+    const dot = `<circle cx="${start.sx}" cy="${start.sy}" r="${r}" fill="${c}" stroke="#021018" stroke-width="0.14"/>` +
+      (p.label ? `<text x="${start.sx}" y="${start.sy + 0.38}" fill="#021018" font-family="Syne, sans-serif" font-weight="800" font-size="1.1" text-anchor="middle" style="pointer-events:none;">${p.label}</text>` : '');
+    return path + dot;
+  }
+
+  function renderPlay(players) {
+    return `<svg viewBox="0 0 ${FIG_VIEW_W} ${FIG_VIEW_H}" preserveAspectRatio="xMidYMid meet" style="position:absolute; inset:0; width:100%; height:100%;">
+      ${renderFootballField()}
+      ${(players || []).map(renderPlayPlayer).join('')}
+    </svg>`;
+  }
+
   T.rule = {
     label: 'Rule',
     fields: [
@@ -604,41 +666,30 @@
   };
 
   T.drill = {
-    label: 'Drill',
+    label: 'Play/concept',
     fields: [
-      { id:'eyebrow', label:'Eyebrow', type:'text', default:'Ukens øvelse · 08 av 30' },
+      { id:'eyebrow', label:'Eyebrow', type:'text', default:'Ukens konsept · 08 av 30' },
       { id:'titleA', label:'Title 1', type:'text', default:'Slant-Flat' },
       { id:'titleB', label:'Title 2 (HTML ok)', type:'text', default:'<span style="color:var(--chrome);">combination.</span>' },
-      { id:'why', label:'Why-it-works', type:'textarea', default:'<strong style="color:var(--fg);">Hvorfor:</strong> Slant tvinger nær-CB innover. Flat utnytter rommet han forlot.' },
-      { id:'qb', label:'QB read', type:'textarea', default:'<strong style="color:var(--fg);">QB-lese:</strong> Sjekk safety først. Slant er primary om mannen sitter i bakrommet.' },
-      { id:'wm_right', label:'Wordmark right', type:'text', default:'UKENS ØVELSE' },
+      { id:'players', label:'Players & routes', type:'players', default: [
+        { label:'Q', color:'qb', x:15,   y:12.5, r:1.0, width:0.32, route: [] },
+        { label:'1', color:'wr', x:15,   y:4,    r:0.95, width:0.32, route: [[18,8],[24,12]] },
+        { label:'2', color:'wr', x:15,   y:21,   r:0.95, width:0.32, route: [[18,21],[18,24]] },
+      ]},
+      { id:'desc', label:'Explanation (HTML ok)', type:'textarea', default:'<strong style="color:var(--fg);">Hvorfor:</strong> Slant tvinger nær-CB innover. Flat utnytter rommet han forlot.' },
+      { id:'wm_right', label:'Wordmark right', type:'text', default:'UKENS KONSEPT' },
     ],
     render: d => `<div class="stage">
-      <div class="eyebrow">${d.eyebrow}</div>
-      <div class="h-display" style="font-size:80px;">${d.titleA}<br>${d.titleB}</div>
-      <div class="field">
-        <svg viewBox="0 0 800 320" style="position:absolute; inset:0; width:100%; height:100%;">
-          <line x1="50" y1="240" x2="750" y2="240" stroke="white" stroke-width="2"/>
-          <circle cx="400" cy="280" r="14" fill="#fbbf24"/><text x="400" y="284" fill="#021b27" font-family="Syne" font-weight="800" font-size="14" text-anchor="middle">Q</text>
-          <circle cx="200" cy="240" r="12" fill="#38bdf8"/><text x="200" y="244" fill="white" font-family="Syne" font-weight="800" font-size="12" text-anchor="middle">1</text>
-          <path d="M200,240 L200,180 L320,120" stroke="#54c59e" stroke-width="3" fill="none" stroke-linecap="round"/>
-          <polygon points="320,120 308,118 312,130" fill="#54c59e"/>
-          <text x="240" y="170" fill="#54c59e" font-family="Syne" font-weight="700" font-size="14">slant</text>
-          <circle cx="600" cy="240" r="12" fill="#38bdf8"/><text x="600" y="244" fill="white" font-family="Syne" font-weight="800" font-size="12" text-anchor="middle">2</text>
-          <path d="M600,240 L600,210 L720,210" stroke="#fbbf24" stroke-width="3" fill="none" stroke-linecap="round"/>
-          <polygon points="720,210 708,205 708,215" fill="#fbbf24"/>
-          <text x="640" y="200" fill="#fbbf24" font-family="Syne" font-weight="700" font-size="14">flat</text>
-          <circle cx="200" cy="200" r="11" fill="#fb7185"/><text x="200" y="204" fill="white" font-family="Syne" font-weight="800" font-size="11" text-anchor="middle">CB</text>
-          <circle cx="600" cy="200" r="11" fill="#fb7185"/><text x="600" y="204" fill="white" font-family="Syne" font-weight="800" font-size="11" text-anchor="middle">CB</text>
-          <circle cx="400" cy="160" r="11" fill="#fb7185"/><text x="400" y="164" fill="white" font-family="Syne" font-weight="800" font-size="11" text-anchor="middle">S</text>
-        </svg>
-      </div>
-      <div style="display:flex; gap:32px; font-family:var(--font-body); font-size:24px; color:var(--fg-muted); line-height:1.5;">
-        <div style="flex:1;">${d.why}</div>
-        <div style="flex:1;">${d.qb}</div>
+      <div class="rule-header"><div class="eyebrow">${d.eyebrow}</div></div>
+      <div class="diagram">
+        ${renderPlay(d.players)}
+        <div class="rule-title-card">
+          <div class="h-display" style="font-size:72px; line-height:0.95;">${d.titleA}<br>${d.titleB}</div>
+        </div>
+        <div class="rule-desc-card">${d.desc}</div>
       </div>
     </div>`,
-    cls: 't-drill',
+    cls: 't-rule',
   };
 
   // Curated swatches for matchup team accents. Each entry: [hex, label].
@@ -800,6 +851,48 @@
           <div class="fig-add-row">
             ${['point','line','arrow','area'].map(t =>
               `<button type="button" class="fig-add-pill" data-fig-add="${f.id}|${t}">＋ ${t}</button>`).join('')}
+          </div>
+        </div>`;
+      }
+      if (f.type === 'players') {
+        const rows = (v || []).map((p, i) => {
+          const swatch = `<span class="fig-swatch" style="background:${figColor(p.color)}"></span>`;
+          const colorSel = `<select data-ply="${f.id}|${i}|color">${
+            Object.entries(FIG_COLORS).map(([k, c]) =>
+              `<option value="${k}"${p.color===k?' selected':''}>${c.label}</option>`).join('')
+          }</select>`;
+          const num = (lab, key, val, step, def) =>
+            `<label class="fig-mini">${lab}<input type="number" step="${step}" data-ply-num="${f.id}|${i}|${key}" value="${val ?? def}"></label>`;
+          const start =
+            `<label class="fig-mini">label<input type="text" data-ply-text="${f.id}|${i}|label" value="${escAttr(p.label||'')}"></label>` +
+            num('x','x',p.x,0.5,15) + num('y','y',p.y,0.5,12.5) +
+            num('size','r',p.r,0.1,0.95) + num('weight','width',p.width,0.05,0.32);
+          const route = (p.route || []).map((pt, j) => `
+            <div class="fig-route-row">
+              <span class="fig-route-tag">${j+1}</span>
+              <label class="fig-mini">x<input type="number" step="0.5" data-ply-pt="${f.id}|${i}|${j}|0" value="${pt[0]}"></label>
+              <label class="fig-mini">y<input type="number" step="0.5" data-ply-pt="${f.id}|${i}|${j}|1" value="${pt[1]}"></label>
+              <button type="button" class="fig-remove" data-ply-pt-remove="${f.id}|${i}|${j}" title="Remove point">×</button>
+            </div>`).join('');
+          return `<div class="fig-row">
+            <div class="fig-row-head">
+              ${colorSel}${swatch}
+              <span class="fig-spacer"></span>
+              <button type="button" class="fig-remove" data-ply-remove="${f.id}|${i}" title="Remove player">×</button>
+            </div>
+            <div class="fig-coords">${start}</div>
+            <div class="fig-route">
+              <div class="fig-route-label">Route waypoints (arrow on last)</div>
+              ${route || '<div class="fig-route-empty">No waypoints — player stays put.</div>'}
+              <button type="button" class="fig-add-pill fig-add-pt" data-ply-pt-add="${f.id}|${i}">＋ waypoint</button>
+            </div>
+          </div>`;
+        }).join('');
+        return `<div class="field fig-field"><label>${f.label}</label>
+          <div class="fig-legend">Same field as Rule. Default view shows <code>x: 8–35</code>, <code>y: 0–25</code> (own end zone + 25 yd).</div>
+          ${rows}
+          <div class="fig-add-row">
+            <button type="button" class="fig-add-pill" data-ply-add="${f.id}">＋ player</button>
           </div>
         </div>`;
       }
@@ -984,6 +1077,76 @@
     area.querySelectorAll('[data-fig-remove]').forEach(btn => {
       btn.addEventListener('click', e => {
         const [fid, idx] = e.currentTarget.dataset.figRemove.split('|');
+        state.values[fid].splice(+idx, 1);
+        renderForm();
+        renderPreview();
+      });
+    });
+
+    // ---------- PLAYERS field handlers ----------
+    area.querySelectorAll('[data-ply]').forEach(sel => {
+      sel.addEventListener('change', e => {
+        const [fid, idx, key] = e.target.dataset.ply.split('|');
+        if (key === 'color') {
+          state.values[fid][+idx].color = e.target.value;
+          renderForm();
+          renderPreview();
+        }
+      });
+    });
+    area.querySelectorAll('[data-ply-num]').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const [fid, idx, key] = e.target.dataset.plyNum.split('|');
+        const n = parseFloat(e.target.value);
+        state.values[fid][+idx][key] = isNaN(n) ? 0 : n;
+        renderPreview();
+      });
+    });
+    area.querySelectorAll('[data-ply-text]').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const [fid, idx, key] = e.target.dataset.plyText.split('|');
+        state.values[fid][+idx][key] = e.target.value;
+        renderPreview();
+      });
+    });
+    area.querySelectorAll('[data-ply-pt]').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const [fid, idx, j, axis] = e.target.dataset.plyPt.split('|');
+        const n = parseFloat(e.target.value);
+        state.values[fid][+idx].route[+j][+axis] = isNaN(n) ? 0 : n;
+        renderPreview();
+      });
+    });
+    area.querySelectorAll('[data-ply-pt-add]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const [fid, idx] = e.currentTarget.dataset.plyPtAdd.split('|');
+        const p = state.values[fid][+idx];
+        const last = (p.route && p.route.length) ? p.route[p.route.length - 1] : [p.x, p.y];
+        p.route = p.route || [];
+        p.route.push([Math.min(60, (last[0] || 15) + 4), last[1] || 12.5]);
+        renderForm();
+        renderPreview();
+      });
+    });
+    area.querySelectorAll('[data-ply-pt-remove]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const [fid, idx, j] = e.currentTarget.dataset.plyPtRemove.split('|');
+        state.values[fid][+idx].route.splice(+j, 1);
+        renderForm();
+        renderPreview();
+      });
+    });
+    area.querySelectorAll('[data-ply-add]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const fid = e.currentTarget.dataset.plyAdd;
+        state.values[fid].push(newPlayer());
+        renderForm();
+        renderPreview();
+      });
+    });
+    area.querySelectorAll('[data-ply-remove]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const [fid, idx] = e.currentTarget.dataset.plyRemove.split('|');
         state.values[fid].splice(+idx, 1);
         renderForm();
         renderPreview();

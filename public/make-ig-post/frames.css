@@ -163,8 +163,21 @@ body[data-aspect="story"] .t-rule .stage { inset: 0; }
 body[data-aspect="story"] .t-rule .rule-header { display: none; }
 body[data-aspect="story"] .t-rule .diagram { inset: 0; }
 body[data-aspect="story"] .t-rule .rule-title-card { top: 120px; }
-body[data-aspect="story"] .t-rule .rule-desc-card { bottom: 120px; }
+body[data-aspect="story"] .t-rule .rule-desc-card { bottom: 320px; }
 body[data-aspect="story"] .tile .wordmark { display: none; }
+
+/* 9:16 story safe-zone: keep text/elements out of the bottom ~250px so the
+   user can stack native IG interactive stickers (polls, questions, etc.) there. */
+body[data-aspect="story"] .t-player .jersey { bottom: 260px; }
+body[data-aspect="story"] .t-event .content,
+body[data-aspect="story"] .t-bts .content,
+body[data-aspect="story"] .t-pos101 .stage,
+body[data-aspect="story"] .t-schedule .stage,
+body[data-aspect="story"] .t-drill .stage,
+body[data-aspect="story"] .t-welcome .stage,
+body[data-aspect="story"] .t-fact .stage,
+body[data-aspect="story"] .t-nm .body-area,
+body[data-aspect="story"] .t-matchup .half { padding-bottom: 280px; }
 
 .t-drill .stage { padding: 80px 64px 64px; flex-direction: column; gap: 24px; }
 .t-drill .field { flex: 1; background: linear-gradient(180deg, #042f2e 0%, #03241f 100%);

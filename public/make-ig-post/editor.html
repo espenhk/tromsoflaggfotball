@@ -891,8 +891,9 @@
       const oC = d.oColor || '#38bdf8', dC = d.dColor || '#fb7185';
       const oR = hexToRgb(oC),         dR = hexToRgb(dC);
       // Photo tile: real image when uploaded, dashed placeholder otherwise.
+      // Wrap URL in quotes so long data: URIs don't trip up CSS parsing.
       const photo = (src, label) => src
-        ? `<div class="matchup-photo has-image" style="background-image:url(${src});"></div>`
+        ? `<div class="matchup-photo has-image" style='background-image:url("${String(src).replace(/"/g, "%22")}");'></div>`
         : `<div class="matchup-photo"><span>[ ${label} ]</span></div>`;
       const half = (side, c, r, photoSrc, photoLabel, label, first, last, tag, stats) => `
         <div class="half ${side}" style="background:linear-gradient(180deg, rgba(${r},0.18) 0%, rgba(${r},0.04) 100%);">
@@ -1666,16 +1667,44 @@
   }
 
   async function saveOrShareImage(blob, filename) {
+    // Detect touch-only / mobile devices — on those we prefer the native share
+    // sheet ("Save to Photos" on iOS, "Save to gallery" on Android). On desktop
+    // we want the OS save-file dialog instead of a share sheet.
+    const isMobile = (() => {
+      try {
+        const coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+        const noHover = window.matchMedia && window.matchMedia('(hover: none)').matches;
+        const ua = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
+        return ua || (coarse && noHover);
+      } catch { return false; }
+    })();
     const file = new File([blob], filename, { type: 'image/png' });
-    // Prefer native share sheet on mobile (iOS/Android) so user can "Save to Photos".
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    if (isMobile && navigator.canShare && navigator.canShare({ files: [file] })) {
       try {
         await navigator.share({ files: [file], title: filename });
         return;
       } catch (err) {
         if (err && err.name === 'AbortError') return;
-        // fall through to download fallback
         console.warn('Share failed, falling back to download', err);
+      }
+    }
+    // Desktop path: use the File System Access API for a true native "Save As"
+    // dialog when available (Chromium-based browsers). Falls back to an
+    // anonymous <a download> click otherwise (which still hits the OS dialog
+    // when the user has "Ask where to save each file" enabled in their browser).
+    if (window.showSaveFilePicker) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: filename,
+          types: [{ description: 'PNG image', accept: { 'image/png': ['.png'] } }],
+        });
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return;
+      } catch (err) {
+        if (err && err.name === 'AbortError') return;
+        console.warn('Save picker failed, falling back to download', err);
       }
     }
     const url = URL.createObjectURL(blob);
@@ -1683,7 +1712,8 @@
     a.href = url;
     a.download = filename;
     a.rel = 'noopener';
-    a.target = '_blank';
+    // Don't open a new tab — that's what triggered the share-sheet on some
+    // desktop browsers. A plain download click hits the OS dialog.
     document.body.appendChild(a);
     a.click();
     a.remove();

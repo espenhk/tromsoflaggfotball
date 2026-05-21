@@ -249,7 +249,7 @@ body[data-aspect="story"] .t-game .half { padding-bottom: 280px; }
 .t-game .half { flex: 1; padding: 60px 56px 280px; display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 28px; position: relative;
   overflow: hidden; text-align: center; }
-.t-game .game-logo { width: 280px; height: 280px; border-radius: 24px;
+.t-game .game-logo { width: 437px; height: 437px; border-radius: 32px;
   background-size: contain; background-repeat: no-repeat; background-position: center;
   border: 2px dashed rgba(255,255,255,0.22);
   display: flex; align-items: center; justify-content: center;
@@ -262,7 +262,7 @@ body[data-aspect="story"] .t-game .half { padding-bottom: 280px; }
 .t-game .game-tag { display: inline-block; padding: 10px 22px; border-radius: 999px;
   font-family: var(--font-body); font-weight: 700; font-size: 20px; letter-spacing: 0.12em;
   text-transform: uppercase; }
-.t-game .vs { position: absolute; top: calc(50% + 130px); left: 50%; transform: translate(-50%, -50%);
+.t-game .vs { position: absolute; top: 346px; left: 50%; transform: translate(-50%, -50%);
   width: 110px; height: 110px; border-radius: 50%; background: var(--bg);
   display: flex; align-items: center; justify-content: center; z-index: 5;
   font-family: var(--font-heading); font-weight: 800; font-size: 44px; color: var(--fg);
@@ -288,20 +288,11 @@ body[data-aspect="story"] .t-game .half { padding-bottom: 280px; }
   font-size: 22px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--fg-muted);
   white-space: nowrap; }
 
-/* Portrait (4:5) and Story (9:16): give logos more room — push them to the
-   top of each half and scale them up. VS sits centered on the logo row. */
-body[data-aspect="portrait"] .t-game .half,
-body[data-aspect="story"] .t-game .half { justify-content: flex-start; }
-/* Logo ~90% of its half (half-width = 540px on both aspects). Padding-top
-   equals the logo-to-text gap so the logo splits the space between the
-   screen top and the top of the team name. */
-body[data-aspect="portrait"] .t-game .half,
-body[data-aspect="story"] .t-game .half { padding-top: 28px; }
-body[data-aspect="portrait"] .t-game .game-logo,
-body[data-aspect="story"] .t-game .game-logo { width: 486px; height: 486px; border-radius: 32px; }
-/* VS centered vertically on the logo (padding-top + logo/2 = 28 + 243 = 271) */
-body[data-aspect="portrait"] .t-game .vs,
-body[data-aspect="story"] .t-game .vs { top: 271px; }
+/* Portrait (4:5) and Story (9:16): same logo treatment as square; the
+   logo+name+tag block is centered vertically between the top of the screen
+   and the top of the bottom time/place banner via the half's flex centering. */
+body[data-aspect="portrait"] .t-game .vs { top: 481px; }
+body[data-aspect="story"] .t-game .vs { top: 746px; }
 
 /* Story aspect: banner taller, sits above safe-zone overlay area */
 body[data-aspect="story"] .t-game .game-banner { min-height: 320px; padding: 56px 56px; }

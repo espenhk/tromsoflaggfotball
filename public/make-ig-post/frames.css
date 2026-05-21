@@ -151,10 +151,15 @@ body { margin: 0; background: #050a0d; color: var(--fg); font-family: var(--font
 .t-rule .rule-title-card { position: absolute; top: 110px; left: 48px; right: 48px;
   padding: 28px 36px; background: rgba(0,0,0,0.62); backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px); border-radius: 12px; z-index: 3; }
-.t-rule .rule-desc-card { position: absolute; bottom: 40px; left: 48px; right: 48px;
+/* Desc card sits centered on the goal line into our own end zone (x=10 in field
+   coords) so it doesn't cover the spotted-ball area higher up the field. Per-aspect
+   bottom offsets are derived from the field crop (see ASPECT_DIMS in editor.html). */
+.t-rule .rule-desc-card { position: absolute; bottom: 98px; left: 48px; right: 48px;
+  transform: translateY(50%);
   padding: 22px 32px; background: rgba(0,0,0,0.62); backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px); border-radius: 12px; z-index: 3;
   font-family: var(--font-body); font-size: 24px; color: var(--fg); line-height: 1.5; }
+body[data-aspect="portrait"] .t-rule .rule-desc-card { bottom: 90px; }
 .t-rule .rule-desc-card strong { color: var(--fg); font-weight: 700; }
 
 /* 9:16 story: drop the eyebrow header and wordmark entirely; give text cards
@@ -163,7 +168,7 @@ body[data-aspect="story"] .t-rule .stage { inset: 0; }
 body[data-aspect="story"] .t-rule .rule-header { display: none; }
 body[data-aspect="story"] .t-rule .diagram { inset: 0; }
 body[data-aspect="story"] .t-rule .rule-title-card { top: 120px; }
-body[data-aspect="story"] .t-rule .rule-desc-card { bottom: 320px; }
+body[data-aspect="story"] .t-rule .rule-desc-card { bottom: 160px; }
 body[data-aspect="story"] .tile .wordmark { display: none; }
 
 /* 9:16 story safe-zone: keep text/elements out of the bottom ~250px so the

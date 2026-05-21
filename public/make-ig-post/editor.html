@@ -207,14 +207,21 @@
     <button data-tpl="matchup">T11 · Matchup</button>
   </div>
 
-  <h3>2. Chrome</h3>
+  <h3>2. Aspect ratio</h3>
+  <div class="aspect-row" id="aspect-row">
+    <button data-aspect="square" class="active">1:1 Square</button>
+    <button data-aspect="portrait">4:5 Portrait</button>
+    <button data-aspect="story">9:16 Story</button>
+  </div>
+
+  <h3>3. Chrome</h3>
   <div class="chrome-row">
     <button data-chrome="curve" class="active">Curved</button>
     <button data-chrome="diag">Diagonal</button>
     <button data-chrome="none">None</button>
   </div>
 
-  <h3>3. Accent color</h3>
+  <h3>4. Accent color</h3>
   <div class="accent-row" id="accent-row">
     <button data-acc="primary" class="active">Primary</button>
     <button data-acc="qb">QB Yellow</button>
@@ -224,10 +231,10 @@
     <button data-acc="blue">WR Blue</button>
   </div>
 
-  <h3>4. Content</h3>
+  <h3>5. Content</h3>
   <div id="form-area"></div>
 
-  <h3>5. Photo (optional)</h3>
+  <h3>6. Photo (optional)</h3>
   <label class="upload" id="upload">
     <input type="file" id="photo-input" accept="image/*">
     <div class="upload-label" id="upload-label">Drop or click to upload</div>
@@ -242,12 +249,13 @@
 
   <div class="actions">
     <button class="secondary" id="reset-btn">Reset fields</button>
-    <button id="export-btn">Export PNG (1080)</button>
+    <button id="export-btn">Export PNG</button>
   </div>
 </aside>
 
 <main class="preview-area">
   <div class="preview-wrap" id="preview-wrap"></div>
+  <div class="slide-bar" id="slide-bar"></div>
 </main>
 
 <script>

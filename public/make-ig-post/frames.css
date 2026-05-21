@@ -243,6 +243,23 @@ body[data-aspect="story"] .t-matchup .half { padding-bottom: 280px; }
   font-family: var(--font-heading); font-weight: 800; font-size: 48px; color: var(--fg);
   border: 4px solid var(--primary); }
 
+/* Optional "when · where" banner pinned to the top center of the matchup stage.
+   Shown when the "Add time and place" checkbox is on. */
+.t-matchup .matchup-meta-banner { position: absolute; top: 32px; left: 50%;
+  transform: translateX(-50%); z-index: 6;
+  display: flex; align-items: center; gap: 14px; max-width: 88%;
+  padding: 14px 28px; border-radius: 999px;
+  background: rgba(0,8,13,0.82); backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.18);
+  font-family: var(--font-body); font-size: 24px; color: var(--fg);
+  letter-spacing: 0.04em; white-space: nowrap; }
+.t-matchup .matchup-meta-banner .mm-when { font-weight: 700; color: var(--fg); }
+.t-matchup .matchup-meta-banner .mm-where { color: var(--fg-muted); font-weight: 500; }
+.t-matchup .matchup-meta-banner .mm-dot { color: var(--fg-muted); opacity: 0.6; }
+
+/* 9:16 story safe-zone already pushes content up; banner stays at the top. */
+
 /* ---------- NORWEGIAN FLAG (proportions 22x16; cross at cols 6-10, rows 6-10; blue inset cols 7-9, rows 7-9) ----------
    The Scandinavian cross is the UNION of a vertical bar and a horizontal bar.
    Layering (first = top): blue vert ∪ blue horiz over white vert ∪ white horiz over red base. */

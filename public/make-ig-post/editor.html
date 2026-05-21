@@ -1507,6 +1507,11 @@
     });
   });
 
+  document.getElementById('top-ez-input').addEventListener('change', e => {
+    state.topEndZone = e.target.checked;
+    renderPreview();
+  });
+
   // ---------- SLIDE BAR ----------
   function renderSlideBar() {
     const bar = document.getElementById('slide-bar');

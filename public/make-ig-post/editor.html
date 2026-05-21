@@ -909,18 +909,23 @@
       sel.addEventListener('change', e => {
         const [fid, idx, key] = e.target.dataset.fig.split('|');
         const shape = state.values[fid][+idx];
-        if (key === 'type') {
-          // Replace shape with a fresh blank of the new type, preserving color.
-          const fresh = newFigureShape(e.target.value);
-          fresh.color = shape.color || fresh.color;
-          state.values[fid][+idx] = fresh;
-          renderForm();
-          renderPreview();
-        } else if (key === 'color') {
+        if (key === 'color') {
           shape.color = e.target.value;
           renderForm();    // refresh swatch
           renderPreview();
         }
+      });
+    });
+    area.querySelectorAll('[data-fig-type]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const [fid, idx, type] = e.currentTarget.dataset.figType.split('|');
+        const shape = state.values[fid][+idx];
+        if (shape.type === type) return;
+        const fresh = newFigureShape(type);
+        fresh.color = shape.color || fresh.color;
+        state.values[fid][+idx] = fresh;
+        renderForm();
+        renderPreview();
       });
     });
     area.querySelectorAll('[data-fig-num]').forEach(inp => {
@@ -952,9 +957,7 @@
     });
     area.querySelectorAll('[data-fig-add]').forEach(btn => {
       btn.addEventListener('click', e => {
-        const fid = e.currentTarget.dataset.figAdd;
-        const sel = area.querySelector(`[data-fig-add-type="${fid}"]`);
-        const type = sel ? sel.value : 'point';
+        const [fid, type] = e.currentTarget.dataset.figAdd.split('|');
         state.values[fid].push(newFigureShape(type));
         renderForm();
         renderPreview();

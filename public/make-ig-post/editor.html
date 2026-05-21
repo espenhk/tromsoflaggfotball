@@ -922,6 +922,16 @@
   // ----------------------------------------------------------------
   // T12 — GAME (head-to-head with logos; pre-game time/place OR post-game score)
   // ----------------------------------------------------------------
+  // Scale game-name font down for longer team names so they always fit on one line.
+  // Default ~72px works up to ~7 chars; shrink linearly beyond that.
+  function gameNameSize(name) {
+    const n = (name || '').length;
+    if (n <= 7)  return 72;
+    if (n <= 9)  return 60;
+    if (n <= 12) return 48;
+    if (n <= 16) return 38;
+    return 32;
+  }
   T.game = {
     label: 'Game',
     fields: [

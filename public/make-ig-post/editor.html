@@ -744,29 +744,35 @@
             Object.entries(FIG_COLORS).map(([k, c]) =>
               `<option value="${k}"${sh.color===k?' selected':''}>${c.label}</option>`).join('')
           }</select>`;
-          const typeSel = `<select data-fig="${f.id}|${i}|type">${
+          const typePills = `<div class="fig-type-pills">${
             ['point','line','arrow','area'].map(t =>
-              `<option value="${t}"${sh.type===t?' selected':''}>${t}</option>`).join('')
-          }</select>`;
+              `<button type="button" class="fig-type-pill${sh.type===t?' active':''}" data-fig-type="${f.id}|${i}|${t}">${t}</button>`).join('')
+          }</div>`;
           const num = (lab, key, val) =>
             `<label class="fig-mini">${lab}<input type="number" step="0.5" data-fig-num="${f.id}|${i}|${key}" value="${val ?? 0}"></label>`;
+          const numStep = (lab, key, val, step, def) =>
+            `<label class="fig-mini">${lab}<input type="number" step="${step}" min="0" data-fig-num="${f.id}|${i}|${key}" value="${val ?? def}"></label>`;
           let coords = '';
           if (sh.type === 'point') {
             coords = num('x','x',sh.x) + num('y','y',sh.y) +
+              numStep('size','r',sh.r,0.1,0.85) +
               `<label class="fig-mini fig-wide">label<input type="text" data-fig-text="${f.id}|${i}|label" value="${escAttr(sh.label||'')}"></label>`;
           } else if (sh.type === 'line' || sh.type === 'arrow') {
             coords = num('x1','x1',sh.x1) + num('y1','y1',sh.y1) +
-                     num('x2','x2',sh.x2) + num('y2','y2',sh.y2);
+                     num('x2','x2',sh.x2) + num('y2','y2',sh.y2) +
+                     numStep('weight','width',sh.width,0.05,0.28);
           } else if (sh.type === 'area') {
             const pv = (sh.points||[]).map(p => `${p[0]},${p[1]}`).join('; ');
-            coords = `<label class="fig-mini fig-wide">points (x,y; x,y; …)<input type="text" data-fig-pts="${f.id}|${i}" value="${escAttr(pv)}"></label>`;
+            coords = `<label class="fig-mini fig-wide">points (x,y; x,y; …)<input type="text" data-fig-pts="${f.id}|${i}" value="${escAttr(pv)}"></label>` +
+                     numStep('outline','width',sh.width,0.05,0.14);
           }
           return `<div class="fig-row">
             <div class="fig-row-head">
-              ${typeSel}${colorSel}${swatch}
+              ${colorSel}${swatch}
               <span class="fig-spacer"></span>
               <button type="button" class="fig-remove" data-fig-remove="${f.id}|${i}" title="Remove">×</button>
             </div>
+            ${typePills}
             <div class="fig-coords">${coords}</div>
           </div>`;
         }).join('');
@@ -774,13 +780,8 @@
           <div class="fig-legend">Football field is <code>70×25</code> yards. End zones <code>x: 0–10</code> and <code>x: 60–70</code>. Goal lines at <code>x=10</code> and <code>x=60</code>. Width runs <code>y: 0–25</code>.</div>
           ${rows}
           <div class="fig-add-row">
-            <select data-fig-add-type="${f.id}">
-              <option value="point">＋ Point</option>
-              <option value="line">＋ Line</option>
-              <option value="arrow">＋ Arrow</option>
-              <option value="area">＋ Area</option>
-            </select>
-            <button type="button" data-fig-add="${f.id}">Add</button>
+            ${['point','line','arrow','area'].map(t =>
+              `<button type="button" class="fig-add-pill" data-fig-add="${f.id}|${t}">＋ ${t}</button>`).join('')}
           </div>
         </div>`;
       }

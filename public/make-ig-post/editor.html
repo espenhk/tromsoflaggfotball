@@ -656,41 +656,30 @@
   };
 
   T.drill = {
-    label: 'Drill',
+    label: 'Play/concept',
     fields: [
-      { id:'eyebrow', label:'Eyebrow', type:'text', default:'Ukens øvelse · 08 av 30' },
+      { id:'eyebrow', label:'Eyebrow', type:'text', default:'Ukens konsept · 08 av 30' },
       { id:'titleA', label:'Title 1', type:'text', default:'Slant-Flat' },
       { id:'titleB', label:'Title 2 (HTML ok)', type:'text', default:'<span style="color:var(--chrome);">combination.</span>' },
-      { id:'why', label:'Why-it-works', type:'textarea', default:'<strong style="color:var(--fg);">Hvorfor:</strong> Slant tvinger nær-CB innover. Flat utnytter rommet han forlot.' },
-      { id:'qb', label:'QB read', type:'textarea', default:'<strong style="color:var(--fg);">QB-lese:</strong> Sjekk safety først. Slant er primary om mannen sitter i bakrommet.' },
-      { id:'wm_right', label:'Wordmark right', type:'text', default:'UKENS ØVELSE' },
+      { id:'players', label:'Players & routes', type:'players', default: [
+        { label:'Q', color:'qb', x:15,   y:12.5, r:1.0, width:0.32, route: [] },
+        { label:'1', color:'wr', x:15,   y:4,    r:0.95, width:0.32, route: [[18,8],[24,12]] },
+        { label:'2', color:'wr', x:15,   y:21,   r:0.95, width:0.32, route: [[18,21],[18,24]] },
+      ]},
+      { id:'desc', label:'Explanation (HTML ok)', type:'textarea', default:'<strong style="color:var(--fg);">Hvorfor:</strong> Slant tvinger nær-CB innover. Flat utnytter rommet han forlot.' },
+      { id:'wm_right', label:'Wordmark right', type:'text', default:'UKENS KONSEPT' },
     ],
     render: d => `<div class="stage">
-      <div class="eyebrow">${d.eyebrow}</div>
-      <div class="h-display" style="font-size:80px;">${d.titleA}<br>${d.titleB}</div>
-      <div class="field">
-        <svg viewBox="0 0 800 320" style="position:absolute; inset:0; width:100%; height:100%;">
-          <line x1="50" y1="240" x2="750" y2="240" stroke="white" stroke-width="2"/>
-          <circle cx="400" cy="280" r="14" fill="#fbbf24"/><text x="400" y="284" fill="#021b27" font-family="Syne" font-weight="800" font-size="14" text-anchor="middle">Q</text>
-          <circle cx="200" cy="240" r="12" fill="#38bdf8"/><text x="200" y="244" fill="white" font-family="Syne" font-weight="800" font-size="12" text-anchor="middle">1</text>
-          <path d="M200,240 L200,180 L320,120" stroke="#54c59e" stroke-width="3" fill="none" stroke-linecap="round"/>
-          <polygon points="320,120 308,118 312,130" fill="#54c59e"/>
-          <text x="240" y="170" fill="#54c59e" font-family="Syne" font-weight="700" font-size="14">slant</text>
-          <circle cx="600" cy="240" r="12" fill="#38bdf8"/><text x="600" y="244" fill="white" font-family="Syne" font-weight="800" font-size="12" text-anchor="middle">2</text>
-          <path d="M600,240 L600,210 L720,210" stroke="#fbbf24" stroke-width="3" fill="none" stroke-linecap="round"/>
-          <polygon points="720,210 708,205 708,215" fill="#fbbf24"/>
-          <text x="640" y="200" fill="#fbbf24" font-family="Syne" font-weight="700" font-size="14">flat</text>
-          <circle cx="200" cy="200" r="11" fill="#fb7185"/><text x="200" y="204" fill="white" font-family="Syne" font-weight="800" font-size="11" text-anchor="middle">CB</text>
-          <circle cx="600" cy="200" r="11" fill="#fb7185"/><text x="600" y="204" fill="white" font-family="Syne" font-weight="800" font-size="11" text-anchor="middle">CB</text>
-          <circle cx="400" cy="160" r="11" fill="#fb7185"/><text x="400" y="164" fill="white" font-family="Syne" font-weight="800" font-size="11" text-anchor="middle">S</text>
-        </svg>
-      </div>
-      <div style="display:flex; gap:32px; font-family:var(--font-body); font-size:24px; color:var(--fg-muted); line-height:1.5;">
-        <div style="flex:1;">${d.why}</div>
-        <div style="flex:1;">${d.qb}</div>
+      <div class="rule-header"><div class="eyebrow">${d.eyebrow}</div></div>
+      <div class="diagram">
+        ${renderPlay(d.players)}
+        <div class="rule-title-card">
+          <div class="h-display" style="font-size:72px; line-height:0.95;">${d.titleA}<br>${d.titleB}</div>
+        </div>
+        <div class="rule-desc-card">${d.desc}</div>
       </div>
     </div>`,
-    cls: 't-drill',
+    cls: 't-rule',
   };
 
   // Curated swatches for matchup team accents. Each entry: [hex, label].

@@ -585,12 +585,13 @@
     }
     const W = FIG_VIEW_W, H = FIG_VIEW_H;
     const sideInset = 0.6;
-    // End-zone bands (only the visible portion of x<10 and x>60)
+    // End-zone bands — lighter than the field surface.
+    const EZ_FILL = '#175545';
     const ezNear = FIG_XMIN < 10
-      ? `<rect x="0" y="${FIG_XMAX - 10}" width="${W}" height="${Math.min(10, FIG_XMAX) - FIG_XMIN}" fill="#082018"/>`
+      ? `<rect x="0" y="${FIG_XMAX - 10}" width="${W}" height="${Math.min(10, FIG_XMAX) - FIG_XMIN}" fill="${EZ_FILL}"/>`
       : '';
     const ezFar = FIG_XMAX > 60
-      ? `<rect x="0" y="0" width="${W}" height="${FIG_XMAX - 60}" fill="#082018"/>`
+      ? `<rect x="0" y="0" width="${W}" height="${FIG_XMAX - 60}" fill="${EZ_FILL}"/>`
       : '';
     // Yard numbers at every 10 yd line (skip midfield, it gets the marker)
     const numbersFor = x => {
@@ -598,13 +599,13 @@
       const v = Math.min(x - 10, 60 - x); // yards from nearest goal line
       if (v <= 0 || v > 40) return '';
       const sy = FIG_XMAX - x;
-      const fs = 1.6;
+      const fs = 1.0;
       return `
-        <text x="${sideInset + 0.6}" y="${sy + fs*0.35}" fill="rgba(240,252,250,0.55)" font-family="Syne, sans-serif" font-weight="800" font-size="${fs}" text-anchor="start" style="pointer-events:none;">${v}</text>
-        <text x="${W - sideInset - 0.6}" y="${sy + fs*0.35}" fill="rgba(240,252,250,0.55)" font-family="Syne, sans-serif" font-weight="800" font-size="${fs}" text-anchor="end" style="pointer-events:none;">${v}</text>`;
+        <text x="${sideInset + 0.5}" y="${sy + fs*0.35}" fill="rgba(240,252,250,0.65)" font-family="Outfit, sans-serif" font-weight="600" font-size="${fs}" text-anchor="start" style="pointer-events:none;">${v}</text>
+        <text x="${W - sideInset - 0.5}" y="${sy + fs*0.35}" fill="rgba(240,252,250,0.65)" font-family="Outfit, sans-serif" font-weight="600" font-size="${fs}" text-anchor="end" style="pointer-events:none;">${v}</text>`;
     };
     // Down marker (small flag/pole) on the left sideline at midfield
-    const midVisible = 35 >= FIG_XMIN && 35 <= FIG_XMAX;
+    const midVisible = FIG_FULL && 35 >= FIG_XMIN && 35 <= FIG_XMAX;
     const midSy = FIG_XMAX - 35;
     const downMarker = midVisible ? `
       <g style="pointer-events:none;">
@@ -627,7 +628,7 @@
         return `<line x1="${sideInset}" y1="${sy}" x2="${W - sideInset}" y2="${sy}" stroke="rgba(255,255,255,${major?0.22:0.12})" stroke-width="${major?0.08:0.05}"${major?'':' stroke-dasharray="0.5 0.7"'}/>`;
       }).join('')}
       ${goalNear}${goalFar}
-      ${yardXs.filter(x => x % 10 === 0).map(numbersFor).join('')}
+      ${FIG_FULL ? yardXs.filter(x => x % 10 === 0).map(numbersFor).join('') : ''}
       ${downMarker}
       <rect x="0" y="0" width="${W}" height="${H}" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="0.12"/>
     `;

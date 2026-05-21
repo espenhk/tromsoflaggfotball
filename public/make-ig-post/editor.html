@@ -906,16 +906,18 @@
             <div class="h-display matchup-name" style="font-size:68px; line-height:0.95;">${first}<br>${last}</div>
            <div style="display:inline-block; padding:8px 20px; background:rgba(${r},0.15); border:1px solid ${c}; color:${c}; font-family:var(--font-body); font-weight:700; letter-spacing:0.08em; font-size:22px; border-radius:999px; margin-top:16px;">${tag}</div>
           </div>
-          <div class="matchup-stats" style="display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; flex-direction:column; gap:8px; margin-top:24px;">
             ${stats.map(([l,v])=>`<div style="display:flex; justify-content:space-between; align-items:baseline; padding:12px 0; border-top:1px solid rgba(${r},0.3); font-family:var(--font-body); font-size:22px;"><span style="color:var(--fg-muted);">${l}</span><span style="color:${c}; font-family:var(--font-body); font-weight:700; font-size:30px; letter-spacing:0.01em;">${v}</span></div>`).join('')}
           </div>
         </div>`;
       const oStats = [[d.oS1l,d.oS1v],[d.oS2l,d.oS2v],[d.oS3l,d.oS3v]];
       const dStats = [[d.dS1l,d.dS1v],[d.dS2l,d.dS2v],[d.dS3l,d.dS3v]];
+      const oShown = d.showMeta ? oStats.slice(0,2) : oStats;
+      const dShown = d.showMeta ? dStats.slice(0,2) : dStats;
       return `<div class="stage">
-        ${half('off', oC, oR, d.oPhoto, 'angrep · photo', 'ANGREP', d.oFirst, d.oLast, d.oTag, oStats)}
+        ${half('off', oC, oR, d.oPhoto, 'angrep · photo', 'ANGREP', d.oFirst, d.oLast, d.oTag, oShown)}
         <div class="vs">VS</div>
-        ${half('def', dC, dR, d.dPhoto, 'forsvar · photo', 'FORSVAR', d.dFirst, d.dLast, d.dTag, dStats)}
+        ${half('def', dC, dR, d.dPhoto, 'forsvar · photo', 'FORSVAR', d.dFirst, d.dLast, d.dTag, dShown)}
         ${d.showMeta ? `<div class="matchup-meta-banner"><span class="mm-when">${d.gameWhen||''}</span>${d.gameWhere ? `<span class="mm-dot">·</span><span class="mm-where">${d.gameWhere}</span>` : ''}</div>` : ''}
       </div>`;
     },

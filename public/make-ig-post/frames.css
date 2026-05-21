@@ -200,9 +200,8 @@ body[data-aspect="story"] .t-matchup .half { padding-bottom: 280px; }
 
 /* T11 — OFFENSE VS DEFENSE matchup (uses sky + rose accents) */
 .t-matchup .stage { padding: 0; flex-direction: row; }
-.t-matchup .half { flex: 1; padding: 56px 56px 64px; display: grid;
-  grid-template-rows: 34px minmax(220px, 1fr) auto 186px;
-  position: relative; overflow: hidden; gap: 16px; }
+.t-matchup .half { flex: 1; padding: 56px 56px 64px; display: flex; flex-direction: column;
+  justify-content: flex-end; position: relative; overflow: hidden; gap: 16px; }
 .t-matchup .half.off { background: linear-gradient(180deg, rgba(56,189,248,0.18) 0%, rgba(56,189,248,0.04) 100%); }
 .t-matchup .half.def { background: linear-gradient(180deg, rgba(251,113,133,0.18) 0%, rgba(251,113,133,0.04) 100%); }
 /* Photo sits as a background band: opaque through the middle, fading to transparent
@@ -226,8 +225,8 @@ body[data-aspect="story"] .t-matchup .half { padding-bottom: 280px; }
   letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-muted); font-weight: 700; }
 /* Per-side photo tile shown at the top of each half. Real uploads use
    background-image; placeholder uses a dashed outline with caption. */
-.t-matchup .matchup-photo { position: relative; width: 100%; height: 100%; min-height: 0;
-  align-self: stretch;
+.t-matchup .matchup-photo { position: relative; width: 100%;
+  flex: 1 1 auto; min-height: 0; align-self: stretch;
   border-radius: 12px; overflow: hidden;
   background-size: cover; background-position: center top;
   border: 2px dashed rgba(255,255,255,0.22);
@@ -236,8 +235,6 @@ body[data-aspect="story"] .t-matchup .half { padding-bottom: 280px; }
   text-transform: uppercase; color: var(--fg-muted); font-weight: 700; }
 .t-matchup .matchup-photo.has-image { border: none; }
 .t-matchup .matchup-photo.has-image span { display: none; }
-.t-matchup .matchup-info { align-self: end; }
-.t-matchup .matchup-stats { align-self: end; }
 .t-matchup .matchup-content { position: relative; z-index: 1; display: flex; flex-direction: column;
   justify-content: space-between; height: 100%; }
 .t-matchup .vs { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
@@ -246,23 +243,28 @@ body[data-aspect="story"] .t-matchup .half { padding-bottom: 280px; }
   font-family: var(--font-heading); font-weight: 800; font-size: 48px; color: var(--fg);
   border: 4px solid var(--primary); }
 
-/* Optional "when · where" banner uses its own lane below the fixed stat grid.
-   Toggling it on must not move or hide any stat rows. */
-.t-matchup .matchup-meta-banner { position: absolute; bottom: 8px; left: 50%;
+/* Optional "when · where" banner pinned to the bottom center of the matchup stage,
+   sitting between the stats and the footer wordmark.
+   Shown when the "Add time and place" checkbox is on. When active, the halves
+   get extra bottom padding so the last stat row clears the banner. */
+.t-matchup .stage.has-meta .half { padding-bottom: 110px; }
+.t-matchup .matchup-meta-banner { position: absolute; bottom: 40px; left: 50%;
   transform: translateX(-50%); z-index: 6;
   display: flex; align-items: center; gap: 14px; max-width: 88%;
-  padding: 10px 24px; border-radius: 999px;
+  padding: 14px 28px; border-radius: 999px;
   background: rgba(0,8,13,0.82); backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255,255,255,0.18);
-  font-family: var(--font-body); font-size: 20px; color: var(--fg);
+  font-family: var(--font-body); font-size: 24px; color: var(--fg);
   letter-spacing: 0.04em; white-space: nowrap; }
 .t-matchup .matchup-meta-banner .mm-when { font-weight: 700; color: var(--fg); }
 .t-matchup .matchup-meta-banner .mm-where { color: var(--fg-muted); font-weight: 500; }
 .t-matchup .matchup-meta-banner .mm-dot { color: var(--fg-muted); opacity: 0.6; }
 
-/* 9:16 story safe-zone: keep the banner in the reserved bottom lane. */
-body[data-aspect="story"] .t-matchup .matchup-meta-banner { bottom: 252px; }
+/* 9:16 story safe-zone: nudge the banner up so it stays above the safe zone,
+   and increase the half bottom padding accordingly. */
+body[data-aspect="story"] .t-matchup .matchup-meta-banner { bottom: 290px; }
+body[data-aspect="story"] .t-matchup .stage.has-meta .half { padding-bottom: 340px; }
 
 /* ---------- NORWEGIAN FLAG (proportions 22x16; cross at cols 6-10, rows 6-10; blue inset cols 7-9, rows 7-9) ----------
    The Scandinavian cross is the UNION of a vertical bar and a horizontal bar.

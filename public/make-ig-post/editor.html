@@ -997,6 +997,7 @@
   function renderPreview() {
     const t = T[state.tpl];
     const wrap = document.getElementById('preview-wrap');
+    fitPreview();
     const accCls = state.accent !== 'primary' ? `acc-${state.accent}` : '';
     const wmRight = state.values.wm_right || '';
     const chromeHtml = state.chrome === 'none' ? '' : window.tileChrome(state.chrome);

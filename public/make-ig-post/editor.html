@@ -567,6 +567,58 @@
     return { type:'point', x:35, y:12.5, color:'qb' };
   }
 
+  // ---------- PLAY (player + route) FIGURE ----------
+  // A "player" entry: { label, color, x, y, route: [[x,y], ...] }
+  // The route is drawn as a polyline from (x,y) through each waypoint, with an
+  // arrowhead at the last point oriented along the final segment.
+  function newPlayer(seed) {
+    return Object.assign({
+      label: '',
+      color: 'wr',
+      x: 15,
+      y: 12.5,
+      r: 0.95,
+      width: 0.32,
+      route: [[20, 12.5]],
+    }, seed || {});
+  }
+
+  function renderPlayPlayer(p) {
+    const c = figColor(p.color);
+    const w = p.width || 0.32;
+    const r = p.r || 0.95;
+    const start = figTx(p.x, p.y);
+    const route = (p.route || []).map(pt => figTx(pt[0], pt[1]));
+    let path = '';
+    if (route.length) {
+      const pts = [start, ...route];
+      // All segments except the last drawn as a polyline.
+      const head = route[route.length - 1];
+      const beforeHead = pts[pts.length - 2];
+      const polyPts = pts.slice(0, -1).map(pt => `${pt.sx},${pt.sy}`).join(' ');
+      path += `<polyline points="${polyPts}" stroke="${c}" stroke-width="${w}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+      // Final segment with arrowhead at the last waypoint.
+      const dx = head.sx - beforeHead.sx, dy = head.sy - beforeHead.sy;
+      const len = Math.hypot(dx, dy) || 1;
+      const ux = dx / len, uy = dy / len;
+      const headLen = 1.4;
+      const bx = head.sx - ux * headLen, by = head.sy - uy * headLen;
+      const px = -uy * headLen * 0.55, py = ux * headLen * 0.55;
+      path += `<line x1="${beforeHead.sx}" y1="${beforeHead.sy}" x2="${bx}" y2="${by}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>
+        <polygon points="${head.sx},${head.sy} ${bx + px},${by + py} ${bx - px},${by - py}" fill="${c}"/>`;
+    }
+    const dot = `<circle cx="${start.sx}" cy="${start.sy}" r="${r}" fill="${c}" stroke="#021018" stroke-width="0.14"/>` +
+      (p.label ? `<text x="${start.sx}" y="${start.sy + 0.38}" fill="#021018" font-family="Syne, sans-serif" font-weight="800" font-size="1.1" text-anchor="middle" style="pointer-events:none;">${p.label}</text>` : '');
+    return path + dot;
+  }
+
+  function renderPlay(players) {
+    return `<svg viewBox="0 0 ${FIG_VIEW_W} ${FIG_VIEW_H}" preserveAspectRatio="xMidYMid meet" style="position:absolute; inset:0; width:100%; height:100%;">
+      ${renderFootballField()}
+      ${(players || []).map(renderPlayPlayer).join('')}
+    </svg>`;
+  }
+
   T.rule = {
     label: 'Rule',
     fields: [

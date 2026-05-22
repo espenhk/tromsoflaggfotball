@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,6 +9,8 @@ import TrainingPlans from "./pages/TrainingPlans.tsx";
 import Posisjoner from "./pages/Posisjoner.tsx";
 import MakeIgPost from "./pages/MakeIgPost.tsx";
 import Pameldinger from "./pages/Pameldinger.tsx";
+import AdminIndex from "./pages/AdminIndex.tsx";
+import AdminGate from "./components/AdminGate.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import { LanguageProvider } from "./i18n/LanguageProvider.tsx";
 
@@ -25,10 +27,20 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/how-i-did-it" element={<HowIDidIt />} />
-            <Route path="/training-plans" element={<TrainingPlans />} />
             <Route path="/posisjoner" element={<Posisjoner />} />
-            <Route path="/make-ig-post" element={<MakeIgPost />} />
-            <Route path="/pameldinger" element={<Pameldinger />} />
+
+            {/* Admin (password-protected) */}
+            <Route path="/admin" element={<AdminGate />}>
+              <Route index element={<AdminIndex />} />
+              <Route path="pameldinger" element={<Pameldinger />} />
+              <Route path="make-ig-post" element={<MakeIgPost />} />
+              <Route path="training-plans" element={<TrainingPlans />} />
+            </Route>
+
+            {/* Legacy redirects */}
+            <Route path="/training-plans" element={<Navigate to="/admin/training-plans" replace />} />
+            <Route path="/make-ig-post" element={<Navigate to="/admin/make-ig-post" replace />} />
+            <Route path="/pameldinger" element={<Navigate to="/admin/pameldinger" replace />} />
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

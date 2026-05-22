@@ -266,23 +266,24 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Åpent for alle */}
+      {/* Åpent for alle + Prøv en trening */}
       <section className="py-16 px-6 bg-card/50">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-start gap-4">
             <div className="text-primary mt-1">
               <Users className="w-6 h-6" />
             </div>
-            <div>
+            <div className="flex-1">
               <h3 className="font-heading text-xl md:text-2xl font-bold text-foreground mb-3">
                 {t("open.h")}
               </h3>
               <p className="text-muted-foreground font-body leading-relaxed mb-3">
                 {t("open.p1.pre")}<strong className="text-foreground">{t("open.p1.strong")}</strong>{t("open.p1.post")}
               </p>
-              <p className="text-muted-foreground font-body leading-relaxed">
+              <p className="text-muted-foreground font-body leading-relaxed mb-6">
                 {t("open.p2")}
               </p>
+              <TryTrainingSection />
             </div>
           </div>
         </div>
@@ -290,9 +291,6 @@ const Index = () => {
 
       {/* Treninger */}
       <TrainingSection />
-
-      {/* Prøv en trening */}
-      <TryTrainingSection />
 
       {/* Banediagram + Posisjoner */}
       <GameSection />

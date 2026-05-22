@@ -266,23 +266,24 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Åpent for alle */}
+      {/* Åpent for alle + Prøv en trening */}
       <section className="py-16 px-6 bg-card/50">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-start gap-4">
             <div className="text-primary mt-1">
               <Users className="w-6 h-6" />
             </div>
-            <div>
+            <div className="flex-1">
               <h3 className="font-heading text-xl md:text-2xl font-bold text-foreground mb-3">
                 {t("open.h")}
               </h3>
               <p className="text-muted-foreground font-body leading-relaxed mb-3">
                 {t("open.p1.pre")}<strong className="text-foreground">{t("open.p1.strong")}</strong>{t("open.p1.post")}
               </p>
-              <p className="text-muted-foreground font-body leading-relaxed">
+              <p className="text-muted-foreground font-body leading-relaxed mb-6">
                 {t("open.p2")}
               </p>
+              <TryTrainingSection />
             </div>
           </div>
         </div>
@@ -290,9 +291,6 @@ const Index = () => {
 
       {/* Treninger */}
       <TrainingSection />
-
-      {/* Prøv en trening */}
-      <TryTrainingSection />
 
       {/* Banediagram + Posisjoner */}
       <GameSection />
@@ -686,29 +684,33 @@ const TryTrainingSection = () => {
     "w-full rounded-lg bg-background border border-border px-4 py-3 text-foreground placeholder:text-muted-foreground/60 font-body focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition";
 
   return (
-    <section id="prov-en-trening" className="py-16 px-6 bg-card/50 scroll-mt-16">
-      <div className="max-w-2xl mx-auto">
-        <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-3 flex items-center gap-3">
-          <UserPlus className="w-7 h-7 text-primary" />
-          {t("try.h")}
-        </h2>
-        <p className="text-muted-foreground font-body mb-6 max-w-xl">{t("try.sub")}</p>
-
-        {!expanded ? (
+    <div id="prov-en-trening" className="scroll-mt-16">
+      {status === "success" ? (
+        <div className="flex items-start gap-3 rounded-xl border border-primary/40 bg-primary/10 p-5">
+          <CheckCircle2 className="w-6 h-6 text-primary shrink-0 mt-0.5" />
+          <p className="font-body text-foreground">{t("try.success")}</p>
+        </div>
+      ) : (
+        <>
           <button
-            onClick={() => setExpanded(true)}
+            type="button"
+            onClick={() => setExpanded((v) => !v)}
+            aria-expanded={expanded}
             className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground font-heading font-bold px-6 py-3 hover:shadow-[0_0_12px_hsl(var(--primary)/0.6)] transition-shadow"
           >
-            <ChevronDown className="w-4 h-4" />
-            {t("try.cta")}
+            <ChevronDown
+              className={`w-4 h-4 transition-transform duration-300 ${expanded ? "rotate-180" : ""}`}
+            />
+            {expanded ? t("try.close") : t("try.cta")}
           </button>
-        ) : status === "success" ? (
-          <div className="flex items-start gap-3 rounded-xl border border-primary/40 bg-primary/10 p-5">
-            <CheckCircle2 className="w-6 h-6 text-primary shrink-0 mt-0.5" />
-            <p className="font-body text-foreground">{t("try.success")}</p>
-          </div>
-        ) : (
-          <form onSubmit={onSubmit} className="space-y-4" noValidate>
+
+          <div
+            className={`grid transition-[grid-template-rows] duration-500 ease-out ${
+              expanded ? "grid-rows-[1fr] mt-6" : "grid-rows-[0fr] mt-0"
+            }`}
+          >
+            <div className="min-h-0 overflow-hidden">
+              <form onSubmit={onSubmit} className="space-y-4" noValidate>
             <div className="grid md:grid-cols-2 gap-4">
               <label className="block">
                 <span className="block text-sm font-body text-muted-foreground mb-1.5">{t("try.name")}</span>
@@ -789,18 +791,13 @@ const TryTrainingSection = () => {
                 <Send className="w-4 h-4" />
                 {status === "submitting" ? t("try.submitting") : t("try.submit")}
               </button>
-              <button
-                type="button"
-                onClick={() => setExpanded(false)}
-                className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {t("try.close")}
-              </button>
             </div>
-          </form>
-        )}
-      </div>
-    </section>
+              </form>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
   );
 };
 

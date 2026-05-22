@@ -17,6 +17,7 @@ export type Database = {
       training_signups: {
         Row: {
           age_group: string | null
+          coach_notes: string | null
           contact: string
           created_at: string
           id: string
@@ -27,6 +28,7 @@ export type Database = {
         }
         Insert: {
           age_group?: string | null
+          coach_notes?: string | null
           contact: string
           created_at?: string
           id?: string
@@ -37,6 +39,7 @@ export type Database = {
         }
         Update: {
           age_group?: string | null
+          coach_notes?: string | null
           contact?: string
           created_at?: string
           id?: string

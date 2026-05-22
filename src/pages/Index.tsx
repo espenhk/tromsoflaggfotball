@@ -709,18 +709,18 @@ const TryTrainingSection = () => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
-              className="inline-flex items-center justify-center w-10 h-10 text-foreground hover:text-primary hover:shadow-[0_0_12px_hsl(var(--primary)/0.4)] transition-all"
+              className="text-muted-foreground hover:text-[#1877F2] hover:-translate-y-0.5 transition-all"
             >
-              <Facebook className="w-6 h-6 fill-current" />
+              <Facebook className="w-6 h-6" />
             </a>
             <a
               href="https://www.instagram.com/tromsoflaggfotball/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              className="inline-flex items-center justify-center w-10 h-10 text-foreground hover:text-primary hover:shadow-[0_0_12px_hsl(var(--primary)/0.4)] transition-all"
+              className="text-muted-foreground hover:text-[#E1306C] hover:-translate-y-0.5 transition-all"
             >
-              <Instagram className="w-6 h-6 fill-current" />
+              <Instagram className="w-6 h-6" />
             </a>
           </div>
 

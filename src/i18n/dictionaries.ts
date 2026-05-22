@@ -278,6 +278,7 @@ const en: Record<TranslationKey, string> = {
   "training.bringValue": "Sports clothes & football shoes (cleats). Water bottle.",
 
   // Try a training (sign-up form)
+  "try.cta": "Register interest",
   "try.h": "Try a training",
   "try.sub": "Want to come to a session? Sign up and we'll give you a warm welcome when you arrive.",
   "try.name": "Name",

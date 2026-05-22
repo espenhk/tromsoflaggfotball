@@ -583,7 +583,7 @@ const TrainingSection = () => {
           {t("training.h")}
         </h2>
 
-        <div className="flex flex-col md:flex-row md:items-start gap-6">
+        <div className="flex flex-col md:flex-row md:items-stretch gap-6">
           <div className="flex flex-col gap-4 md:w-1/3 shrink-0">
             <InfoCard icon={<Calendar className="w-5 h-5" />} label={t("training.day")} value={t("training.dayValue")} />
             <InfoCard icon={<Clock className="w-5 h-5" />} label={t("training.time")} value={t("training.timeValue")} />
@@ -591,7 +591,7 @@ const TrainingSection = () => {
             <InfoCard icon={<ShoppingBag className="w-5 h-5" />} label={t("training.bring")} value={t("training.bringValue")} />
           </div>
 
-          <div className="rounded-xl overflow-hidden border border-border flex-1 h-[180px] md:h-[160px]">
+          <div className="rounded-xl overflow-hidden border border-border flex-1 h-[180px] md:h-auto md:self-stretch">
             <iframe
               className="w-full h-full"
               src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=TUIL+Arena,+Tromsø&maptype=satellite&zoom=17"

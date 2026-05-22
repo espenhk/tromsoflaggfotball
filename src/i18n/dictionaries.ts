@@ -47,6 +47,27 @@ const no = {
   "training.bring": "Ta med",
   "training.bringValue": "Sportklær og fotballsko (med knotter). Vannflaske.",
 
+  // ── Prøv en trening (sign-up form) ─────────────────────
+  "try.h": "Prøv en trening",
+  "try.sub": "Lyst til å være med på en trening? Meld deg på, så får du en hyggelig velkomst når du kommer.",
+  "try.name": "Navn",
+  "try.namePh": "Ditt fulle navn",
+  "try.contact": "E-post eller telefon",
+  "try.contactPh": "f.eks. navn@epost.no eller 12345678",
+  "try.ageGroup": "Aldersgruppe",
+  "try.ageGroupPh": "Velg",
+  "try.ageAdult": "Voksen (16+)",
+  "try.ageYouth": "Ungdom (under 16)",
+  "try.preferredDate": "Når vil du komme?",
+  "try.preferredDatePh": "f.eks. mandag 3. juni",
+  "try.message": "Melding (valgfritt)",
+  "try.messagePh": "Spørsmål eller noe du vil vi skal vite?",
+  "try.submit": "Meld meg på",
+  "try.submitting": "Sender …",
+  "try.success": "Påmeldingen er mottatt! Vi sees på trening.",
+  "try.error": "Noe gikk galt. Prøv igjen, eller kontakt en av trenerne.",
+  "try.optional": "(valgfritt)",
+
   // ── Game / Spillet ────────────────────────────────────
   "game.h": "Dette er flaggfotball",
   "game.sub": "Utforsk formasjoner, spilltyper og forsvarstaktikker.",

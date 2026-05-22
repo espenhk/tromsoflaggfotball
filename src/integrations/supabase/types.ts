@@ -14,7 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      training_signups: {
+        Row: {
+          age_group: string | null
+          contact: string
+          created_at: string
+          id: string
+          language: string
+          message: string | null
+          name: string
+          preferred_date: string | null
+        }
+        Insert: {
+          age_group?: string | null
+          contact: string
+          created_at?: string
+          id?: string
+          language?: string
+          message?: string | null
+          name: string
+          preferred_date?: string | null
+        }
+        Update: {
+          age_group?: string | null
+          contact?: string
+          created_at?: string
+          id?: string
+          language?: string
+          message?: string | null
+          name?: string
+          preferred_date?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

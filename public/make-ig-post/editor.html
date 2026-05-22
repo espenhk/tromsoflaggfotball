@@ -1089,8 +1089,58 @@
   }
 
   // Seed with one blank slide.
-  state.slides.push(blankSlide('player'));
-  loadSlide(0);
+  // ----------------------------------------------------------------
+  // Persistence: cache editor state in localStorage so a refresh
+  // doesn't wipe the user's work. We snapshot the current slide first,
+  // then serialize the whole slides[] array plus top-level toggles.
+  // Photos (data URLs) are included; if quota is exceeded we drop them.
+  // ----------------------------------------------------------------
+  const PERSIST_KEY = 'tff-ig-editor-state-v1';
+  let _persistTimer = null;
+  function savePersisted() {
+    if (_persistTimer) return;
+    _persistTimer = setTimeout(() => {
+      _persistTimer = null;
+      try {
+        const payload = {
+          aspect: state.aspect,
+          topEndZone: state.topEndZone,
+          currentSlide: state.currentSlide,
+          slides: state.slides,
+        };
+        localStorage.setItem(PERSIST_KEY, JSON.stringify(payload));
+      } catch (err) {
+        // Likely QuotaExceeded — retry without photo data URLs.
+        try {
+          const lean = {
+            aspect: state.aspect,
+            topEndZone: state.topEndZone,
+            currentSlide: state.currentSlide,
+            slides: state.slides.map(s => ({ ...s, photo: null, photoCutout: false })),
+          };
+          localStorage.setItem(PERSIST_KEY, JSON.stringify(lean));
+        } catch (_) { /* give up silently */ }
+      }
+    }, 200);
+  }
+  function loadPersisted() {
+    try {
+      const raw = localStorage.getItem(PERSIST_KEY);
+      if (!raw) return false;
+      const p = JSON.parse(raw);
+      if (!p || !Array.isArray(p.slides) || !p.slides.length) return false;
+      state.aspect = p.aspect || 'square';
+      state.topEndZone = !!p.topEndZone;
+      state.slides = p.slides;
+      const idx = Math.min(Math.max(0, p.currentSlide || 0), p.slides.length - 1);
+      loadSlide(idx);
+      return true;
+    } catch (_) { return false; }
+  }
+  if (!loadPersisted()) {
+    state.slides.push(blankSlide('player'));
+    loadSlide(0);
+  }
 
   // ----------------------------------------------------------------
   // Render form for current template
@@ -1516,6 +1566,7 @@
     if (ezInput) ezInput.checked = !!state.topEndZone;
     snapshotSlide();
     renderSlideBar();
+    savePersisted();
     const accCls = state.accent !== 'primary' ? `acc-${state.accent}` : '';
     const wmRight = state.values.wm_right || '';
     const chromeHtml = state.chrome === 'none' ? '' : window.tileChrome(state.chrome);

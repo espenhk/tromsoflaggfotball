@@ -691,18 +691,38 @@ const TryTrainingSection = () => {
           <p className="font-body text-foreground">{t("try.success")}</p>
         </div>
       ) : (
-        <>
-          <button
-            type="button"
-            onClick={() => setExpanded((v) => !v)}
-            aria-expanded={expanded}
-            className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground font-heading font-bold px-6 py-3 hover:shadow-[0_0_12px_hsl(var(--primary)/0.6)] transition-shadow"
-          >
-            <ChevronDown
-              className={`w-4 h-4 transition-transform duration-300 ${expanded ? "rotate-180" : ""}`}
-            />
-            {expanded ? t("try.close") : t("try.cta")}
-          </button>
+      <>
+          <div className="flex items-center gap-3 flex-wrap">
+            <button
+              type="button"
+              onClick={() => setExpanded((v) => !v)}
+              aria-expanded={expanded}
+              className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground font-heading font-bold px-6 py-3 hover:shadow-[0_0_12px_hsl(var(--primary)/0.6)] transition-shadow"
+            >
+              <ChevronDown
+                className={`w-4 h-4 transition-transform duration-300 ${expanded ? "rotate-180" : ""}`}
+              />
+              {expanded ? t("try.close") : t("try.cta")}
+            </button>
+            <a
+              href="https://www.facebook.com/profile.php?id=61587334652354&locale=nb_NO"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+              className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-background border border-border text-muted-foreground hover:text-primary hover:border-primary/40 hover:shadow-[0_0_12px_hsl(var(--primary)/0.4)] transition-all"
+            >
+              <Facebook className="w-5 h-5" />
+            </a>
+            <a
+              href="https://www.instagram.com/tromsoflaggfotball/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-background border border-border text-muted-foreground hover:text-primary hover:border-primary/40 hover:shadow-[0_0_12px_hsl(var(--primary)/0.4)] transition-all"
+            >
+              <Instagram className="w-5 h-5" />
+            </a>
+          </div>
 
           <div
             className={`grid transition-[grid-template-rows] duration-500 ease-out ${

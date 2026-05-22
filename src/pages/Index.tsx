@@ -588,6 +588,7 @@ const TrainingSection = () => {
             <InfoCard icon={<Calendar className="w-5 h-5" />} label={t("training.day")} value={t("training.dayValue")} />
             <InfoCard icon={<Clock className="w-5 h-5" />} label={t("training.time")} value={t("training.timeValue")} />
             <InfoCard icon={<MapPin className="w-5 h-5" />} label={t("training.place")} value={t("training.placeValue")} />
+            <InfoCard icon={<ShoppingBag className="w-5 h-5" />} label={t("training.bring")} value={t("training.bringValue")} />
           </div>
 
           <div className="rounded-xl overflow-hidden border border-border flex-1 h-[180px] md:h-[160px]">

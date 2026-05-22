@@ -702,7 +702,7 @@ const TryTrainingSection = () => {
               <ChevronDown
                 className={`w-4 h-4 transition-transform duration-300 ${expanded ? "rotate-180" : ""}`}
               />
-              {expanded ? t("try.close") : t("try.cta")}
+              {t("try.cta")}
             </button>
             <a
               href="https://www.facebook.com/profile.php?id=61587334652354&locale=nb_NO"
@@ -810,6 +810,14 @@ const TryTrainingSection = () => {
               >
                 <Send className="w-4 h-4" />
                 {status === "submitting" ? t("try.submitting") : t("try.submit")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setExpanded(false)}
+                className="ml-auto inline-flex items-center gap-1.5 font-heading font-bold text-primary hover:text-primary/80 hover:drop-shadow-[0_0_8px_hsl(var(--primary)/0.6)] transition"
+              >
+                {t("try.close")}
+                <X className="w-4 h-4" />
               </button>
             </div>
               </form>

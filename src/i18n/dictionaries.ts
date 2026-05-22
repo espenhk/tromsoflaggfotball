@@ -48,6 +48,7 @@ const no = {
   "training.bringValue": "Sportklær og fotballsko (med knotter). Vannflaske.",
 
   // ── Prøv en trening (sign-up form) ─────────────────────
+  "try.cta": "Meld interesse",
   "try.h": "Prøv en trening",
   "try.sub": "Lyst til å være med på en trening? Meld deg på, så får du en hyggelig velkomst når du kommer.",
   "try.name": "Navn",

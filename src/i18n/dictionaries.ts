@@ -48,6 +48,8 @@ const no = {
   "training.bringValue": "Sportklær og fotballsko (med knotter). Vannflaske.",
 
   // ── Prøv en trening (sign-up form) ─────────────────────
+  "try.cta": "Meld interesse",
+  "try.close": "Lukk",
   "try.h": "Prøv en trening",
   "try.sub": "Lyst til å være med på en trening? Meld deg på, så får du en hyggelig velkomst når du kommer.",
   "try.name": "Navn",
@@ -277,6 +279,8 @@ const en: Record<TranslationKey, string> = {
   "training.bringValue": "Sports clothes & football shoes (cleats). Water bottle.",
 
   // Try a training (sign-up form)
+  "try.cta": "Register interest",
+  "try.close": "Close",
   "try.h": "Try a training",
   "try.sub": "Want to come to a session? Sign up and we'll give you a warm welcome when you arrive.",
   "try.name": "Name",

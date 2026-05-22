@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair, Menu, X, UserPlus, ShieldCheck, Megaphone, ConeIcon } from "lucide-react";
+import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair, Menu, X, UserPlus, ShieldCheck, Megaphone, ConeIcon, ShoppingBag } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
@@ -588,6 +588,7 @@ const TrainingSection = () => {
             <InfoCard icon={<Calendar className="w-5 h-5" />} label={t("training.day")} value={t("training.dayValue")} />
             <InfoCard icon={<Clock className="w-5 h-5" />} label={t("training.time")} value={t("training.timeValue")} />
             <InfoCard icon={<MapPin className="w-5 h-5" />} label={t("training.place")} value={t("training.placeValue")} />
+            <InfoCard icon={<ShoppingBag className="w-5 h-5" />} label={t("training.bring")} value={t("training.bringValue")} />
           </div>
 
           <div className="rounded-xl overflow-hidden border border-border flex-1 h-[180px] md:h-[160px]">

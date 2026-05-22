@@ -44,6 +44,8 @@ const no = {
   "training.timeValue": "20:30 – 21:30",
   "training.place": "Sted",
   "training.placeValue": "TUIL Arena",
+  "training.bring": "Ta med",
+  "training.bringValue": "Sportklær og fotballsko (med knotter). Vannflaske.",
 
   // ── Game / Spillet ────────────────────────────────────
   "game.h": "Dette er flaggfotball",
@@ -250,6 +252,8 @@ const en: Record<TranslationKey, string> = {
   "training.timeValue": "20:30 – 21:30",
   "training.place": "Location",
   "training.placeValue": "TUIL Arena",
+  "training.bring": "Bring",
+  "training.bringValue": "Sports clothes & football shoes (cleats). Water bottle.",
 
   // Game
   "game.h": "How the game works",

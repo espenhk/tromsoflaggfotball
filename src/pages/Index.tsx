@@ -780,7 +780,7 @@ const TryTrainingSection = () => {
               onClick={expanded ? undefined : () => setExpanded(true)}
               aria-expanded={expanded}
               disabled={expanded && status === "submitting"}
-              className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground font-heading font-bold px-6 py-3 hover:shadow-[0_0_12px_hsl(var(--primary)/0.6)] transition-shadow disabled:opacity-60 disabled:cursor-not-allowed"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground font-heading font-bold px-6 py-3 min-w-[200px] hover:shadow-[0_0_12px_hsl(var(--primary)/0.6)] transition-shadow disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {expanded ? <Send className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               {expanded

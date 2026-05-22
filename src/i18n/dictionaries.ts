@@ -39,11 +39,11 @@ const no = {
   // ── Treninger ─────────────────────────────────────────
   "training.h": "Treninger",
   "training.day": "Dag",
-  "training.dayValue": "Mandager",
+  "training.dayValue": "Mandager og torsdager",
   "training.time": "Tid",
-  "training.timeValue": "20:30 – 22:00",
+  "training.timeValue": "20:30 – 21:30",
   "training.place": "Sted",
-  "training.placeValue": "Mellomvegen 110",
+  "training.placeValue": "TUIL Arena",
 
   // ── Game / Spillet ────────────────────────────────────
   "game.h": "Dette er flaggfotball",
@@ -110,7 +110,7 @@ const no = {
   "faq.q3": "Hva koster det?",
   "faq.a3": "Trening er helt gratis! Du trenger medlemskap i Amerikanske Idretters klubb (ca 80 kr) og lisens/forsikring via Min Idrett (ca 100 kr).",
   "faq.q4": "Hva må jeg ta med?",
-  "faq.a4": "Sportklær og joggesko. Alt annet utstyr har vi. Ta gjerne med en vannflaske.",
+  "faq.a4": "Sportklær og fotballsko (med knotter). Alt annet utstyr har vi. Ta gjerne med en vannflaske.",
   "faq.q5": "Hvor mange på laget?",
   "faq.a5": "Flaggfotball spilles 5 mot 5 på banen. Vi deler inn i lag på trening.",
 
@@ -245,11 +245,11 @@ const en: Record<TranslationKey, string> = {
   // Training section
   "training.h": "Practices",
   "training.day": "Day",
-  "training.dayValue": "Mondays",
+  "training.dayValue": "Mondays and Thursdays",
   "training.time": "Time",
-  "training.timeValue": "20:30 – 22:00",
+  "training.timeValue": "20:30 – 21:30",
   "training.place": "Location",
-  "training.placeValue": "Mellomvegen 110",
+  "training.placeValue": "TUIL Arena",
 
   // Game
   "game.h": "How the game works",
@@ -316,7 +316,7 @@ const en: Record<TranslationKey, string> = {
   "faq.q3": "What does it cost?",
   "faq.a3": "Practice is completely free! You need a membership in Amerikanske Idretters club (about 80 NOK) and a licence/insurance via Min Idrett (about 100 NOK).",
   "faq.q4": "What should I bring?",
-  "faq.a4": "Sports clothes and running shoes. We have all the other gear. Bring a water bottle if you can.",
+  "faq.a4": "Sports clothes and football shoes (cleats). We have all the other gear. Bring a water bottle if you can.",
   "faq.q5": "How many on a team?",
   "faq.a5": "Flag football is played 5 vs 5 on the field. We split into teams at practice.",
 

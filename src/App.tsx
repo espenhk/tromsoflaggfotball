@@ -8,6 +8,7 @@ import HowIDidIt from "./pages/HowIDidIt.tsx";
 import TrainingPlans from "./pages/TrainingPlans.tsx";
 import Posisjoner from "./pages/Posisjoner.tsx";
 import MakeIgPost from "./pages/MakeIgPost.tsx";
+import Pameldinger from "./pages/Pameldinger.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import { LanguageProvider } from "./i18n/LanguageProvider.tsx";
 
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/training-plans" element={<TrainingPlans />} />
             <Route path="/posisjoner" element={<Posisjoner />} />
             <Route path="/make-ig-post" element={<MakeIgPost />} />
+            <Route path="/pameldinger" element={<Pameldinger />} />
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

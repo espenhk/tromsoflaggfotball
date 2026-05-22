@@ -1,19 +1,12 @@
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
+import { Outlet } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
-const STORAGE_KEY = "admin_pw";
+export const ADMIN_PW_KEY = "admin_pw";
 
-type Props = {
-  children: (password: string) => ReactNode;
-  title?: string;
-};
-
-const AdminGate = ({ children, title = "Tilgang" }: Props) => {
-  const [password, setPassword] = useState(
-    () => sessionStorage.getItem(STORAGE_KEY) ?? "",
-  );
+const AdminGate = () => {
   const [authed, setAuthed] = useState(
-    () => !!sessionStorage.getItem(STORAGE_KEY),
+    () => !!sessionStorage.getItem(ADMIN_PW_KEY),
   );
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,8 +21,7 @@ const AdminGate = ({ children, title = "Tilgang" }: Props) => {
         body: { password: input, action: "verify" },
       });
       if (error || !data?.ok) throw new Error("unauth");
-      sessionStorage.setItem(STORAGE_KEY, input);
-      setPassword(input);
+      sessionStorage.setItem(ADMIN_PW_KEY, input);
       setAuthed(true);
     } catch {
       setError("Feil passord");
@@ -38,12 +30,12 @@ const AdminGate = ({ children, title = "Tilgang" }: Props) => {
     }
   };
 
-  if (authed) return <>{children(password)}</>;
+  if (authed) return <Outlet />;
 
   return (
     <main className="min-h-screen bg-background text-foreground px-6 py-16 flex items-center justify-center">
       <form onSubmit={handleSubmit} className="w-full max-w-sm">
-        <h1 className="font-display text-3xl mb-6">{title}</h1>
+        <h1 className="font-display text-3xl mb-6">Admin</h1>
         <div className="flex flex-col sm:flex-row gap-3">
           <input
             type="password"

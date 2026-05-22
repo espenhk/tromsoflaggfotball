@@ -1,6 +1,8 @@
-import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair, Menu, X, UserPlus, ShieldCheck, Megaphone, ConeIcon, ShoppingBag } from "lucide-react";
+import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair, Menu, X, UserPlus, ShieldCheck, Megaphone, ConeIcon, ShoppingBag, Send, CheckCircle2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useLang } from "@/i18n/LanguageProvider";
 import logo from "@/assets/logo.png";
 import heroBg from "@/assets/hero-bg.png";
 import FieldDiagram from "@/components/FieldDiagram";
@@ -288,6 +290,9 @@ const Index = () => {
 
       {/* Treninger */}
       <TrainingSection />
+
+      {/* Prøv en trening */}
+      <TryTrainingSection />
 
       {/* Banediagram + Posisjoner */}
       <GameSection />

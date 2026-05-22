@@ -633,7 +633,7 @@ const TryTrainingSection = () => {
       return;
     }
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("training_signups")
       .insert({
         name: trimmedName,
@@ -642,11 +642,9 @@ const TryTrainingSection = () => {
         preferred_date: preferredDate.trim() || null,
         message: message.trim() || null,
         language: lang,
-      })
-      .select("id")
-      .single();
+      });
 
-    if (error || !data) {
+    if (error) {
       console.error("Sign-up insert failed", error);
       setStatus("error");
       return;
@@ -659,7 +657,7 @@ const TryTrainingSection = () => {
         body: {
           templateName: "training-signup-notification",
           recipientEmail: "espenhkristensen@gmail.com",
-          idempotencyKey: `training-signup-${data.id}`,
+          idempotencyKey: `training-signup-${Date.now()}-${trimmedContact}`,
           templateData: {
             name: trimmedName,
             contact: trimmedContact,

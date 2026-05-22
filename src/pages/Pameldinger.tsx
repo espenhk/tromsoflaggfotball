@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { ADMIN_PW_KEY } from "@/components/AdminGate";
 
 type Signup = {
   id: string;
@@ -14,9 +15,9 @@ type Signup = {
 };
 
 const Pameldinger = () => {
-  const [password, setPassword] = useState("");
+  const password = sessionStorage.getItem(ADMIN_PW_KEY) ?? "";
   const [signups, setSignups] = useState<Signup[] | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [noteDrafts, setNoteDrafts] = useState<Record<string, string>>({});
   const [savingId, setSavingId] = useState<string | null>(null);
@@ -35,19 +36,22 @@ const Pameldinger = () => {
     );
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    try {
-      await loadSignups(password);
-    } catch (err: any) {
-      setError("Feil passord eller serverfeil");
-      setSignups(null);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        await loadSignups(password);
+      } catch {
+        if (!cancelled) setError("Kunne ikke laste påmeldinger");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const saveNote = async (id: string) => {
     setSavingId(id);
@@ -96,25 +100,7 @@ const Pameldinger = () => {
       <div className="max-w-5xl mx-auto">
         <h1 className="font-display text-4xl md:text-5xl mb-8">Påmeldinger</h1>
 
-        {!signups && (
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md">
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Passord"
-              className="flex-1 rounded-md bg-card border border-border px-4 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-              autoFocus
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              className="rounded-md bg-primary px-5 py-2 text-primary-foreground font-medium hover:opacity-90 disabled:opacity-50"
-            >
-              {loading ? "..." : "Logg inn"}
-            </button>
-          </form>
-        )}
+        {loading && <p className="text-muted-foreground">Laster...</p>}
 
         {error && <p className="mt-4 text-destructive">{error}</p>}
 

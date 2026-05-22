@@ -692,9 +692,17 @@ const TryTrainingSection = () => {
           <UserPlus className="w-7 h-7 text-primary" />
           {t("try.h")}
         </h2>
-        <p className="text-muted-foreground font-body mb-8 max-w-xl">{t("try.sub")}</p>
+        <p className="text-muted-foreground font-body mb-6 max-w-xl">{t("try.sub")}</p>
 
-        {status === "success" ? (
+        {!expanded ? (
+          <button
+            onClick={() => setExpanded(true)}
+            className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground font-heading font-bold px-6 py-3 hover:shadow-[0_0_12px_hsl(var(--primary)/0.6)] transition-shadow"
+          >
+            <ChevronDown className="w-4 h-4" />
+            {t("try.cta")}
+          </button>
+        ) : status === "success" ? (
           <div className="flex items-start gap-3 rounded-xl border border-primary/40 bg-primary/10 p-5">
             <CheckCircle2 className="w-6 h-6 text-primary shrink-0 mt-0.5" />
             <p className="font-body text-foreground">{t("try.success")}</p>
@@ -772,14 +780,23 @@ const TryTrainingSection = () => {
               <p className="text-sm font-body text-destructive">{t("try.error")}</p>
             )}
 
-            <button
-              type="submit"
-              disabled={status === "submitting"}
-              className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground font-heading font-bold px-6 py-3 hover:shadow-[0_0_12px_hsl(var(--primary)/0.6)] transition-shadow disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              <Send className="w-4 h-4" />
-              {status === "submitting" ? t("try.submitting") : t("try.submit")}
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                type="submit"
+                disabled={status === "submitting"}
+                className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground font-heading font-bold px-6 py-3 hover:shadow-[0_0_12px_hsl(var(--primary)/0.6)] transition-shadow disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                <Send className="w-4 h-4" />
+                {status === "submitting" ? t("try.submitting") : t("try.submit")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setExpanded(false)}
+                className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {t("nav.menu") === "Meny" ? "Lukk" : "Close"}
+              </button>
+            </div>
           </form>
         )}
       </div>

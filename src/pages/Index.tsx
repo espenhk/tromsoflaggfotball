@@ -794,7 +794,7 @@ const TryTrainingSection = () => {
                 onClick={() => setExpanded(false)}
                 className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors"
               >
-                {t("nav.menu") === "Meny" ? "Lukk" : "Close"}
+                {t("try.close")}
               </button>
             </div>
           </form>

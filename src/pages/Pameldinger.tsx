@@ -10,6 +10,7 @@ type Signup = {
   preferred_date: string | null;
   language: string;
   created_at: string;
+  coach_notes: string | null;
 };
 
 const Pameldinger = () => {
@@ -17,23 +18,76 @@ const Pameldinger = () => {
   const [signups, setSignups] = useState<Signup[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [noteDrafts, setNoteDrafts] = useState<Record<string, string>>({});
+  const [savingId, setSavingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const loadSignups = async (pw: string) => {
+    const { data, error } = await supabase.functions.invoke("list-signups", {
+      body: { password: pw },
+    });
+    if (error) throw error;
+    if (!data?.signups) throw new Error("Feil passord");
+    const list = data.signups as Signup[];
+    setSignups(list);
+    setNoteDrafts(
+      Object.fromEntries(list.map((s) => [s.id, s.coach_notes ?? ""])),
+    );
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
     try {
-      const { data, error } = await supabase.functions.invoke("list-signups", {
-        body: { password },
-      });
-      if (error) throw error;
-      if (!data?.signups) throw new Error("Feil passord");
-      setSignups(data.signups as Signup[]);
+      await loadSignups(password);
     } catch (err: any) {
       setError("Feil passord eller serverfeil");
       setSignups(null);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const saveNote = async (id: string) => {
+    setSavingId(id);
+    try {
+      const { error } = await supabase.functions.invoke("list-signups", {
+        body: {
+          password,
+          action: "update_notes",
+          id,
+          coach_notes: noteDrafts[id] ?? "",
+        },
+      });
+      if (error) throw error;
+      setSignups((prev) =>
+        prev
+          ? prev.map((s) =>
+              s.id === id ? { ...s, coach_notes: noteDrafts[id] ?? "" } : s,
+            )
+          : prev,
+      );
+    } catch {
+      setError("Kunne ikke lagre notat");
+    } finally {
+      setSavingId(null);
+    }
+  };
+
+  const deleteSignup = async (id: string, name: string) => {
+    if (!confirm(`Slette påmelding fra ${name}? Dette kan ikke angres.`)) return;
+    setDeletingId(id);
+    try {
+      const { error } = await supabase.functions.invoke("list-signups", {
+        body: { password, action: "delete", id },
+      });
+      if (error) throw error;
+      setSignups((prev) => (prev ? prev.filter((s) => s.id !== id) : prev));
+    } catch {
+      setError("Kunne ikke slette");
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -67,35 +121,82 @@ const Pameldinger = () => {
         {signups && (
           <div className="mt-6">
             <p className="text-muted-foreground mb-4">{signups.length} påmeldinger</p>
-            <div className="overflow-x-auto rounded-lg border border-border">
-              <table className="w-full text-sm">
-                <thead className="bg-card">
-                  <tr className="text-left">
-                    <th className="px-4 py-3">Tidspunkt</th>
-                    <th className="px-4 py-3">Navn</th>
-                    <th className="px-4 py-3">Kontakt</th>
-                    <th className="px-4 py-3">Aldersgruppe</th>
-                    <th className="px-4 py-3">Foretrukket dato</th>
-                    <th className="px-4 py-3">Melding</th>
-                    <th className="px-4 py-3">Språk</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {signups.map((s) => (
-                    <tr key={s.id} className="border-t border-border align-top">
-                      <td className="px-4 py-3 whitespace-nowrap text-muted-foreground">
-                        {new Date(s.created_at).toLocaleString("no-NO")}
-                      </td>
-                      <td className="px-4 py-3 font-medium">{s.name}</td>
-                      <td className="px-4 py-3">{s.contact}</td>
-                      <td className="px-4 py-3">{s.age_group ?? "—"}</td>
-                      <td className="px-4 py-3">{s.preferred_date ?? "—"}</td>
-                      <td className="px-4 py-3 max-w-md whitespace-pre-wrap">{s.message ?? "—"}</td>
-                      <td className="px-4 py-3 uppercase text-xs text-muted-foreground">{s.language}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="space-y-4">
+              {signups.map((s) => {
+                const draft = noteDrafts[s.id] ?? "";
+                const dirty = draft !== (s.coach_notes ?? "");
+                return (
+                  <div
+                    key={s.id}
+                    className="rounded-lg border border-border bg-card/50 p-5"
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
+                      <div>
+                        <div className="flex items-center gap-3 flex-wrap">
+                          <h2 className="font-display text-xl">{s.name}</h2>
+                          <span className="text-xs uppercase text-muted-foreground">
+                            {s.language}
+                          </span>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {new Date(s.created_at).toLocaleString("no-NO")}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => deleteSignup(s.id, s.name)}
+                        disabled={deletingId === s.id}
+                        className="rounded-md border border-destructive/40 px-3 py-1.5 text-sm text-destructive hover:bg-destructive/10 disabled:opacity-50"
+                      >
+                        {deletingId === s.id ? "Sletter..." : "Slett"}
+                      </button>
+                    </div>
+
+                    <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm mb-4">
+                      <div>
+                        <dt className="text-muted-foreground">Kontakt</dt>
+                        <dd>{s.contact}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-muted-foreground">Aldersgruppe</dt>
+                        <dd>{s.age_group ?? "—"}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-muted-foreground">Foretrukket dato</dt>
+                        <dd>{s.preferred_date ?? "—"}</dd>
+                      </div>
+                      <div className="sm:col-span-2">
+                        <dt className="text-muted-foreground">Melding</dt>
+                        <dd className="whitespace-pre-wrap">{s.message ?? "—"}</dd>
+                      </div>
+                    </dl>
+
+                    <div>
+                      <label className="block text-sm text-muted-foreground mb-1">
+                        Coach-notater (delt mellom trenere)
+                      </label>
+                      <textarea
+                        value={draft}
+                        onChange={(e) =>
+                          setNoteDrafts((d) => ({ ...d, [s.id]: e.target.value }))
+                        }
+                        placeholder="F.eks. 'Svart på e-post 03.06 – /Espen'"
+                        rows={3}
+                        maxLength={4000}
+                        className="w-full rounded-md bg-background border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                      />
+                      <div className="mt-2 flex justify-end">
+                        <button
+                          onClick={() => saveNote(s.id)}
+                          disabled={!dirty || savingId === s.id}
+                          className="rounded-md bg-primary px-4 py-1.5 text-sm text-primary-foreground font-medium hover:opacity-90 disabled:opacity-40"
+                        >
+                          {savingId === s.id ? "Lagrer..." : dirty ? "Lagre notat" : "Lagret"}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

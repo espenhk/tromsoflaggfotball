@@ -1,0 +1,1 @@
+ALTER TABLE public.training_signups ADD COLUMN coach_notes text;

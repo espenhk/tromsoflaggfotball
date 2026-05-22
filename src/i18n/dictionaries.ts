@@ -276,6 +276,27 @@ const en: Record<TranslationKey, string> = {
   "training.bring": "Bring",
   "training.bringValue": "Sports clothes & football shoes (cleats). Water bottle.",
 
+  // Try a training (sign-up form)
+  "try.h": "Try a training",
+  "try.sub": "Want to come to a session? Sign up and we'll give you a warm welcome when you arrive.",
+  "try.name": "Name",
+  "try.namePh": "Your full name",
+  "try.contact": "Email or phone",
+  "try.contactPh": "e.g. name@email.com or +47 12345678",
+  "try.ageGroup": "Age group",
+  "try.ageGroupPh": "Pick one",
+  "try.ageAdult": "Adult (16+)",
+  "try.ageYouth": "Youth (under 16)",
+  "try.preferredDate": "When would you like to come?",
+  "try.preferredDatePh": "e.g. Monday June 3",
+  "try.message": "Message (optional)",
+  "try.messagePh": "Any questions or anything we should know?",
+  "try.submit": "Sign me up",
+  "try.submitting": "Sending …",
+  "try.success": "Thanks — we got your sign-up! See you at training.",
+  "try.error": "Something went wrong. Please try again, or contact one of the coaches.",
+  "try.optional": "(optional)",
+
   // Game
   "game.h": "How the game works",
   "game.sub": "Explore formations, play types and defensive tactics.",

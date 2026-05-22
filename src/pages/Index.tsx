@@ -593,8 +593,8 @@ const TrainingSection = () => {
           <div className="rounded-xl overflow-hidden border border-border flex-1 h-[180px] md:h-[160px]">
             <iframe
               className="w-full h-full"
-              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Mellomvegen+110,+9006+Tromsø&maptype=satellite&zoom=17"
-              title="Mellomvegen 110, Tromsø"
+              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=TUIL+Arena,+Tromsø&maptype=satellite&zoom=17"
+              title="TUIL Arena, Tromsø"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               allowFullScreen

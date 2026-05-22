@@ -698,7 +698,7 @@ const TryTrainingSection = () => {
             }`}
             aria-hidden={expanded}
           >
-            <div className="min-h-0 overflow-hidden">
+            <div className="min-h-0 overflow-hidden flex flex-col justify-end">
               <div className="flex items-center gap-3 flex-wrap">
                 <button
                   type="button"

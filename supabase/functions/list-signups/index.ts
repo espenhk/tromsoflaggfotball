@@ -7,7 +7,8 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { password } = await req.json().catch(() => ({ password: "" }));
+    const body = await req.json().catch(() => ({}));
+    const { password, action, id, coach_notes } = body ?? {};
     const expected = Deno.env.get("ADMIN_PASSWORD");
     if (!expected || typeof password !== "string" || password !== expected) {
       return new Response(JSON.stringify({ error: "unauthorized" }), {
@@ -20,6 +21,39 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
+
+    if (action === "delete") {
+      if (typeof id !== "string") {
+        return new Response(JSON.stringify({ error: "invalid id" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const { error } = await supabase.from("training_signups").delete().eq("id", id);
+      if (error) throw error;
+      return new Response(JSON.stringify({ ok: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "update_notes") {
+      if (typeof id !== "string") {
+        return new Response(JSON.stringify({ error: "invalid id" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const notes =
+        typeof coach_notes === "string" ? coach_notes.slice(0, 4000) : null;
+      const { error } = await supabase
+        .from("training_signups")
+        .update({ coach_notes: notes })
+        .eq("id", id);
+      if (error) throw error;
+      return new Response(JSON.stringify({ ok: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const { data, error } = await supabase
       .from("training_signups")

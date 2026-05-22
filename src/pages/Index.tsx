@@ -692,41 +692,48 @@ const TryTrainingSection = () => {
         </div>
       ) : (
       <>
-          <div className="flex items-center gap-3 flex-wrap">
-            <button
-              type="button"
-              onClick={() => setExpanded((v) => !v)}
-              aria-expanded={expanded}
-              className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground font-heading font-bold px-6 py-3 hover:shadow-[0_0_12px_hsl(var(--primary)/0.6)] transition-shadow"
-            >
-              <ChevronDown
-                className={`w-4 h-4 transition-transform duration-300 ${expanded ? "rotate-180" : ""}`}
-              />
-              {t("try.cta")}
-            </button>
-            <a
-              href="https://www.facebook.com/profile.php?id=61587334652354&locale=nb_NO"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook"
-              className="text-muted-foreground hover:text-[#1877F2] hover:-translate-y-0.5 transition-all"
-            >
-              <Facebook className="w-6 h-6" />
-            </a>
-            <a
-              href="https://www.instagram.com/tromsoflaggfotball/"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram"
-              className="text-muted-foreground hover:text-[#E1306C] hover:-translate-y-0.5 transition-all"
-            >
-              <Instagram className="w-6 h-6" />
-            </a>
+          <div
+            className={`grid transition-[grid-template-rows,opacity] duration-500 ease-out ${
+              expanded ? "grid-rows-[0fr] opacity-0 pointer-events-none" : "grid-rows-[1fr] opacity-100"
+            }`}
+            aria-hidden={expanded}
+          >
+            <div className="min-h-0 overflow-hidden">
+              <div className="flex items-center gap-3 flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => setExpanded(true)}
+                  aria-expanded={expanded}
+                  className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground font-heading font-bold px-6 py-3 hover:shadow-[0_0_12px_hsl(var(--primary)/0.6)] transition-shadow"
+                >
+                  <ChevronDown className="w-4 h-4" />
+                  {t("try.cta")}
+                </button>
+                <a
+                  href="https://www.facebook.com/profile.php?id=61587334652354&locale=nb_NO"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="text-muted-foreground hover:text-[#1877F2] hover:-translate-y-0.5 transition-all"
+                >
+                  <Facebook className="w-6 h-6" />
+                </a>
+                <a
+                  href="https://www.instagram.com/tromsoflaggfotball/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="text-muted-foreground hover:text-[#E1306C] hover:-translate-y-0.5 transition-all"
+                >
+                  <Instagram className="w-6 h-6" />
+                </a>
+              </div>
+            </div>
           </div>
 
           <div
             className={`grid transition-[grid-template-rows] duration-500 ease-out ${
-              expanded ? "grid-rows-[1fr] mt-6" : "grid-rows-[0fr] mt-0"
+              expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
             }`}
           >
             <div className="min-h-0 overflow-hidden">
@@ -811,6 +818,24 @@ const TryTrainingSection = () => {
                 <Send className="w-4 h-4" />
                 {status === "submitting" ? t("try.submitting") : t("try.submit")}
               </button>
+              <a
+                href="https://www.facebook.com/profile.php?id=61587334652354&locale=nb_NO"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="text-muted-foreground hover:text-[#1877F2] hover:-translate-y-0.5 transition-all"
+              >
+                <Facebook className="w-6 h-6" />
+              </a>
+              <a
+                href="https://www.instagram.com/tromsoflaggfotball/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="text-muted-foreground hover:text-[#E1306C] hover:-translate-y-0.5 transition-all"
+              >
+                <Instagram className="w-6 h-6" />
+              </a>
               <button
                 type="button"
                 onClick={() => setExpanded(false)}

@@ -615,6 +615,7 @@ const TrainingSection = () => {
 const TryTrainingSection = () => {
   const t = useT();
   const { lang } = useLang();
+  const [expanded, setExpanded] = useState(false);
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
   const [ageGroup, setAgeGroup] = useState("");

@@ -360,7 +360,7 @@ const PositionRow = ({ pos, open, onToggle }: { pos: PositionData; open: boolean
         <div className="flex items-center gap-3">
           <div className={pos.accentColor}>{pos.icon}</div>
           <div className="flex-1 min-w-0">
-            <h4 className="font-heading font-bold text-foreground">
+            <h4 className="font-heading font-medium text-foreground">
               {pos.name}
               <sup className={`ml-1 text-[0.7em] align-super ${pos.accentColor} opacity-60`}>{pos.abbr}</sup>
             </h4>

@@ -260,7 +260,7 @@ const Posisjoner = () => {
             <ArrowLeft className="w-4 h-4" />
             <img src={logo} alt="Logo" className="w-5 h-5" />
           </Link>
-          <h1 className="font-heading font-bold text-foreground text-sm">Posisjoner i flaggfotball</h1>
+          <h1 className="font-heading font-medium text-foreground text-sm">Posisjoner i flaggfotball</h1>
         </div>
       </nav>
 

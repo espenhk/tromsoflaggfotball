@@ -438,7 +438,7 @@ const Index = () => {
           <div className="flex items-center gap-3">
             <BrandLogo variant="mark" alt="Logo" className="h-9 w-auto" />
             <span className={`font-heading text-sm font-medium ${theme === "tuil" ? "text-white" : "text-muted-foreground"}`}>
-              {t("footer.brand")}
+              {theme === "tuil" ? "Flaggfotball" : t("footer.brand")}
             </span>
           </div>
           <p className={`text-xs ${theme === "tuil" ? "text-white/80" : "text-muted-foreground"}`}>

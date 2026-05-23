@@ -1004,7 +1004,7 @@ const FaqItem = ({ q, a }: { q: string; a: string }) => {
       className="w-full text-left bg-muted/60 border border-border rounded-xl p-4 transition-all hover:bg-muted hover:border-primary/40"
     >
       <div className="flex items-start justify-between gap-2">
-        <p className="font-heading text-sm font-bold text-foreground leading-snug">{q}</p>
+        <p className="font-heading text-sm font-medium text-foreground leading-snug">{q}</p>
         <ChevronDown
           className={`w-4 h-4 text-primary/50 shrink-0 mt-0.5 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
         />

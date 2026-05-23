@@ -12,6 +12,13 @@
       document.documentElement.setAttribute('data-theme', 'tuil');
     }
   } catch (e) {}
+  // Restore saved background variant (TUIL only)
+  try {
+    const savedBg = localStorage.getItem('mip-bg');
+    if (savedBg === 'navy' || savedBg === 'royal') {
+      document.documentElement.setAttribute('data-bg', savedBg);
+    }
+  } catch (e) {}
 </script>
 <style>
   html, body { overflow-x: hidden; }

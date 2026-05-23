@@ -1579,10 +1579,14 @@
     const wmRight = state.values.wm_right || '';
     const chromeHtml = state.chrome === 'none' ? '' : window.tileChrome(state.chrome);
 
+    const isTuil = document.documentElement.getAttribute('data-theme') === 'tuil';
+    const wmLeft = isTuil
+      ? `<span class="left"><img class="wm-logo" src="assets/tuil-wordmark.png" alt="TUIL">FLAGGFOTBALL</span>`
+      : `<span class="left">TROMSØ FLAGGFOTBALL</span>`;
     wrap.innerHTML = `<div class="tile ${t.cls} ${accCls}">
       ${chromeHtml}
       ${t.render(state.values)}
-      <div class="wordmark"><span class="left">TROMSØ FLAGGFOTBALL</span><span class="right">${wmRight}</span></div>
+      <div class="wordmark">${wmLeft}<span class="right">${wmRight}</span></div>
     </div>`;
 
     // Apply uploaded photo, if any.

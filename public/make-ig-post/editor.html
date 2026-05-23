@@ -61,7 +61,7 @@
   .actions button.secondary { background:transparent; color:var(--fg-muted); border:1px solid rgba(13,106,106,0.6); }
   .actions button:hover { opacity:0.9; }
   .preview-area { padding: 32px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:18px;
-    background:radial-gradient(at center, #08141a 0%, #02080c 100%); min-width: 0; overflow: hidden; }
+    background:#ececec; min-width: 0; overflow: hidden; }
   .preview-wrap { width: var(--prev-w, 540px); height: var(--prev-h, 540px); }
   .preview-wrap .tile { transform: scale(var(--prev-scale, 0.5)); transform-origin: top left; }
   /* Slide tab strip below the preview */
@@ -98,6 +98,7 @@
     font-size: 11px; letter-spacing: 0.08em; color: var(--fg-muted); text-transform:uppercase; }
   .accent-row button.active { color: var(--natt-500); }
   .accent-row button[data-acc="primary"].active { background:#54c59e; }
+  html[data-theme="tuil"] .accent-row button[data-acc="primary"].active { background:#df0c21; }
   .accent-row button[data-acc="qb"].active      { background:#fbbf24; }
   .accent-row button[data-acc="rb"].active      { background:#34d399; }
   .accent-row button[data-acc="def"].active     { background:#fb7185; }

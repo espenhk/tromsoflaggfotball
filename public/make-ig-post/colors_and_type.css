@@ -205,7 +205,7 @@ html[data-theme="tuil"] .sidebar {
   border-right-color: rgba(255, 255, 255, 0.12);
 }
 html[data-theme="tuil"] .preview-area {
-  background: radial-gradient(at center, #1a47b3 0%, #0a1a3d 100%);
+  background: #ececec;
 }
 /* Form inputs, list rows, fig rows, mini inputs */
 html[data-theme="tuil"] .field input,
@@ -304,7 +304,7 @@ html[data-theme="tuil"] .t-rule .rule-header .eyebrow {
 }
 /* Wordmark white TUIL logo, sized to match the cap-height of the text */
 html[data-theme="tuil"] .tile .wordmark .wm-logo {
-  height: 22px;
+  height: 56px;
   width: auto;
   vertical-align: middle;
   margin-right: 12px;
@@ -344,7 +344,7 @@ html[data-theme="tuil"][data-bg="navy"] {
   --accent: #1a47b3;
 }
 html[data-theme="tuil"][data-bg="navy"] .preview-area {
-  background: radial-gradient(at center, #0e214e 0%, #051028 100%);
+  background: #ececec;
 }
 html[data-theme="tuil"][data-bg="navy"] .ph,
 html[data-theme="tuil"][data-bg="navy"] .t-player .left-col,

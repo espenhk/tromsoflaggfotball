@@ -536,7 +536,7 @@ const GameSection = () => {
             <FieldDiagram onPositionNavigate={goToPosition} />
             <Link
               to={POSITIONS_URL}
-              className={`inline-block text-sm font-body hover:opacity-80 transition-opacity mt-4 ${theme === "tuil" ? "text-foreground" : "text-primary"}`}
+              className={`inline-block text-sm font-body hover:opacity-80 transition-opacity mt-4 ${theme === "tuil" ? "text-rose-300" : "text-primary"}`}
             >
               {t("game.readMoreAll")}
             </Link>
@@ -559,7 +559,7 @@ const GameSection = () => {
             <FieldDiagram onPositionNavigate={goToPosition} />
             <Link
               to={POSITIONS_URL}
-              className={`inline-block text-sm font-body hover:opacity-80 transition-opacity mt-4 ${theme === "tuil" ? "text-foreground" : "text-primary"}`}
+              className={`inline-block text-sm font-body hover:opacity-80 transition-opacity mt-4 ${theme === "tuil" ? "text-rose-300" : "text-primary"}`}
             >
               {t("game.readMoreAll")}
             </Link>

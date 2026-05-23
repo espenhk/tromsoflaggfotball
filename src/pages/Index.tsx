@@ -153,14 +153,14 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Desktop nav */}
-      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border hidden md:block">
+      <nav className={`sticky top-0 z-50 backdrop-blur-md hidden md:block ${theme === "tuil" ? "bg-primary border-b border-white/20" : "bg-background/80 border-b border-border"}`}>
         <div className="max-w-4xl mx-auto px-4 flex items-center gap-1 py-2">
           <BrandLogo alt="Logo" className="w-7 h-7 shrink-0 mr-3" />
           {navItemIds.map((id) => (
             <button
               key={id}
               onClick={() => scrollTo(id)}
-              className="text-sm font-heading font-medium text-muted-foreground hover:text-primary transition-colors whitespace-nowrap px-4 py-1.5 rounded-lg hover:bg-primary/5"
+              className={`text-sm font-heading font-medium transition-colors whitespace-nowrap px-4 py-1.5 rounded-lg ${theme === "tuil" ? "text-white/80 hover:text-white hover:bg-white/10" : "text-muted-foreground hover:text-primary hover:bg-primary/5"}`}
             >
               {t(navItemKeyFor(id))}
             </button>
@@ -175,7 +175,7 @@ const Index = () => {
       <div className="fixed top-4 left-4 z-50 md:hidden" ref={menuRef}>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="flex items-center gap-2 px-3 py-2 rounded-2xl bg-background/40 backdrop-blur-xl border border-white/15 shadow-lg shadow-black/20"
+          className={`flex items-center gap-2 px-3 py-2 rounded-2xl backdrop-blur-xl shadow-lg shadow-black/20 ${theme === "tuil" ? "bg-primary/90 border border-white/20" : "bg-background/40 border border-white/15"}`}
           aria-label={t("nav.menu")}
         >
           <BrandLogo alt="Logo" className="w-6 h-6" />
@@ -188,18 +188,18 @@ const Index = () => {
 
         {/* Expanded menu bubble */}
         {mobileMenuOpen && (
-          <div className="absolute top-full left-0 mt-2 min-w-[200px] rounded-2xl bg-background/50 backdrop-blur-xl border border-white/15 shadow-xl shadow-black/30 p-2 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className={`absolute top-full left-0 mt-2 min-w-[200px] rounded-2xl backdrop-blur-xl shadow-xl shadow-black/30 p-2 animate-in fade-in slide-in-from-top-2 duration-200 ${theme === "tuil" ? "bg-primary/95 border border-white/20" : "bg-background/50 border border-white/15"}`}>
             {navItemIds.map((id) => (
               <button
                 key={id}
                 onClick={() => { scrollTo(id); setMobileMenuOpen(false); }}
-                className="w-full text-left text-sm font-heading font-medium text-foreground/80 hover:text-primary hover:bg-white/10 transition-colors px-4 py-2.5 rounded-xl"
+                className={`w-full text-left text-sm font-heading font-medium transition-colors px-4 py-2.5 rounded-xl ${theme === "tuil" ? "text-white/90 hover:text-white hover:bg-white/10" : "text-foreground/80 hover:text-primary hover:bg-white/10"}`}
               >
                 {t(navItemKeyFor(id))}
               </button>
             ))}
             <div className="px-4 pt-2 pb-1 flex items-center justify-between">
-              <span className="text-[10px] uppercase tracking-wider font-heading font-bold text-muted-foreground">
+              <span className={`text-[10px] uppercase tracking-wider font-heading font-bold ${theme === "tuil" ? "text-white/80" : "text-muted-foreground"}`}>
                 {t("nav.languageLabel")}
               </span>
               <LanguageToggle />
@@ -433,15 +433,15 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-6 border-t border-border">
+      <footer className={`py-8 px-6 ${theme === "tuil" ? "bg-primary border-t border-white/20" : "border-t border-border"}`}>
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <BrandLogo alt="Logo" className="w-6 h-6" />
-            <span className="font-heading text-sm font-medium text-muted-foreground">
+            <span className={`font-heading text-sm font-medium ${theme === "tuil" ? "text-white" : "text-muted-foreground"}`}>
               {t("footer.brand")}
             </span>
           </div>
-          <p className="text-xs text-muted-foreground">
+          <p className={`text-xs ${theme === "tuil" ? "text-white/80" : "text-muted-foreground"}`}>
             © {new Date().getFullYear()} {t("footer.brand")}
           </p>
         </div>
@@ -506,6 +506,7 @@ const LinkCard = ({
 const GameSection = () => {
   const navigate = useNavigate();
   const t = useT();
+  const { theme } = useTheme();
   const goToPosition = (slug: string) => navigate(`/posisjoner#${slug}`);
 
   return (
@@ -535,7 +536,7 @@ const GameSection = () => {
             <FieldDiagram onPositionNavigate={goToPosition} />
             <Link
               to={POSITIONS_URL}
-              className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-4"
+              className={`inline-block text-sm font-body hover:opacity-80 transition-opacity mt-4 ${theme === "tuil" ? "text-foreground" : "text-primary"}`}
             >
               {t("game.readMoreAll")}
             </Link>
@@ -558,7 +559,7 @@ const GameSection = () => {
             <FieldDiagram onPositionNavigate={goToPosition} />
             <Link
               to={POSITIONS_URL}
-              className="inline-block text-sm text-primary font-body hover:opacity-80 transition-opacity mt-4"
+              className={`inline-block text-sm font-body hover:opacity-80 transition-opacity mt-4 ${theme === "tuil" ? "text-foreground" : "text-primary"}`}
             >
               {t("game.readMoreAll")}
             </Link>
@@ -848,6 +849,7 @@ const CoachCard = ({
   bio: string;
 }) => {
   const [open, setOpen] = useState(false);
+  const { theme } = useTheme();
   return (
     <article className="relative md:border-0 border-t border-white/5 first:border-t-0">
       <button
@@ -857,7 +859,7 @@ const CoachCard = ({
         {/* Desktop layout */}
         <div className="hidden md:grid grid-cols-[24px_140px_1fr_auto_auto] items-center gap-x-4">
           <div className="text-primary shrink-0">{icon}</div>
-          <span className="text-xs text-primary uppercase tracking-wider font-body">{title}</span>
+          <span className={`text-xs uppercase tracking-wider font-body ${theme === "tuil" ? "text-foreground" : "text-primary"}`}>{title}</span>
           <span className="font-heading font-medium text-foreground">{name}</span>
           <a
             href={`tel:+47${phone.replace(/\s/g, "")}`}

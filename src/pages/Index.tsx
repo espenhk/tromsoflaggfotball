@@ -442,7 +442,7 @@ const Index = () => {
             </span>
           </div>
           <p className={`text-xs ${theme === "tuil" ? "text-white/80" : "text-muted-foreground"}`}>
-            © {new Date().getFullYear()} {t("footer.brand")}
+            2026 Tromsø Flaggfotball / TUIL
           </p>
         </div>
       </footer>
@@ -1000,15 +1000,23 @@ const PositionCard = ({
 
 const FaqItem = ({ q, a }: { q: string; a: string }) => {
   const [open, setOpen] = useState(false);
+  const { theme } = useTheme();
+  const isTuil = theme === "tuil";
   return (
     <button
       onClick={() => setOpen(!open)}
-      className="w-full text-left bg-muted/60 border border-border rounded-xl p-4 transition-all hover:bg-muted hover:border-primary/40"
+      className={`w-full text-left rounded-xl p-4 transition-all ${
+        isTuil
+          ? "bg-white/15 border border-white/25 hover:bg-white/25 hover:border-white/40"
+          : "bg-muted/60 border border-border hover:bg-muted hover:border-primary/40"
+      }`}
     >
       <div className="flex items-start justify-between gap-2">
         <p className="font-heading text-sm font-medium text-foreground leading-snug">{q}</p>
         <ChevronDown
-          className={`w-4 h-4 text-primary/50 shrink-0 mt-0.5 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+          className={`w-4 h-4 shrink-0 mt-0.5 transition-transform duration-300 ${
+            isTuil ? "text-primary" : "text-primary/50"
+          } ${open ? "rotate-180" : ""}`}
         />
       </div>
       <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>

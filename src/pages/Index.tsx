@@ -989,7 +989,7 @@ const FaqItem = ({ q, a }: { q: string; a: string }) => {
   return (
     <button
       onClick={() => setOpen(!open)}
-      className="w-full text-left bg-primary/5 border border-primary/10 rounded-xl p-4 transition-all hover:bg-primary/10 hover:border-primary/20"
+      className="w-full text-left bg-muted/60 border border-border rounded-xl p-4 transition-all hover:bg-muted hover:border-primary/40"
     >
       <div className="flex items-start justify-between gap-2">
         <p className="font-heading text-sm font-bold text-foreground leading-snug">{q}</p>

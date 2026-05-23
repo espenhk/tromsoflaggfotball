@@ -952,7 +952,7 @@ const PositionCard = ({
         <div className="relative flex items-center gap-2">
           <div className={accentColor}>{icon}</div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-heading font-bold text-foreground text-sm">
+            <h3 className="font-heading font-medium text-foreground text-sm">
               {name}
               {abbr && (
                 <sup className={`ml-0.5 transition-all duration-300 text-[0.7em] align-super ${resolvedSupColor} ${open ? "opacity-0" : "opacity-50"}`}>

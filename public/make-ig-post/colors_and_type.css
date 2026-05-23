@@ -321,6 +321,19 @@ html[data-theme="tuil"] .tile .card.solid {
   background: rgba(10, 26, 61, 0.92);
 }
 
+/* ---------- TUIL theme: matchup accents (stronger against royal-blue bg) ---------- */
+html[data-theme="tuil"] .t-matchup .half.off {
+  background: linear-gradient(180deg, rgba(56,189,248,0.55) 0%, rgba(56,189,248,0.20) 100%) !important;
+}
+html[data-theme="tuil"] .t-matchup .half.def {
+  background: linear-gradient(180deg, rgba(251,113,133,0.55) 0%, rgba(251,113,133,0.20) 100%) !important;
+}
+html[data-theme="tuil"] .t-matchup .vs {
+  background: #ffffff;
+  color: #0a1a3d;
+  border-color: #df0c21;
+}
+
 /* =========================================================
    Semantic element styles
    ========================================================= */

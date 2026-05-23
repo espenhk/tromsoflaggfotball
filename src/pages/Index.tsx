@@ -495,7 +495,7 @@ const LinkCard = ({
       {icon || <ExternalLink className="w-5 h-5" />}
     </div>
     <div className="relative flex-1 min-w-0">
-      <p className={`font-heading font-bold text-foreground transition-colors ${hoverTitle || "group-hover:text-primary"}`}>
+      <p className={`font-heading font-medium text-foreground transition-colors ${hoverTitle || "group-hover:text-primary"}`}>
         {title}
       </p>
       <p className="text-sm text-muted-foreground font-body mt-1">{description}</p>

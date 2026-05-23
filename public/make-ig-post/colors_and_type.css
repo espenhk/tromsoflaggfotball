@@ -24,6 +24,9 @@
 
 /* Online fallback — kept so consumers without the local /fonts folder still render correctly. */
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Outfit:wght@300;400;500;700&display=swap');
+/* TUIL theme fonts — Big Shoulders Display (heading) + Barlow (body),
+   matching src/index.css in the main site. */
+@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Barlow:wght@400;500;600;700;800&display=swap');
 
 :root {
   /* ---------- COLOR SCALES ----------

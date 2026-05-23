@@ -155,7 +155,7 @@ const Index = () => {
       {/* Desktop nav */}
       <nav className={`sticky top-0 z-50 backdrop-blur-md hidden md:block ${theme === "tuil" ? "bg-primary border-b border-white/20" : "bg-background/80 border-b border-border"}`}>
         <div className="max-w-4xl mx-auto px-4 flex items-center gap-1 py-2">
-          <BrandLogo alt="Logo" className="w-7 h-7 shrink-0 mr-3" />
+          <BrandLogo variant="mark" alt="Logo" className="h-6 w-auto shrink-0 mr-3" />
           {navItemIds.map((id) => (
             <button
               key={id}
@@ -178,7 +178,7 @@ const Index = () => {
           className={`flex items-center gap-2 px-3 py-2 rounded-2xl backdrop-blur-xl shadow-lg shadow-black/20 ${theme === "tuil" ? "bg-primary/90 border border-white/20" : "bg-background/40 border border-white/15"}`}
           aria-label={t("nav.menu")}
         >
-          <BrandLogo alt="Logo" className="w-6 h-6" />
+          <BrandLogo variant="mark" alt="Logo" className="h-5 w-auto" />
           {mobileMenuOpen ? (
             <X className="w-5 h-5 text-foreground/80" />
           ) : (
@@ -436,7 +436,7 @@ const Index = () => {
       <footer className={`py-8 px-6 ${theme === "tuil" ? "bg-primary border-t border-white/20" : "border-t border-border"}`}>
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <BrandLogo alt="Logo" className="w-6 h-6" />
+            <BrandLogo variant="mark" alt="Logo" className="h-5 w-auto" />
             <span className={`font-heading text-sm font-medium ${theme === "tuil" ? "text-white" : "text-muted-foreground"}`}>
               {t("footer.brand")}
             </span>

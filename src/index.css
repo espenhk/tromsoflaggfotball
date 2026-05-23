@@ -54,13 +54,13 @@
   /* ===== Alternative theme: TUIL ===== */
   /* Deep royal blue background, red accent, white text, big bold sans. */
   .theme-tuil {
-    --background: 222 70% 18%;          /* deep navy blue */
+    --background: 222 75% 40%;          /* bright royal blue */
     --foreground: 0 0% 100%;
 
-    --card: 222 65% 14%;
+    --card: 222 70% 18%;                /* deep navy for zebra stripes */
     --card-foreground: 0 0% 100%;
 
-    --popover: 222 65% 14%;
+    --popover: 222 70% 18%;
     --popover-foreground: 0 0% 100%;
 
     --primary: 354 90% 46%;             /* TUIL red */

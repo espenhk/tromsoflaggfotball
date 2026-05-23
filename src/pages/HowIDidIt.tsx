@@ -82,7 +82,7 @@ function MiniLinkCards() {
         ].map(item => (
           <div key={item.name} className={`flex items-center gap-2 px-2 py-1.5 rounded-lg border ${item.color}`}>
             <span className={`text-[0.6rem] ${item.iconColor}`}>{item.icon}</span>
-            <span className="text-[0.6rem] font-heading font-bold text-foreground/80">{item.name}</span>
+            <span className="text-[0.6rem] font-heading font-medium text-foreground/80">{item.name}</span>
           </div>
         ))}
       </div>

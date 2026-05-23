@@ -543,7 +543,7 @@ const GameSection = () => {
 
           {/* Defense positions - right */}
           <div>
-            <h3 className="font-heading text-lg font-bold text-rose-400 mb-4">{t("game.defense")}</h3>
+            <h3 className="font-heading text-lg font-medium text-rose-400 mb-4">{t("game.defense")}</h3>
             <div className="space-y-3">
               {defensePositions.map((pos) => (
                 <PositionCard key={pos.name} {...pos} variant="defense" />

@@ -178,7 +178,7 @@ const Index = () => {
           className={`flex items-center gap-2 px-3 py-2 rounded-2xl backdrop-blur-xl shadow-lg shadow-black/20 ${theme === "tuil" ? "bg-primary/90 border border-white/20" : "bg-background/40 border border-white/15"}`}
           aria-label={t("nav.menu")}
         >
-          <BrandLogo variant="mark" alt="Logo" className="h-5 w-auto" />
+          <BrandLogo variant="mark" alt="Logo" className="h-7 w-auto" />
           {mobileMenuOpen ? (
             <X className="w-5 h-5 text-foreground/80" />
           ) : (

@@ -155,7 +155,7 @@ const Index = () => {
       {/* Desktop nav */}
       <nav className={`sticky top-0 z-50 backdrop-blur-md hidden md:block ${theme === "tuil" ? "bg-primary border-b border-white/20" : "bg-background/80 border-b border-border"}`}>
         <div className="max-w-4xl mx-auto px-4 flex items-center gap-1 py-2">
-          <BrandLogo variant="mark" alt="Logo" className="h-6 w-auto shrink-0 mr-3" />
+          <BrandLogo variant="mark" alt="Logo" className="h-8 w-auto shrink-0 mr-3" />
           {navItemIds.map((id) => (
             <button
               key={id}

@@ -258,7 +258,7 @@ export default function HowIDidIt() {
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="font-heading font-bold text-foreground text-sm">
+          <h1 className="font-heading font-medium text-foreground text-sm">
             Hvordan denne siden ble laget
           </h1>
         </div>

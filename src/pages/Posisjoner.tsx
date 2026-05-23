@@ -321,7 +321,7 @@ const Posisjoner = () => {
 
         {/* Defense */}
         <section className="space-y-4">
-          <h3 className="font-heading text-lg font-bold text-rose-400">Forsvar</h3>
+          <h3 className="font-heading text-lg font-medium text-rose-400">Forsvar</h3>
           <div>
             {defensePositions.map((pos) => (
               <PositionRow

@@ -13,12 +13,14 @@ import AdminIndex from "./pages/AdminIndex.tsx";
 import AdminGate from "./components/AdminGate.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import { LanguageProvider } from "./i18n/LanguageProvider.tsx";
+import { ThemeProvider } from "./theme/ThemeProvider.tsx";
 
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    <ThemeProvider>
     <LanguageProvider>
       <TooltipProvider>
         <Toaster />
@@ -48,6 +50,7 @@ const App = () => (
         </BrowserRouter>
       </TooltipProvider>
     </LanguageProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

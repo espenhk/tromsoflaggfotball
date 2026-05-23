@@ -407,7 +407,7 @@ const PositionRow = ({ pos, open, onToggle }: { pos: PositionData; open: boolean
               </div>
 
               <div>
-                <h5 className="text-xs font-heading font-bold uppercase tracking-wider text-foreground mb-1">
+                <h5 className="text-xs font-heading font-medium uppercase tracking-wider text-foreground mb-1">
                   Hvem passer som {pos.name.toLowerCase()}?
                 </h5>
                 <p className="text-sm text-muted-foreground font-body leading-relaxed">{pos.whoFits}</p>

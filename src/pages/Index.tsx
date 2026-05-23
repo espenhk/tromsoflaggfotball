@@ -818,7 +818,7 @@ const TryTrainingSection = () => {
             <button
               type="button"
               onClick={() => setExpanded(false)}
-              className={`ml-auto inline-flex items-center gap-1.5 font-heading font-bold text-primary hover:text-primary/80 hover:drop-shadow-[0_0_8px_hsl(var(--primary)/0.6)] transition-opacity duration-300 ${
+              className={`ml-auto inline-flex items-center gap-1.5 font-heading font-medium text-primary hover:text-primary/80 hover:drop-shadow-[0_0_8px_hsl(var(--primary)/0.6)] transition-opacity duration-300 ${
                 expanded ? "opacity-100" : "opacity-0 pointer-events-none"
               }`}
               aria-hidden={!expanded}

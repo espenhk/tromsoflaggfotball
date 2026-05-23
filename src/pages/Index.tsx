@@ -436,7 +436,7 @@ const Index = () => {
       <footer className={`py-8 px-6 ${theme === "tuil" ? "bg-primary border-t border-white/20" : "border-t border-border"}`}>
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <BrandLogo alt="Logo" className="w-6 h-6" />
+            <BrandLogo variant="mark" alt="Logo" className="h-5 w-auto" />
             <span className={`font-heading text-sm font-medium ${theme === "tuil" ? "text-white" : "text-muted-foreground"}`}>
               {t("footer.brand")}
             </span>

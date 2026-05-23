@@ -39,10 +39,6 @@ const App = () => (
               <Route path="training-plans" element={<TrainingPlans />} />
             </Route>
 
-            {/* Legacy redirects */}
-            <Route path="/training-plans" element={<Navigate to="/admin/training-plans" replace />} />
-            <Route path="/make-ig-post" element={<Navigate to="/admin/make-ig-post" replace />} />
-            <Route path="/pameldinger" element={<Navigate to="/admin/pameldinger" replace />} />
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

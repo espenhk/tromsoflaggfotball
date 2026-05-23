@@ -394,6 +394,30 @@ html[data-theme="tuil"][data-bg="navy"] .t-rule .diagram {
   background: #051028;
 }
 
+/* ---------- TUIL theme: field SVG typography ----------
+   The football field diagram in rule/play-concept templates renders text
+   (yard numbers + figure labels) inside SVG with hard-coded font-family
+   attributes (Outfit / Syne). CSS overrides presentation attributes, so
+   we re-route both to the TUIL display/body stack for the TUIL theme. */
+html[data-theme="tuil"] .t-rule svg text {
+  font-family: var(--font-heading), 'Big Shoulders Display', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- TUIL theme: player intro layout ----------
+   The TUIL heading font (Big Shoulders Display) is significantly taller
+   than the original Syne, so the centered right-col content drifts down
+   into the giant jersey number. Push the centered group up by reserving
+   bottom padding roughly equal to the jersey's visible height. */
+html[data-theme="tuil"] .t-player .right-col {
+  padding-bottom: 280px;
+}
+body[data-aspect="story"] html[data-theme="tuil"] .t-player .right-col,
+html[data-theme="tuil"] body[data-aspect="story"] .t-player .right-col {
+  padding-bottom: 480px;
+}
+
 /* =========================================================
    Semantic element styles
    ========================================================= */

@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/i18n/LanguageProvider";
 import heroBg from "@/assets/hero-bg.png";
 import BrandLogo from "@/components/BrandLogo";
+import { useTheme } from "@/theme/ThemeProvider";
 import FieldDiagram from "@/components/FieldDiagram";
 import LanguageToggle from "@/components/LanguageToggle";
 import { useT } from "@/i18n/LanguageProvider";
@@ -129,6 +130,8 @@ const navItemKeyFor = (id: typeof navItemIds[number]): TranslationKey => {
 
 const Index = () => {
   const t = useT();
+  const { lang } = useLang();
+  const { theme } = useTheme();
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
@@ -152,12 +155,12 @@ const Index = () => {
       {/* Desktop nav */}
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border hidden md:block">
         <div className="max-w-4xl mx-auto px-4 flex items-center gap-1 py-2">
-          <BrandLogo alt="Logo" className="w-6 h-6 shrink-0 mr-2" />
+          <BrandLogo alt="Logo" className="w-7 h-7 shrink-0 mr-3" />
           {navItemIds.map((id) => (
             <button
               key={id}
               onClick={() => scrollTo(id)}
-              className="text-xs font-heading font-bold text-muted-foreground hover:text-primary transition-colors whitespace-nowrap px-3 py-1.5 rounded-lg hover:bg-primary/5"
+              className="text-sm font-heading font-medium text-muted-foreground hover:text-primary transition-colors whitespace-nowrap px-4 py-1.5 rounded-lg hover:bg-primary/5"
             >
               {t(navItemKeyFor(id))}
             </button>
@@ -219,9 +222,19 @@ const Index = () => {
             className="w-40 h-40 md:w-56 md:h-56 mb-8 drop-shadow-2xl"
           />
           <h1 className="font-heading text-3xl md:text-5xl font-extrabold tracking-tight text-foreground mb-2">
-            {t("hero.title.line1")}
-            <br />
-            {t("hero.title.line2")}
+            {theme === "tuil" ? (
+              <>
+                TUIL
+                <br />
+                {lang === "en" ? "FLAG FOOTBALL" : "FLAGGFOTBALL"}
+              </>
+            ) : (
+              <>
+                {t("hero.title.line1")}
+                <br />
+                {t("hero.title.line2")}
+              </>
+            )}
           </h1>
           <div className="w-16 h-px bg-primary/50 mb-4" />
           <p className="font-body text-muted-foreground text-sm tracking-widest uppercase mb-6">

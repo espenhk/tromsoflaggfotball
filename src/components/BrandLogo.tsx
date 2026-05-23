@@ -1,5 +1,5 @@
 import logoDefault from "@/assets/logo.png";
-import logoTuil from "@/assets/tuil-logo.png";
+import logoTuil from "@/assets/tuil-logo.svg";
 import { useTheme } from "@/theme/ThemeProvider";
 import { cn } from "@/lib/utils";
 
@@ -18,14 +18,7 @@ const BrandLogo = ({ className, alt = "Logo" }: Props) => {
 
   if (theme === "tuil") {
     return (
-      <span
-        className={cn(
-          "inline-flex items-center justify-center bg-white rounded-md p-[2px] shadow-sm",
-          className,
-        )}
-      >
-        <img src={logoTuil} alt={alt} className="w-full h-full object-contain" />
-      </span>
+      <img src={logoTuil} alt={alt} className={cn("object-contain", className)} />
     );
   }
 

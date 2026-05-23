@@ -157,6 +157,41 @@
 }
 
 /* =========================================================
+   TUIL theme override — activated by ?theme=tuil on the URL,
+   which sets data-theme="tuil" on <html>. Mirrors .theme-tuil
+   in src/index.css: royal blue surfaces, white text, TUIL red
+   primary. Position accent colors (--qb, --rb, --db, etc.)
+   stay untouched so position frames look the same.
+   ========================================================= */
+html[data-theme="tuil"] {
+  --bg:              #1a47b3;     /* bright royal blue */
+  --bg-elevated:     #0e214e;     /* deep navy card */
+  --bg-muted:        #1c305f;
+  --surface-card:    rgba(14, 33, 78, 0.55);
+
+  --fg:              #ffffff;
+  --fg-muted:        rgba(255, 255, 255, 0.82);
+  --fg-on-accent:    #ffffff;
+
+  --border:          rgba(255, 255, 255, 0.18);
+  --input:           rgba(255, 255, 255, 0.18);
+  --ring:            #df0c21;
+
+  --primary:         #df0c21;     /* TUIL red */
+  --primary-hover:   #ff334a;
+  --primary-fg:      #ffffff;
+  --secondary:       #ffffff;
+  --secondary-fg:    #0e214e;
+  --accent:          #1269e2;     /* TUIL bright blue */
+  --accent-fg:       #ffffff;
+
+  /* --natt-500 is used in editor.html as the text color sitting on
+     primary backgrounds (active picker, action buttons). Override so
+     that text reads white on red instead of dark navy on red. */
+  --natt-500:        #ffffff;
+}
+
+/* =========================================================
    Semantic element styles
    ========================================================= */
 html { color-scheme: dark; }

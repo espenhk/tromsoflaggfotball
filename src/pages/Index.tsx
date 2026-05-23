@@ -575,7 +575,7 @@ const GameSection = () => {
             </div>
 
             <div>
-              <h3 className="font-heading text-base font-bold text-rose-400 mb-2.5">{t("game.defense")}</h3>
+              <h3 className="font-heading text-base font-medium text-rose-400 mb-2.5">{t("game.defense")}</h3>
               <div className="space-y-0">
                 {defensePositions.map((pos) => (
                   <PositionCard key={pos.name} {...pos} variant="defense" />

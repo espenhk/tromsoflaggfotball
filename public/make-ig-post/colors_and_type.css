@@ -365,7 +365,7 @@ html[data-theme="tuil"] .t-game .vs {
   border-color: #df0c21;
 }
 html[data-theme="tuil"] .t-game .game-banner {
-  border-top-color: rgba(255, 255, 255, 0.25);
+  border-top-color: var(--primary);
 }
 
 /* ---------- TUIL theme: navy background variant ----------

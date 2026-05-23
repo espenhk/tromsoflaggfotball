@@ -239,9 +239,9 @@ body[data-aspect="story"] .t-game .half { padding-bottom: 280px; }
 .t-matchup .matchup-content { position: relative; z-index: 1; display: flex; flex-direction: column;
   justify-content: space-between; height: 100%; }
 .t-matchup .vs { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-  width: 120px; height: 120px; border-radius: 50%; background: var(--bg);
+  width: 96px; height: 96px; border-radius: 50%; background: var(--bg);
   display: flex; align-items: center; justify-content: center; z-index: 5;
-  font-family: var(--font-heading); font-weight: 800; font-size: 48px; color: var(--fg);
+  font-family: var(--font-heading); font-weight: 800; font-size: 38px; color: var(--fg);
   border: 4px solid var(--primary); }
 
 /* T12 — GAME (head-to-head, logo + prominent meta/score banner) */
@@ -263,14 +263,14 @@ body[data-aspect="story"] .t-game .half { padding-bottom: 280px; }
   font-family: var(--font-body); font-weight: 700; font-size: 20px; letter-spacing: 0.12em;
   text-transform: uppercase; }
 .t-game .vs { position: absolute; top: 346px; left: 50%; transform: translate(-50%, -50%);
-  width: 110px; height: 110px; border-radius: 50%; background: var(--bg);
+  width: 88px; height: 88px; border-radius: 50%; background: var(--bg);
   display: flex; align-items: center; justify-content: center; z-index: 5;
-  font-family: var(--font-heading); font-weight: 800; font-size: 44px; color: var(--fg);
+  font-family: var(--font-heading); font-weight: 800; font-size: 35px; color: var(--fg);
   border: 4px solid var(--primary); }
 
 /* Prominent bottom banner */
 .t-game .game-banner { position: absolute; left: 0; right: 0; bottom: 0;
-  background: var(--bg); border-top: 1px solid rgba(13,106,106,0.5);
+  background: var(--bg); border-top: 3px solid var(--primary);
   padding: 36px 56px; z-index: 6; box-sizing: border-box;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 12px; min-height: 220px; }

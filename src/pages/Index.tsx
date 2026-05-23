@@ -536,7 +536,7 @@ const GameSection = () => {
             <FieldDiagram onPositionNavigate={goToPosition} />
             <Link
               to={POSITIONS_URL}
-              className={`inline-block text-sm font-body hover:opacity-80 transition-opacity mt-4 ${theme === "tuil" ? "text-foreground" : "text-primary"}`}
+              className={`inline-block text-sm font-body hover:opacity-80 transition-opacity mt-4 ${theme === "tuil" ? "text-rose-300" : "text-primary"}`}
             >
               {t("game.readMoreAll")}
             </Link>
@@ -559,7 +559,7 @@ const GameSection = () => {
             <FieldDiagram onPositionNavigate={goToPosition} />
             <Link
               to={POSITIONS_URL}
-              className={`inline-block text-sm font-body hover:opacity-80 transition-opacity mt-4 ${theme === "tuil" ? "text-foreground" : "text-primary"}`}
+              className={`inline-block text-sm font-body hover:opacity-80 transition-opacity mt-4 ${theme === "tuil" ? "text-rose-300" : "text-primary"}`}
             >
               {t("game.readMoreAll")}
             </Link>
@@ -931,6 +931,7 @@ const PositionCard = ({
   supColor?: string;
 }) => {
   const t = useT();
+  const { theme } = useTheme();
   const [open, setOpen] = useState(false);
   const isOffense = variant === "offense";
   const accentColor = isOffense ? "text-sky-400" : "text-rose-400";
@@ -986,7 +987,7 @@ const PositionCard = ({
             )}
             <Link
               to={`/posisjoner#${positionSlugMap[name] || name.toLowerCase()}`}
-              className="inline-flex items-center gap-1 text-xs font-body text-primary hover:underline mt-1"
+              className={`inline-flex items-center gap-1 text-xs font-body hover:underline mt-1 ${theme === "tuil" ? "text-rose-300" : "text-primary"}`}
             >
               {t("pos.card.readMorePrefix")} {name.toLowerCase()} →
             </Link>

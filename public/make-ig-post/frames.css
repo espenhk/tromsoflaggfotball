@@ -203,8 +203,8 @@ body[data-aspect="story"] .t-game .half { padding-bottom: 280px; }
 .t-matchup .stage { padding: 0; flex-direction: row; }
 .t-matchup .half { flex: 1; padding: 56px 56px 64px; display: flex; flex-direction: column;
   justify-content: flex-end; position: relative; overflow: hidden; gap: 16px; }
-.t-matchup .half.off { background: linear-gradient(180deg, rgba(56,189,248,0.18) 0%, rgba(56,189,248,0.04) 100%); }
-.t-matchup .half.def { background: linear-gradient(180deg, rgba(251,113,133,0.18) 0%, rgba(251,113,133,0.04) 100%); }
+.t-matchup .half.off { background: linear-gradient(180deg, rgba(56,189,248,0.40) 0%, rgba(56,189,248,0.12) 100%); }
+.t-matchup .half.def { background: linear-gradient(180deg, rgba(251,113,133,0.40) 0%, rgba(251,113,133,0.12) 100%); }
 /* Photo sits as a background band: opaque through the middle, fading to transparent
    at the top of the stats section so stats read on a clean tinted background. */
 .t-matchup .matchup-bg { position: absolute; inset: 0; background-size: cover;

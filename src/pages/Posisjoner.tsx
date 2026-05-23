@@ -388,7 +388,7 @@ const PositionRow = ({ pos, open, onToggle }: { pos: PositionData; open: boolean
               ))}
 
               <div className="pt-1">
-                <h5 className={`text-xs font-heading font-bold uppercase tracking-wider ${pos.accentColor} mb-2`}>
+                <h5 className={`text-xs font-heading font-medium uppercase tracking-wider ${pos.accentColor} mb-2`}>
                   Ferdigheter & egenskaper
                 </h5>
                 <ul className="space-y-1.5">

@@ -101,8 +101,21 @@
   .theme-tuil h5,
   .theme-tuil h6 {
     text-transform: uppercase;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.05em;
     font-weight: 400; /* Anton is already heavy */
+  }
+
+  /* Anton is too bold/condensed at small sizes — switch to Barlow for readability */
+  .theme-tuil nav .font-heading,
+  .theme-tuil button.font-heading,
+  .theme-tuil .text-sm.font-heading,
+  .theme-tuil .text-base.font-heading,
+  .theme-tuil .text-lg.font-heading,
+  .theme-tuil .text-xs.font-heading,
+  .theme-tuil .text-\[10px\].font-heading {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.04em;
   }
 }
 

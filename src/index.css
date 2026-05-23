@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Outfit:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -47,6 +48,62 @@
 
     --font-heading: 'Syne', sans-serif;
     --font-body: 'Outfit', sans-serif;
+  }
+
+  /* ===== Alternative theme: TUIL ===== */
+  /* Deep royal blue background, red accent, white text, big bold sans. */
+  .theme-tuil {
+    --background: 222 75% 38%;          /* royal blue */
+    --foreground: 0 0% 100%;
+
+    --card: 222 70% 30%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 222 70% 30%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 354 90% 46%;             /* TUIL red */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 100%;
+    --secondary-foreground: 222 75% 38%;
+
+    --muted: 222 55% 32%;
+    --muted-foreground: 0 0% 88%;
+
+    --accent: 199 78% 53%;              /* light TUIL blue (mountain sky) */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 354 90% 46%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 100% / 0.18;
+    --border: 222 50% 50%;
+    --input: 222 50% 50%;
+    --ring: 354 90% 46%;
+
+    --sidebar-background: 222 75% 38%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 354 90% 46%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 199 78% 53%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 222 50% 50%;
+    --sidebar-ring: 354 90% 46%;
+
+    --font-heading: 'Anton', 'Barlow', sans-serif;
+    --font-body: 'Barlow', sans-serif;
+  }
+
+  .theme-tuil h1,
+  .theme-tuil h2,
+  .theme-tuil h3,
+  .theme-tuil h4,
+  .theme-tuil h5,
+  .theme-tuil h6 {
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    font-weight: 400; /* Anton is already heavy */
   }
 }
 

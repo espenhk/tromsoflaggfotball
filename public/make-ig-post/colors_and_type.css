@@ -191,6 +191,136 @@ html[data-theme="tuil"] {
   --natt-500:        #ffffff;
 }
 
+/* ---------- TUIL theme: editor chrome (sidebar, fields, preview) ----------
+   The editor.html sidebar/preview area hard-codes a handful of dark navy
+   colors (#08141a, #021018, #02080c) and fjord-tinted borders/glows. Map
+   them onto TUIL royal-blue surfaces so the editor matches the slide
+   templates when ?theme=tuil is active. Slide internals (position frames,
+   chrome SVGs) keep their own accent palette via .acc-* classes. */
+html[data-theme="tuil"] body {
+  background: #0e214e;
+}
+html[data-theme="tuil"] .sidebar {
+  background: #0a1a3d;
+  border-right-color: rgba(255, 255, 255, 0.12);
+}
+html[data-theme="tuil"] .preview-area {
+  background: radial-gradient(at center, #1a47b3 0%, #0a1a3d 100%);
+}
+/* Form inputs, list rows, fig rows, mini inputs */
+html[data-theme="tuil"] .field input,
+html[data-theme="tuil"] .field textarea,
+html[data-theme="tuil"] .field select,
+html[data-theme="tuil"] .list-field .list-row,
+html[data-theme="tuil"] .fig-field .fig-row,
+html[data-theme="tuil"] .fig-field .fig-row-head select,
+html[data-theme="tuil"] .fig-field .fig-mini input {
+  background: #0a1a3d;
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+html[data-theme="tuil"] .field input:focus,
+html[data-theme="tuil"] .field textarea:focus,
+html[data-theme="tuil"] .field select:focus {
+  border-color: #df0c21;
+}
+/* Generic borders that originally used fjord rgba */
+html[data-theme="tuil"] .picker button,
+html[data-theme="tuil"] .aspect-row button,
+html[data-theme="tuil"] .chrome-row button,
+html[data-theme="tuil"] .accent-row button,
+html[data-theme="tuil"] .slide-bar button,
+html[data-theme="tuil"] .actions button.secondary,
+html[data-theme="tuil"] .list-field .list-add,
+html[data-theme="tuil"] .list-field .list-row-remove,
+html[data-theme="tuil"] .fig-field .fig-add-pill,
+html[data-theme="tuil"] .fig-field .fig-type-pill,
+html[data-theme="tuil"] .fig-field .fig-row-head .fig-remove,
+html[data-theme="tuil"] .image-field .image-upload,
+html[data-theme="tuil"] .image-field .image-remove {
+  border-color: rgba(255, 255, 255, 0.22);
+}
+html[data-theme="tuil"] .upload {
+  border-color: rgba(255, 255, 255, 0.28);
+}
+html[data-theme="tuil"] .upload:hover,
+html[data-theme="tuil"] .image-field .image-upload:hover {
+  border-color: #df0c21;
+  background: rgba(223, 12, 33, 0.10);
+}
+html[data-theme="tuil"] .upload.has-image,
+html[data-theme="tuil"] .image-field .image-upload.has-image {
+  border-color: #df0c21;
+  background: rgba(223, 12, 33, 0.12);
+}
+html[data-theme="tuil"] .upload-label,
+html[data-theme="tuil"] .image-field .iu-label,
+html[data-theme="tuil"] .help-link {
+  color: #ffd1d6;
+}
+/* Sidebar h3 / labels stay readable on the deeper navy */
+html[data-theme="tuil"] .sidebar h3,
+html[data-theme="tuil"] .field label,
+html[data-theme="tuil"] .sidebar .lead {
+  color: rgba(255, 255, 255, 0.72);
+}
+/* Section dividers */
+html[data-theme="tuil"] .actions,
+html[data-theme="tuil"] .page-head,
+html[data-theme="tuil"] .section {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* ---------- TUIL theme: slide templates ----------
+   Photo placeholders + colored backgrounds inside templates use baked-in
+   teal/green gradients. Replace with royal-blue gradients so empty slides
+   read on-brand. Tile body uses var(--bg) already, which is now blue. */
+html[data-theme="tuil"] .ph,
+html[data-theme="tuil"] .t-player .left-col,
+html[data-theme="tuil"] .t-event .photo,
+html[data-theme="tuil"] .t-bts .photo,
+html[data-theme="tuil"] .t-drill .field {
+  background:
+    radial-gradient(at 30% 30%, rgba(18, 105, 226, 0.35) 0%, transparent 55%),
+    radial-gradient(at 70% 70%, rgba(223, 12, 33, 0.18) 0%, transparent 55%),
+    linear-gradient(180deg, #1a47b3 0%, #0a1a3d 100%) !important;
+}
+html[data-theme="tuil"] .t-rule .diagram {
+  background: #0a1a3d;
+}
+/* Wordmark footer + rule header: red bar with white text + white logo */
+html[data-theme="tuil"] .tile .wordmark,
+html[data-theme="tuil"] .t-rule .rule-header {
+  background: #df0c21;
+  border-top-color: #df0c21;
+  border-bottom-color: #df0c21;
+  color: #ffffff;
+}
+html[data-theme="tuil"] .tile .wordmark .left,
+html[data-theme="tuil"] .tile .wordmark .right,
+html[data-theme="tuil"] .t-rule .rule-header,
+html[data-theme="tuil"] .t-rule .rule-header .eyebrow {
+  color: #ffffff;
+}
+/* Wordmark white TUIL logo, sized to match the cap-height of the text */
+html[data-theme="tuil"] .tile .wordmark .wm-logo {
+  height: 22px;
+  width: auto;
+  vertical-align: middle;
+  margin-right: 12px;
+  filter: brightness(0) invert(1);
+  display: inline-block;
+}
+/* Soft text card backdrop reads better on blue when made navy instead of black */
+html[data-theme="tuil"] .tile .card,
+html[data-theme="tuil"] .t-rule .rule-title-card,
+html[data-theme="tuil"] .t-rule .rule-desc-card {
+  background: rgba(10, 26, 61, 0.72);
+}
+html[data-theme="tuil"] .tile .card.solid {
+  background: rgba(10, 26, 61, 0.92);
+}
+
 /* =========================================================
    Semantic element styles
    ========================================================= */

@@ -130,6 +130,8 @@ const navItemKeyFor = (id: typeof navItemIds[number]): TranslationKey => {
 
 const Index = () => {
   const t = useT();
+  const { lang } = useLang();
+  const { theme } = useTheme();
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
@@ -220,9 +222,19 @@ const Index = () => {
             className="w-40 h-40 md:w-56 md:h-56 mb-8 drop-shadow-2xl"
           />
           <h1 className="font-heading text-3xl md:text-5xl font-extrabold tracking-tight text-foreground mb-2">
-            {t("hero.title.line1")}
-            <br />
-            {t("hero.title.line2")}
+            {theme === "tuil" ? (
+              <>
+                TUIL
+                <br />
+                {lang === "en" ? "FLAG FOOTBALL" : "FLAGGFOTBALL"}
+              </>
+            ) : (
+              <>
+                {t("hero.title.line1")}
+                <br />
+                {t("hero.title.line2")}
+              </>
+            )}
           </h1>
           <div className="w-16 h-px bg-primary/50 mb-4" />
           <p className="font-body text-muted-foreground text-sm tracking-widest uppercase mb-6">

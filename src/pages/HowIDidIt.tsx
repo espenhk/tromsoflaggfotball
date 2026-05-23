@@ -351,7 +351,7 @@ export default function HowIDidIt() {
           <div className="flex items-start gap-3">
             <MessageSquare className="w-5 h-5 text-primary mt-0.5 shrink-0" />
             <div>
-              <p className="font-heading font-bold text-foreground mb-2">
+              <p className="font-heading font-medium text-foreground mb-2">
                 Alt gjort via samtale
               </p>
               <p className="text-sm text-muted-foreground font-body leading-relaxed">

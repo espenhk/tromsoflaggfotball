@@ -522,7 +522,7 @@ const GameSection = () => {
         <div className="hidden md:grid md:grid-cols-[1fr_2fr_1fr] gap-6 items-start">
           {/* Offense positions - left */}
           <div>
-            <h3 className="font-heading text-lg font-bold text-sky-400 mb-4">{t("game.offense")}</h3>
+            <h3 className="font-heading text-lg font-medium text-sky-400 mb-4">{t("game.offense")}</h3>
             <div className="space-y-3">
               {offensePositions.map((pos) => (
                 <PositionCard key={pos.name} {...pos} variant="offense" />

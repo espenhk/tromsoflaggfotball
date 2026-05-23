@@ -362,7 +362,7 @@ export default function HowIDidIt() {
                 href="https://lovable.dev"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 mt-3 text-sm font-heading font-bold text-primary hover:underline"
+                className="inline-flex items-center gap-1.5 mt-3 text-sm font-heading font-medium text-primary hover:underline"
               >
                 Prøv Lovable selv →
               </a>

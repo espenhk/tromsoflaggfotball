@@ -994,10 +994,10 @@
         : `<div class="game-logo"><span>[ ${label} ]</span></div>`;
       const nameFS = gameNameSize(Math.max((d.hName||'').length, (d.aName||'').length));
       const half = (side, c, r, src, label, name, tag) => `
-        <div class="half ${side}" style="background:linear-gradient(180deg, rgba(${r},0.20) 0%, rgba(${r},0.04) 100%);">
+        <div class="half ${side}" style="background:linear-gradient(180deg, rgba(${r},0.45) 0%, rgba(${r},0.14) 100%);">
           ${logo(src, label)}
           <div class="h-display game-name" style="color:${c}; font-size:${nameFS}px;">${name}</div>
-          <div class="game-tag" style="background:rgba(${r},0.15); border:1px solid ${c}; color:${c};">${tag}</div>
+          <div class="game-tag" style="background:rgba(${r},0.35); border:2px solid ${c}; color:${c};">${tag}</div>
         </div>`;
       const banner = d.isPostGame
         ? `<div class="game-banner score">

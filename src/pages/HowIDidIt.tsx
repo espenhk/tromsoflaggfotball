@@ -39,7 +39,7 @@ function MiniPositionCard() {
         <div className="w-4 h-4 rounded bg-amber-400/20 flex items-center justify-center">
           <span className="text-amber-400 text-[0.5rem]">★</span>
         </div>
-        <span className="font-heading text-xs font-bold text-foreground">Quarterback (QB)</span>
+        <span className="font-heading text-xs font-medium text-foreground">Quarterback (QB)</span>
       </div>
       <p className="text-[0.6rem] text-muted-foreground leading-relaxed">
         Lagets playmaker og leder på banen...

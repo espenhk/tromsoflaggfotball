@@ -20,7 +20,8 @@ const links = [
 ];
 
 const AdminIndex = () => {
-  const { theme, setTheme } = useTheme();
+  const { selectedTheme, setTheme, revealMode, setRevealMode } = useTheme();
+  const theme = selectedTheme;
   return (
     <main className="min-h-screen bg-background text-foreground px-6 py-16">
       <div className="max-w-3xl mx-auto">
@@ -56,6 +57,29 @@ const AdminIndex = () => {
               TUIL
             </button>
           </div>
+
+          <label
+            className={`mt-5 flex items-start gap-3 rounded-md border p-3 transition cursor-pointer ${
+              theme === "tuil"
+                ? "border-border hover:border-primary/60"
+                : "border-border/60 opacity-60 cursor-not-allowed"
+            }`}
+          >
+            <input
+              type="checkbox"
+              checked={revealMode}
+              disabled={theme !== "tuil"}
+              onChange={(e) => setRevealMode(e.target.checked)}
+              className="mt-1 accent-primary"
+            />
+            <div>
+              <div className="text-sm font-medium">Reveal-modus på forsiden</div>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Forsiden lastes med original profil og overgår med en animert effekt
+                til TUIL-profilen. Krever at TUIL-profilen er valgt.
+              </p>
+            </div>
+          </label>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">

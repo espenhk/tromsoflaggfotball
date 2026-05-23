@@ -39,7 +39,7 @@ function MiniPositionCard() {
         <div className="w-4 h-4 rounded bg-amber-400/20 flex items-center justify-center">
           <span className="text-amber-400 text-[0.5rem]">★</span>
         </div>
-        <span className="font-heading text-xs font-bold text-foreground">Quarterback (QB)</span>
+        <span className="font-heading text-xs font-medium text-foreground">Quarterback (QB)</span>
       </div>
       <p className="text-[0.6rem] text-muted-foreground leading-relaxed">
         Lagets playmaker og leder på banen...
@@ -82,7 +82,7 @@ function MiniLinkCards() {
         ].map(item => (
           <div key={item.name} className={`flex items-center gap-2 px-2 py-1.5 rounded-lg border ${item.color}`}>
             <span className={`text-[0.6rem] ${item.iconColor}`}>{item.icon}</span>
-            <span className="text-[0.6rem] font-heading font-bold text-foreground/80">{item.name}</span>
+            <span className="text-[0.6rem] font-heading font-medium text-foreground/80">{item.name}</span>
           </div>
         ))}
       </div>
@@ -101,7 +101,7 @@ function ExpandableDetail({ title, children }: { title: string; children: React.
         className="w-full flex items-center gap-2 px-4 py-3 rounded-lg bg-primary/5 border border-primary/15 hover:border-primary/30 transition-colors text-left"
       >
         <Code2 className="w-4 h-4 text-primary shrink-0" />
-        <span className="text-sm font-heading font-bold text-primary/80 flex-1">{title}</span>
+        <span className="text-sm font-heading font-medium text-primary/80 flex-1">{title}</span>
         {open ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
       </button>
       {open && (
@@ -258,7 +258,7 @@ export default function HowIDidIt() {
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="font-heading font-bold text-foreground text-sm">
+          <h1 className="font-heading font-medium text-foreground text-sm">
             Hvordan denne siden ble laget
           </h1>
         </div>
@@ -351,7 +351,7 @@ export default function HowIDidIt() {
           <div className="flex items-start gap-3">
             <MessageSquare className="w-5 h-5 text-primary mt-0.5 shrink-0" />
             <div>
-              <p className="font-heading font-bold text-foreground mb-2">
+              <p className="font-heading font-medium text-foreground mb-2">
                 Alt gjort via samtale
               </p>
               <p className="text-sm text-muted-foreground font-body leading-relaxed">
@@ -362,7 +362,7 @@ export default function HowIDidIt() {
                 href="https://lovable.dev"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 mt-3 text-sm font-heading font-bold text-primary hover:underline"
+                className="inline-flex items-center gap-1.5 mt-3 text-sm font-heading font-medium text-primary hover:underline"
               >
                 Prøv Lovable selv →
               </a>

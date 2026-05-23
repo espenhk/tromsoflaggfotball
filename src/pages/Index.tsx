@@ -193,7 +193,7 @@ const Index = () => {
               <button
                 key={id}
                 onClick={() => { scrollTo(id); setMobileMenuOpen(false); }}
-                className="w-full text-left text-sm font-heading font-bold text-foreground/80 hover:text-primary hover:bg-white/10 transition-colors px-4 py-2.5 rounded-xl"
+                className="w-full text-left text-sm font-heading font-medium text-foreground/80 hover:text-primary hover:bg-white/10 transition-colors px-4 py-2.5 rounded-xl"
               >
                 {t(navItemKeyFor(id))}
               </button>
@@ -286,7 +286,7 @@ const Index = () => {
               <Users className="w-6 h-6" />
             </div>
             <div className="flex-1">
-              <h3 className="font-heading text-xl md:text-2xl font-bold text-foreground mb-3">
+              <h3 className="font-heading text-xl md:text-2xl font-medium text-foreground mb-3">
                 {t("open.h")}
               </h3>
               <p className="text-muted-foreground font-body leading-relaxed mb-3">
@@ -437,7 +437,7 @@ const Index = () => {
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <BrandLogo alt="Logo" className="w-6 h-6" />
-            <span className="font-heading text-sm font-bold text-muted-foreground">
+            <span className="font-heading text-sm font-medium text-muted-foreground">
               {t("footer.brand")}
             </span>
           </div>
@@ -455,7 +455,7 @@ const InfoCard = ({ icon, label, value }: { icon: React.ReactNode; label: string
     <div className="text-primary mt-0.5">{icon}</div>
     <div>
       <p className="text-xs text-muted-foreground uppercase tracking-wider font-body">{label}</p>
-      <p className="font-heading text-lg font-bold text-foreground">{value}</p>
+      <p className="font-heading text-lg font-medium text-foreground">{value}</p>
     </div>
   </div>
 );
@@ -495,7 +495,7 @@ const LinkCard = ({
       {icon || <ExternalLink className="w-5 h-5" />}
     </div>
     <div className="relative flex-1 min-w-0">
-      <p className={`font-heading font-bold text-foreground transition-colors ${hoverTitle || "group-hover:text-primary"}`}>
+      <p className={`font-heading font-medium text-foreground transition-colors ${hoverTitle || "group-hover:text-primary"}`}>
         {title}
       </p>
       <p className="text-sm text-muted-foreground font-body mt-1">{description}</p>
@@ -522,7 +522,7 @@ const GameSection = () => {
         <div className="hidden md:grid md:grid-cols-[1fr_2fr_1fr] gap-6 items-start">
           {/* Offense positions - left */}
           <div>
-            <h3 className="font-heading text-lg font-bold text-sky-400 mb-4">{t("game.offense")}</h3>
+            <h3 className="font-heading text-lg font-medium text-sky-400 mb-4">{t("game.offense")}</h3>
             <div className="space-y-3">
               {offensePositions.map((pos) => (
                 <PositionCard key={pos.name} {...pos} variant="offense" />
@@ -543,7 +543,7 @@ const GameSection = () => {
 
           {/* Defense positions - right */}
           <div>
-            <h3 className="font-heading text-lg font-bold text-rose-400 mb-4">{t("game.defense")}</h3>
+            <h3 className="font-heading text-lg font-medium text-rose-400 mb-4">{t("game.defense")}</h3>
             <div className="space-y-3">
               {defensePositions.map((pos) => (
                 <PositionCard key={pos.name} {...pos} variant="defense" />
@@ -566,7 +566,7 @@ const GameSection = () => {
 
           <div className="space-y-5">
             <div>
-              <h3 className="font-heading text-base font-bold text-sky-400 mb-2.5">{t("game.offense")}</h3>
+              <h3 className="font-heading text-base font-medium text-sky-400 mb-2.5">{t("game.offense")}</h3>
               <div className="space-y-0">
                 {offensePositions.map((pos) => (
                   <PositionCard key={pos.name} {...pos} variant="offense" />
@@ -575,7 +575,7 @@ const GameSection = () => {
             </div>
 
             <div>
-              <h3 className="font-heading text-base font-bold text-rose-400 mb-2.5">{t("game.defense")}</h3>
+              <h3 className="font-heading text-base font-medium text-rose-400 mb-2.5">{t("game.defense")}</h3>
               <div className="space-y-0">
                 {defensePositions.map((pos) => (
                   <PositionCard key={pos.name} {...pos} variant="defense" />
@@ -818,7 +818,7 @@ const TryTrainingSection = () => {
             <button
               type="button"
               onClick={() => setExpanded(false)}
-              className={`ml-auto inline-flex items-center gap-1.5 font-heading font-bold text-primary hover:text-primary/80 hover:drop-shadow-[0_0_8px_hsl(var(--primary)/0.6)] transition-opacity duration-300 ${
+              className={`ml-auto inline-flex items-center gap-1.5 font-heading font-medium text-primary hover:text-primary/80 hover:drop-shadow-[0_0_8px_hsl(var(--primary)/0.6)] transition-opacity duration-300 ${
                 expanded ? "opacity-100" : "opacity-0 pointer-events-none"
               }`}
               aria-hidden={!expanded}
@@ -858,7 +858,7 @@ const CoachCard = ({
         <div className="hidden md:grid grid-cols-[24px_140px_1fr_auto_auto] items-center gap-x-4">
           <div className="text-primary shrink-0">{icon}</div>
           <span className="text-xs text-primary uppercase tracking-wider font-body">{title}</span>
-          <span className="font-heading font-bold text-foreground">{name}</span>
+          <span className="font-heading font-medium text-foreground">{name}</span>
           <a
             href={`tel:+47${phone.replace(/\s/g, "")}`}
             onClick={(e) => e.stopPropagation()}
@@ -875,7 +875,7 @@ const CoachCard = ({
         <div className="flex md:hidden items-center gap-2 px-1">
           <div className="text-primary shrink-0">{icon}</div>
           <div className="flex-1 min-w-0">
-            <span className="font-heading font-bold text-foreground text-sm">{name}</span>
+            <span className="font-heading font-medium text-foreground text-sm">{name}</span>
             <span className="text-xs text-muted-foreground font-body ml-1.5">{title}</span>
           </div>
           <ChevronDown
@@ -952,7 +952,7 @@ const PositionCard = ({
         <div className="relative flex items-center gap-2">
           <div className={accentColor}>{icon}</div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-heading font-bold text-foreground text-sm">
+            <h3 className="font-heading font-medium text-foreground text-sm">
               {name}
               {abbr && (
                 <sup className={`ml-0.5 transition-all duration-300 text-[0.7em] align-super ${resolvedSupColor} ${open ? "opacity-0" : "opacity-50"}`}>
@@ -1004,7 +1004,7 @@ const FaqItem = ({ q, a }: { q: string; a: string }) => {
       className="w-full text-left bg-muted/60 border border-border rounded-xl p-4 transition-all hover:bg-muted hover:border-primary/40"
     >
       <div className="flex items-start justify-between gap-2">
-        <p className="font-heading text-sm font-bold text-foreground leading-snug">{q}</p>
+        <p className="font-heading text-sm font-medium text-foreground leading-snug">{q}</p>
         <ChevronDown
           className={`w-4 h-4 text-primary/50 shrink-0 mt-0.5 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
         />

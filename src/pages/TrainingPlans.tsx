@@ -126,7 +126,7 @@ const SessionItemCard = ({ item }: { item: SessionItem }) => {
         className="w-full flex items-center justify-between p-4 hover:bg-secondary/50 transition-colors text-left"
       >
         <div className="flex items-center gap-3 min-w-0">
-          <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-heading font-bold text-sm shrink-0">
+          <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-heading font-medium text-sm shrink-0">
             {item.index}
           </span>
           <div className="min-w-0">

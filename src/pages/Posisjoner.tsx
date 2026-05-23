@@ -260,7 +260,7 @@ const Posisjoner = () => {
             <ArrowLeft className="w-4 h-4" />
             <img src={logo} alt="Logo" className="w-5 h-5" />
           </Link>
-          <h1 className="font-heading font-bold text-foreground text-sm">Posisjoner i flaggfotball</h1>
+          <h1 className="font-heading font-medium text-foreground text-sm">Posisjoner i flaggfotball</h1>
         </div>
       </nav>
 
@@ -306,7 +306,7 @@ const Posisjoner = () => {
 
         {/* Offense */}
         <section className="space-y-4">
-          <h3 className="font-heading text-lg font-bold text-sky-400">Angrep</h3>
+          <h3 className="font-heading text-lg font-medium text-sky-400">Angrep</h3>
           <div>
             {offensePositions.map((pos) => (
               <PositionRow
@@ -321,7 +321,7 @@ const Posisjoner = () => {
 
         {/* Defense */}
         <section className="space-y-4">
-          <h3 className="font-heading text-lg font-bold text-rose-400">Forsvar</h3>
+          <h3 className="font-heading text-lg font-medium text-rose-400">Forsvar</h3>
           <div>
             {defensePositions.map((pos) => (
               <PositionRow
@@ -360,7 +360,7 @@ const PositionRow = ({ pos, open, onToggle }: { pos: PositionData; open: boolean
         <div className="flex items-center gap-3">
           <div className={pos.accentColor}>{pos.icon}</div>
           <div className="flex-1 min-w-0">
-            <h4 className="font-heading font-bold text-foreground">
+            <h4 className="font-heading font-medium text-foreground">
               {pos.name}
               <sup className={`ml-1 text-[0.7em] align-super ${pos.accentColor} opacity-60`}>{pos.abbr}</sup>
             </h4>
@@ -388,7 +388,7 @@ const PositionRow = ({ pos, open, onToggle }: { pos: PositionData; open: boolean
               ))}
 
               <div className="pt-1">
-                <h5 className={`text-xs font-heading font-bold uppercase tracking-wider ${pos.accentColor} mb-2`}>
+                <h5 className={`text-xs font-heading font-medium uppercase tracking-wider ${pos.accentColor} mb-2`}>
                   Ferdigheter & egenskaper
                 </h5>
                 <ul className="space-y-1.5">
@@ -407,7 +407,7 @@ const PositionRow = ({ pos, open, onToggle }: { pos: PositionData; open: boolean
               </div>
 
               <div>
-                <h5 className="text-xs font-heading font-bold uppercase tracking-wider text-foreground mb-1">
+                <h5 className="text-xs font-heading font-medium uppercase tracking-wider text-foreground mb-1">
                   Hvem passer som {pos.name.toLowerCase()}?
                 </h5>
                 <p className="text-sm text-muted-foreground font-body leading-relaxed">{pos.whoFits}</p>

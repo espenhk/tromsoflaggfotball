@@ -3,8 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/i18n/LanguageProvider";
-import logo from "@/assets/logo.png";
 import heroBg from "@/assets/hero-bg.png";
+import BrandLogo from "@/components/BrandLogo";
 import FieldDiagram from "@/components/FieldDiagram";
 import LanguageToggle from "@/components/LanguageToggle";
 import { useT } from "@/i18n/LanguageProvider";
@@ -152,7 +152,7 @@ const Index = () => {
       {/* Desktop nav */}
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border hidden md:block">
         <div className="max-w-4xl mx-auto px-4 flex items-center gap-1 py-2">
-          <img src={logo} alt="Logo" className="w-6 h-6 shrink-0 mr-2" />
+          <BrandLogo alt="Logo" className="w-6 h-6 shrink-0 mr-2" />
           {navItemIds.map((id) => (
             <button
               key={id}
@@ -175,7 +175,7 @@ const Index = () => {
           className="flex items-center gap-2 px-3 py-2 rounded-2xl bg-background/40 backdrop-blur-xl border border-white/15 shadow-lg shadow-black/20"
           aria-label={t("nav.menu")}
         >
-          <img src={logo} alt="Logo" className="w-6 h-6" />
+          <BrandLogo alt="Logo" className="w-6 h-6" />
           {mobileMenuOpen ? (
             <X className="w-5 h-5 text-foreground/80" />
           ) : (
@@ -214,8 +214,7 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/30" />
 
         <div className="relative z-10 flex flex-col items-center text-center px-6">
-          <img
-            src={logo}
+          <BrandLogo
             alt={t("hero.logoAlt")}
             className="w-40 h-40 md:w-56 md:h-56 mb-8 drop-shadow-2xl"
           />
@@ -424,7 +423,7 @@ const Index = () => {
       <footer className="py-8 px-6 border-t border-border">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <img src={logo} alt="Logo" className="w-6 h-6" />
+            <BrandLogo alt="Logo" className="w-6 h-6" />
             <span className="font-heading text-sm font-bold text-muted-foreground">
               {t("footer.brand")}
             </span>
@@ -989,7 +988,7 @@ const FaqItem = ({ q, a }: { q: string; a: string }) => {
   return (
     <button
       onClick={() => setOpen(!open)}
-      className="w-full text-left bg-primary/5 border border-primary/10 rounded-xl p-4 transition-all hover:bg-primary/10 hover:border-primary/20"
+      className="w-full text-left bg-muted/60 border border-border rounded-xl p-4 transition-all hover:bg-muted hover:border-primary/40"
     >
       <div className="flex items-start justify-between gap-2">
         <p className="font-heading text-sm font-bold text-foreground leading-snug">{q}</p>

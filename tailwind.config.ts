@@ -14,8 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        heading: ["Syne", "sans-serif"],
-        body: ["Outfit", "sans-serif"],
+        heading: ["var(--font-heading)", "Syne", "sans-serif"],
+        body: ["var(--font-body)", "Outfit", "sans-serif"],
+        display: ["var(--font-heading)", "Syne", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

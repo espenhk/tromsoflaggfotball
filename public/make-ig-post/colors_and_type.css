@@ -334,6 +334,32 @@ html[data-theme="tuil"] .t-matchup .vs {
   border-color: #df0c21;
 }
 
+/* ---------- TUIL theme: navy background variant ----------
+   When the user picks "Navy" in the editor's Background toggle we set
+   data-bg="navy" on <html>. Swap the bright royal-blue surfaces (slide
+   tile bg, preview gradient, photo placeholders) for the deeper navy so
+   slides read calmer. Cards, red wordmark, accents stay the same. */
+html[data-theme="tuil"][data-bg="navy"] {
+  --bg: #0a1a3d;
+  --accent: #1a47b3;
+}
+html[data-theme="tuil"][data-bg="navy"] .preview-area {
+  background: radial-gradient(at center, #0e214e 0%, #051028 100%);
+}
+html[data-theme="tuil"][data-bg="navy"] .ph,
+html[data-theme="tuil"][data-bg="navy"] .t-player .left-col,
+html[data-theme="tuil"][data-bg="navy"] .t-event .photo,
+html[data-theme="tuil"][data-bg="navy"] .t-bts .photo,
+html[data-theme="tuil"][data-bg="navy"] .t-drill .field {
+  background:
+    radial-gradient(at 30% 30%, rgba(18, 105, 226, 0.30) 0%, transparent 55%),
+    radial-gradient(at 70% 70%, rgba(223, 12, 33, 0.16) 0%, transparent 55%),
+    linear-gradient(180deg, #0e214e 0%, #051028 100%) !important;
+}
+html[data-theme="tuil"][data-bg="navy"] .t-rule .diagram {
+  background: #051028;
+}
+
 /* =========================================================
    Semantic element styles
    ========================================================= */

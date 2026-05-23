@@ -442,7 +442,7 @@ const Index = () => {
             </span>
           </div>
           <p className={`text-xs ${theme === "tuil" ? "text-white/80" : "text-muted-foreground"}`}>
-            © {new Date().getFullYear()} {t("footer.brand")}
+            2026 Tromsø Flaggfotball / TUIL
           </p>
         </div>
       </footer>

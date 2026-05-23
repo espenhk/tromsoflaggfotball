@@ -437,7 +437,7 @@ const Index = () => {
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <BrandLogo alt="Logo" className="w-6 h-6" />
-            <span className="font-heading text-sm font-bold text-muted-foreground">
+            <span className="font-heading text-sm font-medium text-muted-foreground">
               {t("footer.brand")}
             </span>
           </div>

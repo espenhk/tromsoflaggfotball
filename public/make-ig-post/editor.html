@@ -1744,6 +1744,27 @@
     renderPreview();
   });
 
+  // Background variant toggle — only visible/effective in TUIL theme
+  (function initBgToggle(){
+    const isTuil = document.documentElement.getAttribute('data-theme') === 'tuil';
+    const head = document.getElementById('bg-row-head');
+    const row = document.getElementById('bg-row');
+    if (!isTuil || !row || !head) return;
+    head.style.display = '';
+    row.style.display = '';
+    const current = document.documentElement.getAttribute('data-bg') || 'royal';
+    row.querySelectorAll('button').forEach(b => {
+      b.classList.toggle('active', b.dataset.bg === current);
+      b.addEventListener('click', () => {
+        row.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        const v = b.dataset.bg;
+        document.documentElement.setAttribute('data-bg', v);
+        try { localStorage.setItem('mip-bg', v); } catch(e){}
+      });
+    });
+  })();
+
   // ---------- SLIDE BAR ----------
   function renderSlideBar() {
     const bar = document.getElementById('slide-bar');

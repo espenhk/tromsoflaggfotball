@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ArrowLeft, ChevronDown, Star, Zap, Users, Target, Crosshair, Shield, Eye } from "lucide-react";
-import logo from "@/assets/logo.png";
 import FieldDiagram from "@/components/FieldDiagram";
+import BrandLogo from "@/components/BrandLogo";
+import { useTheme } from "@/theme/ThemeProvider";
 // QB and WR images are intentionally swapped — the source PDF had them mislabeled
 import qbImg from "@/assets/positions/wide-receiver.png";
 import centerImg from "@/assets/positions/center.png";
@@ -226,6 +227,7 @@ const defensePositions = defenseOrder.map((id) => byId[id]);
 
 const Posisjoner = () => {
   const { hash } = useLocation();
+  const { theme } = useTheme();
   const [openId, setOpenId] = useState<string | null>(null);
   // Fullscreen diagram view shown when user lands on /posisjoner without a target hash
   const [showFullscreen, setShowFullscreen] = useState<boolean>(!hash);
@@ -258,7 +260,7 @@ const Posisjoner = () => {
             className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            <img src={logo} alt="Logo" className="w-5 h-5" />
+            <BrandLogo variant="mark" alt="Logo" className="h-6 w-auto" />
           </Link>
           <h1 className="font-heading font-medium text-foreground text-sm">Posisjoner i flaggfotball</h1>
         </div>
@@ -337,7 +339,7 @@ const Posisjoner = () => {
         <div className="pt-2 pb-8">
           <Link
             to="/#spillet"
-            className="text-sm text-primary hover:underline font-body inline-flex items-center gap-1"
+            className={`text-sm hover:underline font-body inline-flex items-center gap-1 ${theme === "tuil" ? "text-rose-300" : "text-primary"}`}
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             Tilbake til hovedsiden

@@ -379,7 +379,7 @@
     ],
     render: d => `<div class="stage">
       <div class="eyebrow">${d.week}</div>
-      <div class="h-display">${d.title.replace('treninger','treninger.').replace(/(.)\.$/,'$1.').split(' ').join('<br>')}</div>
+      <div class="h-display">${d.title.split(' ').join('<br>')}</div>
       <div style="display:flex; flex-direction:column; gap:14px; margin-top:8px;">
         ${(d.events || []).map(e => `
           <div style="display:flex; align-items:flex-start; gap:32px; padding:20px 24px; background:rgba(84,197,158,0.08); border-left:4px solid var(--chrome); border-radius:0 8px 8px 0;">

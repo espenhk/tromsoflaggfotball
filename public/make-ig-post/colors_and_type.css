@@ -334,6 +334,16 @@ html[data-theme="tuil"] .t-matchup .vs {
   border-color: #df0c21;
 }
 
+/* ---------- TUIL theme: GAME page accents (match matchup treatment) ---------- */
+html[data-theme="tuil"] .t-game .vs {
+  background: #ffffff;
+  color: #0a1a3d;
+  border-color: #df0c21;
+}
+html[data-theme="tuil"] .t-game .game-banner {
+  border-top-color: rgba(255, 255, 255, 0.25);
+}
+
 /* ---------- TUIL theme: navy background variant ----------
    When the user picks "Navy" in the editor's Background toggle we set
    data-bg="navy" on <html>. Swap the bright royal-blue surfaces (slide

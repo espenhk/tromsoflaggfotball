@@ -101,7 +101,7 @@ function ExpandableDetail({ title, children }: { title: string; children: React.
         className="w-full flex items-center gap-2 px-4 py-3 rounded-lg bg-primary/5 border border-primary/15 hover:border-primary/30 transition-colors text-left"
       >
         <Code2 className="w-4 h-4 text-primary shrink-0" />
-        <span className="text-sm font-heading font-bold text-primary/80 flex-1">{title}</span>
+        <span className="text-sm font-heading font-medium text-primary/80 flex-1">{title}</span>
         {open ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
       </button>
       {open && (

@@ -858,7 +858,7 @@ const CoachCard = ({
         <div className="hidden md:grid grid-cols-[24px_140px_1fr_auto_auto] items-center gap-x-4">
           <div className="text-primary shrink-0">{icon}</div>
           <span className="text-xs text-primary uppercase tracking-wider font-body">{title}</span>
-          <span className="font-heading font-bold text-foreground">{name}</span>
+          <span className="font-heading font-medium text-foreground">{name}</span>
           <a
             href={`tel:+47${phone.replace(/\s/g, "")}`}
             onClick={(e) => e.stopPropagation()}

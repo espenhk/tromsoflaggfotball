@@ -193,7 +193,7 @@ const Index = () => {
               <button
                 key={id}
                 onClick={() => { scrollTo(id); setMobileMenuOpen(false); }}
-                className="w-full text-left text-sm font-heading font-bold text-foreground/80 hover:text-primary hover:bg-white/10 transition-colors px-4 py-2.5 rounded-xl"
+                className="w-full text-left text-sm font-heading font-medium text-foreground/80 hover:text-primary hover:bg-white/10 transition-colors px-4 py-2.5 rounded-xl"
               >
                 {t(navItemKeyFor(id))}
               </button>

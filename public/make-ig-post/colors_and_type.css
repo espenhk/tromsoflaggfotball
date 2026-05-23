@@ -192,6 +192,27 @@ html[data-theme="tuil"] {
      primary backgrounds (active picker, action buttons). Override so
      that text reads white on red instead of dark navy on red. */
   --natt-500:        #ffffff;
+
+  /* Match src/index.css TUIL typography: Big Shoulders Display for headings,
+     Barlow for body. Templates and editor chrome both pick this up via
+     var(--font-heading) / var(--font-body). */
+  --font-heading:    'Big Shoulders Display', 'Barlow', ui-sans-serif, system-ui, sans-serif;
+  --font-body:       'Barlow', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* TUIL-themed slide headings: uppercase, tighter tracking, heavy weight —
+   mirrors the .theme-tuil h1..h6 rule in src/index.css. */
+html[data-theme="tuil"] .tile h1,
+html[data-theme="tuil"] .tile h2,
+html[data-theme="tuil"] .tile h3,
+html[data-theme="tuil"] .tile h4,
+html[data-theme="tuil"] .tile .h-display,
+html[data-theme="tuil"] .tile [style*="--font-heading"],
+html[data-theme="tuil"] .tile .game-name,
+html[data-theme="tuil"] .tile .pos-abbr {
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  font-weight: 800;
 }
 
 /* ---------- TUIL theme: editor chrome (sidebar, fields, preview) ----------

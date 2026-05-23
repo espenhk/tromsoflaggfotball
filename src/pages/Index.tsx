@@ -875,7 +875,7 @@ const CoachCard = ({
         <div className="flex md:hidden items-center gap-2 px-1">
           <div className="text-primary shrink-0">{icon}</div>
           <div className="flex-1 min-w-0">
-            <span className="font-heading font-bold text-foreground text-sm">{name}</span>
+            <span className="font-heading font-medium text-foreground text-sm">{name}</span>
             <span className="text-xs text-muted-foreground font-body ml-1.5">{title}</span>
           </div>
           <ChevronDown

@@ -19,19 +19,20 @@ const BrandLogo = ({ className, alt = "Logo", variant = "default" }: Props) => {
       // Red source PNG recolored to white via CSS filter so it stands out on blue.
       return (
         <img
+          key="tuil-mark"
           src={logoTuilMark}
           alt={alt}
-          className={cn("object-contain", className)}
+          className={cn("object-contain brand-logo-fade", className)}
           style={{ filter: "brightness(0) invert(1)" }}
         />
       );
     }
     return (
-      <img src={logoTuil} alt={alt} className={cn("object-contain", className)} />
+      <img key="tuil" src={logoTuil} alt={alt} className={cn("object-contain brand-logo-fade", className)} />
     );
   }
 
-  return <img src={logoDefault} alt={alt} className={className} />;
+  return <img key="default" src={logoDefault} alt={alt} className={cn("brand-logo-fade", className)} />;
 };
 
 export default BrandLogo;

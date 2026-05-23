@@ -286,7 +286,7 @@ const Index = () => {
               <Users className="w-6 h-6" />
             </div>
             <div className="flex-1">
-              <h3 className="font-heading text-xl md:text-2xl font-bold text-foreground mb-3">
+              <h3 className="font-heading text-xl md:text-2xl font-medium text-foreground mb-3">
                 {t("open.h")}
               </h3>
               <p className="text-muted-foreground font-body leading-relaxed mb-3">

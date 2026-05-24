@@ -61,18 +61,14 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const timers: number[] = [];
     // Stage 1 — header red sweep, nav font swap, logos fade out
     timers.push(window.setTimeout(() => setRevealStage(1), 650));
-    // Stage 2 — blue drops from top, swap body theme + fonts, hero shows just «FLAGGFOTBALL»
-    timers.push(
-      window.setTimeout(() => {
-        setRevealStage(2);
-        setEffectiveTheme("tuil");
-      }, 1650),
-    );
+    // Stage 2 — blue overlay dissolves in; theme swaps while overlay is opaque
+    timers.push(window.setTimeout(() => setRevealStage(2), 1650));
+    timers.push(window.setTimeout(() => setEffectiveTheme("tuil"), 1650 + 600));
     // Stage 3 — hero logo pops with halo, TUIL wordmark fades in
-    timers.push(window.setTimeout(() => setRevealStage(3), 2700));
+    timers.push(window.setTimeout(() => setRevealStage(3), 3100));
     // Stage 4 — header + footer logos fade back in
-    timers.push(window.setTimeout(() => setRevealStage(4), 3600));
-    timers.push(window.setTimeout(() => setRevealActive(false), 4400));
+    timers.push(window.setTimeout(() => setRevealStage(4), 4000));
+    timers.push(window.setTimeout(() => setRevealActive(false), 4800));
     (window as any).__themeRevealTimers = timers;
     return () => timers.forEach((id) => window.clearTimeout(id));
     // eslint-disable-next-line react-hooks/exhaustive-deps

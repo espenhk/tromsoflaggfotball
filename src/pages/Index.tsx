@@ -131,7 +131,17 @@ const navItemKeyFor = (id: typeof navItemIds[number]): TranslationKey => {
 const Index = () => {
   const t = useT();
   const { lang } = useLang();
-  const { theme } = useTheme();
+  const { theme, selectedTheme, revealMode, revealActive, revealStage } = useTheme();
+  const inReveal = revealActive && revealMode && selectedTheme === "tuil";
+  // Show the red sweep overlay during stage 1; from stage 2 the nav is natively bg-primary.
+  const showHeaderSweep = inReveal && revealStage >= 1 && revealStage < 2;
+  const navIsRedNow = theme === "tuil" || showHeaderSweep;
+  // Hero title state during the reveal:
+  //  - stages 0–1: keep the default-theme heading (the header is changing, hero is unchanged)
+  //  - stage 2: only «FLAGGFOTBALL»
+  //  - stages 3+: TUIL line fades in above
+  const heroShowDefaultTitle = !inReveal ? theme !== "tuil" : revealStage < 2;
+  const heroShowTuilWordmark = !inReveal ? theme === "tuil" : revealStage >= 3;
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
@@ -153,14 +163,15 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Desktop nav */}
-      <nav className={`sticky top-0 z-50 backdrop-blur-md hidden md:block ${theme === "tuil" ? "bg-primary border-b border-white/20" : "bg-background/80 border-b border-border"}`}>
-        <div className="max-w-4xl mx-auto px-4 flex items-center gap-1 py-2">
+      <nav className={`sticky top-0 z-50 backdrop-blur-md hidden md:block relative overflow-hidden ${navIsRedNow ? "bg-primary border-b border-white/20" : "bg-background/80 border-b border-border"}`}>
+        {showHeaderSweep && <div className="reveal-header-sweep" aria-hidden />}
+        <div className="max-w-4xl mx-auto px-4 flex items-center gap-1 py-2 relative z-10">
           <BrandLogo variant="mark" alt="Logo" className="h-10 w-auto shrink-0 mr-3" />
           {navItemIds.map((id) => (
             <button
               key={id}
               onClick={() => scrollTo(id)}
-              className={`text-sm font-heading font-medium transition-colors whitespace-nowrap px-4 py-1.5 rounded-lg ${theme === "tuil" ? "text-white/80 hover:text-white hover:bg-white/10" : "text-muted-foreground hover:text-primary hover:bg-primary/5"}`}
+              className={`text-sm font-heading font-medium transition-colors whitespace-nowrap px-4 py-1.5 rounded-lg ${navIsRedNow ? "text-white/80 hover:text-white hover:bg-white/10 reveal-nav-tuil-font" : "text-muted-foreground hover:text-primary hover:bg-primary/5"}`}
             >
               {t(navItemKeyFor(id))}
             </button>
@@ -222,17 +233,21 @@ const Index = () => {
             className="w-40 h-40 md:w-56 md:h-56 mb-8 drop-shadow-2xl"
           />
           <h1 className="font-heading text-3xl md:text-5xl font-extrabold tracking-tight text-foreground mb-2">
-            {theme === "tuil" ? (
-              <>
-                TUIL
-                <br />
-                {lang === "en" ? "FLAG FOOTBALL" : "FLAGGFOTBALL"}
-              </>
-            ) : (
+            {heroShowDefaultTitle ? (
               <>
                 {t("hero.title.line1")}
                 <br />
                 {t("hero.title.line2")}
+              </>
+            ) : (
+              <>
+                {heroShowTuilWordmark && (
+                  <span className="reveal-fade-in inline-block">
+                    TUIL
+                    <br />
+                  </span>
+                )}
+                {lang === "en" ? "FLAG FOOTBALL" : "FLAGGFOTBALL"}
               </>
             )}
           </h1>

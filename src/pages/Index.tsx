@@ -163,7 +163,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Desktop nav */}
-      <nav className={`sticky top-0 z-50 backdrop-blur-md hidden md:block relative overflow-hidden ${navIsRedNow ? "bg-primary border-b border-white/20" : "bg-background/80 border-b border-border"}`}>
+      <nav className={`sticky top-0 z-50 backdrop-blur-md hidden md:block overflow-hidden ${navIsRedNow ? "bg-primary border-b border-white/20" : "bg-background/80 border-b border-border"}`}>
         {showHeaderSweep && <div className="reveal-header-sweep" aria-hidden />}
         <div className="max-w-4xl mx-auto px-4 flex items-center gap-1 py-2 relative z-10">
           <BrandLogo variant="mark" alt="Logo" className="h-10 w-auto shrink-0 mr-3" />

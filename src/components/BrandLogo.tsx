@@ -12,7 +12,16 @@ type Props = {
 };
 
 const BrandLogo = ({ className, alt = "Logo", variant = "default" }: Props) => {
-  const { theme } = useTheme();
+  const { theme, selectedTheme, revealMode, revealActive, revealStage } = useTheme();
+
+  // During the staged reveal the logos behave differently than the static theme.
+  const inReveal = revealActive && revealMode && selectedTheme === "tuil";
+  // Hero (default-variant) logo: hidden during stages 1–2, pops in at stage 3.
+  const heroHidden = inReveal && variant === "default" && revealStage >= 1 && revealStage < 3;
+  const heroPop = inReveal && variant === "default" && revealStage >= 3;
+  // Header / footer (mark-variant) logos: hidden until stage 4 fades them back in.
+  const markHidden = inReveal && variant === "mark" && revealStage >= 1 && revealStage < 4;
+  const markFadeIn = inReveal && variant === "mark" && revealStage === 4;
 
   if (theme === "tuil") {
     if (variant === "mark") {
@@ -22,17 +31,52 @@ const BrandLogo = ({ className, alt = "Logo", variant = "default" }: Props) => {
           key="tuil-mark"
           src={logoTuilMark}
           alt={alt}
-          className={cn("object-contain brand-logo-fade", className)}
+          className={cn(
+            "object-contain brand-logo-fade",
+            markHidden && "reveal-logo-hidden",
+            markFadeIn && "reveal-fade-in",
+            className,
+          )}
           style={{ filter: "brightness(0) invert(1)" }}
         />
       );
     }
+    if (heroPop) {
+      return (
+        <span className={cn("relative inline-flex items-center justify-center reveal-logo-pop-wrap", className)}>
+          <span className="reveal-logo-ring" aria-hidden />
+          <span className="reveal-logo-ring reveal-logo-ring-2" aria-hidden />
+          <img src={logoTuil} alt={alt} className="object-contain reveal-logo-pop w-full h-full" />
+        </span>
+      );
+    }
     return (
-      <img key="tuil" src={logoTuil} alt={alt} className={cn("object-contain brand-logo-fade", className)} />
+      <img
+        key="tuil"
+        src={logoTuil}
+        alt={alt}
+        className={cn(
+          "object-contain brand-logo-fade",
+          heroHidden && "reveal-logo-hidden",
+          className,
+        )}
+      />
     );
   }
 
-  return <img key="default" src={logoDefault} alt={alt} className={cn("brand-logo-fade", className)} />;
+  return (
+    <img
+      key="default"
+      src={logoDefault}
+      alt={alt}
+      className={cn(
+        "brand-logo-fade",
+        heroHidden && "reveal-logo-hidden",
+        markHidden && "reveal-logo-hidden",
+        className,
+      )}
+    />
+  );
 };
 
 export default BrandLogo;

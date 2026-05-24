@@ -15,6 +15,11 @@ type Ctx = {
   setRevealMode: (v: boolean) => void;
   /** True while the reveal animation is playing. */
   revealActive: boolean;
+  /** 0 = pre-reveal/default. 1 = header red sweep + logos fade out.
+   *  2 = blue drops, body theme swaps to TUIL, hero shows only «FLAGGFOTBALL».
+   *  3 = hero logo pops with halo, TUIL wordmark fades in above the title.
+   *  4 = header + footer logos fade back in. */
+  revealStage: 0 | 1 | 2 | 3 | 4;
 };
 const ThemeCtx = createContext<Ctx | null>(null);
 
@@ -31,6 +36,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     revealMode && selectedTheme === "tuil" ? "default" : selectedTheme,
   );
   const [revealActive, setRevealActive] = useState(false);
+  const [revealStage, setRevealStage] = useState<0 | 1 | 2 | 3 | 4>(0);
   const didTriggerReveal = useRef(false);
 
   useEffect(() => {
@@ -51,25 +57,24 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     if (didTriggerReveal.current) return;
     if (!(revealMode && selectedTheme === "tuil" && effectiveTheme === "default")) return;
     didTriggerReveal.current = true;
-    const root = document.documentElement;
-    // Small delay so the user sees the original colors first.
-    const tHold = window.setTimeout(() => {
-      setRevealActive(true);
-      root.classList.add("theme-transitioning");
-      // After the wipe sweeps in, flip the underlying theme variables.
-      const tFlip = window.setTimeout(() => setEffectiveTheme("tuil"), 700);
-      const tEnd = window.setTimeout(() => {
-        setRevealActive(false);
-        root.classList.remove("theme-transitioning");
-      }, 2400);
-      (window as any).__themeRevealTimers = [tFlip, tEnd];
-    }, 600);
-    return () => {
-      window.clearTimeout(tHold);
-      const timers: number[] = (window as any).__themeRevealTimers || [];
-      timers.forEach((id) => window.clearTimeout(id));
-      root.classList.remove("theme-transitioning");
-    };
+    setRevealActive(true);
+    const timers: number[] = [];
+    // Stage 1 — header red sweep, nav font swap, logos fade out
+    timers.push(window.setTimeout(() => setRevealStage(1), 650));
+    // Stage 2 — blue drops from top, swap body theme + fonts, hero shows just «FLAGGFOTBALL»
+    timers.push(
+      window.setTimeout(() => {
+        setRevealStage(2);
+        setEffectiveTheme("tuil");
+      }, 1650),
+    );
+    // Stage 3 — hero logo pops with halo, TUIL wordmark fades in
+    timers.push(window.setTimeout(() => setRevealStage(3), 2700));
+    // Stage 4 — header + footer logos fade back in
+    timers.push(window.setTimeout(() => setRevealStage(4), 3600));
+    timers.push(window.setTimeout(() => setRevealActive(false), 4400));
+    (window as any).__themeRevealTimers = timers;
+    return () => timers.forEach((id) => window.clearTimeout(id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -90,10 +95,15 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         revealMode,
         setRevealMode,
         revealActive,
+        revealStage,
       }}
     >
       {children}
-      {revealActive && <RevealOverlay toTuil={selectedTheme === "tuil"} />}
+      {revealActive && selectedTheme === "tuil" && revealStage === 2 && (
+        <div aria-hidden className="pointer-events-none fixed inset-0 z-[9998] overflow-hidden">
+          <div className="reveal-blue-drop" />
+        </div>
+      )}
     </ThemeCtx.Provider>
   );
 };
@@ -102,25 +112,4 @@ export const useTheme = () => {
   const ctx = useContext(ThemeCtx);
   if (!ctx) throw new Error("useTheme must be used inside ThemeProvider");
   return ctx;
-};
-
-/* ============================================================
-   Reveal overlay — a brief cinematic flourish that plays once
-   while the palette transitions from "default" to "tuil".
-   ============================================================ */
-const RevealOverlay = ({ toTuil }: { toTuil: boolean }) => {
-  if (!toTuil) return null;
-  return (
-    <div
-      aria-hidden
-      className="pointer-events-none fixed inset-0 z-[9999] overflow-hidden"
-    >
-      {/* Expanding red ink-drop */}
-      <div className="theme-reveal-ink" />
-      {/* Bright flash sweep */}
-      <div className="theme-reveal-flash" />
-      {/* Diagonal red shimmer */}
-      <div className="theme-reveal-sweep" />
-    </div>
-  );
 };

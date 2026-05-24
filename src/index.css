@@ -237,19 +237,19 @@ html.theme-transitioning *:not(svg):not(path):not(.theme-reveal-ink):not(.theme-
   letter-spacing: 0.04em;
 }
 
-/* Stage 2 — bright blue panel drops from the top, then fades */
-@keyframes reveal-blue-drop {
-  0%   { transform: translateY(-100%); opacity: 1; }
-  45%  { transform: translateY(0);     opacity: 1; }
-  100% { transform: translateY(0);     opacity: 0; }
+/* Stage 2 — blue background dissolves in, theme swaps under cover, dissolves out */
+@keyframes reveal-blue-dissolve {
+  0%   { opacity: 0; }
+  40%  { opacity: 1; }
+  60%  { opacity: 1; }
+  100% { opacity: 0; }
 }
 .reveal-blue-drop {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, hsl(222 75% 48%) 0%, hsl(222 75% 40%) 70%, hsl(222 70% 32%) 100%);
-  transform: translateY(-100%);
-  animation: reveal-blue-drop 1050ms cubic-bezier(0.65, 0, 0.3, 1) forwards;
-  box-shadow: 0 30px 60px hsl(222 70% 12% / 0.45);
+  background: radial-gradient(ellipse at 50% 40%, hsl(222 80% 50%) 0%, hsl(222 75% 40%) 55%, hsl(222 70% 28%) 100%);
+  opacity: 0;
+  animation: reveal-blue-dissolve 1400ms ease-in-out forwards;
 }
 
 /* Generic helpers used by BrandLogo during reveal */

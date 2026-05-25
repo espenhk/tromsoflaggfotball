@@ -140,7 +140,9 @@ const Index = () => {
   //  - stages 0–1: keep the default-theme heading (the header is changing, hero is unchanged)
   //  - stage 2: only «FLAGGFOTBALL»
   //  - stages 3+: TUIL line fades in above
-  const heroShowDefaultTitle = !inReveal ? theme !== "tuil" : revealStage < 2;
+  // Keep the default two-line title visible until the blue dissolve fully covers
+  // the hero (stage 3), so the «Tromsø» line doesn't pop away before the wipe.
+  const heroShowDefaultTitle = !inReveal ? theme !== "tuil" : revealStage < 3;
   const heroShowTuilWordmark = !inReveal ? theme === "tuil" : revealStage >= 3;
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -242,12 +244,11 @@ const Index = () => {
             ) : (
               <>
                 {heroShowTuilWordmark && (
-                  <span className="reveal-fade-in inline-block">
-                    TUIL
-                    <br />
-                  </span>
+                  <span className="reveal-fade-in block">TUIL</span>
                 )}
-                {lang === "en" ? "FLAG FOOTBALL" : "FLAGGFOTBALL"}
+                <span className="block">
+                  {lang === "en" ? "FLAG FOOTBALL" : "FLAGGFOTBALL"}
+                </span>
               </>
             )}
           </h1>

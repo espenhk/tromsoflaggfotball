@@ -142,7 +142,9 @@ const Index = () => {
   //  - stages 3+: TUIL line fades in above
   // Keep the default two-line title visible until the blue dissolve fully covers
   // the hero (stage 3), so the «Tromsø» line doesn't pop away before the wipe.
-  const heroShowDefaultTitle = !inReveal ? theme !== "tuil" : revealStage < 3;
+  // Switch to the TUIL layout at stage 2 (while the blue overlay covers the
+  // hero) so the «Tromsø» line doesn't snap to «TUIL» when fading back in.
+  const heroShowDefaultTitle = !inReveal ? theme !== "tuil" : revealStage < 2;
   const heroShowTuilWordmark = !inReveal ? theme === "tuil" : revealStage >= 3;
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -243,9 +245,12 @@ const Index = () => {
               </>
             ) : (
               <>
-                {heroShowTuilWordmark && (
-                  <span className="reveal-fade-in block">TUIL</span>
-                )}
+                <span
+                  className={`block ${heroShowTuilWordmark ? "reveal-fade-in" : "invisible"}`}
+                  aria-hidden={!heroShowTuilWordmark}
+                >
+                  TUIL
+                </span>
                 <span className="block">
                   {lang === "en" ? "FLAG FOOTBALL" : "FLAGGFOTBALL"}
                 </span>

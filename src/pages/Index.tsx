@@ -144,7 +144,10 @@ const Index = () => {
   // the hero (stage 3), so the «Tromsø» line doesn't pop away before the wipe.
   // Switch to the TUIL layout at stage 2 (while the blue overlay covers the
   // hero) so the «Tromsø» line doesn't snap to «TUIL» when fading back in.
-  const heroShowDefaultTitle = !inReveal ? theme !== "tuil" : revealStage < 2;
+  // Switch to the TUIL hero layout only when `theme` flips (which happens while
+  // the blue overlay is fully opaque), so the old «Tromsø / Flaggfotball» text
+  // stays visible until it's covered, not before.
+  const heroShowDefaultTitle = theme !== "tuil";
   const heroShowTuilWordmark = !inReveal ? theme === "tuil" : revealStage >= 3;
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });

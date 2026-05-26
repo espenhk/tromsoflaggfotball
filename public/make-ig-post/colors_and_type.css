@@ -187,6 +187,7 @@ html[data-theme="tuil"] {
   --secondary-fg:    #002857;
   --accent:          #009ade;     /* TUIL lys blå (PMS 2925) */
   --accent-fg:       #ffffff;
+  --tuil-yellow:     #f5b335;     /* TUIL gul (PMS 143) — secondary highlight */
 
   /* --natt-500 is used in editor.html as the text color sitting on
      primary backgrounds (active picker, action buttons). Override so

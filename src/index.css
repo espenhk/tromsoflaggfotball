@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Outfit:wght@300;400;500;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -54,45 +54,47 @@
   /* ===== Alternative theme: TUIL ===== */
   /* Deep royal blue background, red accent, white text, big bold sans. */
   .theme-tuil {
-    --background: 222 75% 40%;          /* bright royal blue */
+    --background: 218 100% 33%;         /* TUIL blå #003da6 (PMS 293) */
     --foreground: 0 0% 100%;
 
-    --card: 222 70% 18%;                /* deep navy for zebra stripes */
+    --card: 212 100% 17%;               /* TUIL mørk blå #002857 (PMS 295) */
     --card-foreground: 0 0% 100%;
 
-    --popover: 222 70% 18%;
+    --popover: 212 100% 17%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 354 90% 46%;             /* TUIL red */
+    --primary: 3 79% 49%;               /* TUIL rød #e1251b (PMS 485) */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 0 0% 100%;
-    --secondary-foreground: 222 70% 18%;
+    --secondary-foreground: 212 100% 17%;
 
-    --muted: 222 55% 24%;
+    --muted: 215 80% 22%;
     --muted-foreground: 0 0% 88%;
 
-    --accent: 215 85% 48%;              /* bright TUIL blue */
+    --accent: 198 100% 44%;             /* TUIL lys blå #009ade (PMS 2925) */
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 354 90% 46%;
+    --destructive: 3 79% 49%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 222 40% 35%;
-    --input: 222 40% 35%;
-    --ring: 354 90% 46%;
+    --border: 218 60% 30%;
+    --input: 218 60% 30%;
+    --ring: 3 79% 49%;
 
-    --sidebar-background: 222 70% 18%;
+    --sidebar-background: 212 100% 17%;
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 354 90% 46%;
+    --sidebar-primary: 3 79% 49%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 85% 48%;
+    --sidebar-accent: 198 100% 44%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 222 40% 35%;
-    --sidebar-ring: 354 90% 46%;
+    --sidebar-border: 218 60% 30%;
+    --sidebar-ring: 3 79% 49%;
 
-    --font-heading: 'Big Shoulders Display', 'Barlow', sans-serif;
-    --font-body: 'Barlow', sans-serif;
+    /* TUIL profil §3.1: Neue Haas Grotesk. Inter is the closest free
+       Google-Fonts substitute — same neutral grotesk lineage. */
+    --font-heading: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    --font-body: 'Inter', 'Helvetica Neue', Arial, sans-serif;
   }
 
   .theme-tuil h1,
@@ -102,11 +104,11 @@
   .theme-tuil h5,
   .theme-tuil h6 {
     text-transform: uppercase;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
     font-weight: 800;
   }
 
-  /* At smaller sizes switch display font to Barlow for readability */
+  /* Nav / small labels — Inter Medium with brand-y tracking */
   .theme-tuil nav .font-heading,
   .theme-tuil button.font-heading,
   .theme-tuil .text-sm.font-heading,
@@ -114,9 +116,9 @@
   .theme-tuil .text-lg.font-heading,
   .theme-tuil .text-xs.font-heading,
   .theme-tuil .text-\[10px\].font-heading {
-    font-family: 'Barlow', sans-serif;
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
     font-weight: 500;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
   }
 }
 

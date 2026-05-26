@@ -254,7 +254,7 @@ const Index = () => {
                 >
                   TUIL
                 </span>
-                <span className="block">
+                <span className="block text-primary">
                   {lang === "en" ? "FLAG FOOTBALL" : "FLAGGFOTBALL"}
                 </span>
               </>

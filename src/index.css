@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Outfit:wght@300;400;500;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -54,45 +54,47 @@
   /* ===== Alternative theme: TUIL ===== */
   /* Deep royal blue background, red accent, white text, big bold sans. */
   .theme-tuil {
-    --background: 222 75% 40%;          /* bright royal blue */
+    --background: 218 100% 33%;         /* TUIL blå #003da6 (PMS 293) */
     --foreground: 0 0% 100%;
 
-    --card: 222 70% 18%;                /* deep navy for zebra stripes */
+    --card: 212 100% 17%;               /* TUIL mørk blå #002857 (PMS 295) */
     --card-foreground: 0 0% 100%;
 
-    --popover: 222 70% 18%;
+    --popover: 212 100% 17%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 354 90% 46%;             /* TUIL red */
+    --primary: 3 79% 49%;               /* TUIL rød #e1251b (PMS 485) */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 0 0% 100%;
-    --secondary-foreground: 222 70% 18%;
+    --secondary-foreground: 212 100% 17%;
 
-    --muted: 222 55% 24%;
+    --muted: 215 80% 22%;
     --muted-foreground: 0 0% 88%;
 
-    --accent: 215 85% 48%;              /* bright TUIL blue */
+    --accent: 198 100% 44%;             /* TUIL lys blå #009ade (PMS 2925) */
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 354 90% 46%;
+    --destructive: 3 79% 49%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 222 40% 35%;
-    --input: 222 40% 35%;
-    --ring: 354 90% 46%;
+    --border: 218 60% 30%;
+    --input: 218 60% 30%;
+    --ring: 3 79% 49%;
 
-    --sidebar-background: 222 70% 18%;
+    --sidebar-background: 212 100% 17%;
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 354 90% 46%;
+    --sidebar-primary: 3 79% 49%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 85% 48%;
+    --sidebar-accent: 198 100% 44%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 222 40% 35%;
-    --sidebar-ring: 354 90% 46%;
+    --sidebar-border: 218 60% 30%;
+    --sidebar-ring: 3 79% 49%;
 
-    --font-heading: 'Big Shoulders Display', 'Barlow', sans-serif;
-    --font-body: 'Barlow', sans-serif;
+    /* TUIL profil §3.1: Neue Haas Grotesk. Inter is the closest free
+       Google-Fonts substitute — same neutral grotesk lineage. */
+    --font-heading: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    --font-body: 'Inter', 'Helvetica Neue', Arial, sans-serif;
   }
 
   .theme-tuil h1,
@@ -102,11 +104,11 @@
   .theme-tuil h5,
   .theme-tuil h6 {
     text-transform: uppercase;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
     font-weight: 800;
   }
 
-  /* At smaller sizes switch display font to Barlow for readability */
+  /* Nav / small labels — Inter Medium with brand-y tracking */
   .theme-tuil nav .font-heading,
   .theme-tuil button.font-heading,
   .theme-tuil .text-sm.font-heading,
@@ -114,9 +116,9 @@
   .theme-tuil .text-lg.font-heading,
   .theme-tuil .text-xs.font-heading,
   .theme-tuil .text-\[10px\].font-heading {
-    font-family: 'Barlow', sans-serif;
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
     font-weight: 500;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
   }
 }
 
@@ -174,7 +176,7 @@ html.theme-transitioning *:not(svg):not(path):not(.theme-reveal-ink):not(.theme-
   width: 28vmax;
   height: 28vmax;
   border-radius: 9999px;
-  background: radial-gradient(circle at 45% 45%, hsl(354 90% 52%) 0%, hsl(354 90% 46%) 38%, hsl(354 90% 46% / 0.4) 70%, transparent 78%);
+  background: radial-gradient(circle at 45% 45%, hsl(3 79% 52%) 0%, hsl(3 79% 49%) 38%, hsl(3 79% 49% / 0.4) 70%, transparent 78%);
   filter: blur(14px);
   mix-blend-mode: screen;
   animation: theme-reveal-ink 2200ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -198,8 +200,8 @@ html.theme-transitioning *:not(svg):not(path):not(.theme-reveal-ink):not(.theme-
   background: linear-gradient(
     90deg,
     transparent 0%,
-    hsl(354 90% 60% / 0.0) 20%,
-    hsl(354 90% 60% / 0.45) 50%,
+    hsl(3 79% 55% / 0.0) 20%,
+    hsl(3 79% 55% / 0.45) 50%,
     hsl(0 0% 100% / 0.35) 60%,
     transparent 100%
   );
@@ -225,16 +227,16 @@ html.theme-transitioning *:not(svg):not(path):not(.theme-reveal-ink):not(.theme-
 .reveal-header-sweep {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, hsl(354 90% 40%) 0%, hsl(354 90% 50%) 60%, hsl(354 90% 60%) 100%);
+  background: linear-gradient(90deg, hsl(3 79% 42%) 0%, hsl(3 79% 49%) 60%, hsl(3 79% 56%) 100%);
   transform-origin: left center;
   animation: reveal-header-sweep 700ms cubic-bezier(0.7, 0, 0.25, 1) forwards;
   z-index: 1;
   box-shadow: inset 0 -1px 0 hsl(0 0% 100% / 0.2);
 }
-/* Nav text font swaps to Barlow as soon as the red sweep arrives */
+/* Nav text font swaps to Inter as soon as the red sweep arrives */
 .reveal-nav-tuil-font {
-  font-family: 'Barlow', sans-serif !important;
-  letter-spacing: 0.04em;
+  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif !important;
+  letter-spacing: 0.03em;
 }
 
 /* Stage 2 — blue background dissolves in, theme swaps under cover, dissolves out */
@@ -247,7 +249,7 @@ html.theme-transitioning *:not(svg):not(path):not(.theme-reveal-ink):not(.theme-
 .reveal-blue-drop {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 40%, hsl(222 80% 50%) 0%, hsl(222 75% 40%) 55%, hsl(222 70% 28%) 100%);
+  background: radial-gradient(ellipse at 50% 40%, hsl(218 100% 40%) 0%, hsl(218 100% 33%) 55%, hsl(212 100% 17%) 100%);
   opacity: 0;
   animation: reveal-blue-dissolve 1400ms ease-in-out forwards;
 }
@@ -271,7 +273,7 @@ html.theme-transitioning *:not(svg):not(path):not(.theme-reveal-ink):not(.theme-
 .reveal-logo-pop-wrap { display: inline-flex; position: relative; }
 .reveal-logo-pop {
   animation: reveal-logo-pop 900ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  filter: drop-shadow(0 0 18px hsl(354 90% 55% / 0.55));
+  filter: drop-shadow(0 0 18px hsl(3 79% 52% / 0.55));
 }
 @keyframes reveal-logo-ring {
   0%   { transform: scale(0.4); opacity: 0; }
@@ -282,8 +284,8 @@ html.theme-transitioning *:not(svg):not(path):not(.theme-reveal-ink):not(.theme-
   position: absolute;
   inset: -6%;
   border-radius: 9999px;
-  border: 3px solid hsl(354 90% 60%);
-  box-shadow: 0 0 30px hsl(354 90% 60% / 0.7), inset 0 0 20px hsl(354 90% 70% / 0.4);
+  border: 3px solid hsl(3 79% 55%);
+  box-shadow: 0 0 30px hsl(3 79% 55% / 0.7), inset 0 0 20px hsl(3 79% 65% / 0.4);
   animation: reveal-logo-ring 950ms cubic-bezier(0.22, 1, 0.36, 1) both;
   pointer-events: none;
 }

@@ -24,9 +24,9 @@
 
 /* Online fallback — kept so consumers without the local /fonts folder still render correctly. */
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Outfit:wght@300;400;500;700&display=swap');
-/* TUIL theme fonts — Big Shoulders Display (heading) + Barlow (body),
-   matching src/index.css in the main site. */
-@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Barlow:wght@400;500;600;700;800&display=swap');
+/* TUIL theme font — Inter, closest free substitute for Neue Haas Grotesk
+   (TUIL profil §3.1). Matches src/index.css in the main site. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
   /* ---------- COLOR SCALES ----------
@@ -167,10 +167,10 @@
    stay untouched so position frames look the same.
    ========================================================= */
 html[data-theme="tuil"] {
-  --bg:              #1a47b3;     /* bright royal blue */
-  --bg-elevated:     #0e214e;     /* deep navy card */
-  --bg-muted:        #1c305f;
-  --surface-card:    rgba(14, 33, 78, 0.55);
+  --bg:              #003da6;     /* TUIL blå (PMS 293) */
+  --bg-elevated:     #002857;     /* TUIL mørk blå (PMS 295) */
+  --bg-muted:        #001e44;
+  --surface-card:    rgba(0, 40, 87, 0.55);
 
   --fg:              #ffffff;
   --fg-muted:        rgba(255, 255, 255, 0.82);
@@ -178,26 +178,27 @@ html[data-theme="tuil"] {
 
   --border:          rgba(255, 255, 255, 0.18);
   --input:           rgba(255, 255, 255, 0.18);
-  --ring:            #df0c21;
+  --ring:            #e1251b;
 
-  --primary:         #df0c21;     /* TUIL red */
-  --primary-hover:   #ff334a;
+  --primary:         #e1251b;     /* TUIL rød (PMS 485) */
+  --primary-hover:   #f23a30;
   --primary-fg:      #ffffff;
   --secondary:       #ffffff;
-  --secondary-fg:    #0e214e;
-  --accent:          #1269e2;     /* TUIL bright blue */
+  --secondary-fg:    #002857;
+  --accent:          #009ade;     /* TUIL lys blå (PMS 2925) */
   --accent-fg:       #ffffff;
+  --tuil-yellow:     #f5b335;     /* TUIL gul (PMS 143) — secondary highlight */
 
   /* --natt-500 is used in editor.html as the text color sitting on
      primary backgrounds (active picker, action buttons). Override so
      that text reads white on red instead of dark navy on red. */
   --natt-500:        #ffffff;
 
-  /* Match src/index.css TUIL typography: Big Shoulders Display for headings,
-     Barlow for body. Templates and editor chrome both pick this up via
-     var(--font-heading) / var(--font-body). */
-  --font-heading:    'Big Shoulders Display', 'Barlow', ui-sans-serif, system-ui, sans-serif;
-  --font-body:       'Barlow', ui-sans-serif, system-ui, sans-serif;
+  /* Match src/index.css TUIL typography: Inter as a stand-in for
+     Neue Haas Grotesk (TUIL profil §3.1). Templates and editor chrome
+     both pick this up via var(--font-heading) / var(--font-body). */
+  --font-heading:    'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-body:       'Inter', 'Helvetica Neue', Arial, sans-serif;
 }
 
 /* TUIL-themed slide headings: uppercase, tighter tracking, heavy weight —
@@ -222,10 +223,10 @@ html[data-theme="tuil"] .tile .pos-abbr {
    templates when ?theme=tuil is active. Slide internals (position frames,
    chrome SVGs) keep their own accent palette via .acc-* classes. */
 html[data-theme="tuil"] body {
-  background: #0e214e;
+  background: #002857;
 }
 html[data-theme="tuil"] .sidebar {
-  background: #0a1a3d;
+  background: #001e44;
   border-right-color: rgba(255, 255, 255, 0.12);
 }
 html[data-theme="tuil"] .preview-area {
@@ -239,14 +240,14 @@ html[data-theme="tuil"] .list-field .list-row,
 html[data-theme="tuil"] .fig-field .fig-row,
 html[data-theme="tuil"] .fig-field .fig-row-head select,
 html[data-theme="tuil"] .fig-field .fig-mini input {
-  background: #0a1a3d;
+  background: #001e44;
   border-color: rgba(255, 255, 255, 0.18);
   color: #ffffff;
 }
 html[data-theme="tuil"] .field input:focus,
 html[data-theme="tuil"] .field textarea:focus,
 html[data-theme="tuil"] .field select:focus {
-  border-color: #df0c21;
+  border-color: #e1251b;
 }
 /* Generic borders that originally used fjord rgba */
 html[data-theme="tuil"] .picker button,
@@ -269,13 +270,13 @@ html[data-theme="tuil"] .upload {
 }
 html[data-theme="tuil"] .upload:hover,
 html[data-theme="tuil"] .image-field .image-upload:hover {
-  border-color: #df0c21;
-  background: rgba(223, 12, 33, 0.10);
+  border-color: #e1251b;
+  background: rgba(225, 37, 27, 0.10);
 }
 html[data-theme="tuil"] .upload.has-image,
 html[data-theme="tuil"] .image-field .image-upload.has-image {
-  border-color: #df0c21;
-  background: rgba(223, 12, 33, 0.12);
+  border-color: #e1251b;
+  background: rgba(225, 37, 27, 0.12);
 }
 html[data-theme="tuil"] .upload-label,
 html[data-theme="tuil"] .image-field .iu-label,
@@ -305,19 +306,19 @@ html[data-theme="tuil"] .t-event .photo,
 html[data-theme="tuil"] .t-bts .photo,
 html[data-theme="tuil"] .t-drill .field {
   background:
-    radial-gradient(at 30% 30%, rgba(18, 105, 226, 0.35) 0%, transparent 55%),
-    radial-gradient(at 70% 70%, rgba(223, 12, 33, 0.18) 0%, transparent 55%),
-    linear-gradient(180deg, #1a47b3 0%, #0a1a3d 100%) !important;
+    radial-gradient(at 30% 30%, rgba(0, 154, 222, 0.30) 0%, transparent 55%),
+    radial-gradient(at 70% 70%, rgba(225, 37, 27, 0.18) 0%, transparent 55%),
+    linear-gradient(180deg, #003da6 0%, #001e44 100%) !important;
 }
 html[data-theme="tuil"] .t-rule .diagram {
-  background: #0a1a3d;
+  background: #001e44;
 }
 /* Wordmark footer + rule header: red bar with white text + white logo */
 html[data-theme="tuil"] .tile .wordmark,
 html[data-theme="tuil"] .t-rule .rule-header {
-  background: #df0c21;
-  border-top-color: #df0c21;
-  border-bottom-color: #df0c21;
+  background: #e1251b;
+  border-top-color: #e1251b;
+  border-bottom-color: #e1251b;
   color: #ffffff;
 }
 html[data-theme="tuil"] .tile .wordmark .left,
@@ -339,10 +340,10 @@ html[data-theme="tuil"] .tile .wordmark .wm-logo {
 html[data-theme="tuil"] .tile .card,
 html[data-theme="tuil"] .t-rule .rule-title-card,
 html[data-theme="tuil"] .t-rule .rule-desc-card {
-  background: rgba(10, 26, 61, 0.72);
+  background: rgba(0, 30, 68, 0.72);
 }
 html[data-theme="tuil"] .tile .card.solid {
-  background: rgba(10, 26, 61, 0.92);
+  background: rgba(0, 30, 68, 0.92);
 }
 
 /* ---------- TUIL theme: matchup accents (stronger against royal-blue bg) ---------- */
@@ -354,15 +355,15 @@ html[data-theme="tuil"] .t-matchup .half.def {
 }
 html[data-theme="tuil"] .t-matchup .vs {
   background: #ffffff;
-  color: #0a1a3d;
-  border-color: #df0c21;
+  color: #002857;
+  border-color: #e1251b;
 }
 
 /* ---------- TUIL theme: GAME page accents (match matchup treatment) ---------- */
 html[data-theme="tuil"] .t-game .vs {
   background: #ffffff;
-  color: #0a1a3d;
-  border-color: #df0c21;
+  color: #002857;
+  border-color: #e1251b;
 }
 html[data-theme="tuil"] .t-game .game-banner {
   border-top-color: var(--primary);
@@ -374,8 +375,8 @@ html[data-theme="tuil"] .t-game .game-banner {
    tile bg, preview gradient, photo placeholders) for the deeper navy so
    slides read calmer. Cards, red wordmark, accents stay the same. */
 html[data-theme="tuil"][data-bg="navy"] {
-  --bg: #0a1a3d;
-  --accent: #1a47b3;
+  --bg: #002857;
+  --accent: #003da6;
 }
 html[data-theme="tuil"][data-bg="navy"] .preview-area {
   background: #ececec;
@@ -386,12 +387,12 @@ html[data-theme="tuil"][data-bg="navy"] .t-event .photo,
 html[data-theme="tuil"][data-bg="navy"] .t-bts .photo,
 html[data-theme="tuil"][data-bg="navy"] .t-drill .field {
   background:
-    radial-gradient(at 30% 30%, rgba(18, 105, 226, 0.30) 0%, transparent 55%),
-    radial-gradient(at 70% 70%, rgba(223, 12, 33, 0.16) 0%, transparent 55%),
-    linear-gradient(180deg, #0e214e 0%, #051028 100%) !important;
+    radial-gradient(at 30% 30%, rgba(0, 154, 222, 0.26) 0%, transparent 55%),
+    radial-gradient(at 70% 70%, rgba(225, 37, 27, 0.16) 0%, transparent 55%),
+    linear-gradient(180deg, #002857 0%, #00132b 100%) !important;
 }
 html[data-theme="tuil"][data-bg="navy"] .t-rule .diagram {
-  background: #051028;
+  background: #00132b;
 }
 
 /* ---------- TUIL theme: field SVG typography ----------
@@ -400,23 +401,13 @@ html[data-theme="tuil"][data-bg="navy"] .t-rule .diagram {
    attributes (Outfit / Syne). CSS overrides presentation attributes, so
    we re-route both to the TUIL display/body stack for the TUIL theme. */
 html[data-theme="tuil"] .t-rule svg text {
-  font-family: var(--font-heading), 'Big Shoulders Display', sans-serif;
+  font-family: var(--font-heading), 'Inter', 'Helvetica Neue', Arial, sans-serif;
   font-weight: 800;
   letter-spacing: 0.02em;
 }
 
-/* ---------- TUIL theme: player intro layout ----------
-   The TUIL heading font (Big Shoulders Display) is significantly taller
-   than the original Syne, so the centered right-col content drifts down
-   into the giant jersey number. Push the centered group up by reserving
-   bottom padding roughly equal to the jersey's visible height. */
-html[data-theme="tuil"] .t-player .right-col {
-  padding-bottom: 280px;
-}
-body[data-aspect="story"] html[data-theme="tuil"] .t-player .right-col,
-html[data-theme="tuil"] body[data-aspect="story"] .t-player .right-col {
-  padding-bottom: 480px;
-}
+/* Player intro layout: Inter has similar metrics to Syne, so no extra
+   bottom padding is needed on the right column. */
 
 /* =========================================================
    Semantic element styles

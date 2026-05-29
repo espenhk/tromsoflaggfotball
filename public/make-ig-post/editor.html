@@ -1608,6 +1608,11 @@
       const photoEl = wrap.querySelector('[data-photo]');
       if (photoEl) {
         photoEl.style.backgroundImage = `url(${state.photo})`;
+        // Width-fit the photo, preserve aspect, center vertically. This way
+        // uploads aren't blindly cropped from the top-left like cover does.
+        photoEl.style.backgroundSize = '100% auto';
+        photoEl.style.backgroundPosition = 'center center';
+        photoEl.style.backgroundRepeat = 'no-repeat';
         photoEl.classList.remove('ph');
         if (state.photoCutout) {
           photoEl.classList.add('cutout');
@@ -1992,6 +1997,28 @@
     setTimeout(() => URL.revokeObjectURL(url), 4000);
   }
 
+  /* Modal-button prompt used to drive multi-slide exports. Each "Save" click
+     is a fresh user gesture, which is what iOS Safari needs in order to keep
+     opening the native share sheet — confirm() and async work between
+     navigator.share() calls used to break activation and silently fall back
+     to a plain download. */
+  function showActionModal(title, btnLabel) {
+    return new Promise((resolve, reject) => {
+      const overlay = document.createElement('div');
+      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+      overlay.innerHTML = `
+        <div style="background:#0a1a22;border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:28px;max-width:360px;width:100%;text-align:center;font-family:var(--font-body),system-ui,sans-serif;color:#f0fcfa;">
+          <div style="font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:18px;letter-spacing:0.04em;margin-bottom:18px;">${title}</div>
+          <button data-go style="width:100%;padding:14px 16px;background:var(--primary,#54c59e);color:#021018;border:none;border-radius:10px;font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:14px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;margin-bottom:10px;">${btnLabel}</button>
+          <button data-cancel style="width:100%;padding:10px 16px;background:transparent;color:#9ec;border:1px solid rgba(13,106,106,0.6);border-radius:10px;font-family:var(--font-body),system-ui,sans-serif;font-size:13px;cursor:pointer;">Cancel</button>
+        </div>`;
+      document.body.appendChild(overlay);
+      const cleanup = () => overlay.remove();
+      overlay.querySelector('[data-go]').addEventListener('click', () => { cleanup(); resolve(); });
+      overlay.querySelector('[data-cancel]').addEventListener('click', () => { cleanup(); reject(new Error('cancelled')); });
+    });
+  }
+
   // Slugify a string for filename use. Keeps letters/digits, swaps anything
   // else for "-", and trims duplicates/edges.
   function slugify(s, maxLen = 28) {
@@ -2036,16 +2063,39 @@
           await document.fonts.ready;
         }
       } catch (_) {}
+      // Preload every background-image referenced inside the tile so
+      // html-to-image never snapshots a half-loaded photo (which is what
+      // caused the occasional "black background" export).
+      try {
+        const els = tile.querySelectorAll('*');
+        const urls = new Set();
+        els.forEach(el => {
+          const bg = (el.style && el.style.backgroundImage) || '';
+          const m = bg.match(/url\((["']?)(.*?)\1\)/);
+          if (m && m[2]) urls.add(m[2]);
+        });
+        await Promise.all([...urls].map(src => new Promise(res => {
+          const img = new Image();
+          img.onload = img.onerror = () => res();
+          img.src = src;
+        })));
+      } catch (_) {}
       await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
       const fontEmbedCSS = await buildEmbeddedFontCSS();
-      const dataUrl = await htmlToImage.toPng(tile, {
+      // Render twice — the first pass primes html-to-image's internal image
+      // cache; the second pass is what we actually keep. Without this the
+      // very first export of a freshly-uploaded photo would sometimes come
+      // back with a blank/black photo area.
+      const opts = {
         width: dims.w,
         height: dims.h,
         pixelRatio: 1,
         cacheBust: true,
         skipFonts: false,
         fontEmbedCSS,
-      });
+      };
+      await htmlToImage.toPng(tile, opts).catch(() => {});
+      const dataUrl = await htmlToImage.toPng(tile, opts);
       return await (await fetch(dataUrl)).blob();
     } finally {
       tile.style.transform = prevTransform;
@@ -2056,29 +2106,39 @@
     const btn = document.getElementById('export-btn');
     const originalLabel = btn.textContent;
     btn.disabled = true;
-    // Walk slides starting from the current one. After each save we ask the
-    // user whether to continue to the next slide.
     try {
       snapshotSlide();
       const total = state.slides.length;
-      for (let i = state.currentSlide; i < total; i++) {
-        if (i !== state.currentSlide) {
-          // Switch to the next slide so its tile is in the DOM.
+      const startIdx = state.currentSlide;
+      // Pre-render every slide to a blob BEFORE prompting the user to save.
+      // This way each subsequent save can fire from a fresh button-click —
+      // mandatory on iOS for navigator.share() to keep opening the share
+      // sheet instead of silently downloading.
+      const items = [];
+      for (let i = startIdx; i < total; i++) {
+        if (i !== startIdx) {
           loadSlide(i);
           renderForm();
           renderPreview();
-          // Give the browser two frames to commit layout before snapshotting.
           await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
         }
-        btn.textContent = `Exporting ${i+1}/${total}…`;
+        btn.textContent = `Preparing ${i - startIdx + 1}/${total - startIdx}…`;
         const blob = await exportCurrentTile();
-        const filename = slideFilename(state.slides[i], i);
-        await saveOrShareImage(blob, filename);
-        if (i < total - 1) {
-          const go = confirm(`Saved slide ${i+1}/${total} as "${filename}".\n\nContinue to slide ${i+2}?`);
-          if (!go) break;
-        } else if (total > 1) {
-          alert(`Saved slide ${i+1}/${total} as "${filename}".\nAll slides exported.`);
+        items.push({ blob, filename: slideFilename(state.slides[i], i) });
+      }
+      // Save the first one immediately (we're still in the original click's
+      // user activation), then prompt for each remaining one.
+      for (let k = 0; k < items.length; k++) {
+        if (k === 0) {
+          await saveOrShareImage(items[k].blob, items[k].filename);
+        } else {
+          try {
+            await showActionModal(
+              `Slide ${k}/${items.length} saved.`,
+              `Save slide ${k + 1}/${items.length}`
+            );
+          } catch { break; }
+          await saveOrShareImage(items[k].blob, items[k].filename);
         }
       }
     } catch (err) {
@@ -2099,6 +2159,7 @@
     try {
       snapshotSlide();
       const slide = state.slides[state.currentSlide];
+      const items = [];
       for (let i = 0; i < aspects.length; i++) {
         const a = aspects[i];
         state.aspect = a;
@@ -2106,15 +2167,21 @@
           x.classList.toggle('active', x.dataset.aspect === a));
         renderPreview();
         await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-        btn.textContent = `Exporting ${a} (${i+1}/${aspects.length})…`;
+        btn.textContent = `Preparing ${a} (${i+1}/${aspects.length})…`;
         const blob = await exportCurrentTile();
-        const filename = slideFilename(slide, state.currentSlide, a);
-        await saveOrShareImage(blob, filename);
-        if (i < aspects.length - 1) {
-          const go = confirm(`Saved "${filename}".\n\nContinue to ${aspects[i+1]}?`);
-          if (!go) break;
+        items.push({ blob, filename: slideFilename(slide, state.currentSlide, a), aspect: a });
+      }
+      for (let k = 0; k < items.length; k++) {
+        if (k === 0) {
+          await saveOrShareImage(items[k].blob, items[k].filename);
         } else {
-          alert(`Saved "${filename}".\nAll aspect ratios exported.`);
+          try {
+            await showActionModal(
+              `${items[k-1].aspect} saved.`,
+              `Save ${items[k].aspect} (${k+1}/${items.length})`
+            );
+          } catch { break; }
+          await saveOrShareImage(items[k].blob, items[k].filename);
         }
       }
     } catch (err) {

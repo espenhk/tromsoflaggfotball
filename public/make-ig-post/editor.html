@@ -1997,6 +1997,28 @@
     setTimeout(() => URL.revokeObjectURL(url), 4000);
   }
 
+  /* Modal-button prompt used to drive multi-slide exports. Each "Save" click
+     is a fresh user gesture, which is what iOS Safari needs in order to keep
+     opening the native share sheet — confirm() and async work between
+     navigator.share() calls used to break activation and silently fall back
+     to a plain download. */
+  function showActionModal(title, btnLabel) {
+    return new Promise((resolve, reject) => {
+      const overlay = document.createElement('div');
+      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+      overlay.innerHTML = `
+        <div style="background:#0a1a22;border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:28px;max-width:360px;width:100%;text-align:center;font-family:var(--font-body),system-ui,sans-serif;color:#f0fcfa;">
+          <div style="font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:18px;letter-spacing:0.04em;margin-bottom:18px;">${title}</div>
+          <button data-go style="width:100%;padding:14px 16px;background:var(--primary,#54c59e);color:#021018;border:none;border-radius:10px;font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:14px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;margin-bottom:10px;">${btnLabel}</button>
+          <button data-cancel style="width:100%;padding:10px 16px;background:transparent;color:#9ec;border:1px solid rgba(13,106,106,0.6);border-radius:10px;font-family:var(--font-body),system-ui,sans-serif;font-size:13px;cursor:pointer;">Cancel</button>
+        </div>`;
+      document.body.appendChild(overlay);
+      const cleanup = () => overlay.remove();
+      overlay.querySelector('[data-go]').addEventListener('click', () => { cleanup(); resolve(); });
+      overlay.querySelector('[data-cancel]').addEventListener('click', () => { cleanup(); reject(new Error('cancelled')); });
+    });
+  }
+
   // Slugify a string for filename use. Keeps letters/digits, swaps anything
   // else for "-", and trims duplicates/edges.
   function slugify(s, maxLen = 28) {

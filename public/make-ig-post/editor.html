@@ -2041,16 +2041,39 @@
           await document.fonts.ready;
         }
       } catch (_) {}
+      // Preload every background-image referenced inside the tile so
+      // html-to-image never snapshots a half-loaded photo (which is what
+      // caused the occasional "black background" export).
+      try {
+        const els = tile.querySelectorAll('*');
+        const urls = new Set();
+        els.forEach(el => {
+          const bg = (el.style && el.style.backgroundImage) || '';
+          const m = bg.match(/url\((["']?)(.*?)\1\)/);
+          if (m && m[2]) urls.add(m[2]);
+        });
+        await Promise.all([...urls].map(src => new Promise(res => {
+          const img = new Image();
+          img.onload = img.onerror = () => res();
+          img.src = src;
+        })));
+      } catch (_) {}
       await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
       const fontEmbedCSS = await buildEmbeddedFontCSS();
-      const dataUrl = await htmlToImage.toPng(tile, {
+      // Render twice — the first pass primes html-to-image's internal image
+      // cache; the second pass is what we actually keep. Without this the
+      // very first export of a freshly-uploaded photo would sometimes come
+      // back with a blank/black photo area.
+      const opts = {
         width: dims.w,
         height: dims.h,
         pixelRatio: 1,
         cacheBust: true,
         skipFonts: false,
         fontEmbedCSS,
-      });
+      };
+      await htmlToImage.toPng(tile, opts).catch(() => {});
+      const dataUrl = await htmlToImage.toPng(tile, opts);
       return await (await fetch(dataUrl)).blob();
     } finally {
       tile.style.transform = prevTransform;

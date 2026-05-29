@@ -2106,29 +2106,39 @@
     const btn = document.getElementById('export-btn');
     const originalLabel = btn.textContent;
     btn.disabled = true;
-    // Walk slides starting from the current one. After each save we ask the
-    // user whether to continue to the next slide.
     try {
       snapshotSlide();
       const total = state.slides.length;
-      for (let i = state.currentSlide; i < total; i++) {
-        if (i !== state.currentSlide) {
-          // Switch to the next slide so its tile is in the DOM.
+      const startIdx = state.currentSlide;
+      // Pre-render every slide to a blob BEFORE prompting the user to save.
+      // This way each subsequent save can fire from a fresh button-click —
+      // mandatory on iOS for navigator.share() to keep opening the share
+      // sheet instead of silently downloading.
+      const items = [];
+      for (let i = startIdx; i < total; i++) {
+        if (i !== startIdx) {
           loadSlide(i);
           renderForm();
           renderPreview();
-          // Give the browser two frames to commit layout before snapshotting.
           await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
         }
-        btn.textContent = `Exporting ${i+1}/${total}…`;
+        btn.textContent = `Preparing ${i - startIdx + 1}/${total - startIdx}…`;
         const blob = await exportCurrentTile();
-        const filename = slideFilename(state.slides[i], i);
-        await saveOrShareImage(blob, filename);
-        if (i < total - 1) {
-          const go = confirm(`Saved slide ${i+1}/${total} as "${filename}".\n\nContinue to slide ${i+2}?`);
-          if (!go) break;
-        } else if (total > 1) {
-          alert(`Saved slide ${i+1}/${total} as "${filename}".\nAll slides exported.`);
+        items.push({ blob, filename: slideFilename(state.slides[i], i) });
+      }
+      // Save the first one immediately (we're still in the original click's
+      // user activation), then prompt for each remaining one.
+      for (let k = 0; k < items.length; k++) {
+        if (k === 0) {
+          await saveOrShareImage(items[k].blob, items[k].filename);
+        } else {
+          try {
+            await showActionModal(
+              `Slide ${k}/${items.length} saved.`,
+              `Save slide ${k + 1}/${items.length}`
+            );
+          } catch { break; }
+          await saveOrShareImage(items[k].blob, items[k].filename);
         }
       }
     } catch (err) {
@@ -2149,6 +2159,7 @@
     try {
       snapshotSlide();
       const slide = state.slides[state.currentSlide];
+      const items = [];
       for (let i = 0; i < aspects.length; i++) {
         const a = aspects[i];
         state.aspect = a;
@@ -2156,15 +2167,21 @@
           x.classList.toggle('active', x.dataset.aspect === a));
         renderPreview();
         await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-        btn.textContent = `Exporting ${a} (${i+1}/${aspects.length})…`;
+        btn.textContent = `Preparing ${a} (${i+1}/${aspects.length})…`;
         const blob = await exportCurrentTile();
-        const filename = slideFilename(slide, state.currentSlide, a);
-        await saveOrShareImage(blob, filename);
-        if (i < aspects.length - 1) {
-          const go = confirm(`Saved "${filename}".\n\nContinue to ${aspects[i+1]}?`);
-          if (!go) break;
+        items.push({ blob, filename: slideFilename(slide, state.currentSlide, a), aspect: a });
+      }
+      for (let k = 0; k < items.length; k++) {
+        if (k === 0) {
+          await saveOrShareImage(items[k].blob, items[k].filename);
         } else {
-          alert(`Saved "${filename}".\nAll aspect ratios exported.`);
+          try {
+            await showActionModal(
+              `${items[k-1].aspect} saved.`,
+              `Save ${items[k].aspect} (${k+1}/${items.length})`
+            );
+          } catch { break; }
+          await saveOrShareImage(items[k].blob, items[k].filename);
         }
       }
     } catch (err) {

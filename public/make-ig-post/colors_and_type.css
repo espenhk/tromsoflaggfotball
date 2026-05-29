@@ -28,6 +28,29 @@
    (TUIL profil §3.1). Matches src/index.css in the main site. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
+/* Licensed Neue Haas Grotesk Display Pro — self-hosted, gitignored.
+   Drop the .woff2 files into /public/fonts/ locally. */
+@font-face {
+  font-family: 'Neue Haas Grotesk Display Pro';
+  src: url('/fonts/NHaasGroteskDSPro-55Rg.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Neue Haas Grotesk Display Pro';
+  src: url('/fonts/NHaasGroteskDSPro-65Md.woff2') format('woff2');
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Neue Haas Grotesk Display Pro';
+  src: url('/fonts/NHaasGroteskDSPro-75Bd.woff2') format('woff2');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Neue Haas Grotesk Display Pro';
+  src: url('/fonts/NHaasGroteskDSPro-95Blk.woff2') format('woff2');
+  font-weight: 900; font-style: normal; font-display: swap;
+}
+
 :root {
   /* ---------- COLOR SCALES ----------
      Four named families inspired by the arctic landscape:
@@ -197,8 +220,8 @@ html[data-theme="tuil"] {
   /* Match src/index.css TUIL typography: Inter as a stand-in for
      Neue Haas Grotesk (TUIL profil §3.1). Templates and editor chrome
      both pick this up via var(--font-heading) / var(--font-body). */
-  --font-heading:    'Inter', 'Helvetica Neue', Arial, sans-serif;
-  --font-body:       'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-heading:    'Neue Haas Grotesk Display Pro', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-body:       'Neue Haas Grotesk Display Pro', 'Inter', 'Helvetica Neue', Arial, sans-serif;
 }
 
 /* TUIL-themed slide headings: uppercase, tighter tracking, heavy weight —
@@ -401,7 +424,7 @@ html[data-theme="tuil"][data-bg="navy"] .t-rule .diagram {
    attributes (Outfit / Syne). CSS overrides presentation attributes, so
    we re-route both to the TUIL display/body stack for the TUIL theme. */
 html[data-theme="tuil"] .t-rule svg text {
-  font-family: var(--font-heading), 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--font-heading), 'Neue Haas Grotesk Display Pro', 'Inter', 'Helvetica Neue', Arial, sans-serif;
   font-weight: 800;
   letter-spacing: 0.02em;
 }

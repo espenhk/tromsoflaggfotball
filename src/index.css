@@ -122,10 +122,10 @@
     --sidebar-border: 218 60% 30%;
     --sidebar-ring: 3 79% 49%;
 
-    /* TUIL profil §3.1: Neue Haas Grotesk. Inter is the closest free
-       Google-Fonts substitute — same neutral grotesk lineage. */
-    --font-heading: 'Inter', 'Helvetica Neue', Arial, sans-serif;
-    --font-body: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    /* TUIL profil §3.1: Neue Haas Grotesk Display Pro (licensed, self-hosted).
+       Inter / Helvetica Neue kept as fallbacks if the woff2 files are missing. */
+    --font-heading: 'Neue Haas Grotesk Display Pro', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    --font-body: 'Neue Haas Grotesk Display Pro', 'Inter', 'Helvetica Neue', Arial, sans-serif;
   }
 
   .theme-tuil h1,
@@ -147,7 +147,7 @@
   .theme-tuil .text-lg.font-heading,
   .theme-tuil .text-xs.font-heading,
   .theme-tuil .text-\[10px\].font-heading {
-    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Neue Haas Grotesk Display Pro', 'Inter', 'Helvetica Neue', Arial, sans-serif;
     font-weight: 500;
     letter-spacing: 0.03em;
   }
@@ -264,9 +264,9 @@ html.theme-transitioning *:not(svg):not(path):not(.theme-reveal-ink):not(.theme-
   z-index: 1;
   box-shadow: inset 0 -1px 0 hsl(0 0% 100% / 0.2);
 }
-/* Nav text font swaps to Inter as soon as the red sweep arrives */
+/* Nav text font swaps to Neue Haas Grotesk as soon as the red sweep arrives */
 .reveal-nav-tuil-font {
-  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif !important;
+  font-family: 'Neue Haas Grotesk Display Pro', 'Inter', 'Helvetica Neue', Arial, sans-serif !important;
   letter-spacing: 0.03em;
 }
 

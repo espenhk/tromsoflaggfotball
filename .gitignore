@@ -26,3 +26,7 @@ dist-ssr
 # Licensed fonts — do not commit (Monotype Neue Haas Grotesk)
 public/fonts/NHaasGrotesk*
 public/make-ig-post/fonts/NHaasGrotesk*
+
+# Secrets
+.env
+.env.*

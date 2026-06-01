@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
-export const ADMIN_PW_KEY = "admin_pw";
+export const ADMIN_TOKEN_KEY = "admin_token";
 
 const AdminGate = () => {
   const [authed, setAuthed] = useState(
-    () => !!sessionStorage.getItem(ADMIN_PW_KEY),
+    () => !!sessionStorage.getItem(ADMIN_TOKEN_KEY),
   );
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,8 +20,8 @@ const AdminGate = () => {
       const { data, error } = await supabase.functions.invoke("list-signups", {
         body: { password: input, action: "verify" },
       });
-      if (error || !data?.ok) throw new Error("unauth");
-      sessionStorage.setItem(ADMIN_PW_KEY, input);
+      if (error || !data?.ok || !data?.token) throw new Error("unauth");
+      sessionStorage.setItem(ADMIN_TOKEN_KEY, data.token);
       setAuthed(true);
     } catch {
       setError("Feil passord");

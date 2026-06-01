@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ADMIN_PW_KEY } from "@/components/AdminGate";
+import { ADMIN_TOKEN_KEY } from "@/components/AdminGate";
 
 type Signup = {
   id: string;
@@ -15,7 +15,7 @@ type Signup = {
 };
 
 const Pameldinger = () => {
-  const password = sessionStorage.getItem(ADMIN_PW_KEY) ?? "";
+  const token = sessionStorage.getItem(ADMIN_TOKEN_KEY) ?? "";
   const [signups, setSignups] = useState<Signup[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,9 +23,9 @@ const Pameldinger = () => {
   const [savingId, setSavingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const loadSignups = async (pw: string) => {
+  const loadSignups = async () => {
     const { data, error } = await supabase.functions.invoke("list-signups", {
-      body: { password: pw },
+      body: { token },
     });
     if (error) throw error;
     if (!data?.signups) throw new Error("Feil passord");
@@ -40,7 +40,7 @@ const Pameldinger = () => {
     let cancelled = false;
     (async () => {
       try {
-        await loadSignups(password);
+        await loadSignups();
       } catch {
         if (!cancelled) setError("Kunne ikke laste påmeldinger");
       } finally {
@@ -58,7 +58,7 @@ const Pameldinger = () => {
     try {
       const { error } = await supabase.functions.invoke("list-signups", {
         body: {
-          password,
+          token,
           action: "update_notes",
           id,
           coach_notes: noteDrafts[id] ?? "",
@@ -84,7 +84,7 @@ const Pameldinger = () => {
     setDeletingId(id);
     try {
       const { error } = await supabase.functions.invoke("list-signups", {
-        body: { password, action: "delete", id },
+        body: { token, action: "delete", id },
       });
       if (error) throw error;
       setSignups((prev) => (prev ? prev.filter((s) => s.id !== id) : prev));

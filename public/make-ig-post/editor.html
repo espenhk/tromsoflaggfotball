@@ -1608,9 +1608,13 @@
       const photoEl = wrap.querySelector('[data-photo]');
       if (photoEl) {
         photoEl.style.backgroundImage = `url(${state.photo})`;
-        // Width-fit the photo, preserve aspect, center vertically. This way
-        // uploads aren't blindly cropped from the top-left like cover does.
-        photoEl.style.backgroundSize = '100% auto';
+        // Player template: tall sliver — fit height, center horizontally.
+        // Everything else: fit width, center vertically.
+        if (state.tpl === 'player') {
+          photoEl.style.backgroundSize = 'auto 100%';
+        } else {
+          photoEl.style.backgroundSize = '100% auto';
+        }
         photoEl.style.backgroundPosition = 'center center';
         photoEl.style.backgroundRepeat = 'no-repeat';
         photoEl.classList.remove('ph');

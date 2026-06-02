@@ -10,6 +10,7 @@ import Posisjoner from "./pages/Posisjoner.tsx";
 import MakeIgPost from "./pages/MakeIgPost.tsx";
 import Pameldinger from "./pages/Pameldinger.tsx";
 import AdminIndex from "./pages/AdminIndex.tsx";
+import SosialtMock from "./pages/SosialtMock.tsx";
 import AdminGate from "./components/AdminGate.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import { LanguageProvider } from "./i18n/LanguageProvider.tsx";
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/how-i-did-it" element={<HowIDidIt />} />
             <Route path="/posisjoner" element={<Posisjoner />} />
+            <Route path="/sosialt-mock" element={<SosialtMock />} />
 
             {/* Admin (password-protected) */}
             <Route path="/admin" element={<AdminGate />}>

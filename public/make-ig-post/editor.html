@@ -2148,6 +2148,7 @@
           await saveOrShareImage(items[k].blob, items[k].filename);
         }
       }
+      await promptLogExport('export');
     } catch (err) {
       console.error(err);
       alert('Export failed: ' + (err && err.message ? err.message : err));
@@ -2191,6 +2192,7 @@
           await saveOrShareImage(items[k].blob, items[k].filename);
         }
       }
+      await promptLogExport('all-aspects');
     } catch (err) {
       console.error(err);
       alert('Export failed: ' + (err && err.message ? err.message : err));

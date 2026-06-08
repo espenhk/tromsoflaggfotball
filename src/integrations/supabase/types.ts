@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      ig_post_exports: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          name: string
+          payload: Json
+          photos_dropped: boolean
+          slide_count: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind?: string
+          name: string
+          payload: Json
+          photos_dropped?: boolean
+          slide_count?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          name?: string
+          payload?: Json
+          photos_dropped?: boolean
+          slide_count?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       training_signups: {
         Row: {
           age_group: string | null

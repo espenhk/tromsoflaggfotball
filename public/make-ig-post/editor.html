@@ -281,6 +281,9 @@
   <div class="actions">
     <button class="secondary" id="export-all-aspects-btn">Export all aspect ratios</button>
   </div>
+  <div class="actions">
+    <button class="secondary" id="history-btn">Saved exports…</button>
+  </div>
 </aside>
 
 <main class="preview-area">
@@ -2047,6 +2050,232 @@
     return `tff-${String(idx + 1).padStart(2, '0')}-${tpl}-${slugify(title)}${suffix}.png`;
   }
 
+  // ----------------------------------------------------------------
+  // Export history log: every export is snapshotted (named) into
+  // localStorage so the user can reload an earlier version and edit it.
+  // Includes the full state — slides, values, photos (data URLs).
+  // Falls back to dropping photos if browser storage quota is hit.
+  // ----------------------------------------------------------------
+  const HISTORY_KEY = 'tff-ig-editor-history-v1';
+  function readHistory() {
+    try {
+      const raw = localStorage.getItem(HISTORY_KEY);
+      const arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    } catch (_) { return []; }
+  }
+  function writeHistory(arr) {
+    try { localStorage.setItem(HISTORY_KEY, JSON.stringify(arr)); return true; }
+    catch (_) { return false; }
+  }
+  function suggestExportName() {
+    snapshotSlide();
+    const slide = state.slides[state.currentSlide] || state.slides[0];
+    const v = (slide && slide.values) || {};
+    const title = v.titleA || v.first || v.name || v.abbr || v.big || v.eyebrow ||
+      v.oFirst || v.oLast || (slide && T[slide.tpl]?.label) || 'Post';
+    const cleaned = String(title).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60);
+    const d = new Date();
+    const stamp = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    return cleaned ? `${cleaned} — ${stamp}` : `Export ${stamp} ${d.toTimeString().slice(0,5)}`;
+  }
+  function buildExportSnapshot(name, kind) {
+    snapshotSlide();
+    return {
+      id: 'h_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8),
+      name: name || suggestExportName(),
+      savedAt: new Date().toISOString(),
+      kind: kind || 'export',
+      slideCount: state.slides.length,
+      payload: {
+        aspect: state.aspect,
+        topEndZone: state.topEndZone,
+        currentSlide: state.currentSlide,
+        slides: JSON.parse(JSON.stringify(state.slides)),
+      },
+    };
+  }
+  function persistEntry(entry) {
+    const list = readHistory();
+    list.unshift(entry);
+    if (writeHistory(list)) return { ok: true, droppedPhotos: false };
+    // Quota: try again without photo data URLs on this entry.
+    const lean = JSON.parse(JSON.stringify(entry));
+    lean.payload.slides = lean.payload.slides.map(s => ({ ...s, photo: null, photoCutout: false }));
+    lean.photosDropped = true;
+    const list2 = readHistory();
+    list2.unshift(lean);
+    if (writeHistory(list2)) return { ok: true, droppedPhotos: true };
+    // Last resort: trim oldest entries until it fits.
+    while (list2.length > 1) {
+      list2.pop();
+      if (writeHistory(list2)) return { ok: true, droppedPhotos: true, trimmed: true };
+    }
+    return { ok: false };
+  }
+  function showNamePrompt(defaultName) {
+    return new Promise((resolve) => {
+      const overlay = document.createElement('div');
+      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
+      overlay.innerHTML = `
+        <div style="background:#0a1a22;border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:24px;max-width:420px;width:100%;font-family:var(--font-body),system-ui,sans-serif;color:#f0fcfa;">
+          <div style="font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:16px;letter-spacing:0.04em;margin-bottom:6px;">Save to export log</div>
+          <div style="font-size:12px;color:#9ec;margin-bottom:14px;">Name this version so you can reopen and edit it later.</div>
+          <input data-name type="text" value="${String(defaultName).replace(/"/g,'&quot;')}" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(13,106,106,0.6);background:#021018;color:#f0fcfa;font-family:inherit;font-size:14px;margin-bottom:14px;box-sizing:border-box;">
+          <div style="display:flex;gap:8px;">
+            <button data-skip style="flex:1;padding:11px 12px;background:transparent;color:#9ec;border:1px solid rgba(13,106,106,0.6);border-radius:10px;font-family:var(--font-body),system-ui,sans-serif;font-size:13px;cursor:pointer;">Skip</button>
+            <button data-save style="flex:2;padding:11px 12px;background:var(--primary,#54c59e);color:#021018;border:none;border-radius:10px;font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">Save</button>
+          </div>
+        </div>`;
+      document.body.appendChild(overlay);
+      const input = overlay.querySelector('[data-name]');
+      const done = (val) => { overlay.remove(); resolve(val); };
+      overlay.querySelector('[data-skip]').addEventListener('click', () => done(null));
+      overlay.querySelector('[data-save]').addEventListener('click', () => done(input.value.trim() || defaultName));
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); done(input.value.trim() || defaultName); }
+        if (e.key === 'Escape') { e.preventDefault(); done(null); }
+      });
+      setTimeout(() => { input.focus(); input.select(); }, 30);
+    });
+  }
+  async function promptLogExport(kind) {
+    const def = suggestExportName();
+    const name = await showNamePrompt(def);
+    if (name == null) return;
+    const entry = buildExportSnapshot(name, kind);
+    const res = persistEntry(entry);
+    if (!res.ok) {
+      alert('Could not save to export log — browser storage is full.');
+    } else if (res.droppedPhotos) {
+      alert('Saved to export log, but photos were dropped to fit in browser storage. You can re-upload them after loading.');
+    }
+  }
+  function renameHistoryEntry(id, name) {
+    const list = readHistory();
+    const e = list.find(x => x.id === id);
+    if (!e) return;
+    e.name = name;
+    writeHistory(list);
+  }
+  function deleteHistoryEntry(id) {
+    const list = readHistory().filter(x => x.id !== id);
+    writeHistory(list);
+  }
+  function loadHistoryEntry(id) {
+    const entry = readHistory().find(x => x.id === id);
+    if (!entry || !entry.payload) return false;
+    const p = entry.payload;
+    if (!Array.isArray(p.slides) || !p.slides.length) return false;
+    state.aspect = p.aspect || 'square';
+    state.topEndZone = !!p.topEndZone;
+    state.slides = JSON.parse(JSON.stringify(p.slides));
+    const idx = Math.min(Math.max(0, p.currentSlide || 0), p.slides.length - 1);
+    loadSlide(idx);
+    syncPickerUI();
+    renderForm();
+    fitPreview();
+    renderPreview();
+    savePersisted();
+    return true;
+  }
+  function fmtDate(iso) {
+    try {
+      const d = new Date(iso);
+      return d.toLocaleString(undefined, { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+    } catch (_) { return iso; }
+  }
+  function openHistoryModal() {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
+    const render = () => {
+      const list = readHistory();
+      const rows = list.length ? list.map(e => `
+        <div data-id="${e.id}" style="border:1px solid rgba(13,106,106,0.4);border-radius:10px;padding:12px;margin-bottom:8px;background:rgba(2,16,24,0.6);">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <input data-rename type="text" value="${String(e.name).replace(/"/g,'&quot;')}" style="flex:1;padding:6px 8px;border-radius:6px;border:1px solid rgba(13,106,106,0.5);background:#021018;color:#f0fcfa;font-family:inherit;font-size:13px;">
+          </div>
+          <div style="font-size:11px;color:#9ec;margin-bottom:10px;">
+            ${fmtDate(e.savedAt)} · ${e.slideCount} slide${e.slideCount===1?'':'s'} · ${e.payload?.aspect || '—'}${e.photosDropped ? ' · photos dropped' : ''}
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button data-load style="flex:1;min-width:80px;padding:8px 10px;background:var(--primary,#54c59e);color:#021018;border:none;border-radius:8px;font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;">Load</button>
+            <button data-export style="padding:8px 10px;background:transparent;color:#9ec;border:1px solid rgba(13,106,106,0.6);border-radius:8px;font-size:12px;cursor:pointer;">JSON</button>
+            <button data-delete style="padding:8px 10px;background:transparent;color:#f88;border:1px solid rgba(200,80,80,0.5);border-radius:8px;font-size:12px;cursor:pointer;">Delete</button>
+          </div>
+        </div>`).join('') : `<div style="text-align:center;color:#9ec;padding:24px 0;font-size:13px;">No saved exports yet. Export a post and you'll be asked to name it.</div>`;
+      overlay.innerHTML = `
+        <div style="background:#0a1a22;border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:20px;max-width:520px;width:100%;max-height:80vh;display:flex;flex-direction:column;font-family:var(--font-body),system-ui,sans-serif;color:#f0fcfa;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <div style="font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:16px;letter-spacing:0.04em;">Saved exports (${list.length})</div>
+            <button data-close style="background:transparent;color:#9ec;border:none;font-size:22px;cursor:pointer;line-height:1;">×</button>
+          </div>
+          <div data-list style="overflow:auto;padding-right:4px;">${rows}</div>
+          <div style="display:flex;gap:8px;margin-top:12px;">
+            <button data-import-json style="flex:1;padding:9px 10px;background:transparent;color:#9ec;border:1px solid rgba(13,106,106,0.6);border-radius:8px;font-size:12px;cursor:pointer;">Import JSON</button>
+            ${list.length ? `<button data-clear-all style="padding:9px 10px;background:transparent;color:#f88;border:1px solid rgba(200,80,80,0.5);border-radius:8px;font-size:12px;cursor:pointer;">Clear all</button>` : ''}
+          </div>
+        </div>`;
+      overlay.querySelector('[data-close]').onclick = () => overlay.remove();
+      overlay.querySelectorAll('[data-id]').forEach(row => {
+        const id = row.dataset.id;
+        row.querySelector('[data-load]').onclick = () => {
+          if (!confirm('Load this version? Your current unsaved work will be replaced (it stays autosaved separately).')) return;
+          if (loadHistoryEntry(id)) { overlay.remove(); }
+          else alert('Could not load this entry.');
+        };
+        row.querySelector('[data-delete]').onclick = () => {
+          if (!confirm('Delete this saved export?')) return;
+          deleteHistoryEntry(id); render();
+        };
+        row.querySelector('[data-export]').onclick = () => {
+          const e = readHistory().find(x => x.id === id);
+          if (!e) return;
+          const blob = new Blob([JSON.stringify(e, null, 2)], { type: 'application/json' });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = `tff-export-${slugify(e.name)}.json`;
+          document.body.appendChild(a); a.click(); a.remove();
+          setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+        };
+        const inp = row.querySelector('[data-rename]');
+        const commit = () => { const v = inp.value.trim(); if (v) renameHistoryEntry(id, v); };
+        inp.addEventListener('blur', commit);
+        inp.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); inp.blur(); } });
+      });
+      const clearBtn = overlay.querySelector('[data-clear-all]');
+      if (clearBtn) clearBtn.onclick = () => {
+        if (!confirm('Delete ALL saved exports? This cannot be undone.')) return;
+        writeHistory([]); render();
+      };
+      overlay.querySelector('[data-import-json]').onclick = () => {
+        const fi = document.createElement('input');
+        fi.type = 'file'; fi.accept = 'application/json';
+        fi.onchange = async () => {
+          const file = fi.files && fi.files[0]; if (!file) return;
+          try {
+            const text = await file.text();
+            const parsed = JSON.parse(text);
+            const entries = Array.isArray(parsed) ? parsed : [parsed];
+            const list = readHistory();
+            for (const e of entries) {
+              if (e && e.payload && Array.isArray(e.payload.slides)) {
+                if (!e.id) e.id = 'h_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8);
+                list.unshift(e);
+              }
+            }
+            writeHistory(list); render();
+          } catch (err) { alert('Could not import: ' + err.message); }
+        };
+        fi.click();
+      };
+    };
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', (ev) => { if (ev.target === overlay) overlay.remove(); });
+    render();
+  }
+  document.getElementById('history-btn').addEventListener('click', openHistoryModal);
+
   async function exportCurrentTile() {
     const tile = document.querySelector('#preview-wrap .tile');
     if (!tile) throw new Error('Nothing to export yet.');
@@ -2145,6 +2374,7 @@
           await saveOrShareImage(items[k].blob, items[k].filename);
         }
       }
+      await promptLogExport('export');
     } catch (err) {
       console.error(err);
       alert('Export failed: ' + (err && err.message ? err.message : err));
@@ -2188,6 +2418,7 @@
           await saveOrShareImage(items[k].blob, items[k].filename);
         }
       }
+      await promptLogExport('all-aspects');
     } catch (err) {
       console.error(err);
       alert('Export failed: ' + (err && err.message ? err.message : err));

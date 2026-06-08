@@ -2051,22 +2051,35 @@
   }
 
   // ----------------------------------------------------------------
-  // Export history log: every export is snapshotted (named) into
-  // localStorage so the user can reload an earlier version and edit it.
-  // Includes the full state — slides, values, photos (data URLs).
-  // Falls back to dropping photos if browser storage quota is hit.
+  // Export history log: every export is snapshotted (named) and saved
+  // to Lovable Cloud (Supabase). Includes the full state — slides,
+  // values, photos (data URLs). Falls back to dropping photos if the
+  // payload exceeds the server cap (8 MB).
   // ----------------------------------------------------------------
-  const HISTORY_KEY = 'tff-ig-editor-history-v1';
-  function readHistory() {
-    try {
-      const raw = localStorage.getItem(HISTORY_KEY);
-      const arr = raw ? JSON.parse(raw) : [];
-      return Array.isArray(arr) ? arr : [];
-    } catch (_) { return []; }
+  const HISTORY_API = 'https://nlktiaocimgmxntderyq.supabase.co/functions/v1/ig-exports';
+  const HISTORY_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5sa3RpYW9jaW1nbXhudGRlcnlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzOTQ4MjksImV4cCI6MjA5NDk3MDgyOX0.L6tWS2sJ8pGe9lM9_X1Ha4HQhjY82Mv5b0jvoE95-KI';
+  function getAdminToken() {
+    try { return sessionStorage.getItem('admin_token'); } catch (_) { return null; }
   }
-  function writeHistory(arr) {
-    try { localStorage.setItem(HISTORY_KEY, JSON.stringify(arr)); return true; }
-    catch (_) { return false; }
+  async function historyApi(action, extra) {
+    const token = getAdminToken();
+    if (!token) throw new Error('Not signed in. Re-open the admin area and try again.');
+    const res = await fetch(HISTORY_API, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': HISTORY_ANON,
+        'Authorization': 'Bearer ' + HISTORY_ANON,
+      },
+      body: JSON.stringify({ token, action, ...(extra || {}) }),
+    });
+    let data = null;
+    try { data = await res.json(); } catch (_) {}
+    if (!res.ok) {
+      const err = (data && data.error) || ('HTTP ' + res.status);
+      throw new Error(err);
+    }
+    return data;
   }
   function suggestExportName() {
     snapshotSlide();
@@ -2082,9 +2095,7 @@
   function buildExportSnapshot(name, kind) {
     snapshotSlide();
     return {
-      id: 'h_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8),
       name: name || suggestExportName(),
-      savedAt: new Date().toISOString(),
       kind: kind || 'export',
       slideCount: state.slides.length,
       payload: {
@@ -2095,23 +2106,32 @@
       },
     };
   }
-  function persistEntry(entry) {
-    const list = readHistory();
-    list.unshift(entry);
-    if (writeHistory(list)) return { ok: true, droppedPhotos: false };
-    // Quota: try again without photo data URLs on this entry.
-    const lean = JSON.parse(JSON.stringify(entry));
-    lean.payload.slides = lean.payload.slides.map(s => ({ ...s, photo: null, photoCutout: false }));
-    lean.photosDropped = true;
-    const list2 = readHistory();
-    list2.unshift(lean);
-    if (writeHistory(list2)) return { ok: true, droppedPhotos: true };
-    // Last resort: trim oldest entries until it fits.
-    while (list2.length > 1) {
-      list2.pop();
-      if (writeHistory(list2)) return { ok: true, droppedPhotos: true, trimmed: true };
+  async function persistEntry(entry) {
+    const payload = {
+      action: 'save',
+      name: entry.name,
+      kind: entry.kind,
+      slide_count: entry.slideCount,
+      payload: entry.payload,
+      photos_dropped: false,
+    };
+    try {
+      await historyApi('save', payload);
+      return { ok: true, droppedPhotos: false };
+    } catch (e) {
+      if (String(e.message || '').includes('payload_too_large')) {
+        // Retry without photos.
+        const lean = JSON.parse(JSON.stringify(entry.payload));
+        lean.slides = lean.slides.map(s => ({ ...s, photo: null, photoCutout: false }));
+        try {
+          await historyApi('save', { ...payload, payload: lean, photos_dropped: true });
+          return { ok: true, droppedPhotos: true };
+        } catch (e2) {
+          return { ok: false, error: e2.message };
+        }
+      }
+      return { ok: false, error: e.message };
     }
-    return { ok: false };
   }
   function showNamePrompt(defaultName) {
     return new Promise((resolve) => {
@@ -2144,26 +2164,24 @@
     const name = await showNamePrompt(def);
     if (name == null) return;
     const entry = buildExportSnapshot(name, kind);
-    const res = persistEntry(entry);
+    const res = await persistEntry(entry);
     if (!res.ok) {
-      alert('Could not save to export log — browser storage is full.');
+      alert('Could not save to export log: ' + (res.error || 'unknown error'));
     } else if (res.droppedPhotos) {
-      alert('Saved to export log, but photos were dropped to fit in browser storage. You can re-upload them after loading.');
+      alert('Saved to export log, but photos were dropped because the entry was too large. You can re-upload them after loading.');
     }
   }
-  function renameHistoryEntry(id, name) {
-    const list = readHistory();
-    const e = list.find(x => x.id === id);
-    if (!e) return;
-    e.name = name;
-    writeHistory(list);
+  async function renameHistoryEntry(id, name) {
+    try { await historyApi('rename', { id, name }); } catch (e) { alert('Rename failed: ' + e.message); }
   }
-  function deleteHistoryEntry(id) {
-    const list = readHistory().filter(x => x.id !== id);
-    writeHistory(list);
+  async function deleteHistoryEntry(id) {
+    try { await historyApi('delete', { id }); return true; }
+    catch (e) { alert('Delete failed: ' + e.message); return false; }
   }
-  function loadHistoryEntry(id) {
-    const entry = readHistory().find(x => x.id === id);
+  async function loadHistoryEntry(id) {
+    let entry;
+    try { const r = await historyApi('get', { id }); entry = r.entry; }
+    catch (e) { alert('Load failed: ' + e.message); return false; }
     if (!entry || !entry.payload) return false;
     const p = entry.payload;
     if (!Array.isArray(p.slides) || !p.slides.length) return false;
@@ -2188,15 +2206,25 @@
   function openHistoryModal() {
     const overlay = document.createElement('div');
     overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
-    const render = () => {
-      const list = readHistory();
+    let cache = [];
+    const render = async () => {
+      overlay.innerHTML = `<div style="background:#0a1a22;border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:20px;max-width:520px;width:100%;font-family:var(--font-body),system-ui,sans-serif;color:#9ec;">Loading…</div>`;
+      try {
+        const r = await historyApi('list');
+        cache = Array.isArray(r.entries) ? r.entries : [];
+      } catch (e) {
+        overlay.innerHTML = `<div style="background:#0a1a22;border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:20px;max-width:520px;width:100%;font-family:var(--font-body),system-ui,sans-serif;color:#f88;">Could not load saved exports: ${String(e.message).replace(/</g,'&lt;')}<div style="margin-top:12px;"><button data-close style="padding:8px 12px;background:transparent;color:#9ec;border:1px solid rgba(13,106,106,0.6);border-radius:8px;cursor:pointer;">Close</button></div></div>`;
+        overlay.querySelector('[data-close]').onclick = () => overlay.remove();
+        return;
+      }
+      const list = cache;
       const rows = list.length ? list.map(e => `
         <div data-id="${e.id}" style="border:1px solid rgba(13,106,106,0.4);border-radius:10px;padding:12px;margin-bottom:8px;background:rgba(2,16,24,0.6);">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
             <input data-rename type="text" value="${String(e.name).replace(/"/g,'&quot;')}" style="flex:1;padding:6px 8px;border-radius:6px;border:1px solid rgba(13,106,106,0.5);background:#021018;color:#f0fcfa;font-family:inherit;font-size:13px;">
           </div>
           <div style="font-size:11px;color:#9ec;margin-bottom:10px;">
-            ${fmtDate(e.savedAt)} · ${e.slideCount} slide${e.slideCount===1?'':'s'} · ${e.payload?.aspect || '—'}${e.photosDropped ? ' · photos dropped' : ''}
+            ${fmtDate(e.created_at)} · ${e.slide_count} slide${e.slide_count===1?'':'s'} · ${e.aspect || '—'}${e.photos_dropped ? ' · photos dropped' : ''}
           </div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;">
             <button data-load style="flex:1;min-width:80px;padding:8px 10px;background:var(--primary,#54c59e);color:#021018;border:none;border-radius:8px;font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;">Load</button>
@@ -2207,29 +2235,32 @@
       overlay.innerHTML = `
         <div style="background:#0a1a22;border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:20px;max-width:520px;width:100%;max-height:80vh;display:flex;flex-direction:column;font-family:var(--font-body),system-ui,sans-serif;color:#f0fcfa;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-            <div style="font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:16px;letter-spacing:0.04em;">Saved exports (${list.length})</div>
+            <div style="font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:16px;letter-spacing:0.04em;">Saved exports (${list.length}) · cloud</div>
             <button data-close style="background:transparent;color:#9ec;border:none;font-size:22px;cursor:pointer;line-height:1;">×</button>
           </div>
           <div data-list style="overflow:auto;padding-right:4px;">${rows}</div>
           <div style="display:flex;gap:8px;margin-top:12px;">
-            <button data-import-json style="flex:1;padding:9px 10px;background:transparent;color:#9ec;border:1px solid rgba(13,106,106,0.6);border-radius:8px;font-size:12px;cursor:pointer;">Import JSON</button>
+            <button data-refresh style="flex:1;padding:9px 10px;background:transparent;color:#9ec;border:1px solid rgba(13,106,106,0.6);border-radius:8px;font-size:12px;cursor:pointer;">Refresh</button>
             ${list.length ? `<button data-clear-all style="padding:9px 10px;background:transparent;color:#f88;border:1px solid rgba(200,80,80,0.5);border-radius:8px;font-size:12px;cursor:pointer;">Clear all</button>` : ''}
           </div>
         </div>`;
       overlay.querySelector('[data-close]').onclick = () => overlay.remove();
+      overlay.querySelector('[data-refresh]').onclick = () => render();
       overlay.querySelectorAll('[data-id]').forEach(row => {
         const id = row.dataset.id;
-        row.querySelector('[data-load]').onclick = () => {
+        row.querySelector('[data-load]').onclick = async () => {
           if (!confirm('Load this version? Your current unsaved work will be replaced (it stays autosaved separately).')) return;
-          if (loadHistoryEntry(id)) { overlay.remove(); }
+          if (await loadHistoryEntry(id)) { overlay.remove(); }
           else alert('Could not load this entry.');
         };
-        row.querySelector('[data-delete]').onclick = () => {
+        row.querySelector('[data-delete]').onclick = async () => {
           if (!confirm('Delete this saved export?')) return;
-          deleteHistoryEntry(id); render();
+          if (await deleteHistoryEntry(id)) render();
         };
-        row.querySelector('[data-export]').onclick = () => {
-          const e = readHistory().find(x => x.id === id);
+        row.querySelector('[data-export]').onclick = async () => {
+          let e;
+          try { const r = await historyApi('get', { id }); e = r.entry; }
+          catch (err) { alert('Fetch failed: ' + err.message); return; }
           if (!e) return;
           const blob = new Blob([JSON.stringify(e, null, 2)], { type: 'application/json' });
           const a = document.createElement('a');
@@ -2239,35 +2270,19 @@
           setTimeout(() => URL.revokeObjectURL(a.href), 4000);
         };
         const inp = row.querySelector('[data-rename]');
-        const commit = () => { const v = inp.value.trim(); if (v) renameHistoryEntry(id, v); };
+        let last = inp.value;
+        const commit = async () => {
+          const v = inp.value.trim();
+          if (v && v !== last) { await renameHistoryEntry(id, v); last = v; }
+        };
         inp.addEventListener('blur', commit);
         inp.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); inp.blur(); } });
       });
       const clearBtn = overlay.querySelector('[data-clear-all]');
-      if (clearBtn) clearBtn.onclick = () => {
+      if (clearBtn) clearBtn.onclick = async () => {
         if (!confirm('Delete ALL saved exports? This cannot be undone.')) return;
-        writeHistory([]); render();
-      };
-      overlay.querySelector('[data-import-json]').onclick = () => {
-        const fi = document.createElement('input');
-        fi.type = 'file'; fi.accept = 'application/json';
-        fi.onchange = async () => {
-          const file = fi.files && fi.files[0]; if (!file) return;
-          try {
-            const text = await file.text();
-            const parsed = JSON.parse(text);
-            const entries = Array.isArray(parsed) ? parsed : [parsed];
-            const list = readHistory();
-            for (const e of entries) {
-              if (e && e.payload && Array.isArray(e.payload.slides)) {
-                if (!e.id) e.id = 'h_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8);
-                list.unshift(e);
-              }
-            }
-            writeHistory(list); render();
-          } catch (err) { alert('Could not import: ' + err.message); }
-        };
-        fi.click();
+        try { await historyApi('clear'); render(); }
+        catch (e) { alert('Clear failed: ' + e.message); }
       };
     };
     document.body.appendChild(overlay);

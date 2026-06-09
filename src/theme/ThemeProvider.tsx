@@ -61,14 +61,15 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const timers: number[] = [];
     // Stage 1 — header red sweep, nav font swap, logos fade out
     timers.push(window.setTimeout(() => setRevealStage(1), 650));
-    // Stage 2 — blue overlay dissolves in; theme swaps while overlay is opaque
+    // Stage 2 — blue panel slides down from below the top bar; theme swaps
+    // once the panel has fully covered the page underneath.
     timers.push(window.setTimeout(() => setRevealStage(2), 1650));
-    timers.push(window.setTimeout(() => setEffectiveTheme("tuil"), 1650 + 600));
-    // Stage 3 — hero logo pops with halo, TUIL wordmark fades in
-    timers.push(window.setTimeout(() => setRevealStage(3), 3100));
+    timers.push(window.setTimeout(() => setEffectiveTheme("tuil"), 1650 + 700));
+    // Stage 3 — panel fades out while hero logo pops and TUIL wordmark fades in
+    timers.push(window.setTimeout(() => setRevealStage(3), 2950));
     // Stage 4 — header + footer logos fade back in
-    timers.push(window.setTimeout(() => setRevealStage(4), 4000));
-    timers.push(window.setTimeout(() => setRevealActive(false), 4800));
+    timers.push(window.setTimeout(() => setRevealStage(4), 3700));
+    timers.push(window.setTimeout(() => setRevealActive(false), 4600));
     (window as any).__themeRevealTimers = timers;
     return () => timers.forEach((id) => window.clearTimeout(id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -95,8 +96,12 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       }}
     >
       {children}
-      {revealActive && selectedTheme === "tuil" && revealStage === 2 && (
-        <div aria-hidden className="pointer-events-none fixed inset-0 z-[9998] overflow-hidden">
+      {revealActive && selectedTheme === "tuil" && revealStage >= 2 && revealStage < 4 && (
+        <div
+          aria-hidden
+          className="pointer-events-none fixed left-0 right-0 bottom-0 z-[9998] overflow-hidden"
+          style={{ top: "56px" }}
+        >
           <div className="reveal-blue-drop" />
         </div>
       )}

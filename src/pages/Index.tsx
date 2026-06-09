@@ -135,7 +135,12 @@ const Index = () => {
   const inReveal = revealActive && revealMode && selectedTheme === "tuil";
   // Show the red sweep overlay during stage 1; from stage 2 the nav is natively bg-primary.
   const showHeaderSweep = inReveal && revealStage >= 1 && revealStage < 2;
-  const navIsRedNow = theme === "tuil" || showHeaderSweep;
+  // Only treat the nav as "red" once the theme has actually flipped to TUIL.
+  // During the sweep we keep the original dark background underneath so the
+  // red bar slides in over it instead of snapping to the default theme's
+  // green primary color.
+  const navIsRedNow = theme === "tuil";
+  const navTextOverRed = navIsRedNow || showHeaderSweep;
   // Hero title state during the reveal:
   //  - stages 0–1: keep the default-theme heading (the header is changing, hero is unchanged)
   //  - stage 2: only «FLAGGFOTBALL»
@@ -178,7 +183,7 @@ const Index = () => {
             <button
               key={id}
               onClick={() => scrollTo(id)}
-              className={`text-sm font-heading font-medium transition-colors whitespace-nowrap px-4 py-1.5 rounded-lg ${navIsRedNow ? "text-white/80 hover:text-white hover:bg-white/10 reveal-nav-tuil-font" : "text-muted-foreground hover:text-primary hover:bg-primary/5"}`}
+              className={`text-sm font-heading font-medium transition-colors whitespace-nowrap px-4 py-1.5 rounded-lg ${navTextOverRed ? "text-white/80 hover:text-white hover:bg-white/10 reveal-nav-tuil-font" : "text-muted-foreground hover:text-primary hover:bg-primary/5"}`}
             >
               {t(navItemKeyFor(id))}
             </button>

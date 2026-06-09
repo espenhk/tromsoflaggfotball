@@ -16,9 +16,10 @@ const BrandLogo = ({ className, alt = "Logo", variant = "default" }: Props) => {
 
   // During the staged reveal the logos behave differently than the static theme.
   const inReveal = revealActive && revealMode && selectedTheme === "tuil";
-  // Hero (default-variant) logo: stays visible through stage 1; hidden once the
-  // blue overlay covers it (stage 2), then pops in at stage 3.
-  const heroHidden = inReveal && variant === "default" && revealStage >= 2 && revealStage < 3;
+  // Hero (default-variant) logo: the original logo should remain visible until
+  // the blue panel physically covers it. Once the theme has swapped underneath,
+  // keep the replacement hidden until the stage 3 pop-in.
+  const heroHidden = inReveal && theme === "tuil" && variant === "default" && revealStage >= 2 && revealStage < 3;
   const heroPop = inReveal && variant === "default" && revealStage >= 3;
   // Header / footer (mark-variant) logos: stay visible through stage 1 (the red
   // header sweep), then hidden under the blue dissolve until stage 4 fades them back in.

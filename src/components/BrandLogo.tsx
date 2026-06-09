@@ -35,7 +35,8 @@ const BrandLogo = ({ className, alt = "Logo", variant = "default" }: Props) => {
           src={logoTuilMark}
           alt={alt}
           className={cn(
-            "object-contain brand-logo-fade",
+            "object-contain",
+            !inReveal && "brand-logo-fade",
             markHidden && "reveal-logo-hidden",
             markFadeIn && "reveal-fade-in",
             className,

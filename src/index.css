@@ -270,19 +270,21 @@ html.theme-transitioning *:not(svg):not(path):not(.theme-reveal-ink):not(.theme-
   letter-spacing: 0.03em;
 }
 
-/* Stage 2 — blue background dissolves in, theme swaps under cover, dissolves out */
-@keyframes reveal-blue-dissolve {
-  0%   { opacity: 0; }
-  40%  { opacity: 1; }
-  60%  { opacity: 1; }
-  100% { opacity: 0; }
+/* Stage 2 — blue panel slides down from below the top bar, the theme swaps
+   under cover, then the panel fades out so the new TUIL content reveals. */
+@keyframes reveal-blue-drop {
+  0%   { transform: scaleY(0); opacity: 1; }
+  35%  { transform: scaleY(1); opacity: 1; }
+  70%  { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0; }
 }
 .reveal-blue-drop {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 40%, hsl(218 100% 40%) 0%, hsl(218 100% 33%) 55%, hsl(212 100% 17%) 100%);
-  opacity: 0;
-  animation: reveal-blue-dissolve 1400ms ease-in-out forwards;
+  background: linear-gradient(180deg, hsl(218 100% 40%) 0%, hsl(218 100% 33%) 55%, hsl(212 100% 17%) 100%);
+  transform-origin: top center;
+  animation: reveal-blue-drop 1800ms cubic-bezier(0.7, 0, 0.25, 1) forwards;
+  will-change: transform, opacity;
 }
 
 /* Generic helpers used by BrandLogo during reveal */

@@ -135,12 +135,12 @@ const Index = () => {
   const inReveal = revealActive && revealMode && selectedTheme === "tuil";
   // Show the red sweep overlay during stage 1; from stage 2 the nav is natively bg-primary.
   const showHeaderSweep = inReveal && revealStage >= 1 && revealStage < 2;
-  // Treat the nav as "red" once the sweep has finished painting over it.
-  // The sweep overlay paints stage 1; from stage 2 onward we make the nav
-  // background natively red (TUIL primary) so it doesn't briefly snap back
-  // to the dark default-theme background between the sweep ending and the
-  // theme actually flipping to TUIL underneath the blue panel.
-  const navIsRedNow = theme === "tuil" || (inReveal && revealStage >= 1);
+  // The sweep overlay does the actual red wipe during stage 1 — keep the
+  // nav's own background dark so we don't double up two reds on top of one
+  // another (which read as a sudden hue shift). From stage 2 onward the
+  // sweep is gone, so paint the nav natively red to bridge until the theme
+  // flips to TUIL underneath the blue dissolve.
+  const navIsRedNow = theme === "tuil" || (inReveal && revealStage >= 2);
   const navTextOverRed = navIsRedNow || showHeaderSweep;
   // Hero title state during the reveal:
   //  - stages 0–1: keep the default-theme heading (the header is changing, hero is unchanged)

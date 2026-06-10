@@ -338,12 +338,6 @@ html[data-theme="tuil"] .t-drill .field {
     radial-gradient(at 70% 70%, rgba(225, 37, 27, 0.18) 0%, transparent 55%),
     linear-gradient(180deg, #003da6 0%, #001e44 100%);
 }
-/* When a user photo is set inline on .photo, drop the gradient overlay so
-   the image isn't tinted/obscured by the fallback. */
-html[data-theme="tuil"] .t-event .photo[style*="background-image"],
-html[data-theme="tuil"] .t-bts .photo[style*="background-image"] {
-  background-image: var(--__photo-bg, none);
-}
 html[data-theme="tuil"] .t-rule .diagram {
   background: #001e44;
 }

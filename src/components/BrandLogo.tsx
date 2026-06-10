@@ -31,9 +31,11 @@ const BrandLogo = ({ className, alt = "Logo", variant = "default" }: Props) => {
       // Red source PNG recolored to white via CSS filter so it stands out on blue.
       return (
         <img
-          key="tuil-mark"
+          key={markFadeIn ? "tuil-mark-fade" : "tuil-mark"}
           src={logoTuilMark}
           alt={alt}
+          width={1211}
+          height={895}
           className={cn(
             "object-contain",
             !inReveal && "brand-logo-fade",

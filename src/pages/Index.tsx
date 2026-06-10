@@ -135,11 +135,12 @@ const Index = () => {
   const inReveal = revealActive && revealMode && selectedTheme === "tuil";
   // Show the red sweep overlay during stage 1; from stage 2 the nav is natively bg-primary.
   const showHeaderSweep = inReveal && revealStage >= 1 && revealStage < 2;
-  // Only treat the nav as "red" once the theme has actually flipped to TUIL.
-  // During the sweep we keep the original dark background underneath so the
-  // red bar slides in over it instead of snapping to the default theme's
-  // green primary color.
-  const navIsRedNow = theme === "tuil";
+  // Treat the nav as "red" once the sweep has finished painting over it.
+  // The sweep overlay paints stage 1; from stage 2 onward we make the nav
+  // background natively red (TUIL primary) so it doesn't briefly snap back
+  // to the dark default-theme background between the sweep ending and the
+  // theme actually flipping to TUIL underneath the blue panel.
+  const navIsRedNow = theme === "tuil" || (inReveal && revealStage >= 1);
   const navTextOverRed = navIsRedNow || showHeaderSweep;
   // Hero title state during the reveal:
   //  - stages 0–1: keep the default-theme heading (the header is changing, hero is unchanged)
@@ -175,7 +176,10 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Desktop nav */}
-      <nav className={`sticky top-0 z-50 backdrop-blur-md hidden md:block overflow-hidden ${navIsRedNow ? "bg-primary border-b border-white/20" : "bg-background/80 border-b border-border"}`}>
+      <nav
+        className={`sticky top-0 z-50 backdrop-blur-md hidden md:block overflow-hidden border-b ${navIsRedNow ? "border-white/20" : "bg-background/80 border-border"}`}
+        style={navIsRedNow ? { backgroundColor: "hsl(3 79% 49%)" } : undefined}
+      >
         {showHeaderSweep && <div className="reveal-header-sweep" aria-hidden />}
         <div className="max-w-4xl mx-auto px-4 flex items-center gap-1 py-2 relative z-10">
           <BrandLogo variant="mark" alt="Logo" className="h-10 w-auto shrink-0 mr-3" />

@@ -323,15 +323,26 @@ html[data-theme="tuil"] .section {
    Photo placeholders + colored backgrounds inside templates use baked-in
    teal/green gradients. Replace with royal-blue gradients so empty slides
    read on-brand. Tile body uses var(--bg) already, which is now blue. */
+/* Use the shorthand WITHOUT !important so an inline `background-image`
+   (set by the editor when the user uploads a photo) still wins. The
+   shorthand resets background-image to the gradients, but inline style
+   without !important still beats a non-important stylesheet declaration. */
 html[data-theme="tuil"] .ph,
 html[data-theme="tuil"] .t-player .left-col,
 html[data-theme="tuil"] .t-event .photo,
 html[data-theme="tuil"] .t-bts .photo,
 html[data-theme="tuil"] .t-drill .field {
-  background:
+  background-color: #003da6;
+  background-image:
     radial-gradient(at 30% 30%, rgba(0, 154, 222, 0.30) 0%, transparent 55%),
     radial-gradient(at 70% 70%, rgba(225, 37, 27, 0.18) 0%, transparent 55%),
-    linear-gradient(180deg, #003da6 0%, #001e44 100%) !important;
+    linear-gradient(180deg, #003da6 0%, #001e44 100%);
+}
+/* When a user photo is set inline on .photo, drop the gradient overlay so
+   the image isn't tinted/obscured by the fallback. */
+html[data-theme="tuil"] .t-event .photo[style*="background-image"],
+html[data-theme="tuil"] .t-bts .photo[style*="background-image"] {
+  background-image: var(--__photo-bg, none);
 }
 html[data-theme="tuil"] .t-rule .diagram {
   background: #001e44;

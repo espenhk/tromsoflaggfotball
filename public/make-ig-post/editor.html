@@ -433,7 +433,6 @@
   T.nm = {
     label: 'NM',
     fields: [
-      { id:'badge', label:'Flag overlay', type:'text', default:'NM 2026' },
       { id:'eyebrow', label:'Eyebrow', type:'text', default:'Vi er kvalifisert' },
       { id:'titleA', label:'Title 1', type:'text', default:'Tromsø' },
       { id:'titleB', label:'Title 2 (HTML ok)', type:'text', default:'til <span style="color:var(--chrome);">NM.</span>' },
@@ -449,7 +448,6 @@
     render: d => `<div class="stage">
       <div style="height:240px; position:relative; overflow:hidden;">
         <div class="no-flag" style="position:absolute; inset:0; height:100%; width:100%; aspect-ratio:auto;"></div>
-        ${d.badge && d.badge.trim() ? `<div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); font-family:var(--font-heading); font-weight:800; font-size:56px; letter-spacing:0.2em; color:white; background: rgba(0,32,91,0.85); padding:14px 36px; text-transform:uppercase; border:3px solid white;">${d.badge}</div>` : ''}
       </div>
       <div class="body-area">
         <div class="eyebrow">${d.eyebrow}</div>

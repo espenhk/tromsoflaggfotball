@@ -355,6 +355,25 @@ html[data-theme="tuil"] .t-rule .rule-header,
 html[data-theme="tuil"] .t-rule .rule-header .eyebrow {
   color: #ffffff;
 }
+/* T06 Rule: the bright red bars clash with the green field diagram,
+   so override the rule template (and its play/concept sibling) to use
+   navy bars instead. Other templates keep the red wordmark. */
+html[data-theme="tuil"] .t-rule .wordmark,
+html[data-theme="tuil"] .t-rule .rule-header {
+  background: #001e44;
+  border-top-color: #001e44;
+  border-bottom-color: #001e44;
+}
+/* Eyebrow text reads as small light-weight red on blue otherwise — make
+   it white in TUIL for readability. */
+html[data-theme="tuil"] .tile .eyebrow {
+  color: #ffffff;
+}
+/* T01 player: the jersey number rendered in Neue Haas/Inter at 320px
+   spills over the right column and covers the quote. Tone it down. */
+html[data-theme="tuil"] .t-player .jersey {
+  font-size: 240px;
+}
 /* Wordmark white TUIL logo, sized to match the cap-height of the text */
 html[data-theme="tuil"] .tile .wordmark .wm-logo {
   height: 56px;

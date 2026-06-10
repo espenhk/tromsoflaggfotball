@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useRef, useState, ReactNode } fro
 export type SiteTheme = "default" | "tuil";
 const KEY = "site_theme";
 const REVEAL_KEY = "site_reveal_mode";
+const REVEAL_DONE_KEY = "site_reveal_done";
 
 type Ctx = {
   /** Currently displayed theme (may differ from selectedTheme during reveal). */
@@ -56,9 +57,29 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (didTriggerReveal.current) return;
     if (!(revealMode && selectedTheme === "tuil" && effectiveTheme === "default")) return;
+    // Only ever play the reveal once per browser. After it has run, the
+    // user simply lands on the TUIL theme directly without the animation.
+    if (typeof window !== "undefined" && localStorage.getItem(REVEAL_DONE_KEY) === "1") {
+      didTriggerReveal.current = true;
+      setEffectiveTheme("tuil");
+      return;
+    }
+    // Only ever fire the reveal on the front page.
+    if (typeof window !== "undefined" && window.location.pathname !== "/") {
+      didTriggerReveal.current = true;
+      setEffectiveTheme("tuil");
+      return;
+    }
     didTriggerReveal.current = true;
-    setRevealActive(true);
+    // Pre-warm the TUIL display font (Inter @ 800 / 700) so the «TUIL»
+    // hero wordmark doesn't render in a fallback weight first and then
+    // pop to its real weight halfway through the reveal.
+    const startReveal = () => {
+      setRevealActive(true);
+      scheduleStages();
+    };
     const timers: number[] = [];
+    const scheduleStages = () => {
     // Stage 1 — header red sweep, nav font swap, logos fade out
     timers.push(window.setTimeout(() => setRevealStage(1), 650));
     // Stage 2 — blue panel slides down from below the top bar; theme swaps
@@ -69,7 +90,21 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     timers.push(window.setTimeout(() => setRevealStage(3), 2950));
     // Stage 4 — header + footer logos fade back in
     timers.push(window.setTimeout(() => setRevealStage(4), 3700));
-    timers.push(window.setTimeout(() => setRevealActive(false), 4600));
+    timers.push(window.setTimeout(() => {
+      setRevealActive(false);
+      try { localStorage.setItem(REVEAL_DONE_KEY, "1"); } catch {}
+    }, 4600));
+    };
+    if (typeof document !== "undefined" && (document as any).fonts?.load) {
+      Promise.all([
+        (document as any).fonts.load('800 1em "Neue Haas Grotesk Display Pro"'),
+        (document as any).fonts.load('700 1em "Neue Haas Grotesk Display Pro"'),
+        (document as any).fonts.load('800 1em Inter'),
+        (document as any).fonts.load('700 1em Inter'),
+      ]).catch(() => {}).finally(startReveal);
+    } else {
+      startReveal();
+    }
     (window as any).__themeRevealTimers = timers;
     return () => timers.forEach((id) => window.clearTimeout(id));
     // eslint-disable-next-line react-hooks/exhaustive-deps

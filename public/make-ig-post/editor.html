@@ -1272,17 +1272,21 @@
     return linkPrimary(tplId, fieldId) !== fieldId;
   }
   // Inline UI appended after every text/textarea input that isn't auto-fit.
+  // Value is editable (type number); stepper buttons clamp & snap to even pt.
   function fontScaleInputHTML(fieldId, scaleOrPt) {
     let val;
     if (typeof scaleOrPt === 'number') {
       val = scaleOrPt > 5 ? scaleOrPt : Math.round(scaleOrPt * 14);
     } else {
-      val = 14;
+      // Use the field's measured natural size from the last preview render
+      // so the stepper reflects the current rendered size, not a hardcoded 14.
+      val = (_naturalPt[state.tpl] && _naturalPt[state.tpl][fieldId]) || 14;
     }
     return `<div class="font-scale-row">
       <div class="fs-stepper">
         <button type="button" data-stepper-minus="${fieldId}">−</button>
-        <span class="fs-stepper-val" data-stepper-val="${fieldId}">${val}</span>
+        <input type="number" class="fs-stepper-val" data-stepper-val="${fieldId}"
+          min="8" max="200" step="2" value="${val}">
         <button type="button" data-stepper-plus="${fieldId}">+</button>
       </div>
       <span class="font-scale-suffix">pt</span>

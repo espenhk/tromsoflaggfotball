@@ -1379,7 +1379,7 @@
       const esc = escAttr(v);
       if (f.type === 'textarea') {
         const fsInput = isAutoFit(state.tpl, f.id) ? '' : fontScaleInputHTML(f.id, scales[f.id]);
-        return `<div class="field"><label>${f.label}</label><textarea data-field="${f.id}">${esc}</textarea>${slider}</div>`;
+        return `<div class="field"><label>${f.label}</label><textarea data-field="${f.id}">${esc}</textarea>${fsInput}</div>`;
       }
       if (f.type === 'checkbox') {
         return `<div class="field"><label style="display:flex; align-items:center; gap:10px; cursor:pointer;"><input type="checkbox" data-field-check="${f.id}" ${v ? 'checked' : ''} style="width:auto; accent-color:var(--primary);">${f.label}</label></div>`;

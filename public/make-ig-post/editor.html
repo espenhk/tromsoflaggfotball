@@ -1796,11 +1796,15 @@
         if (ft !== 'text' && ft !== 'textarea') return raw;
         if (isAutoFit(state.tpl, prop)) return raw;
         const s = scales[linkPrimary(state.tpl, prop)];
-        if (!s || s === 1) return raw;
-        if (s > 5) {
-          return `<span class="fs-wrap" data-fs="${prop}" style="font-size:${s}pt;">${raw == null ? '' : raw}</span>`;
+        const text = raw == null ? '' : raw;
+        // Always wrap so we can measure each field's natural rendered font-size
+        // after layout (used to seed the stepper). Omit the inline style when
+        // there's no override so the template's CSS still applies.
+        if (!s || s === 1) {
+          return `<span class="fs-wrap" data-fs="${prop}">${text}</span>`;
         }
-        return `<span class="fs-wrap" data-fs="${prop}" style="font-size:${s}em;">${raw == null ? '' : raw}</span>`;
+        const style = s > 5 ? `font-size:${s}pt;` : `font-size:${s}em;`;
+        return `<span class="fs-wrap" data-fs="${prop}" style="${style}">${text}</span>`;
       }
     });
     wrap.innerHTML = `<div class="tile ${t.cls} ${accCls}">

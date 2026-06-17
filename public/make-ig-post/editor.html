@@ -1637,9 +1637,28 @@
     const wmLeft = isTuil
       ? `<span class="left"><img class="wm-logo" src="assets/tuil-wordmark.png" alt="TUIL">FLAGGFOTBALL</span>`
       : `<span class="left">TROMSØ FLAGGFOTBALL</span>`;
+    // Per-field font-size overrides: wrap text/textarea values in a span
+    // with `font-size: <scale>em` so users can dial body text up for
+    // readability without us having to touch every template's markup.
+    // Auto-fit fields are passed through verbatim because their size is
+    // recomputed below.
+    const scales = state.fontScales || {};
+    const fieldTypes = {};
+    t.fields.forEach(f => { fieldTypes[f.id] = f.type; });
+    const scaledValues = new Proxy(state.values, {
+      get(target, prop) {
+        const raw = target[prop];
+        const ft = fieldTypes[prop];
+        if (ft !== 'text' && ft !== 'textarea') return raw;
+        if (isAutoFit(state.tpl, prop)) return raw;
+        const s = scales[prop];
+        if (!s || s === 1) return raw;
+        return `<span class="fs-wrap" data-fs="${prop}" style="font-size:${s}em;">${raw == null ? '' : raw}</span>`;
+      }
+    });
     wrap.innerHTML = `<div class="tile ${t.cls} ${accCls}">
       ${chromeHtml}
-      ${t.render(state.values)}
+      ${t.render(scaledValues)}
       <div class="wordmark">${wmLeft}<span class="right">${wmRight}</span></div>
     </div>`;
 

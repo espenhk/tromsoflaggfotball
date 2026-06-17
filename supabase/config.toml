@@ -1,1 +1,10 @@
 project_id = "nlktiaocimgmxntderyq"
+
+[functions.site-settings]
+verify_jwt = false
+
+[functions.list-signups]
+verify_jwt = false
+
+[functions.ig-exports]
+verify_jwt = false

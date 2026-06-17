@@ -1196,13 +1196,13 @@
     return (AUTO_FIT_FIELDS[tplId] || []).includes(fieldId);
   }
   // Inline UI appended after every text/textarea input that isn't auto-fit.
-  function fontScaleSliderHTML(fieldId, scale) {
+  function fontScaleInputHTML(fieldId, scale) {
     const s = typeof scale === 'number' ? scale : 1;
     const pct = Math.round(s * 100);
     return `<div class="font-scale-row">
-      <span class="font-scale-label">Text size</span>
-      <input type="range" min="0.7" max="2" step="0.05" value="${s}" data-font-scale="${fieldId}" class="font-scale-slider">
-      <span class="font-scale-val" data-font-scale-val="${fieldId}">${pct}%</span>
+      <span class="font-scale-label">Size</span>
+      <input type="number" min="70" max="200" step="5" value="${pct}" data-font-scale="${fieldId}" class="font-scale-input">
+      <span class="font-scale-suffix">%</span>
     </div>`;
   }
 

@@ -47,6 +47,27 @@ export type Database = {
         }
         Relationships: []
       }
+      site_settings: {
+        Row: {
+          id: string
+          reveal_mode: boolean
+          theme: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          reveal_mode?: boolean
+          theme?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          reveal_mode?: boolean
+          theme?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       training_signups: {
         Row: {
           age_group: string | null

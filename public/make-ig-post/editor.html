@@ -1173,9 +1173,33 @@
   // ----------------------------------------------------------------
   const escAttr = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
+  // Fields whose font-size is computed by JS (shrink-to-fit) — they should
+  // NOT get a manual font-size slider, since the slider value would just be
+  // overwritten on the next renderPreview() pass.
+  const AUTO_FIT_FIELDS = {
+    player:  ['first', 'last'],
+    pos101:  ['abbr'],
+    matchup: ['oFirst', 'oLast', 'dFirst', 'dLast'],
+    game:    ['hName', 'aName', 'gDate', 'gTime'],
+  };
+  function isAutoFit(tplId, fieldId) {
+    return (AUTO_FIT_FIELDS[tplId] || []).includes(fieldId);
+  }
+  // Inline UI appended after every text/textarea input that isn't auto-fit.
+  function fontScaleSliderHTML(fieldId, scale) {
+    const s = typeof scale === 'number' ? scale : 1;
+    const pct = Math.round(s * 100);
+    return `<div class="font-scale-row">
+      <span class="font-scale-label">Text size</span>
+      <input type="range" min="0.7" max="2" step="0.05" value="${s}" data-font-scale="${fieldId}" class="font-scale-slider">
+      <span class="font-scale-val" data-font-scale-val="${fieldId}">${pct}%</span>
+    </div>`;
+  }
+
   function renderForm() {
     const t = T[state.tpl];
     const area = document.getElementById('form-area');
+    const scales = state.fontScales || (state.fontScales = {});
     area.innerHTML = t.fields.map(f => {
       const v = state.values[f.id] ?? f.default;
       if (f.type === 'list') {
@@ -1344,17 +1368,29 @@
       }
       const esc = escAttr(v);
       if (f.type === 'textarea') {
-        return `<div class="field"><label>${f.label}</label><textarea data-field="${f.id}">${esc}</textarea></div>`;
+        const slider = isAutoFit(state.tpl, f.id) ? '' : fontScaleSliderHTML(f.id, scales[f.id]);
+        return `<div class="field"><label>${f.label}</label><textarea data-field="${f.id}">${esc}</textarea>${slider}</div>`;
       }
       if (f.type === 'checkbox') {
         return `<div class="field"><label style="display:flex; align-items:center; gap:10px; cursor:pointer;"><input type="checkbox" data-field-check="${f.id}" ${v ? 'checked' : ''} style="width:auto; accent-color:var(--primary);">${f.label}</label></div>`;
       }
-      return `<div class="field"><label>${f.label}</label><input type="text" data-field="${f.id}" value="${esc}"></div>`;
+      const slider = isAutoFit(state.tpl, f.id) ? '' : fontScaleSliderHTML(f.id, scales[f.id]);
+      return `<div class="field"><label>${f.label}</label><input type="text" data-field="${f.id}" value="${esc}">${slider}</div>`;
     }).join('');
 
     area.querySelectorAll('[data-field]').forEach(inp => {
       inp.addEventListener('input', e => {
         state.values[e.target.dataset.field] = e.target.value;
+        renderPreview();
+      });
+    });
+    area.querySelectorAll('[data-font-scale]').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const id = e.target.dataset.fontScale;
+        const s = parseFloat(e.target.value) || 1;
+        state.fontScales[id] = s;
+        const out = area.querySelector(`[data-font-scale-val="${id}"]`);
+        if (out) out.textContent = Math.round(s * 100) + '%';
         renderPreview();
       });
     });

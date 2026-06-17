@@ -1199,6 +1199,29 @@
   function isAutoFit(tplId, fieldId) {
     return (AUTO_FIT_FIELDS[tplId] || []).includes(fieldId);
   }
+  // Groups of fields whose font size should always move together. The first
+  // field in each group is the "primary" — it owns the size stepper; the
+  // other fields inherit its scale and hide their own stepper.
+  const LINKED_FIELDS = {
+    pos101:  [['r1','r2','r3','r4']],
+    event:   [['meta1_l','meta2_l','meta3_l'], ['meta1_v','meta2_v','meta3_v']],
+    nm:      [['m1l','m2l','m3l'],             ['m1v','m2v','m3v']],
+    welcome: [['s1t','s2t','s3t'],             ['s1d','s2d','s3d']],
+    matchup: [
+      ['oTag','dTag'],
+      ['oS1l','oS2l','oS3l','dS1l','dS2l','dS3l'],
+      ['oS1v','oS2v','oS3v','dS1v','dS2v','dS3v'],
+    ],
+    game:    [['hTag','aTag'], ['hScore','aScore']],
+  };
+  function linkPrimary(tplId, fieldId) {
+    const groups = LINKED_FIELDS[tplId] || [];
+    for (const g of groups) if (g.includes(fieldId)) return g[0];
+    return fieldId;
+  }
+  function isLinkedFollower(tplId, fieldId) {
+    return linkPrimary(tplId, fieldId) !== fieldId;
+  }
   // Inline UI appended after every text/textarea input that isn't auto-fit.
   function fontScaleInputHTML(fieldId, scaleOrPt) {
     let val;
@@ -1208,7 +1231,6 @@
       val = 14;
     }
     return `<div class="font-scale-row">
-      <span class="font-scale-label">Size</span>
       <div class="fs-stepper">
         <button type="button" data-stepper-minus="${fieldId}">−</button>
         <span class="fs-stepper-val" data-stepper-val="${fieldId}">${val}</span>
@@ -1216,6 +1238,13 @@
       </div>
       <span class="font-scale-suffix">pt</span>
     </div>`;
+  }
+  // Returns the stepper HTML for a field, or '' when the field is auto-fit
+  // or a linked follower (its primary already owns the control).
+  function fieldFsHTML(tplId, fieldId, scales) {
+    if (isAutoFit(tplId, fieldId)) return '';
+    if (isLinkedFollower(tplId, fieldId)) return '';
+    return fontScaleInputHTML(fieldId, scales[fieldId]);
   }
 
   function renderForm() {

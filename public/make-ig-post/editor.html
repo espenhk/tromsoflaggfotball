@@ -1920,6 +1920,48 @@
       });
       matchupNames.forEach(el => { el.style.fontSize = sharedSize + 'px'; });
     }
+
+    // Fact template "big" number/word — shrink-to-fit width so long values
+    // don't overflow and a per-field size override can't cause horizontal
+    // overlap. Mirrors the player-name / pos-abbr approach.
+    wrap.querySelectorAll('.fact-big').forEach(el => {
+      const parent = el.parentElement;
+      if (!parent) return;
+      const cs = getComputedStyle(parent);
+      const padL = parseFloat(cs.paddingLeft) || 0;
+      const padR = parseFloat(cs.paddingRight) || 0;
+      const maxW = parent.clientWidth - padL - padR;
+      if (maxW <= 0) return;
+      el.style.whiteSpace = 'nowrap';
+      let size = 380;
+      el.style.fontSize = size + 'px';
+      for (let i = 0; i < 30; i++) {
+        const w = el.scrollWidth;
+        if (w <= maxW || size <= 80) break;
+        size = Math.max(80, Math.floor(size * (maxW / w) * 0.98));
+        el.style.fontSize = size + 'px';
+      }
+    });
+
+    // Measure the natural rendered font-size (in pt) of every wrapped field
+    // that doesn't have a user override yet. Updates the stepper input so it
+    // shows the actual current size — clicking + now increments from the
+    // real value, not a hardcoded 14.
+    const cache = _naturalPt[state.tpl] = _naturalPt[state.tpl] || {};
+    wrap.querySelectorAll('.fs-wrap').forEach(el => {
+      const fid = el.dataset.fs;
+      if (!fid) return;
+      const primary = linkPrimary(state.tpl, fid);
+      if (scales[primary]) return; // user-set; leave alone
+      const px = parseFloat(getComputedStyle(el).fontSize);
+      if (!isFinite(px) || px <= 0) return;
+      const pt = Math.max(8, Math.min(200, Math.round((px / 1.3333) / 2) * 2));
+      cache[fid] = pt;
+      if (fid === primary) {
+        const stepperInp = document.querySelector(`input.fs-stepper-val[data-stepper-val="${primary}"]`);
+        if (stepperInp && document.activeElement !== stepperInp) stepperInp.value = pt;
+      }
+    });
   }
   document.querySelectorAll('#picker button').forEach(b => {
     b.addEventListener('click', () => {

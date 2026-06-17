@@ -80,7 +80,8 @@
     color:var(--primary); letter-spacing:0.08em; text-transform:uppercase; }
   .upload-hint { font-size:12px; color:var(--fg-muted); margin-top:6px; }
   .upload.has-image { border-style:solid; border-color:var(--primary); background:rgba(84,197,158,0.08); }
-  .actions { display:flex; gap:8px; margin-top: 24px; padding-top:20px; border-top:1px solid rgba(13,106,106,0.4); flex-wrap:wrap; }
+  .actions { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .actions + .actions { margin-top:6px; }
   .actions button { flex:1; min-width: 140px; padding:12px; background:var(--primary); color:var(--natt-500);
     border:none; border-radius:8px; cursor:pointer; font-family:var(--font-heading); font-weight:800;
     font-size:13px; letter-spacing:0.08em; text-transform:uppercase; }
@@ -150,10 +151,13 @@
   .fig-field .fig-row { background:#021018; border:1px solid rgba(13,106,106,0.4);
     border-radius:8px; padding:10px 12px; margin-bottom:8px; }
   .fig-field .fig-row-head { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
-  .fig-field .fig-row-head select { flex:0 0 auto; background:#08141a; color:var(--fg);
-    border:1px solid rgba(13,106,106,0.5); border-radius:6px; padding:5px 8px;
+  .fig-field .fig-row-head .fig-color-wrap { position:relative; display:inline-flex; align-items:center; flex:0 0 auto; }
+  .fig-field .fig-row-head .fig-color-wrap select { background:#08141a; color:var(--fg);
+    border:1px solid rgba(13,106,106,0.5); border-radius:6px; padding:5px 8px 5px 26px;
     font-family:var(--font-body); font-size:12px; }
-  .fig-field .fig-row-head .fig-swatch { width:14px; height:14px; border-radius:50%; border:1px solid rgba(255,255,255,0.2); flex:0 0 auto; }
+  .fig-field .fig-row-head .fig-color-wrap .fig-swatch { position:absolute; left:7px; top:50%;
+    transform:translateY(-50%); width:14px; height:14px; border-radius:50%;
+    border:1px solid rgba(255,255,255,0.2); pointer-events:none; }
   .fig-field .fig-row-head .fig-spacer { flex:1; }
   .fig-field .fig-row-head .fig-remove { background:transparent; border:1px solid rgba(13,106,106,0.5);
     color:var(--fg-muted); border-radius:6px; width:24px; height:24px; cursor:pointer;
@@ -1207,7 +1211,7 @@
     player:  ['first', 'last'],
     pos101:  ['abbr'],
     matchup: ['oFirst', 'oLast', 'dFirst', 'dLast'],
-    game:    ['hName', 'aName', 'gDate', 'gTime'],
+    game:    ['hName', 'aName'],
     schedule:['title'], // template splits this on spaces — wrap would corrupt it
   };
   // Fields that should NEVER get a font-size stepper (header / footer / chrome
@@ -1218,7 +1222,7 @@
     player:   ['jersey'],
     schedule: ['week', 'footnote'],
     fact:     ['big'], // shrink-to-fit; sizing handled by template
-    game:     ['gDate', 'gTime', 'gVenue', 'gResult'], // banner footer copy
+    game:     ['gResult'], // post-game label kept on-brand
   };
   function isAutoFit(tplId, fieldId) {
     if ((AUTO_FIT_FIELDS[tplId] || []).includes(fieldId)) return true;
@@ -1233,7 +1237,7 @@
     player:  [['season','from','background']],
     pos101:  [['r1','r2','r3','r4']],
     event:   [['titleA','titleB'], ['meta1_l','meta2_l','meta3_l'], ['meta1_v','meta2_v','meta3_v']],
-    nm:      [['titleA','titleB'], ['m1l','m2l','m3l'], ['m1v','m2v','m3v']],
+    nm:      [['titleA','titleB'], ['m1l','m1v','m2l','m2v','m3l','m3v']],
     rule:    [['titleA','titleB']],
     drill:   [['titleA','titleB']],
     welcome: [['titleA','titleB'], ['s1t','s2t','s3t'], ['s1d','s2d','s3d']],
@@ -1244,7 +1248,7 @@
       // Stats: all label/value pairs scale together (single primary = oS1l).
       ['oS1l','oS1v','oS2l','oS2v','oS3l','oS3v','dS1l','dS1v','dS2l','dS2v','dS3l','dS3v'],
     ],
-    game:    [['hTag','aTag'], ['hScore','aScore']],
+    game:    [['hTag','aTag'], ['hScore','aScore'], ['gDate','gTime']],
   };
   // Field pairs rendered side-by-side in the form editor (one row each).
   // Only the first field of a pair owns/renders the stepper (via linking).
@@ -1252,6 +1256,9 @@
     matchup: [
       ['oS1l','oS1v'],['oS2l','oS2v'],['oS3l','oS3v'],
       ['dS1l','dS1v'],['dS2l','dS2v'],['dS3l','dS3v'],
+    ],
+    nm: [
+      ['m1l','m1v'],['m2l','m2v'],['m3l','m3v'],
     ],
   };
   function pairFor(tplId, fieldId) {
@@ -1286,11 +1293,18 @@
       <div class="fs-stepper">
         <button type="button" data-stepper-minus="${fieldId}">−</button>
         <input type="number" class="fs-stepper-val" data-stepper-val="${fieldId}"
-          min="8" max="200" step="2" value="${val}">
+          min="8" max="200" step="1" value="${val}">
         <button type="button" data-stepper-plus="${fieldId}">+</button>
       </div>
       <span class="font-scale-suffix">pt</span>
     </div>`;
+  }
+  // Variable step: 1pt below 10, 2pt below 20, 4pt below 60, 8pt above.
+  function fsStep(pt) {
+    if (pt < 10) return 1;
+    if (pt < 20) return 2;
+    if (pt < 60) return 4;
+    return 8;
   }
   // Returns the stepper HTML for a field, or '' when the field is auto-fit
   // or a linked follower (its primary already owns the control).
@@ -1335,11 +1349,10 @@
       }
       if (f.type === 'figure') {
         const rows = (v || []).map((sh, i) => {
-          const swatch = `<span class="fig-swatch" style="background:${figColor(sh.color)}"></span>`;
-          const colorSel = `<select data-fig="${f.id}|${i}|color">${
+          const colorSel = `<span class="fig-color-wrap"><span class="fig-swatch" style="background:${figColor(sh.color)}"></span><select data-fig="${f.id}|${i}|color">${
             Object.entries(FIG_COLORS).map(([k, c]) =>
               `<option value="${k}"${sh.color===k?' selected':''}>${c.label}</option>`).join('')
-          }</select>`;
+          }</select></span>`;
           const typePills = `<div class="fig-type-pills">${
             ['point','line','arrow','area'].map(t =>
               `<button type="button" class="fig-type-pill${sh.type===t?' active':''}" data-fig-type="${f.id}|${i}|${t}">${t}</button>`).join('')
@@ -1364,7 +1377,7 @@
           }
           return `<div class="fig-row">
             <div class="fig-row-head">
-              ${colorSel}${swatch}
+              ${colorSel}
               <span class="fig-spacer"></span>
               <button type="button" class="fig-remove" data-fig-remove="${f.id}|${i}" title="Remove">×</button>
             </div>
@@ -1383,11 +1396,10 @@
       }
       if (f.type === 'players') {
         const rows = (v || []).map((p, i) => {
-          const swatch = `<span class="fig-swatch" style="background:${figColor(p.color)}"></span>`;
-          const colorSel = `<select data-ply="${f.id}|${i}|color">${
+          const colorSel = `<span class="fig-color-wrap"><span class="fig-swatch" style="background:${figColor(p.color)}"></span><select data-ply="${f.id}|${i}|color">${
             Object.entries(FIG_COLORS).map(([k, c]) =>
               `<option value="${k}"${p.color===k?' selected':''}>${c.label}</option>`).join('')
-          }</select>`;
+          }</select></span>`;
           const num = (lab, key, val, step, def) =>
             `<label class="fig-mini">${lab}<input type="number" step="${step}" data-ply-num="${f.id}|${i}|${key}" value="${val ?? def}"></label>`;
           const start =
@@ -1403,7 +1415,7 @@
             </div>`).join('');
           return `<div class="fig-row">
             <div class="fig-row-head">
-              ${colorSel}${swatch}
+              ${colorSel}
               <span class="fig-spacer"></span>
               <button type="button" class="fig-remove" data-ply-remove="${f.id}|${i}" title="Remove player">×</button>
             </div>
@@ -1520,22 +1532,28 @@
         // Start from the measured natural pt (fall back to 14) so we don't
         // jump down to 14 on first click.
         pt = (_naturalPt[state.tpl] && _naturalPt[state.tpl][id]) || 14;
-        if (pt % 2 !== 0) pt = Math.round(pt / 2) * 2;
       }
-      pt = btn.dataset.stepperMinus ? Math.max(8, pt - 2) : Math.min(200, pt + 2);
+      if (btn.dataset.stepperMinus) {
+        // Step "down to" the previous tier boundary when crossing it.
+        const step = fsStep(pt - 1);
+        pt = Math.max(8, pt - step);
+      } else {
+        pt = Math.min(200, pt + fsStep(pt));
+      }
       s[id] = pt;
       const valInp = area.querySelector(`[data-stepper-val="${id}"]`);
       if (valInp) valInp.value = pt;
       renderPreview();
     });
-    // Typeable number input — accept on input, clamp + snap to even pt.
+    // Typeable number input. Don't clobber the field while the user is
+    // mid-edit (e.g. typing "1" before "12") — only update the preview when
+    // the value parses to something in-range. Final clamp happens on blur.
     area.addEventListener('input', e => {
       const inp = e.target.closest('input.fs-stepper-val');
       if (!inp) return;
       const id = inp.dataset.stepperVal;
-      let pt = parseInt(inp.value, 10);
-      if (isNaN(pt)) return; // let the user finish typing
-      pt = Math.max(8, Math.min(200, pt));
+      const pt = parseInt(inp.value, 10);
+      if (isNaN(pt) || pt < 8 || pt > 200) return;
       const s = state.fontScales || (state.fontScales = {});
       s[id] = pt;
       renderPreview();
@@ -1546,7 +1564,6 @@
       let pt = parseInt(inp.value, 10);
       if (isNaN(pt)) pt = 14;
       pt = Math.max(8, Math.min(200, pt));
-      if (pt % 2 !== 0) pt = Math.round(pt / 2) * 2;
       inp.value = pt;
       const id = inp.dataset.stepperVal;
       const s = state.fontScales || (state.fontScales = {});

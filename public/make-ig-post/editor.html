@@ -1378,7 +1378,7 @@
       }
       const esc = escAttr(v);
       if (f.type === 'textarea') {
-        const slider = isAutoFit(state.tpl, f.id) ? '' : fontScaleSliderHTML(f.id, scales[f.id]);
+        const fsInput = isAutoFit(state.tpl, f.id) ? '' : fontScaleInputHTML(f.id, scales[f.id]);
         return `<div class="field"><label>${f.label}</label><textarea data-field="${f.id}">${esc}</textarea>${slider}</div>`;
       }
       if (f.type === 'checkbox') {

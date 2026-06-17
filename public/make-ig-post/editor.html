@@ -1210,24 +1210,59 @@
     game:    ['hName', 'aName', 'gDate', 'gTime'],
     schedule:['title'], // template splits this on spaces — wrap would corrupt it
   };
+  // Fields that should NEVER get a font-size stepper (header / footer / chrome
+  // copy that needs to stay on-brand sizing). Treated the same as auto-fit:
+  // no stepper rendered AND value not wrapped in a fs-wrap span.
+  const NO_FS_FIELDS = {
+    '*':      ['wm_right', 'eyebrow', 'badge'],
+    player:   ['jersey'],
+    schedule: ['week', 'footnote'],
+    fact:     ['big'], // shrink-to-fit; sizing handled by template
+    game:     ['gDate', 'gTime', 'gVenue', 'gResult'], // banner footer copy
+  };
   function isAutoFit(tplId, fieldId) {
-    return (AUTO_FIT_FIELDS[tplId] || []).includes(fieldId);
+    if ((AUTO_FIT_FIELDS[tplId] || []).includes(fieldId)) return true;
+    if ((NO_FS_FIELDS['*'] || []).includes(fieldId)) return true;
+    if ((NO_FS_FIELDS[tplId] || []).includes(fieldId)) return true;
+    return false;
   }
   // Groups of fields whose font size should always move together. The first
   // field in each group is the "primary" — it owns the size stepper; the
   // other fields inherit its scale and hide their own stepper.
   const LINKED_FIELDS = {
+    player:  [['season','from','background']],
     pos101:  [['r1','r2','r3','r4']],
-    event:   [['meta1_l','meta2_l','meta3_l'], ['meta1_v','meta2_v','meta3_v']],
-    nm:      [['m1l','m2l','m3l'],             ['m1v','m2v','m3v']],
-    welcome: [['s1t','s2t','s3t'],             ['s1d','s2d','s3d']],
+    event:   [['titleA','titleB'], ['meta1_l','meta2_l','meta3_l'], ['meta1_v','meta2_v','meta3_v']],
+    nm:      [['titleA','titleB'], ['m1l','m2l','m3l'], ['m1v','m2v','m3v']],
+    rule:    [['titleA','titleB']],
+    drill:   [['titleA','titleB']],
+    welcome: [['titleA','titleB'], ['s1t','s2t','s3t'], ['s1d','s2d','s3d']],
+    bts:     [['titleA','titleB']],
+    fact:    [['titleA','titleB']],
     matchup: [
       ['oTag','dTag'],
-      ['oS1l','oS2l','oS3l','dS1l','dS2l','dS3l'],
-      ['oS1v','oS2v','oS3v','dS1v','dS2v','dS3v'],
+      // Stats: all label/value pairs scale together (single primary = oS1l).
+      ['oS1l','oS1v','oS2l','oS2v','oS3l','oS3v','dS1l','dS1v','dS2l','dS2v','dS3l','dS3v'],
     ],
     game:    [['hTag','aTag'], ['hScore','aScore']],
   };
+  // Field pairs rendered side-by-side in the form editor (one row each).
+  // Only the first field of a pair owns/renders the stepper (via linking).
+  const INLINE_PAIRS = {
+    matchup: [
+      ['oS1l','oS1v'],['oS2l','oS2v'],['oS3l','oS3v'],
+      ['dS1l','dS1v'],['dS2l','dS2v'],['dS3l','dS3v'],
+    ],
+  };
+  function pairFor(tplId, fieldId) {
+    const pairs = INLINE_PAIRS[tplId] || [];
+    for (const p of pairs) if (p.includes(fieldId)) return p;
+    return null;
+  }
+  // Cached "natural" (rendered) font-size in pt for each field, captured after
+  // each preview render. Used so the stepper shows the actual current size
+  // when no override has been applied yet — clicking + won't jump down to 14.
+  const _naturalPt = {};
   function linkPrimary(tplId, fieldId) {
     const groups = LINKED_FIELDS[tplId] || [];
     for (const g of groups) if (g.includes(fieldId)) return g[0];

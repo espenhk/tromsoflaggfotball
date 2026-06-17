@@ -149,9 +149,8 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       startReveal();
     }
     (window as any).__themeRevealTimers = timers;
-    return () => timers.forEach((id) => window.clearTimeout(id));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+     return () => timers.forEach((id) => window.clearTimeout(id));
+   }, [revealMode, selectedTheme, effectiveTheme]);
 
   const setTheme = (t: SiteTheme) => {
     setSelectedTheme(t);

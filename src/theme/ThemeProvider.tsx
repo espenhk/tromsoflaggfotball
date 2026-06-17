@@ -1,14 +1,15 @@
 import { createContext, useContext, useEffect, useRef, useState, ReactNode } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export type SiteTheme = "default" | "tuil";
-const KEY = "site_theme";
-const REVEAL_KEY = "site_reveal_mode";
+const KEY = "site_theme";          // cached copy of the global theme (for fast first paint)
+const REVEAL_KEY = "site_reveal_mode"; // cached copy of the global reveal flag
 const REVEAL_DONE_KEY = "site_reveal_done";
 
 type Ctx = {
   /** Currently displayed theme (may differ from selectedTheme during reveal). */
   theme: SiteTheme;
-  /** The theme the admin has chosen — persists across reloads. */
+  /** The theme the admin has chosen — synced from the backend for all visitors. */
   selectedTheme: SiteTheme;
   setTheme: (t: SiteTheme) => void;
   toggle: () => void;
@@ -52,6 +53,45 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     localStorage.setItem(REVEAL_KEY, revealMode ? "1" : "0");
   }, [revealMode]);
+
+  // Sync the globally-configured theme from the backend. The local
+  // localStorage value is only a fast-paint cache — the source of truth is
+  // public.site_settings. Subscribes to realtime so the admin's toggle
+  // updates every open tab live.
+  useEffect(() => {
+    let cancelled = false;
+    const applyFromRow = (row: { theme?: string | null; reveal_mode?: boolean | null } | null) => {
+      if (!row || cancelled) return;
+      const t: SiteTheme = row.theme === "tuil" ? "tuil" : "default";
+      const r = !!row.reveal_mode;
+      setSelectedTheme((prev) => {
+        if (prev === t) return prev;
+        // If the reveal has not yet been triggered this mount we let the
+        // reveal effect handle the swap. Otherwise update effectiveTheme too.
+        if (didTriggerReveal.current) setEffectiveTheme(t);
+        return t;
+      });
+      setRevealModeState(r);
+    };
+    supabase
+      .from("site_settings")
+      .select("theme, reveal_mode")
+      .eq("id", "global")
+      .maybeSingle()
+      .then(({ data }) => applyFromRow(data as any));
+    const channel = supabase
+      .channel("site_settings_global")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "site_settings", filter: "id=eq.global" },
+        (payload) => applyFromRow((payload.new ?? null) as any),
+      )
+      .subscribe();
+    return () => {
+      cancelled = true;
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   // One-shot reveal animation on initial mount when conditions are met.
   useEffect(() => {

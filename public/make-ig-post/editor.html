@@ -45,6 +45,14 @@
     color:var(--fg); font-family:var(--font-body); font-size:14px; box-sizing:border-box; }
   .field textarea { resize:vertical; min-height: 60px; font-family: var(--font-body); }
   .field input:focus, .field textarea:focus, .field select:focus { outline:none; border-color:var(--primary); }
+  .font-scale-row { display:flex; align-items:center; gap:10px; margin-top:6px; padding:4px 2px; }
+  .font-scale-label { font-family:var(--font-body); font-size:10px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--fg-muted); flex-shrink:0; }
+  .font-scale-slider { flex:1; width:auto !important; padding:0 !important; background:transparent !important;
+    border:none !important; min-width:0; accent-color: var(--primary); }
+  .font-scale-slider:focus { outline:none; }
+  .font-scale-val { font-family:var(--font-body); font-size:11px; color:var(--fg);
+    min-width:38px; text-align:right; font-variant-numeric: tabular-nums; }
   .field-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .upload { padding:20px; border:2px dashed rgba(13,106,106,0.6); border-radius:8px;
     text-align:center; cursor:pointer; transition:all 0.2s; }

@@ -66,9 +66,12 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       const r = !!row.reveal_mode;
       setSelectedTheme((prev) => {
         if (prev === t) return prev;
-        // If the reveal has not yet been triggered this mount we let the
-        // reveal effect handle the swap. Otherwise update effectiveTheme too.
-        if (didTriggerReveal.current) setEffectiveTheme(t);
+        // Only the initial mount's reveal effect orchestrates the animated
+        // swap. Any subsequent change (admin flips theme from another tab)
+        // applies instantly here.
+        if (didTriggerReveal.current || !revealActive) {
+          setEffectiveTheme(t);
+        }
         return t;
       });
       setRevealModeState(r);

@@ -80,7 +80,8 @@
     color:var(--primary); letter-spacing:0.08em; text-transform:uppercase; }
   .upload-hint { font-size:12px; color:var(--fg-muted); margin-top:6px; }
   .upload.has-image { border-style:solid; border-color:var(--primary); background:rgba(84,197,158,0.08); }
-  .actions { display:flex; gap:8px; margin-top: 24px; padding-top:20px; border-top:1px solid rgba(13,106,106,0.4); flex-wrap:wrap; }
+  .actions { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .actions + .actions { margin-top:6px; }
   .actions button { flex:1; min-width: 140px; padding:12px; background:var(--primary); color:var(--natt-500);
     border:none; border-radius:8px; cursor:pointer; font-family:var(--font-heading); font-weight:800;
     font-size:13px; letter-spacing:0.08em; text-transform:uppercase; }
@@ -150,10 +151,13 @@
   .fig-field .fig-row { background:#021018; border:1px solid rgba(13,106,106,0.4);
     border-radius:8px; padding:10px 12px; margin-bottom:8px; }
   .fig-field .fig-row-head { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
-  .fig-field .fig-row-head select { flex:0 0 auto; background:#08141a; color:var(--fg);
-    border:1px solid rgba(13,106,106,0.5); border-radius:6px; padding:5px 8px;
+  .fig-field .fig-row-head .fig-color-wrap { position:relative; display:inline-flex; align-items:center; flex:0 0 auto; }
+  .fig-field .fig-row-head .fig-color-wrap select { background:#08141a; color:var(--fg);
+    border:1px solid rgba(13,106,106,0.5); border-radius:6px; padding:5px 8px 5px 26px;
     font-family:var(--font-body); font-size:12px; }
-  .fig-field .fig-row-head .fig-swatch { width:14px; height:14px; border-radius:50%; border:1px solid rgba(255,255,255,0.2); flex:0 0 auto; }
+  .fig-field .fig-row-head .fig-color-wrap .fig-swatch { position:absolute; left:7px; top:50%;
+    transform:translateY(-50%); width:14px; height:14px; border-radius:50%;
+    border:1px solid rgba(255,255,255,0.2); pointer-events:none; }
   .fig-field .fig-row-head .fig-spacer { flex:1; }
   .fig-field .fig-row-head .fig-remove { background:transparent; border:1px solid rgba(13,106,106,0.5);
     color:var(--fg-muted); border-radius:6px; width:24px; height:24px; cursor:pointer;

@@ -1384,8 +1384,8 @@
       if (f.type === 'checkbox') {
         return `<div class="field"><label style="display:flex; align-items:center; gap:10px; cursor:pointer;"><input type="checkbox" data-field-check="${f.id}" ${v ? 'checked' : ''} style="width:auto; accent-color:var(--primary);">${f.label}</label></div>`;
       }
-      const slider = isAutoFit(state.tpl, f.id) ? '' : fontScaleSliderHTML(f.id, scales[f.id]);
-      return `<div class="field"><label>${f.label}</label><input type="text" data-field="${f.id}" value="${esc}">${slider}</div>`;
+      const fsInput = isAutoFit(state.tpl, f.id) ? '' : fontScaleInputHTML(f.id, scales[f.id]);
+      return `<div class="field"><label>${f.label}</label><input type="text" data-field="${f.id}" value="${esc}">${fsInput}</div>`;
     }).join('');
 
     area.querySelectorAll('[data-field]').forEach(inp => {

@@ -45,9 +45,9 @@
     color:var(--fg); font-family:var(--font-body); font-size:14px; box-sizing:border-box; }
   .field textarea { resize:vertical; min-height: 60px; font-family: var(--font-body); }
   .field input:focus, .field textarea:focus, .field select:focus { outline:none; border-color:var(--primary); }
-  .font-scale-row { display:flex; align-items:center; gap:8px; margin-top:6px; padding:4px 2px; }
-  .font-scale-label { font-family:var(--font-body); font-size:10px; letter-spacing:0.14em;
-    text-transform:uppercase; color:var(--fg-muted); flex-shrink:0; }
+  .font-scale-row { display:inline-flex; align-items:center; gap:6px; flex-shrink:0; }
+  .field-input-row { display:flex; align-items:flex-start; gap:8px; }
+  .field-input-row > input, .field-input-row > textarea { flex:1 1 auto; min-width:0; }
   .fs-stepper { display:inline-flex; align-items:center; gap:2px; background:#021018;
     border:1px solid rgba(13,106,106,0.5); border-radius:6px; padding:2px; }
   .fs-stepper button { width:28px; height:28px; background:transparent; color:var(--fg);

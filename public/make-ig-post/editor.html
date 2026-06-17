@@ -1962,6 +1962,14 @@
         if (stepperInp && document.activeElement !== stepperInp) stepperInp.value = pt;
       }
     });
+    // Row-level scaling: any element with data-fs-row="<primary>" gets its
+    // font-size set to the primary's stored pt. Used so the labels in the
+    // player template (Sesong / Fra / Bakgrunn) grow with their values.
+    wrap.querySelectorAll('[data-fs-row]').forEach(el => {
+      const fid = el.dataset.fsRow;
+      const s = scales[linkPrimary(state.tpl, fid)];
+      if (s && s > 5) el.style.fontSize = s + 'pt';
+    });
   }
   document.querySelectorAll('#picker button').forEach(b => {
     b.addEventListener('click', () => {

@@ -1211,7 +1211,7 @@
     player:  ['first', 'last'],
     pos101:  ['abbr'],
     matchup: ['oFirst', 'oLast', 'dFirst', 'dLast'],
-    game:    ['hName', 'aName', 'gDate', 'gTime'],
+    game:    ['hName', 'aName'],
     schedule:['title'], // template splits this on spaces — wrap would corrupt it
   };
   // Fields that should NEVER get a font-size stepper (header / footer / chrome
@@ -1222,7 +1222,7 @@
     player:   ['jersey'],
     schedule: ['week', 'footnote'],
     fact:     ['big'], // shrink-to-fit; sizing handled by template
-    game:     ['gDate', 'gTime', 'gVenue', 'gResult'], // banner footer copy
+    game:     ['gResult'], // post-game label kept on-brand
   };
   function isAutoFit(tplId, fieldId) {
     if ((AUTO_FIT_FIELDS[tplId] || []).includes(fieldId)) return true;
@@ -1237,7 +1237,7 @@
     player:  [['season','from','background']],
     pos101:  [['r1','r2','r3','r4']],
     event:   [['titleA','titleB'], ['meta1_l','meta2_l','meta3_l'], ['meta1_v','meta2_v','meta3_v']],
-    nm:      [['titleA','titleB'], ['m1l','m2l','m3l'], ['m1v','m2v','m3v']],
+    nm:      [['titleA','titleB'], ['m1l','m1v','m2l','m2v','m3l','m3v']],
     rule:    [['titleA','titleB']],
     drill:   [['titleA','titleB']],
     welcome: [['titleA','titleB'], ['s1t','s2t','s3t'], ['s1d','s2d','s3d']],
@@ -1248,7 +1248,7 @@
       // Stats: all label/value pairs scale together (single primary = oS1l).
       ['oS1l','oS1v','oS2l','oS2v','oS3l','oS3v','dS1l','dS1v','dS2l','dS2v','dS3l','dS3v'],
     ],
-    game:    [['hTag','aTag'], ['hScore','aScore']],
+    game:    [['hTag','aTag'], ['hScore','aScore'], ['gDate','gTime']],
   };
   // Field pairs rendered side-by-side in the form editor (one row each).
   // Only the first field of a pair owns/renders the stepper (via linking).
@@ -1256,6 +1256,9 @@
     matchup: [
       ['oS1l','oS1v'],['oS2l','oS2v'],['oS3l','oS3v'],
       ['dS1l','dS1v'],['dS2l','dS2v'],['dS3l','dS3v'],
+    ],
+    nm: [
+      ['m1l','m1v'],['m2l','m2v'],['m3l','m3v'],
     ],
   };
   function pairFor(tplId, fieldId) {

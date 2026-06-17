@@ -1500,16 +1500,43 @@
       const id = btn.dataset.stepperMinus || btn.dataset.stepperPlus;
       const s = state.fontScales || (state.fontScales = {});
       let pt = s[id];
-      if (typeof pt !== 'number') pt = 14;
-      if (btn.dataset.stepperMinus) {
-        pt = Math.max(8, pt - 1);
-      } else {
-        pt = Math.min(36, pt + 1);
+      if (typeof pt !== 'number') {
+        // Start from the measured natural pt (fall back to 14) so we don't
+        // jump down to 14 on first click.
+        pt = (_naturalPt[state.tpl] && _naturalPt[state.tpl][id]) || 14;
+        if (pt % 2 !== 0) pt = Math.round(pt / 2) * 2;
       }
+      pt = btn.dataset.stepperMinus ? Math.max(8, pt - 2) : Math.min(200, pt + 2);
       s[id] = pt;
-      const valSpan = area.querySelector(`[data-stepper-val="${id}"]`);
-      if (valSpan) valSpan.textContent = pt;
+      const valInp = area.querySelector(`[data-stepper-val="${id}"]`);
+      if (valInp) valInp.value = pt;
       renderPreview();
+    });
+    // Typeable number input — accept on input, clamp + snap to even pt.
+    area.addEventListener('input', e => {
+      const inp = e.target.closest('input.fs-stepper-val');
+      if (!inp) return;
+      const id = inp.dataset.stepperVal;
+      let pt = parseInt(inp.value, 10);
+      if (isNaN(pt)) return; // let the user finish typing
+      pt = Math.max(8, Math.min(200, pt));
+      const s = state.fontScales || (state.fontScales = {});
+      s[id] = pt;
+      renderPreview();
+    });
+    area.addEventListener('blur', e => {
+      const inp = e.target.closest && e.target.closest('input.fs-stepper-val');
+      if (!inp) return;
+      let pt = parseInt(inp.value, 10);
+      if (isNaN(pt)) pt = 14;
+      pt = Math.max(8, Math.min(200, pt));
+      if (pt % 2 !== 0) pt = Math.round(pt / 2) * 2;
+      inp.value = pt;
+      const id = inp.dataset.stepperVal;
+      const s = state.fontScales || (state.fontScales = {});
+      s[id] = pt;
+      renderPreview();
+    }, true);
     });
     area.querySelectorAll('[data-field-check]').forEach(inp => {
       inp.addEventListener('change', e => {

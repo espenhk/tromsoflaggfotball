@@ -1181,7 +1181,7 @@
   // ----------------------------------------------------------------
   const escAttr = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
-  // Fields the manual font-size slider can't safely target. Either the
+  // Fields the manual font-size input can't safely target. Either the
   // template auto-fits the value to its container (shrink-to-fit), or the
   // template performs string ops on the value (e.g. .split(' ')) so wrapping
   // it in a <span> would break the rendered HTML.

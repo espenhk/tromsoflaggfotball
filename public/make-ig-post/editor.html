@@ -45,6 +45,14 @@
     color:var(--fg); font-family:var(--font-body); font-size:14px; box-sizing:border-box; }
   .field textarea { resize:vertical; min-height: 60px; font-family: var(--font-body); }
   .field input:focus, .field textarea:focus, .field select:focus { outline:none; border-color:var(--primary); }
+  .font-scale-row { display:flex; align-items:center; gap:10px; margin-top:6px; padding:4px 2px; }
+  .font-scale-label { font-family:var(--font-body); font-size:10px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--fg-muted); flex-shrink:0; }
+  .font-scale-slider { flex:1; width:auto !important; padding:0 !important; background:transparent !important;
+    border:none !important; min-width:0; accent-color: var(--primary); }
+  .font-scale-slider:focus { outline:none; }
+  .font-scale-val { font-family:var(--font-body); font-size:11px; color:var(--fg);
+    min-width:38px; text-align:right; font-variant-numeric: tabular-nums; }
   .field-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .upload { padding:20px; border:2px dashed rgba(13,106,106,0.6); border-radius:8px;
     text-align:center; cursor:pointer; transition:all 0.2s; }
@@ -1059,13 +1067,14 @@
     const t = T[tplId];
     state.values = {};
     t.fields.forEach(f => state.values[f.id] = JSON.parse(JSON.stringify(f.default)));
+    state.fontScales = {};
   }
 
   function blankSlide(tplId) {
     const t = T[tplId];
     const values = {};
     t.fields.forEach(f => values[f.id] = JSON.parse(JSON.stringify(f.default)));
-    return { tpl: tplId, chrome: 'curve', accent: 'primary', photo: null, photoCutout: false, values };
+    return { tpl: tplId, chrome: 'curve', accent: 'primary', photo: null, photoCutout: false, values, fontScales: {} };
   }
 
   function snapshotSlide() {
@@ -1076,6 +1085,7 @@
       photo: state.photo,
       photoCutout: state.photoCutout,
       values: JSON.parse(JSON.stringify(state.values)),
+      fontScales: JSON.parse(JSON.stringify(state.fontScales || {})),
     };
   }
 
@@ -1089,6 +1099,7 @@
     state.photo = s.photo;
     state.photoCutout = s.photoCutout;
     state.values = JSON.parse(JSON.stringify(s.values));
+    state.fontScales = JSON.parse(JSON.stringify(s.fontScales || {}));
     // Sync the sidebar pickers' .active state to match this slide.
     syncPickerUI();
   }
@@ -1170,9 +1181,35 @@
   // ----------------------------------------------------------------
   const escAttr = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
+  // Fields the manual font-size slider can't safely target. Either the
+  // template auto-fits the value to its container (shrink-to-fit), or the
+  // template performs string ops on the value (e.g. .split(' ')) so wrapping
+  // it in a <span> would break the rendered HTML.
+  const AUTO_FIT_FIELDS = {
+    player:  ['first', 'last'],
+    pos101:  ['abbr'],
+    matchup: ['oFirst', 'oLast', 'dFirst', 'dLast'],
+    game:    ['hName', 'aName', 'gDate', 'gTime'],
+    schedule:['title'], // template splits this on spaces — wrap would corrupt it
+  };
+  function isAutoFit(tplId, fieldId) {
+    return (AUTO_FIT_FIELDS[tplId] || []).includes(fieldId);
+  }
+  // Inline UI appended after every text/textarea input that isn't auto-fit.
+  function fontScaleSliderHTML(fieldId, scale) {
+    const s = typeof scale === 'number' ? scale : 1;
+    const pct = Math.round(s * 100);
+    return `<div class="font-scale-row">
+      <span class="font-scale-label">Text size</span>
+      <input type="range" min="0.7" max="2" step="0.05" value="${s}" data-font-scale="${fieldId}" class="font-scale-slider">
+      <span class="font-scale-val" data-font-scale-val="${fieldId}">${pct}%</span>
+    </div>`;
+  }
+
   function renderForm() {
     const t = T[state.tpl];
     const area = document.getElementById('form-area');
+    const scales = state.fontScales || (state.fontScales = {});
     area.innerHTML = t.fields.map(f => {
       const v = state.values[f.id] ?? f.default;
       if (f.type === 'list') {
@@ -1341,17 +1378,29 @@
       }
       const esc = escAttr(v);
       if (f.type === 'textarea') {
-        return `<div class="field"><label>${f.label}</label><textarea data-field="${f.id}">${esc}</textarea></div>`;
+        const slider = isAutoFit(state.tpl, f.id) ? '' : fontScaleSliderHTML(f.id, scales[f.id]);
+        return `<div class="field"><label>${f.label}</label><textarea data-field="${f.id}">${esc}</textarea>${slider}</div>`;
       }
       if (f.type === 'checkbox') {
         return `<div class="field"><label style="display:flex; align-items:center; gap:10px; cursor:pointer;"><input type="checkbox" data-field-check="${f.id}" ${v ? 'checked' : ''} style="width:auto; accent-color:var(--primary);">${f.label}</label></div>`;
       }
-      return `<div class="field"><label>${f.label}</label><input type="text" data-field="${f.id}" value="${esc}"></div>`;
+      const slider = isAutoFit(state.tpl, f.id) ? '' : fontScaleSliderHTML(f.id, scales[f.id]);
+      return `<div class="field"><label>${f.label}</label><input type="text" data-field="${f.id}" value="${esc}">${slider}</div>`;
     }).join('');
 
     area.querySelectorAll('[data-field]').forEach(inp => {
       inp.addEventListener('input', e => {
         state.values[e.target.dataset.field] = e.target.value;
+        renderPreview();
+      });
+    });
+    area.querySelectorAll('[data-font-scale]').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const id = e.target.dataset.fontScale;
+        const s = parseFloat(e.target.value) || 1;
+        state.fontScales[id] = s;
+        const out = area.querySelector(`[data-font-scale-val="${id}"]`);
+        if (out) out.textContent = Math.round(s * 100) + '%';
         renderPreview();
       });
     });
@@ -1598,9 +1647,28 @@
     const wmLeft = isTuil
       ? `<span class="left"><img class="wm-logo" src="assets/tuil-wordmark.png" alt="TUIL">FLAGGFOTBALL</span>`
       : `<span class="left">TROMSØ FLAGGFOTBALL</span>`;
+    // Per-field font-size overrides: wrap text/textarea values in a span
+    // with `font-size: <scale>em` so users can dial body text up for
+    // readability without us having to touch every template's markup.
+    // Auto-fit fields are passed through verbatim because their size is
+    // recomputed below.
+    const scales = state.fontScales || {};
+    const fieldTypes = {};
+    t.fields.forEach(f => { fieldTypes[f.id] = f.type; });
+    const scaledValues = new Proxy(state.values, {
+      get(target, prop) {
+        const raw = target[prop];
+        const ft = fieldTypes[prop];
+        if (ft !== 'text' && ft !== 'textarea') return raw;
+        if (isAutoFit(state.tpl, prop)) return raw;
+        const s = scales[prop];
+        if (!s || s === 1) return raw;
+        return `<span class="fs-wrap" data-fs="${prop}" style="font-size:${s}em;">${raw == null ? '' : raw}</span>`;
+      }
+    });
     wrap.innerHTML = `<div class="tile ${t.cls} ${accCls}">
       ${chromeHtml}
-      ${t.render(state.values)}
+      ${t.render(scaledValues)}
       <div class="wordmark">${wmLeft}<span class="right">${wmRight}</span></div>
     </div>`;
 

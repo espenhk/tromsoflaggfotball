@@ -1715,7 +1715,7 @@
         const ft = fieldTypes[prop];
         if (ft !== 'text' && ft !== 'textarea') return raw;
         if (isAutoFit(state.tpl, prop)) return raw;
-        const s = scales[prop];
+        const s = scales[linkPrimary(state.tpl, prop)];
         if (!s || s === 1) return raw;
         if (s > 5) {
           return `<span class="fs-wrap" data-fs="${prop}" style="font-size:${s}pt;">${raw == null ? '' : raw}</span>`;

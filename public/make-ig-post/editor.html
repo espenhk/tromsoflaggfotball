@@ -1339,11 +1339,10 @@
       }
       if (f.type === 'figure') {
         const rows = (v || []).map((sh, i) => {
-          const swatch = `<span class="fig-swatch" style="background:${figColor(sh.color)}"></span>`;
-          const colorSel = `<select data-fig="${f.id}|${i}|color">${
+          const colorSel = `<span class="fig-color-wrap"><span class="fig-swatch" style="background:${figColor(sh.color)}"></span><select data-fig="${f.id}|${i}|color">${
             Object.entries(FIG_COLORS).map(([k, c]) =>
               `<option value="${k}"${sh.color===k?' selected':''}>${c.label}</option>`).join('')
-          }</select>`;
+          }</select></span>`;
           const typePills = `<div class="fig-type-pills">${
             ['point','line','arrow','area'].map(t =>
               `<button type="button" class="fig-type-pill${sh.type===t?' active':''}" data-fig-type="${f.id}|${i}|${t}">${t}</button>`).join('')
@@ -1368,7 +1367,7 @@
           }
           return `<div class="fig-row">
             <div class="fig-row-head">
-              ${colorSel}${swatch}
+              ${colorSel}
               <span class="fig-spacer"></span>
               <button type="button" class="fig-remove" data-fig-remove="${f.id}|${i}" title="Remove">×</button>
             </div>
@@ -1387,11 +1386,10 @@
       }
       if (f.type === 'players') {
         const rows = (v || []).map((p, i) => {
-          const swatch = `<span class="fig-swatch" style="background:${figColor(p.color)}"></span>`;
-          const colorSel = `<select data-ply="${f.id}|${i}|color">${
+          const colorSel = `<span class="fig-color-wrap"><span class="fig-swatch" style="background:${figColor(p.color)}"></span><select data-ply="${f.id}|${i}|color">${
             Object.entries(FIG_COLORS).map(([k, c]) =>
               `<option value="${k}"${p.color===k?' selected':''}>${c.label}</option>`).join('')
-          }</select>`;
+          }</select></span>`;
           const num = (lab, key, val, step, def) =>
             `<label class="fig-mini">${lab}<input type="number" step="${step}" data-ply-num="${f.id}|${i}|${key}" value="${val ?? def}"></label>`;
           const start =
@@ -1407,7 +1405,7 @@
             </div>`).join('');
           return `<div class="fig-row">
             <div class="fig-row-head">
-              ${colorSel}${swatch}
+              ${colorSel}
               <span class="fig-spacer"></span>
               <button type="button" class="fig-remove" data-ply-remove="${f.id}|${i}" title="Remove player">×</button>
             </div>

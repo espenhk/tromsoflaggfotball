@@ -39,6 +39,13 @@ const AdminIndex = () => {
       const { data, error } = await supabase.functions.invoke("site-settings", {
         body: { token, ...patch },
       });
+      const status = (error as { context?: { status?: number } } | null)?.context?.status;
+      if (status === 401 || data?.error === "unauthorized") {
+        // Session token expired — clear it and re-prompt for the admin password.
+        sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+        window.location.reload();
+        return;
+      }
       if (error || !data?.ok) throw new Error("save failed");
     } catch {
       setError("Kunne ikke lagre. Prøv på nytt.");

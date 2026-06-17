@@ -1397,10 +1397,9 @@
     area.querySelectorAll('[data-font-scale]').forEach(inp => {
       inp.addEventListener('input', e => {
         const id = e.target.dataset.fontScale;
-        const s = parseFloat(e.target.value) || 1;
+        const pct = parseInt(e.target.value, 10);
+        const s = isNaN(pct) ? 1 : Math.max(70, Math.min(200, pct)) / 100;
         state.fontScales[id] = s;
-        const out = area.querySelector(`[data-font-scale-val="${id}"]`);
-        if (out) out.textContent = Math.round(s * 100) + '%';
         renderPreview();
       });
     });

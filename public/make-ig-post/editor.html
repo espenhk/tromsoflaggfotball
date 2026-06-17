@@ -1304,7 +1304,23 @@
     const t = T[state.tpl];
     const area = document.getElementById('form-area');
     const scales = state.fontScales || (state.fontScales = {});
+    const consumedPair = new Set();
     area.innerHTML = t.fields.map(f => {
+      // Inline pair: render this field and its partner side-by-side on one
+      // row, with the stepper (if any) appearing once on the row.
+      const pair = pairFor(state.tpl, f.id);
+      if (pair) {
+        if (consumedPair.has(f.id)) return '';
+        const cells = pair.map(fid => {
+          consumedPair.add(fid);
+          const sf = t.fields.find(x => x.id === fid);
+          if (!sf) return '';
+          const sv = state.values[fid] ?? sf.default ?? '';
+          return `<div class="pair-cell"><label>${sf.label}</label><input type="text" data-field="${fid}" value="${escAttr(sv)}"></div>`;
+        }).join('');
+        const fsInput = fieldFsHTML(state.tpl, pair[0], scales);
+        return `<div class="field"><div class="field-pair">${cells}${fsInput}</div></div>`;
+      }
       const v = state.values[f.id] ?? f.default;
       if (f.type === 'list') {
         const rows = (v || []).map((row, i) => `

@@ -54,9 +54,23 @@
     border:none; border-radius:4px; cursor:pointer; font-family:var(--font-body);
     font-size:16px; line-height:1; display:flex; align-items:center; justify-content:center; padding:0; }
   .fs-stepper button:hover { background:rgba(84,197,158,0.15); color:var(--primary); }
-  .fs-stepper-val { min-width:36px; text-align:center; font-family:var(--font-body);
-    font-size:13px; font-variant-numeric:tabular-nums; color:var(--fg); }
+  .fs-stepper-val { width:44px; text-align:center; font-family:var(--font-body);
+    font-size:13px; font-variant-numeric:tabular-nums; color:var(--fg);
+    background:transparent; border:none; padding:2px 0; -moz-appearance:textfield; }
+  .fs-stepper-val::-webkit-outer-spin-button,
+  .fs-stepper-val::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+  .fs-stepper-val:focus { outline:none; background:rgba(84,197,158,0.08); border-radius:3px; }
   .font-scale-suffix { font-family:var(--font-body); font-size:11px; color:var(--fg-muted); }
+  .field-pair { display:flex; gap:8px; align-items:flex-end; }
+  .field-pair .pair-cell { flex:1; min-width:0; display:flex; flex-direction:column; }
+  .field-pair .pair-cell label { display:block; font-family:var(--font-body); font-size:10px;
+    letter-spacing:0.14em; text-transform:uppercase; color:var(--fg-muted); margin-bottom:4px; font-weight:600; }
+  .field-pair .pair-cell input { width:100%; padding:8px 10px; background:#021018;
+    border:1px solid rgba(13,106,106,0.5); border-radius:6px; color:var(--fg);
+    font-family:var(--font-body); font-size:13px; box-sizing:border-box; }
+  /* Inline font-size override wrapper — keep parent's line-height so vertical
+     alignment (e.g. score next to "FULL TID") isn't thrown off. */
+  .fs-wrap { line-height: inherit; }
   .field-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .upload { padding:20px; border:2px dashed rgba(13,106,106,0.6); border-radius:8px;
     text-align:center; cursor:pointer; transition:all 0.2s; }

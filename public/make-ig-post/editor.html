@@ -1293,11 +1293,18 @@
       <div class="fs-stepper">
         <button type="button" data-stepper-minus="${fieldId}">−</button>
         <input type="number" class="fs-stepper-val" data-stepper-val="${fieldId}"
-          min="8" max="200" step="2" value="${val}">
+          min="8" max="200" step="1" value="${val}">
         <button type="button" data-stepper-plus="${fieldId}">+</button>
       </div>
       <span class="font-scale-suffix">pt</span>
     </div>`;
+  }
+  // Variable step: 1pt below 10, 2pt below 20, 4pt below 60, 8pt above.
+  function fsStep(pt) {
+    if (pt < 10) return 1;
+    if (pt < 20) return 2;
+    if (pt < 60) return 4;
+    return 8;
   }
   // Returns the stepper HTML for a field, or '' when the field is auto-fit
   // or a linked follower (its primary already owns the control).
@@ -1525,22 +1532,28 @@
         // Start from the measured natural pt (fall back to 14) so we don't
         // jump down to 14 on first click.
         pt = (_naturalPt[state.tpl] && _naturalPt[state.tpl][id]) || 14;
-        if (pt % 2 !== 0) pt = Math.round(pt / 2) * 2;
       }
-      pt = btn.dataset.stepperMinus ? Math.max(8, pt - 2) : Math.min(200, pt + 2);
+      if (btn.dataset.stepperMinus) {
+        // Step "down to" the previous tier boundary when crossing it.
+        const step = fsStep(pt - 1);
+        pt = Math.max(8, pt - step);
+      } else {
+        pt = Math.min(200, pt + fsStep(pt));
+      }
       s[id] = pt;
       const valInp = area.querySelector(`[data-stepper-val="${id}"]`);
       if (valInp) valInp.value = pt;
       renderPreview();
     });
-    // Typeable number input — accept on input, clamp + snap to even pt.
+    // Typeable number input. Don't clobber the field while the user is
+    // mid-edit (e.g. typing "1" before "12") — only update the preview when
+    // the value parses to something in-range. Final clamp happens on blur.
     area.addEventListener('input', e => {
       const inp = e.target.closest('input.fs-stepper-val');
       if (!inp) return;
       const id = inp.dataset.stepperVal;
-      let pt = parseInt(inp.value, 10);
-      if (isNaN(pt)) return; // let the user finish typing
-      pt = Math.max(8, Math.min(200, pt));
+      const pt = parseInt(inp.value, 10);
+      if (isNaN(pt) || pt < 8 || pt > 200) return;
       const s = state.fontScales || (state.fontScales = {});
       s[id] = pt;
       renderPreview();
@@ -1551,7 +1564,6 @@
       let pt = parseInt(inp.value, 10);
       if (isNaN(pt)) pt = 14;
       pt = Math.max(8, Math.min(200, pt));
-      if (pt % 2 !== 0) pt = Math.round(pt / 2) * 2;
       inp.value = pt;
       const id = inp.dataset.stepperVal;
       const s = state.fontScales || (state.fontScales = {});

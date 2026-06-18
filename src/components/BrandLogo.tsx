@@ -9,6 +9,8 @@ type Props = {
   alt?: string;
   /** "mark" uses the compact T·U·I·L wordmark (white) for small/menu contexts. */
   variant?: "default" | "mark";
+  /** Force the white TUIL wordmark regardless of current theme. */
+  whiteMark?: boolean;
 };
 
 const BrandLogo = ({ className, alt = "Logo", variant = "default" }: Props) => {

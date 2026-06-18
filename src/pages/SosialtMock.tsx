@@ -45,6 +45,7 @@ const SosialtMock = () => {
 
       {/* Combined feed (interleaved by date) */}
       <SocialFeedCarousel
+        live
         title="Kombinert feed (IG + FB)"
         subtitle="Begge plattformer interleavet etter dato — slik vi vil ha det på forsiden"
       />

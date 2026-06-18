@@ -1,5 +1,6 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Instagram, Facebook, ChevronLeft, ChevronRight, ExternalLink, Heart, MessageCircle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export type SocialPost = {
   id: string;
@@ -88,14 +89,40 @@ type Props = {
   posts?: SocialPost[];
   title?: string;
   subtitle?: string;
+  /** When true and no `posts` prop is given, fetch live posts from the social-feed edge function. */
+  live?: boolean;
 };
 
 const SocialFeedCarousel = ({
-  posts = mockPosts,
+  posts,
   title = "Følg oss på sosiale medier",
   subtitle = "Siste poster fra Instagram og Facebook",
+  live = false,
 }: Props) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const [fetched, setFetched] = useState<SocialPost[] | null>(null);
+
+  useEffect(() => {
+    if (posts || !live) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("social-feed");
+        if (cancelled) return;
+        if (error) throw error;
+        const list = (data as any)?.posts ?? [];
+        setFetched(list.length > 0 ? list : mockPosts);
+      } catch (e) {
+        console.error("social-feed fetch failed", e);
+        if (!cancelled) setFetched(mockPosts);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [live, posts]);
+
+  const displayPosts = posts ?? fetched ?? (live ? [] : mockPosts);
 
   const scrollBy = (dir: 1 | -1) => {
     const el = scrollerRef.current;
@@ -138,7 +165,7 @@ const SocialFeedCarousel = ({
           className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-6 px-6 scrollbar-thin"
           style={{ scrollbarWidth: "thin" }}
         >
-          {posts.map((post) => (
+          {displayPosts.map((post) => (
             <SocialPostCard key={post.id} post={post} />
           ))}
         </div>

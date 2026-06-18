@@ -68,6 +68,45 @@ export type Database = {
         }
         Relationships: []
       }
+      social_posts_cache: {
+        Row: {
+          caption: string
+          comments: number | null
+          fetched_at: string
+          id: string
+          image: string | null
+          likes: number | null
+          permalink: string
+          raw: Json | null
+          source: string
+          timestamp: string
+        }
+        Insert: {
+          caption?: string
+          comments?: number | null
+          fetched_at?: string
+          id: string
+          image?: string | null
+          likes?: number | null
+          permalink: string
+          raw?: Json | null
+          source: string
+          timestamp: string
+        }
+        Update: {
+          caption?: string
+          comments?: number | null
+          fetched_at?: string
+          id?: string
+          image?: string | null
+          likes?: number | null
+          permalink?: string
+          raw?: Json | null
+          source?: string
+          timestamp?: string
+        }
+        Relationships: []
+      }
       training_signups: {
         Row: {
           age_group: string | null

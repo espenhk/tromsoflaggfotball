@@ -9,9 +9,11 @@ type Props = {
   alt?: string;
   /** "mark" uses the compact T·U·I·L wordmark (white) for small/menu contexts. */
   variant?: "default" | "mark";
+  /** Force the white TUIL wordmark regardless of current theme. */
+  whiteMark?: boolean;
 };
 
-const BrandLogo = ({ className, alt = "Logo", variant = "default" }: Props) => {
+const BrandLogo = ({ className, alt = "Logo", variant = "default", whiteMark = false }: Props) => {
   const { theme, selectedTheme, revealMode, revealActive, revealStage } = useTheme();
 
   // During the staged reveal the logos behave differently than the static theme.
@@ -25,6 +27,19 @@ const BrandLogo = ({ className, alt = "Logo", variant = "default" }: Props) => {
   // header sweep), then hidden under the blue dissolve until stage 4 fades them back in.
   const markHidden = inReveal && variant === "mark" && revealStage >= 2 && revealStage < 4;
   const markFadeIn = inReveal && variant === "mark" && revealStage === 4;
+
+  if (whiteMark && variant === "mark") {
+    return (
+      <img
+        src={logoTuilMark}
+        alt={alt}
+        width={1211}
+        height={895}
+        className={cn("object-contain", className)}
+        style={{ filter: "brightness(0) invert(1)" }}
+      />
+    );
+  }
 
   if (theme === "tuil") {
     if (variant === "mark") {

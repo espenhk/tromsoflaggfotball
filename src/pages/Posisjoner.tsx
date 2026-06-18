@@ -253,16 +253,19 @@ const Posisjoner = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+      <nav
+        className="sticky top-0 z-50 backdrop-blur-md border-b border-white/20"
+        style={{ backgroundColor: "hsl(3 79% 49%)" }}
+      >
         <div className="max-w-4xl mx-auto px-6 flex items-center gap-3 py-3">
           <Link
             to="/#spillet"
-            className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
+            className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            <BrandLogo variant="mark" alt="Logo" className="h-6 w-auto" />
+            <BrandLogo variant="mark" whiteMark alt="Logo" className="h-6 w-auto" />
           </Link>
-          <h1 className="font-heading font-medium text-foreground text-sm">Posisjoner i flaggfotball</h1>
+          <h1 className="font-heading font-medium text-white text-sm">Posisjoner i flaggfotball</h1>
         </div>
       </nav>
 

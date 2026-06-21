@@ -218,11 +218,11 @@ body[data-aspect="story"] .t-player .jersey {
 .t-player .player-badge { display: none; }
 body[data-aspect="story"] .t-player .player-badge {
   display: block; position: absolute; top: 40px; right: 20px;
-  width: 480px; height: 480px; z-index: 1;
+  width: 480px; height: 480px; z-index: 0;
   background-image: url('assets/tuil-logo.svg');
   background-repeat: no-repeat; background-size: contain; background-position: center;
   pointer-events: none;
-  filter: brightness(0.55);
+  opacity: 0.15;
 }
 
 .t-drill .stage { padding: 80px 64px 64px; flex-direction: column; gap: 24px; }

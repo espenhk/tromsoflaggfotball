@@ -230,6 +230,15 @@
     border:1px solid rgba(13,106,106,0.5); border-radius:6px; padding:6px 10px; cursor:pointer;
     font-family:var(--font-body); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; }
   .image-field .image-remove:hover { color:#fb7185; border-color:#fb7185; }
+  .image-field .image-scale-row { display:flex; align-items:center; gap:8px; margin-top:8px; }
+  .image-field .image-scale-row .isr-label { flex:0 0 auto; font-family:var(--font-body); font-size:11px;
+    color:var(--fg-muted); letter-spacing:0.08em; text-transform:uppercase; margin:0; }
+  .image-field .image-scale-row .isr-label span { color:var(--fg); font-weight:700; margin-left:4px; }
+  .image-field .image-scale-row input[type=range] { flex:1 1 auto; accent-color:var(--primary); margin:0; }
+  .image-field .image-scale-row .isr-reset { flex:0 0 auto; background:transparent; color:var(--fg-muted);
+    border:1px solid rgba(13,106,106,0.5); border-radius:6px; padding:2px 8px; cursor:pointer;
+    font-size:13px; line-height:1; }
+  .image-field .image-scale-row .isr-reset:hover { color:var(--primary); border-color:var(--primary); }
 </style>
 </head>
 <body>
@@ -949,13 +958,16 @@
       const oR = hexToRgb(oC),         dR = hexToRgb(dC);
       // Photo tile: real image when uploaded, dashed placeholder otherwise.
       // Wrap URL in quotes so long data: URIs don't trip up CSS parsing.
-      const photo = (src, label) => src
-        ? `<div class="matchup-photo has-image" style='background-image:url("${String(src).replace(/"/g, "%22")}");'></div>`
-        : `<div class="matchup-photo"><span>[ ${label} ]</span></div>`;
-      const half = (side, c, r, photoSrc, photoLabel, label, first, last, tag, stats) => `
+      const imgScales = (state.imageScales) || {};
+      const photo = (id, src, label) => {
+        if (!src) return `<div class="matchup-photo"><span>[ ${label} ]</span></div>`;
+        const s = imgScales[id] || 1;
+        return `<div class="matchup-photo has-image"><img class="img-scaled" src="${String(src).replace(/"/g,'%22')}" style="transform:scale(${s});"></div>`;
+      };
+      const half = (side, c, r, photoId, photoSrc, photoLabel, label, first, last, tag, stats) => `
         <div class="half ${side}" style="background:linear-gradient(180deg, rgba(${r},0.40) 0%, rgba(${r},0.12) 100%);">
           <div style="font-family:var(--font-body); font-size:24px; color:${c}; letter-spacing:0.18em; text-transform:uppercase; font-weight:700;">${label}</div>
-          ${photo(photoSrc, photoLabel)}
+          ${photo(photoId, photoSrc, photoLabel)}
           <div class="matchup-info">
             <div class="h-display matchup-name" style="font-size:68px; line-height:0.95;">${first}<br>${last}</div>
            <div style="display:inline-block; padding:8px 20px; background:rgba(${r},0.35); border:1px solid ${c}; color:${c}; font-family:var(--font-body); font-weight:700; letter-spacing:0.08em; font-size:22px; border-radius:999px; margin-top:16px;">${tag}</div>
@@ -967,9 +979,9 @@
       const oStats = [[d.oS1l,d.oS1v],[d.oS2l,d.oS2v],[d.oS3l,d.oS3v]];
       const dStats = [[d.dS1l,d.dS1v],[d.dS2l,d.dS2v],[d.dS3l,d.dS3v]];
       return `<div class="stage">
-        ${half('off', oC, oR, d.oPhoto, 'angrep · photo', 'ANGREP', d.oFirst, d.oLast, d.oTag, oStats)}
+        ${half('off', oC, oR, 'oPhoto', d.oPhoto, 'angrep · photo', 'ANGREP', d.oFirst, d.oLast, d.oTag, oStats)}
         <div class="vs">VS</div>
-        ${half('def', dC, dR, d.dPhoto, 'forsvar · photo', 'FORSVAR', d.dFirst, d.dLast, d.dTag, dStats)}
+        ${half('def', dC, dR, 'dPhoto', d.dPhoto, 'forsvar · photo', 'FORSVAR', d.dFirst, d.dLast, d.dTag, dStats)}
       </div>`;
     },
     cls: 't-matchup',
@@ -1020,13 +1032,16 @@
     render: d => {
       const hC = d.hColor || '#54c59e', aC = d.aColor || '#fb7185';
       const hR = hexToRgb(hC),          aR = hexToRgb(aC);
-      const logo = (src, label) => src
-        ? `<div class="game-logo has-image" style='background-image:url("${String(src).replace(/"/g, "%22")}");'></div>`
-        : `<div class="game-logo"><span>[ ${label} ]</span></div>`;
+      const imgScales = (state.imageScales) || {};
+      const logo = (id, src, label) => {
+        if (!src) return `<div class="game-logo"><span>[ ${label} ]</span></div>`;
+        const s = imgScales[id] || 1;
+        return `<div class="game-logo has-image"><img class="img-scaled" src="${String(src).replace(/"/g,'%22')}" style="transform:scale(${s});"></div>`;
+      };
       const nameFS = gameNameSize(Math.max((d.hName||'').length, (d.aName||'').length));
-      const half = (side, c, r, src, label, name, tag) => `
+      const half = (side, c, r, id, src, label, name, tag) => `
         <div class="half ${side}" style="background:linear-gradient(180deg, rgba(${r},0.45) 0%, rgba(${r},0.14) 100%);">
-          ${logo(src, label)}
+          ${logo(id, src, label)}
           <div class="game-text">
             <div class="h-display game-name" style="color:${c}; font-size:${nameFS}px;">${name}</div>
             <div class="game-tag" style="background:rgba(${r},0.35); border:2px solid ${c}; color:${c};">${tag}</div>
@@ -1058,9 +1073,9 @@
             </div>`;
           })();
       return `<div class="stage${d.isPostGame ? ' is-post' : ''}">
-        ${half('home', hC, hR, d.hLogo, 'home · logo', d.hName, d.hTag)}
+        ${half('home', hC, hR, 'hLogo', d.hLogo, 'home · logo', d.hName, d.hTag)}
         <div class="vs">VS</div>
-        ${half('away', aC, aR, d.aLogo, 'away · logo', d.aName, d.aTag)}
+        ${half('away', aC, aR, 'aLogo', d.aLogo, 'away · logo', d.aName, d.aTag)}
         ${banner}
       </div>`;
     },
@@ -1085,6 +1100,7 @@
     photo: null,
     photoCutout: false,
     values: {},
+    imageScales: {},
   };
 
   function loadDefaults(tplId) {
@@ -1092,13 +1108,14 @@
     state.values = {};
     t.fields.forEach(f => state.values[f.id] = JSON.parse(JSON.stringify(f.default)));
     state.fontScales = {};
+    state.imageScales = {};
   }
 
   function blankSlide(tplId) {
     const t = T[tplId];
     const values = {};
     t.fields.forEach(f => values[f.id] = JSON.parse(JSON.stringify(f.default)));
-    return { tpl: tplId, chrome: 'curve', accent: 'primary', photo: null, photoCutout: false, values, fontScales: {} };
+    return { tpl: tplId, chrome: 'curve', accent: 'primary', photo: null, photoCutout: false, values, fontScales: {}, imageScales: {} };
   }
 
   function snapshotSlide() {
@@ -1110,6 +1127,7 @@
       photoCutout: state.photoCutout,
       values: JSON.parse(JSON.stringify(state.values)),
       fontScales: JSON.parse(JSON.stringify(state.fontScales || {})),
+      imageScales: JSON.parse(JSON.stringify(state.imageScales || {})),
     };
   }
 
@@ -1124,6 +1142,7 @@
     state.photoCutout = s.photoCutout;
     state.values = JSON.parse(JSON.stringify(s.values));
     state.fontScales = JSON.parse(JSON.stringify(s.fontScales || {}));
+    state.imageScales = JSON.parse(JSON.stringify(s.imageScales || {}));
     // Sync the sidebar pickers' .active state to match this slide.
     syncPickerUI();
   }
@@ -1490,6 +1509,8 @@
       }
       if (f.type === 'image') {
         const hasImg = !!v;
+        const scl = (state.imageScales && state.imageScales[f.id]) || 1;
+        const sclPct = Math.round(scl * 100);
         return `<div class="field image-field"><label>${f.label}</label>
           <label class="image-upload${hasImg ? ' has-image' : ''}">
             <input type="file" accept="image/*" data-image-input="${f.id}">
@@ -1497,7 +1518,14 @@
             <div class="iu-label">${hasImg ? '✓ Image loaded · click to replace' : 'Drop or click to upload'}</div>
             ${hasImg ? '' : '<div class="iu-hint">JPG/PNG · portrait or landscape</div>'}
           </label>
-          ${hasImg ? `<button type="button" class="image-remove" data-image-remove="${f.id}">Remove image</button>` : ''}
+          ${hasImg ? `
+            <div class="image-scale-row">
+              <label class="isr-label">Size <span data-image-scale-val="${f.id}">${sclPct}%</span></label>
+              <input type="range" min="30" max="200" step="5" value="${sclPct}" data-image-scale="${f.id}">
+              <button type="button" class="isr-reset" data-image-scale-reset="${f.id}" title="Reset to 100%">↺</button>
+            </div>
+            <button type="button" class="image-remove" data-image-remove="${f.id}">Remove image</button>
+          ` : ''}
         </div>`;
       }
       const esc = escAttr(v);
@@ -1632,6 +1660,26 @@
       btn.addEventListener('click', e => {
         const fid = e.currentTarget.dataset.imageRemove;
         state.values[fid] = '';
+        if (state.imageScales) delete state.imageScales[fid];
+        renderForm();
+        renderPreview();
+      });
+    });
+    area.querySelectorAll('[data-image-scale]').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const fid = e.target.dataset.imageScale;
+        const pct = parseInt(e.target.value, 10) || 100;
+        if (!state.imageScales) state.imageScales = {};
+        state.imageScales[fid] = pct / 100;
+        const lbl = area.querySelector(`[data-image-scale-val="${fid}"]`);
+        if (lbl) lbl.textContent = pct + '%';
+        renderPreview();
+      });
+    });
+    area.querySelectorAll('[data-image-scale-reset]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const fid = e.currentTarget.dataset.imageScaleReset;
+        if (state.imageScales) delete state.imageScales[fid];
         renderForm();
         renderPreview();
       });

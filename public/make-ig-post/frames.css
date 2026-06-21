@@ -995,6 +995,7 @@ body[data-aspect="story"] .t-game .half.away .game-text {
 }
 body[data-aspect="story"] .t-game .half .game-tag {
   align-self: auto;
+  margin-top: 11px;
 }
 body[data-aspect="story"] .t-game .vs {
   top: 750px;

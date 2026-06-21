@@ -1641,6 +1641,26 @@
       btn.addEventListener('click', e => {
         const fid = e.currentTarget.dataset.imageRemove;
         state.values[fid] = '';
+        if (state.imageScales) delete state.imageScales[fid];
+        renderForm();
+        renderPreview();
+      });
+    });
+    area.querySelectorAll('[data-image-scale]').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const fid = e.target.dataset.imageScale;
+        const pct = parseInt(e.target.value, 10) || 100;
+        if (!state.imageScales) state.imageScales = {};
+        state.imageScales[fid] = pct / 100;
+        const lbl = area.querySelector(`[data-image-scale-val="${fid}"]`);
+        if (lbl) lbl.textContent = pct + '%';
+        renderPreview();
+      });
+    });
+    area.querySelectorAll('[data-image-scale-reset]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const fid = e.currentTarget.dataset.imageScaleReset;
+        if (state.imageScales) delete state.imageScales[fid];
         renderForm();
         renderPreview();
       });

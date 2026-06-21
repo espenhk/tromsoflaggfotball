@@ -1067,7 +1067,7 @@
             const safeSrc = String(src).replace(/"/g, '%22');
             return `<div class="game-logo has-image"><div class="game-logo-bg" style="background-image:url(&quot;${safeSrc}&quot;); transform:scale(${s});"></div><span>${label}</span></div>`;
           };
-          const nameFS = gameNameSize(Math.max((d.hName||'').length, (d.aName||'').length));
+          const nameFS = gameNameSize(Math.max((d.hName||'').length, (d.aName||'').length), isStory);
           const isStory = document.body.getAttribute('data-aspect') === 'story';
           // In story mode the diagonal split background is rendered as an SVG
           // sibling below the halves (see `diagBg` below). Halves themselves

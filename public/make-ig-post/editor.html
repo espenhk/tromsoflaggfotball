@@ -1199,6 +1199,8 @@
               aspect: state.aspect,
               topEndZone: state.topEndZone,
               currentSlide: state.currentSlide,
+              bg: document.documentElement.getAttribute('data-bg') || 'royal',
+              theme: document.documentElement.getAttribute('data-theme') || 'default',
               slides: state.slides,
             };
             localStorage.setItem(PERSIST_KEY, JSON.stringify(payload));
@@ -1209,6 +1211,8 @@
                 aspect: state.aspect,
                 topEndZone: state.topEndZone,
                 currentSlide: state.currentSlide,
+                bg: document.documentElement.getAttribute('data-bg') || 'royal',
+                theme: document.documentElement.getAttribute('data-theme') || 'default',
                 slides: state.slides.map(s => ({ ...s, photo: null, photoCutout: false })),
               };
               localStorage.setItem(PERSIST_KEY, JSON.stringify(lean));
@@ -1225,6 +1229,10 @@
           state.aspect = p.aspect || 'square';
           state.topEndZone = !!p.topEndZone;
           state.slides = p.slides;
+          if (p.bg === 'navy' || p.bg === 'royal') {
+            document.documentElement.setAttribute('data-bg', p.bg);
+            try { localStorage.setItem('mip-bg', p.bg); } catch(_) {}
+          }
           const idx = Math.min(Math.max(0, p.currentSlide || 0), p.slides.length - 1);
           loadSlide(idx);
           return true;
@@ -2491,6 +2499,8 @@
             aspect: state.aspect,
             topEndZone: state.topEndZone,
             currentSlide: state.currentSlide,
+            bg: document.documentElement.getAttribute('data-bg') || 'royal',
+            theme: document.documentElement.getAttribute('data-theme') || 'default',
             slides: JSON.parse(JSON.stringify(state.slides)),
           },
         };
@@ -2577,6 +2587,13 @@
         state.aspect = p.aspect || 'square';
         state.topEndZone = !!p.topEndZone;
         state.slides = JSON.parse(JSON.stringify(p.slides));
+        if (p.bg === 'navy' || p.bg === 'royal') {
+          document.documentElement.setAttribute('data-bg', p.bg);
+          try { localStorage.setItem('mip-bg', p.bg); } catch(_) {}
+          document.querySelectorAll('#bg-row button').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.bg === p.bg);
+          });
+        }
         const idx = Math.min(Math.max(0, p.currentSlide || 0), p.slides.length - 1);
         loadSlide(idx);
         syncPickerUI();

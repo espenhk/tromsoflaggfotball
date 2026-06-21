@@ -1576,6 +1576,8 @@
             renderPreview();
           });
         });
+        if (!area._stepperBound) {
+        area._stepperBound = true;
         area.addEventListener('click', e => {
           const btn = e.target.closest('[data-stepper-minus], [data-stepper-plus]');
           if (!btn) return;
@@ -1624,6 +1626,7 @@
           s[id] = pt;
           renderPreview();
         }, true);
+        }
         area.querySelectorAll('[data-field-check]').forEach(inp => {
           inp.addEventListener('change', e => {
             state.values[e.target.dataset.fieldCheck] = e.target.checked;

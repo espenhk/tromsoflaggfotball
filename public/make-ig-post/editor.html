@@ -955,10 +955,10 @@
         const s = imgScales[id] || 1;
         return `<div class="matchup-photo has-image"><img class="img-scaled" src="${String(src).replace(/"/g,'%22')}" style="transform:scale(${s});"></div>`;
       };
-      const half = (side, c, r, photoSrc, photoLabel, label, first, last, tag, stats) => `
+      const half = (side, c, r, photoId, photoSrc, photoLabel, label, first, last, tag, stats) => `
         <div class="half ${side}" style="background:linear-gradient(180deg, rgba(${r},0.40) 0%, rgba(${r},0.12) 100%);">
           <div style="font-family:var(--font-body); font-size:24px; color:${c}; letter-spacing:0.18em; text-transform:uppercase; font-weight:700;">${label}</div>
-          ${photo(photoSrc, photoLabel)}
+          ${photo(photoId, photoSrc, photoLabel)}
           <div class="matchup-info">
             <div class="h-display matchup-name" style="font-size:68px; line-height:0.95;">${first}<br>${last}</div>
            <div style="display:inline-block; padding:8px 20px; background:rgba(${r},0.35); border:1px solid ${c}; color:${c}; font-family:var(--font-body); font-weight:700; letter-spacing:0.08em; font-size:22px; border-radius:999px; margin-top:16px;">${tag}</div>

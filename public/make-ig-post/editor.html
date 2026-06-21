@@ -1490,6 +1490,8 @@
       }
       if (f.type === 'image') {
         const hasImg = !!v;
+        const scl = (state.imageScales && state.imageScales[f.id]) || 1;
+        const sclPct = Math.round(scl * 100);
         return `<div class="field image-field"><label>${f.label}</label>
           <label class="image-upload${hasImg ? ' has-image' : ''}">
             <input type="file" accept="image/*" data-image-input="${f.id}">
@@ -1497,7 +1499,14 @@
             <div class="iu-label">${hasImg ? '✓ Image loaded · click to replace' : 'Drop or click to upload'}</div>
             ${hasImg ? '' : '<div class="iu-hint">JPG/PNG · portrait or landscape</div>'}
           </label>
-          ${hasImg ? `<button type="button" class="image-remove" data-image-remove="${f.id}">Remove image</button>` : ''}
+          ${hasImg ? `
+            <div class="image-scale-row">
+              <label class="isr-label">Size <span data-image-scale-val="${f.id}">${sclPct}%</span></label>
+              <input type="range" min="30" max="200" step="5" value="${sclPct}" data-image-scale="${f.id}">
+              <button type="button" class="isr-reset" data-image-scale-reset="${f.id}" title="Reset to 100%">↺</button>
+            </div>
+            <button type="button" class="image-remove" data-image-remove="${f.id}">Remove image</button>
+          ` : ''}
         </div>`;
       }
       const esc = escAttr(v);

@@ -2789,6 +2789,13 @@
             // Primary export path: canvas rendering uses the browser's actual
             // computed layout and loaded fonts. The old SVG foreignObject path can
             // silently swap fonts, changing TUIL game banner/footer metrics.
+            // EXCEPTION: the story-aspect game template uses `clip-path: polygon()`
+            // to split the diagonal halves, and html2canvas does not render
+            // polygon clip-paths correctly (the away logo gets shredded into
+            // stray rectangles). Force the SVG foreignObject path for that case.
+            if (state.aspect === 'story' && state.tpl === 'game') {
+              throw new Error('skip-html2canvas: story+game uses clip-path');
+            }
             const html2canvas = await loadHtml2Canvas();
             const canvas = await html2canvas(tile, {
               width: dims.w,

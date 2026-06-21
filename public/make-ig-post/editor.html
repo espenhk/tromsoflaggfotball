@@ -2642,9 +2642,9 @@
           await document.fonts.ready;
         }
       } catch (_) {}
-      // Preload every background-image referenced inside the tile so
-      // html-to-image never snapshots a half-loaded photo (which is what
-      // caused the occasional "black background" export).
+      // Preload every background-image referenced inside the tile so the
+      // exporter never snapshots a half-loaded photo (which caused the
+      // occasional "black background" export).
       try {
         const els = tile.querySelectorAll('*');
         const urls = new Set();

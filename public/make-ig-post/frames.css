@@ -970,8 +970,8 @@ body[data-aspect="story"] .t-game .half .game-text {
   position: absolute;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  max-width: 540px;
+  gap: 10px;
+  max-width: 800px;
 }
 body[data-aspect="story"] .t-game .half.home .game-logo {
   top: 80px;
@@ -995,6 +995,7 @@ body[data-aspect="story"] .t-game .half.away .game-text {
 }
 body[data-aspect="story"] .t-game .half .game-tag {
   align-self: auto;
+  margin-top: 11px;
 }
 body[data-aspect="story"] .t-game .vs {
   top: 750px;

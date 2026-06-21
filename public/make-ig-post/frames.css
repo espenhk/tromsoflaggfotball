@@ -778,6 +778,15 @@ body[data-aspect="story"] .t-player .player-badge {
   display: block;
   pointer-events: none;
 }
+.t-game .game-logo.has-image > .game-logo-bg {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  transform-origin: center center;
+  pointer-events: none;
+}
 .t-game .game-name {
   font-size: 72px;
   line-height: 0.95;

@@ -1055,8 +1055,14 @@
             return `<div class="game-logo has-image"><img class="img-scaled" src="${String(src).replace(/"/g,'%22')}" style="transform:scale(${s});"></div>`;
           };
           const nameFS = gameNameSize(Math.max((d.hName||'').length, (d.aName||'').length));
+          const isStory = document.body.getAttribute('data-aspect') === 'story';
+          // In story mode the diagonal split background is rendered as an SVG
+          // sibling below the halves (see `diagBg` below). Halves themselves
+          // stay transparent so they can host corner-positioned logo+text without
+          // relying on `clip-path: polygon()`, which html2canvas and html-to-image
+          // both render unreliably on export.
           const half = (side, c, r, id, src, label, name, tag) => `
-            <div class="half ${side}" style="background:linear-gradient(180deg, rgba(${r},0.45) 0%, rgba(${r},0.14) 100%);">
+            <div class="half ${side}"${isStory ? '' : ` style="background:linear-gradient(180deg, rgba(${r},0.45) 0%, rgba(${r},0.14) 100%);"`}>
               ${logo(id, src, label)}
               <div class="game-text">
                 <div class="h-display game-name" style="color:${c}; font-size:${nameFS}px;">${name}</div>
@@ -1089,6 +1095,21 @@
                 </div>`;
               })();
           return `<div class="stage${d.isPostGame ? ' is-post' : ''}">
+            ${isStory ? `
+            <svg class="game-diag-bg" viewBox="0 0 1080 1920" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <linearGradient id="hg-home" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgb(${hR})" stop-opacity="0.45"/>
+                  <stop offset="100%" stop-color="rgb(${hR})" stop-opacity="0.14"/>
+                </linearGradient>
+                <linearGradient id="hg-away" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgb(${aR})" stop-opacity="0.45"/>
+                  <stop offset="100%" stop-color="rgb(${aR})" stop-opacity="0.14"/>
+                </linearGradient>
+              </defs>
+              <polygon points="0,0 1080,0 1080,499 0,998" fill="url(#hg-home)"/>
+              <polygon points="0,998 1080,499 1080,1920 0,1920" fill="url(#hg-away)"/>
+            </svg>` : ''}
             ${half('home', hC, hR, 'hLogo', d.hLogo, 'home · logo', d.hName, d.hTag)}
             <div class="vs">VS</div>
             ${half('away', aC, aR, 'aLogo', d.aLogo, 'away · logo', d.aName, d.aTag)}
@@ -2789,13 +2810,6 @@
             // Primary export path: canvas rendering uses the browser's actual
             // computed layout and loaded fonts. The old SVG foreignObject path can
             // silently swap fonts, changing TUIL game banner/footer metrics.
-            // EXCEPTION: the story-aspect game template uses `clip-path: polygon()`
-            // to split the diagonal halves, and html2canvas does not render
-            // polygon clip-paths correctly (the away logo gets shredded into
-            // stray rectangles). Force the SVG foreignObject path for that case.
-            if (state.aspect === 'story' && state.tpl === 'game') {
-              throw new Error('skip-html2canvas: story+game uses clip-path');
-            }
             const html2canvas = await loadHtml2Canvas();
             const canvas = await html2canvas(tile, {
               width: dims.w,

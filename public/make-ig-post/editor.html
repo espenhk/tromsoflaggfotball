@@ -1023,13 +1023,16 @@
     render: d => {
       const hC = d.hColor || '#54c59e', aC = d.aColor || '#fb7185';
       const hR = hexToRgb(hC),          aR = hexToRgb(aC);
-      const logo = (src, label) => src
-        ? `<div class="game-logo has-image" style='background-image:url("${String(src).replace(/"/g, "%22")}");'></div>`
-        : `<div class="game-logo"><span>[ ${label} ]</span></div>`;
+      const imgScales = (state.imageScales) || {};
+      const logo = (id, src, label) => {
+        if (!src) return `<div class="game-logo"><span>[ ${label} ]</span></div>`;
+        const s = imgScales[id] || 1;
+        return `<div class="game-logo has-image"><img class="img-scaled" src="${String(src).replace(/"/g,'%22')}" style="transform:scale(${s});"></div>`;
+      };
       const nameFS = gameNameSize(Math.max((d.hName||'').length, (d.aName||'').length));
-      const half = (side, c, r, src, label, name, tag) => `
+      const half = (side, c, r, id, src, label, name, tag) => `
         <div class="half ${side}" style="background:linear-gradient(180deg, rgba(${r},0.45) 0%, rgba(${r},0.14) 100%);">
-          ${logo(src, label)}
+          ${logo(id, src, label)}
           <div class="game-text">
             <div class="h-display game-name" style="color:${c}; font-size:${nameFS}px;">${name}</div>
             <div class="game-tag" style="background:rgba(${r},0.35); border:2px solid ${c}; color:${c};">${tag}</div>
@@ -1061,9 +1064,9 @@
             </div>`;
           })();
       return `<div class="stage${d.isPostGame ? ' is-post' : ''}">
-        ${half('home', hC, hR, d.hLogo, 'home · logo', d.hName, d.hTag)}
+        ${half('home', hC, hR, 'hLogo', d.hLogo, 'home · logo', d.hName, d.hTag)}
         <div class="vs">VS</div>
-        ${half('away', aC, aR, d.aLogo, 'away · logo', d.aName, d.aTag)}
+        ${half('away', aC, aR, 'aLogo', d.aLogo, 'away · logo', d.aName, d.aTag)}
         ${banner}
       </div>`;
     },

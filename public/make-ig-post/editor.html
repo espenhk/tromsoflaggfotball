@@ -2197,13 +2197,17 @@
         @font-face { font-family: 'Syne'; src: url(${syne}) format('truetype-variations'); font-weight: 400 800; font-style: normal; }
         @font-face { font-family: 'Outfit'; src: url(${outfit}) format('truetype-variations'); font-weight: 100 900; font-style: normal; }
       `;
-      // When the TUIL theme is active, also embed Big Shoulders Display + Barlow
-      // so the exported PNGs render with the correct typography.
+      // When the TUIL theme is active, also embed Inter (the in-browser fallback
+      // for the gitignored Neue Haas Grotesk) so the exported PNGs use the same
+      // typography as the editor preview. Without this, html-to-image's SVG
+      // sandbox falls back to a system font (Arial), which has wider metrics —
+      // text overflows, flex gaps collapse (e.g. the "·" in the game banner
+      // disappears), and the venue line wraps to two rows.
       const isTuil = document.documentElement.getAttribute('data-theme') === 'tuil';
       if (isTuil) {
         try {
           const tuilCss = await fetchGoogleFontsAsEmbeddedCss(
-            'https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Barlow:wght@400;500;600;700;800&display=swap'
+            'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap'
           );
           _embeddedFontCSS += '\n' + tuilCss;
         } catch (e) {
@@ -2590,13 +2594,22 @@
       tile.style.transform = 'none';
       try {
         if (document.fonts) {
-          await Promise.all([
+          const loads = [
             document.fonts.load('700 48px "Syne"'),
             document.fonts.load('800 72px "Syne"'),
             document.fonts.load('400 16px "Outfit"'),
             document.fonts.load('500 18px "Outfit"'),
             document.fonts.load('700 18px "Outfit"'),
-          ]);
+          ];
+          if (document.documentElement.getAttribute('data-theme') === 'tuil') {
+            loads.push(
+              document.fonts.load('400 16px "Inter"'),
+              document.fonts.load('600 28px "Inter"'),
+              document.fonts.load('700 48px "Inter"'),
+              document.fonts.load('800 64px "Inter"'),
+            );
+          }
+          await Promise.all(loads);
           await document.fonts.ready;
         }
       } catch (_) {}

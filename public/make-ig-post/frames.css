@@ -934,13 +934,25 @@ body[data-aspect="story"] .t-game .half {
   text-align: left;
 }
 body[data-aspect="story"] .t-game .half.home {
-  clip-path: polygon(0 0, 100% 0, 100% 26%, 0 52%);
   padding: 0;
+  background: none !important;
 }
 body[data-aspect="story"] .t-game .half.away {
-  clip-path: polygon(0 52%, 100% 26%, 100% 100%, 0 100%);
   padding: 0;
+  background: none !important;
 }
+/* Diagonal split background painted as an SVG sibling so it survives export
+   (html2canvas/html-to-image don't render `clip-path: polygon()` reliably). */
+body[data-aspect="story"] .t-game .game-diag-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+body[data-aspect="story"] .t-game .half { z-index: 1; }
+body[data-aspect="story"] .t-game .game-banner { z-index: 6; }
 /* Story diagonals: logo and text occupy opposite corners of each half. */
 body[data-aspect="story"] .t-game .half .game-logo {
   position: absolute;

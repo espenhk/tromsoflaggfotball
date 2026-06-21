@@ -2711,6 +2711,45 @@
         })));
       } catch (_) {}
       await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      // html2canvas does not honor CSS `filter` (brightness/invert), so the
+      // TUIL wordmark PNG renders in its native dark color against the dark
+      // wordmark bar and effectively disappears. Bake a white-tinted version
+      // of any element carrying that filter into its `src` for export, then
+      // restore the original src afterwards.
+      const _wmRestores = [];
+      try {
+        const wmImgs = tile.querySelectorAll('img.wm-logo');
+        await Promise.all([...wmImgs].map(img => new Promise(res => {
+          const finish = () => {
+            try {
+              const w = img.naturalWidth, h = img.naturalHeight;
+              if (!w || !h) return res();
+              const c = document.createElement('canvas');
+              c.width = w; c.height = h;
+              const ctx = c.getContext('2d');
+              ctx.drawImage(img, 0, 0);
+              ctx.globalCompositeOperation = 'source-in';
+              ctx.fillStyle = '#ffffff';
+              ctx.fillRect(0, 0, w, h);
+              const dataUrl = c.toDataURL('image/png');
+              const orig = img.getAttribute('src');
+              const origStyle = img.getAttribute('style') || '';
+              _wmRestores.push(() => {
+                img.setAttribute('src', orig);
+                if (origStyle) img.setAttribute('style', origStyle);
+                else img.removeAttribute('style');
+              });
+              img.style.filter = 'none';
+              img.src = dataUrl;
+              img.onload = () => res();
+              img.onerror = () => res();
+            } catch (_) { res(); }
+          };
+          if (img.complete && img.naturalWidth) finish();
+          else { img.onload = finish; img.onerror = () => res(); }
+        })));
+        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      } catch (_) {}
       try {
         // Primary export path: canvas rendering uses the browser's actual
         // computed layout and loaded fonts. The old SVG foreignObject path can
@@ -2750,6 +2789,7 @@
         return await (await fetch(dataUrl)).blob();
       }
     } finally {
+      try { _wmRestores && _wmRestores.forEach(fn => { try { fn(); } catch (_) {} }); } catch (_) {}
       tile.style.transform = prevTransform;
     }
   }

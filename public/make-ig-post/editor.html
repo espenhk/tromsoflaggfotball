@@ -2594,13 +2594,22 @@
       tile.style.transform = 'none';
       try {
         if (document.fonts) {
-          await Promise.all([
+          const loads = [
             document.fonts.load('700 48px "Syne"'),
             document.fonts.load('800 72px "Syne"'),
             document.fonts.load('400 16px "Outfit"'),
             document.fonts.load('500 18px "Outfit"'),
             document.fonts.load('700 18px "Outfit"'),
-          ]);
+          ];
+          if (document.documentElement.getAttribute('data-theme') === 'tuil') {
+            loads.push(
+              document.fonts.load('400 16px "Inter"'),
+              document.fonts.load('600 28px "Inter"'),
+              document.fonts.load('700 48px "Inter"'),
+              document.fonts.load('800 64px "Inter"'),
+            );
+          }
+          await Promise.all(loads);
           await document.fonts.ready;
         }
       } catch (_) {}

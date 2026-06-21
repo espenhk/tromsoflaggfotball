@@ -1008,8 +1008,16 @@
       // ----------------------------------------------------------------
       // Scale game-name font down for longer team names so they always fit on one line.
       // Default ~72px works up to ~7 chars; shrink linearly beyond that.
-      function gameNameSize(input) {
+      // Story mode uses a larger scale since the text box is wider (800 px).
+      function gameNameSize(input, story) {
         const n = typeof input === 'number' ? input : (input || '').length;
+        if (story) {
+          if (n <= 7)  return 96;
+          if (n <= 9)  return 80;
+          if (n <= 12) return 64;
+          if (n <= 16) return 48;
+          return 38;
+        }
         if (n <= 7)  return 72;
         if (n <= 9)  return 60;
         if (n <= 12) return 48;

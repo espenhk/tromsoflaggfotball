@@ -1199,6 +1199,8 @@
               aspect: state.aspect,
               topEndZone: state.topEndZone,
               currentSlide: state.currentSlide,
+              bg: document.documentElement.getAttribute('data-bg') || 'royal',
+              theme: document.documentElement.getAttribute('data-theme') || 'default',
               slides: state.slides,
             };
             localStorage.setItem(PERSIST_KEY, JSON.stringify(payload));
@@ -1209,6 +1211,8 @@
                 aspect: state.aspect,
                 topEndZone: state.topEndZone,
                 currentSlide: state.currentSlide,
+                bg: document.documentElement.getAttribute('data-bg') || 'royal',
+                theme: document.documentElement.getAttribute('data-theme') || 'default',
                 slides: state.slides.map(s => ({ ...s, photo: null, photoCutout: false })),
               };
               localStorage.setItem(PERSIST_KEY, JSON.stringify(lean));

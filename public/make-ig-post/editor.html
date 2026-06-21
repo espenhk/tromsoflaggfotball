@@ -1092,13 +1092,14 @@
     state.values = {};
     t.fields.forEach(f => state.values[f.id] = JSON.parse(JSON.stringify(f.default)));
     state.fontScales = {};
+    state.imageScales = {};
   }
 
   function blankSlide(tplId) {
     const t = T[tplId];
     const values = {};
     t.fields.forEach(f => values[f.id] = JSON.parse(JSON.stringify(f.default)));
-    return { tpl: tplId, chrome: 'curve', accent: 'primary', photo: null, photoCutout: false, values, fontScales: {} };
+    return { tpl: tplId, chrome: 'curve', accent: 'primary', photo: null, photoCutout: false, values, fontScales: {}, imageScales: {} };
   }
 
   function snapshotSlide() {
@@ -1110,6 +1111,7 @@
       photoCutout: state.photoCutout,
       values: JSON.parse(JSON.stringify(state.values)),
       fontScales: JSON.parse(JSON.stringify(state.fontScales || {})),
+      imageScales: JSON.parse(JSON.stringify(state.imageScales || {})),
     };
   }
 
@@ -1124,6 +1126,7 @@
     state.photoCutout = s.photoCutout;
     state.values = JSON.parse(JSON.stringify(s.values));
     state.fontScales = JSON.parse(JSON.stringify(s.fontScales || {}));
+    state.imageScales = JSON.parse(JSON.stringify(s.imageScales || {}));
     // Sync the sidebar pickers' .active state to match this slide.
     syncPickerUI();
   }

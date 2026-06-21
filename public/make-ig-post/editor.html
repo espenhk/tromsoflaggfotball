@@ -2587,6 +2587,13 @@
         state.aspect = p.aspect || 'square';
         state.topEndZone = !!p.topEndZone;
         state.slides = JSON.parse(JSON.stringify(p.slides));
+        if (p.bg === 'navy' || p.bg === 'royal') {
+          document.documentElement.setAttribute('data-bg', p.bg);
+          try { localStorage.setItem('mip-bg', p.bg); } catch(_) {}
+          document.querySelectorAll('#bg-row button').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.bg === p.bg);
+          });
+        }
         const idx = Math.min(Math.max(0, p.currentSlide || 0), p.slides.length - 1);
         loadSlide(idx);
         syncPickerUI();

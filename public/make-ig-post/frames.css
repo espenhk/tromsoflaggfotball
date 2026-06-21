@@ -196,19 +196,20 @@ body[data-aspect="story"] .t-player .left-col {
 body[data-aspect="story"] .t-player .right-col {
   position: absolute; left: 0; right: 0; top: 0; bottom: 0;
   width: 100%; background: transparent;
-  padding: 0 64px 280px 64px;
+  z-index: 5;
+  padding: 0 64px 200px 64px;
   display: flex; flex-direction: column; justify-content: flex-end;
-  gap: 18px;
+  gap: 16px;
   background-image: linear-gradient(180deg,
     rgba(0,0,0,0) 50%,
-    var(--bg) 78%,
+    var(--bg) 80%,
     var(--bg) 100%);
   pointer-events: none;
 }
 body[data-aspect="story"] .t-player .right-col > * { pointer-events: auto; }
 body[data-aspect="story"] .t-player .jersey {
   bottom: auto; top: 64px; left: auto; right: 56px;
-  font-size: 200px; transform: none; z-index: 6;
+  font-size: 180px; transform: none; z-index: 6;
   text-shadow: 0 4px 24px rgba(0,8,13,0.5);
 }
 

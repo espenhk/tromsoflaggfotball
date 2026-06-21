@@ -4,7 +4,7 @@
    any tile arrangement (horizontal, vertical, mixed) shows a
    continuous, repeating rhythm.
    ============================================================ */
-@import url('colors_and_type.css');
+@import url("colors_and_type.css");
 
 /* ---------- TILE SHELL ---------- */
 .tile {
@@ -19,11 +19,21 @@
   flex: 0 0 auto;
   --chrome: var(--primary);
 }
-.tile.acc-qb      { --chrome: #fbbf24; }
-.tile.acc-rb      { --chrome: #34d399; }
-.tile.acc-def     { --chrome: #fb7185; }
-.tile.acc-rusher  { --chrome: #fb923c; }
-.tile.acc-blue    { --chrome: #38bdf8; }
+.tile.acc-qb {
+  --chrome: #fbbf24;
+}
+.tile.acc-rb {
+  --chrome: #34d399;
+}
+.tile.acc-def {
+  --chrome: #fb7185;
+}
+.tile.acc-rusher {
+  --chrome: #fb923c;
+}
+.tile.acc-blue {
+  --chrome: #38bdf8;
+}
 
 /* ---------- TEXT CARD ----------
    Soft transparent backdrop for text that sits over a photo.
@@ -37,139 +47,422 @@
   border-radius: 12px;
   padding: 24px 28px;
 }
-.tile .card.tight { padding: 14px 18px; }
-.tile .card.solid { background: rgba(0, 8, 13, 0.82); }
+.tile .card.tight {
+  padding: 14px 18px;
+}
+.tile .card.solid {
+  background: rgba(0, 8, 13, 0.82);
+}
 
 /* ---------- WORDMARK ---------- */
 .tile .wordmark {
-  position: absolute; bottom: 0; left: 0; right: 0; height: 48px;
-  display: flex; align-items: center; justify-content: space-between;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 0 56px;
-  font-family: var(--font-heading); font-weight: 700; font-size: 17px;
-  letter-spacing: 0.24em; text-transform: uppercase; color: var(--fg-muted);
-  z-index: 10; border-top: 1px solid rgba(13,106,106,0.4); background: var(--bg);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  z-index: 10;
+  border-top: 1px solid rgba(13, 106, 106, 0.4);
+  background: var(--bg);
 }
-.tile .wordmark .left { color: var(--fg); }
-.tile .wordmark .right { color: var(--chrome); }
+.tile .wordmark .left {
+  color: var(--fg);
+}
+.tile .wordmark .right {
+  color: var(--chrome);
+}
 
 /* ---------- STAGE & PHOTO ---------- */
-.tile .stage { position: absolute; inset: 0 0 48px 0; display: flex; z-index: 4; box-sizing: border-box; }
-.tile .photo { position: absolute; inset: 0; background-size: cover; background-position: center; z-index: 2; }
-.tile .photo::after { content:''; position:absolute; inset:0;
-  background: linear-gradient(180deg, rgba(0,8,13,0) 35%, rgba(0,8,13,0.85) 100%); }
+.tile .stage {
+  position: absolute;
+  inset: 0 0 48px 0;
+  display: flex;
+  z-index: 4;
+  box-sizing: border-box;
+}
+.tile .photo {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 2;
+}
+.tile .photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 8, 13, 0) 35%, rgba(0, 8, 13, 0.85) 100%);
+}
 
 /* ---------- PAGE CHROME (preview only) ---------- */
-body { margin: 0; background: #050a0d; color: var(--fg); font-family: var(--font-body); }
-.page-head { padding: 80px 48px 40px; border-bottom: 1px solid rgba(13,106,106,0.4); margin-bottom: 24px; }
-.page-head h1 { font-family: var(--font-heading); font-weight: 800; font-size: 56px; line-height: 1.05;
-  margin: 0 0 16px 0; letter-spacing: -0.02em; color: var(--fg); }
-.page-head p { font-size: 16px; line-height: 1.6; color: var(--fg-muted); max-width: 760px; margin: 0 0 16px 0; }
-.page-head a { color: var(--primary); }
+body {
+  margin: 0;
+  background: #050a0d;
+  color: var(--fg);
+  font-family: var(--font-body);
+}
+.page-head {
+  padding: 80px 48px 40px;
+  border-bottom: 1px solid rgba(13, 106, 106, 0.4);
+  margin-bottom: 24px;
+}
+.page-head h1 {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 56px;
+  line-height: 1.05;
+  margin: 0 0 16px 0;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+.page-head p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--fg-muted);
+  max-width: 760px;
+  margin: 0 0 16px 0;
+}
+.page-head a {
+  color: var(--primary);
+}
 
-.section { padding: 48px 48px 32px; border-bottom: 1px solid rgba(13,106,106,0.25); }
-.section h2 { font-family: var(--font-heading); font-weight: 700; font-size: 32px; margin: 0 0 8px 0; color: var(--fg); }
-.section h2 .num { color: var(--primary); font-size: 14px; letter-spacing: 0.24em; vertical-align: middle; margin-right: 16px; }
-.section .meta { color: var(--fg-muted); font-size: 14px; margin: 0 0 24px 0; max-width: 760px; line-height: 1.6; }
-.section .meta strong { color: var(--fg); }
+.section {
+  padding: 48px 48px 32px;
+  border-bottom: 1px solid rgba(13, 106, 106, 0.25);
+}
+.section h2 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 32px;
+  margin: 0 0 8px 0;
+  color: var(--fg);
+}
+.section h2 .num {
+  color: var(--primary);
+  font-size: 14px;
+  letter-spacing: 0.24em;
+  vertical-align: middle;
+  margin-right: 16px;
+}
+.section .meta {
+  color: var(--fg-muted);
+  font-size: 14px;
+  margin: 0 0 24px 0;
+  max-width: 760px;
+  line-height: 1.6;
+}
+.section .meta strong {
+  color: var(--fg);
+}
 
-.scaled-wrap { height: calc(1080px * 0.4); margin-bottom: 16px; overflow: visible; }
-.scaled-wrap.row3 { height: calc(1080px * 0.286); }
-.row { display: flex; gap: 16px; width: max-content; transform-origin: top left; }
-.row.scaled-1 { transform: scale(0.4); }
-.row.scaled-3 { transform: scale(0.286); }
+.scaled-wrap {
+  height: calc(1080px * 0.4);
+  margin-bottom: 16px;
+  overflow: visible;
+}
+.scaled-wrap.row3 {
+  height: calc(1080px * 0.286);
+}
+.row {
+  display: flex;
+  gap: 16px;
+  width: max-content;
+  transform-origin: top left;
+}
+.row.scaled-1 {
+  transform: scale(0.4);
+}
+.row.scaled-3 {
+  transform: scale(0.286);
+}
 
-.grid-section { margin-top: 24px; display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; }
-.grid-section h3 { font-family: var(--font-heading); font-size: 14px; letter-spacing: 0.18em;
-  text-transform: uppercase; color: var(--fg-muted); margin: 0 0 12px 0; }
-.grid-sim { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; background: #0a0a0a;
-  padding: 4px; border-radius: 4px; width: 600px; }
-.grid-sim.tall { grid-template-rows: repeat(3, 1fr); height: 600px; }
-.grid-sim .cell { aspect-ratio: 1; position: relative; overflow: hidden; }
-.grid-sim .cell .tile { transform: scale(0.184); transform-origin: top left; }
+.grid-section {
+  margin-top: 24px;
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.grid-section h3 {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 0 0 12px 0;
+}
+.grid-sim {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  background: #0a0a0a;
+  padding: 4px;
+  border-radius: 4px;
+  width: 600px;
+}
+.grid-sim.tall {
+  grid-template-rows: repeat(3, 1fr);
+  height: 600px;
+}
+.grid-sim .cell {
+  aspect-ratio: 1;
+  position: relative;
+  overflow: hidden;
+}
+.grid-sim .cell .tile {
+  transform: scale(0.184);
+  transform-origin: top left;
+}
 
 /* ---------- PHOTO PLACEHOLDER ---------- */
-.ph { position: absolute; inset: 0; background-image:
-  radial-gradient(at 30% 30%, rgba(84,197,158,0.18) 0%, transparent 55%),
-  radial-gradient(at 70% 70%, rgba(56,189,248,0.18) 0%, transparent 55%),
-  linear-gradient(180deg, #042f2e 0%, #021212 100%); }
-.ph::before { content: attr(data-label); position: absolute; inset: 0; display:flex;
-  align-items:center; justify-content:center; font-family: var(--font-body); font-size: 20px;
-  color: var(--fg-muted); letter-spacing: 0.24em; text-transform: uppercase; opacity: 0.5; }
-.ph::after { content:''; position:absolute; inset:0;
-  background: linear-gradient(180deg, rgba(0,8,13,0) 30%, rgba(0,8,13,0.85) 100%); }
+.ph {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(at 30% 30%, rgba(84, 197, 158, 0.18) 0%, transparent 55%),
+    radial-gradient(at 70% 70%, rgba(56, 189, 248, 0.18) 0%, transparent 55%),
+    linear-gradient(180deg, #042f2e 0%, #021212 100%);
+}
+.ph::before {
+  content: attr(data-label);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-size: 20px;
+  color: var(--fg-muted);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+.ph::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 8, 13, 0) 30%, rgba(0, 8, 13, 0.85) 100%);
+}
 
 /* ---------- TYPE HELPERS ---------- */
-.eyebrow { font-family: var(--font-body); font-size: 22px; letter-spacing: 0.18em;
-  text-transform: uppercase; color: var(--chrome); font-weight: 500; }
-.eyebrow.muted { color: var(--fg-muted); }
-.h-display { font-family: var(--font-heading); font-weight: 800; font-size: 140px;
-  line-height: 1; color: var(--fg); letter-spacing: -0.02em; margin: 0; }
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 22px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--chrome);
+  font-weight: 500;
+}
+.eyebrow.muted {
+  color: var(--fg-muted);
+}
+.h-display {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 140px;
+  line-height: 1;
+  color: var(--fg);
+  letter-spacing: -0.02em;
+  margin: 0;
+}
 
 /* ---------- TEMPLATE LAYOUTS ---------- */
-.t-player .stage { padding: 0; align-items: stretch; flex-direction: row; }
-.t-player .left-col { width: 55%; position: relative;
-  background: radial-gradient(at 50% 30%, rgba(84,197,158,0.2) 0%, transparent 55%),
-              linear-gradient(180deg, #04231f 0%, #021212 100%); }
-.t-player .right-col { width: 45%; padding: 80px 56px 64px; background: var(--bg);
-  display: flex; flex-direction: column; justify-content: center; gap: 20px; }
+.t-player .stage {
+  padding: 0;
+  align-items: stretch;
+  flex-direction: row;
+}
+.t-player .left-col {
+  width: 55%;
+  position: relative;
+  background:
+    radial-gradient(at 50% 30%, rgba(84, 197, 158, 0.2) 0%, transparent 55%),
+    linear-gradient(180deg, #04231f 0%, #021212 100%);
+}
+.t-player .right-col {
+  width: 45%;
+  padding: 80px 56px 64px;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+}
 /* Jersey number: left edge aligns with right border of the photo column (55%).
    Number bleeds rightward into the white panel; z-index lifts it above right-col bg. */
-.t-player .jersey { position: absolute; bottom: 32px; left: 55%;
-  font-family: var(--font-heading); font-weight: 800; font-size: 320px; line-height: 0.8;
-  color: var(--chrome); letter-spacing: -0.04em; z-index: 5;
+.t-player .jersey {
+  position: absolute;
+  bottom: 32px;
+  left: 55%;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 320px;
+  line-height: 0.8;
+  color: var(--chrome);
+  letter-spacing: -0.04em;
+  z-index: 5;
   transform: translateX(-0.04em); /* optical: pull back the side-bearing of the first digit */
-  text-shadow: 0 4px 24px rgba(0,8,13,0.4); pointer-events: none; }
+  text-shadow: 0 4px 24px rgba(0, 8, 13, 0.4);
+  pointer-events: none;
+}
 
-.t-pos101 .stage { padding: 80px 64px 64px; flex-direction: column; gap: 32px; }
-.t-schedule .stage { padding: 80px 64px 64px; flex-direction: column; gap: 24px; }
+.t-pos101 .stage {
+  padding: 80px 64px 64px;
+  flex-direction: column;
+  gap: 32px;
+}
+.t-schedule .stage {
+  padding: 80px 64px 64px;
+  flex-direction: column;
+  gap: 24px;
+}
 
-.t-event .stage { padding: 0; align-items: stretch; }
-.t-event .photo { background:
-  radial-gradient(at 70% 30%, rgba(84,197,158,0.3) 0%, transparent 50%),
-  radial-gradient(at 30% 70%, rgba(56,189,248,0.18) 0%, transparent 55%),
-  linear-gradient(180deg, #022529 0%, #02141c 100%); }
-.t-event .content { position: relative; z-index: 2; padding: 80px 64px 64px;
-  display: flex; flex-direction: column; justify-content: flex-end; height: 100%; width: 100%; box-sizing: border-box; }
+.t-event .stage {
+  padding: 0;
+  align-items: stretch;
+}
+.t-event .photo {
+  background:
+    radial-gradient(at 70% 30%, rgba(84, 197, 158, 0.3) 0%, transparent 50%),
+    radial-gradient(at 30% 70%, rgba(56, 189, 248, 0.18) 0%, transparent 55%),
+    linear-gradient(180deg, #022529 0%, #02141c 100%);
+}
+.t-event .content {
+  position: relative;
+  z-index: 2;
+  padding: 80px 64px 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
 
-.t-nm .stage { padding: 0; flex-direction: column; }
-.t-nm .body-area { flex: 1; padding: 48px 64px 64px; display: flex; flex-direction: column; justify-content: center; gap: 24px; }
+.t-nm .stage {
+  padding: 0;
+  flex-direction: column;
+}
+.t-nm .body-area {
+  flex: 1;
+  padding: 48px 64px 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+}
 
 /* Field templates (rule / play-concept). The diagram fills the area between
    the top eyebrow bar and the bottom wordmark, edge-to-edge horizontally
    and vertically. The eyebrow bar mirrors the footer wordmark in style. */
-.t-rule .stage { padding: 0; flex-direction: column; gap: 0; position: absolute;
-  inset: 0 0 48px 0; }
-.t-rule .rule-header { position: absolute; top: 0; left: 0; right: 0; height: 48px;
-  display: flex; align-items: center; padding: 0 56px;
-  font-family: var(--font-heading); font-weight: 700; font-size: 17px;
-  letter-spacing: 0.24em; text-transform: uppercase; color: var(--chrome);
-  z-index: 10; border-bottom: 1px solid rgba(13,106,106,0.4); background: var(--bg); }
-.t-rule .rule-header .eyebrow { font-size: 17px; letter-spacing: 0.24em;
-  color: var(--chrome); font-weight: 700; }
-.t-rule .diagram { position: absolute; inset: 48px 0 0 0; background: #0d2f24;
-  overflow: hidden; }
-.t-rule .rule-title-card { position: absolute; top: 110px; left: 48px; right: 48px;
-  padding: 28px 36px; background: rgba(0,0,0,0.62); backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px); border-radius: 12px; z-index: 3; }
+.t-rule .stage {
+  padding: 0;
+  flex-direction: column;
+  gap: 0;
+  position: absolute;
+  inset: 0 0 48px 0;
+}
+.t-rule .rule-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  padding: 0 56px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--chrome);
+  z-index: 10;
+  border-bottom: 1px solid rgba(13, 106, 106, 0.4);
+  background: var(--bg);
+}
+.t-rule .rule-header .eyebrow {
+  font-size: 17px;
+  letter-spacing: 0.24em;
+  color: var(--chrome);
+  font-weight: 700;
+}
+.t-rule .diagram {
+  position: absolute;
+  inset: 48px 0 0 0;
+  background: #0d2f24;
+  overflow: hidden;
+}
+.t-rule .rule-title-card {
+  position: absolute;
+  top: 110px;
+  left: 48px;
+  right: 48px;
+  padding: 28px 36px;
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 12px;
+  z-index: 3;
+}
 /* Desc card sits centered on the goal line into our own end zone (x=10 in field
    coords) so it doesn't cover the spotted-ball area higher up the field. Per-aspect
    bottom offsets are derived from the field crop (see ASPECT_DIMS in editor.html). */
-.t-rule .rule-desc-card { position: absolute; bottom: 98px; left: 48px; right: 48px;
+.t-rule .rule-desc-card {
+  position: absolute;
+  bottom: 98px;
+  left: 48px;
+  right: 48px;
   transform: translateY(50%);
-  padding: 22px 32px; background: rgba(0,0,0,0.62); backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px); border-radius: 12px; z-index: 3;
-  font-family: var(--font-body); font-size: 24px; color: var(--fg); line-height: 1.5; }
-body[data-aspect="portrait"] .t-rule .rule-desc-card { bottom: 90px; }
-.t-rule .rule-desc-card strong { color: var(--fg); font-weight: 700; }
+  padding: 22px 32px;
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 12px;
+  z-index: 3;
+  font-family: var(--font-body);
+  font-size: 24px;
+  color: var(--fg);
+  line-height: 1.5;
+}
+body[data-aspect="portrait"] .t-rule .rule-desc-card {
+  bottom: 90px;
+}
+.t-rule .rule-desc-card strong {
+  color: var(--fg);
+  font-weight: 700;
+}
 
 /* 9:16 story: drop the eyebrow header and wordmark entirely; give text cards
    more breathing room from the vertical edges. */
-body[data-aspect="story"] .t-rule .stage { inset: 0; }
-body[data-aspect="story"] .t-rule .rule-header { display: none; }
-body[data-aspect="story"] .t-rule .diagram { inset: 0; }
-body[data-aspect="story"] .t-rule .rule-title-card { top: 120px; }
-body[data-aspect="story"] .t-rule .rule-desc-card { bottom: 160px; }
-body[data-aspect="story"] .tile .wordmark { display: none; }
+body[data-aspect="story"] .t-rule .stage {
+  inset: 0;
+}
+body[data-aspect="story"] .t-rule .rule-header {
+  display: none;
+}
+body[data-aspect="story"] .t-rule .diagram {
+  inset: 0;
+}
+body[data-aspect="story"] .t-rule .rule-title-card {
+  top: 120px;
+}
+body[data-aspect="story"] .t-rule .rule-desc-card {
+  bottom: 160px;
+}
+body[data-aspect="story"] .tile .wordmark {
+  display: none;
+}
 
 /* 9:16 story safe-zone: keep text/elements out of the bottom ~250px so the
    user can stack native IG interactive stickers (polls, questions, etc.) there. */
@@ -182,184 +475,462 @@ body[data-aspect="story"] .t-welcome .stage,
 body[data-aspect="story"] .t-fact .stage,
 body[data-aspect="story"] .t-nm .body-area,
 body[data-aspect="story"] .t-matchup .half,
-body[data-aspect="story"] .t-game .half { padding-bottom: 280px; }
+body[data-aspect="story"] .t-game .half {
+  padding-bottom: 280px;
+}
 
 /* 9:16 story — Player intro full-bleed redesign.
    Photo fills the entire frame; a blue gradient panel (theme bg color —
    royal in default, navy in data-bg=navy) fades in from ~50% screen height
    becoming solid by ~80%, and houses the text content. Respects the
    bottom 280px IG sticker safe zone. */
-body[data-aspect="story"] .t-player .stage { padding: 0; display: block; }
+body[data-aspect="story"] .t-player .stage {
+  padding: 0;
+  display: block;
+}
 body[data-aspect="story"] .t-player .left-col {
-  position: absolute; inset: 0; width: 100%;
+  position: absolute;
+  inset: 0;
+  width: 100%;
 }
 body[data-aspect="story"] .t-player .right-col {
-  position: absolute; left: 0; right: 0; top: 0; bottom: 0;
-  width: 100%; background: transparent;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  background: transparent;
   z-index: 5;
   padding: 0 64px 140px 64px;
-  display: flex; flex-direction: column; justify-content: flex-end;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   gap: 16px;
-  background-image: linear-gradient(180deg,
-    rgba(0,0,0,0) 70%,
-    var(--bg) 90%,
-    var(--bg) 100%);
+  background-image: linear-gradient(180deg, rgba(0, 0, 0, 0) 70%, var(--bg) 90%, var(--bg) 100%);
   pointer-events: none;
   box-sizing: border-box;
 }
-body[data-aspect="story"] .t-player .right-col > * { pointer-events: auto; }
+body[data-aspect="story"] .t-player .right-col > * {
+  pointer-events: auto;
+}
 body[data-aspect="story"] .t-player .jersey {
-  bottom: auto; top: 64px; left: 56px; right: auto;
-  font-size: 240px; transform: none; z-index: 6;
-  text-shadow: 0 4px 24px rgba(0,8,13,0.5);
+  bottom: auto;
+  top: 64px;
+  left: 56px;
+  right: auto;
+  font-size: 240px;
+  transform: none;
+  z-index: 6;
+  text-shadow: 0 4px 24px rgba(0, 8, 13, 0.5);
 }
 /* Club badge watermark — top-right, ~2x jersey number size, sits behind the
     photo so it reads as a subtle background mark. Only shown in story mode. */
-.t-player .player-badge { display: none; }
+.t-player .player-badge {
+  display: none;
+}
 body[data-aspect="story"] .t-player .player-badge {
-  display: block; position: absolute; top: 40px; right: 20px;
-  width: 720px; height: 720px; z-index: 0;
-  background-image: url('assets/tuil-logo.svg');
-  background-repeat: no-repeat; background-size: contain; background-position: center;
+  display: block;
+  position: absolute;
+  top: 40px;
+  right: 20px;
+  width: 600px;
+  height: 600px;
+  z-index: 0;
+  background-image: url("assets/tuil-logo.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
   pointer-events: none;
   opacity: 0.15;
 }
 
-.t-drill .stage { padding: 80px 64px 64px; flex-direction: column; gap: 24px; }
-.t-drill .field { flex: 1; background: linear-gradient(180deg, #042f2e 0%, #03241f 100%);
-  border-radius: 12px; position: relative; overflow: hidden; }
-.t-drill .field .yard { position: absolute; left: 0; right: 0; height: 1px; background: rgba(255,255,255,0.15); }
+.t-drill .stage {
+  padding: 80px 64px 64px;
+  flex-direction: column;
+  gap: 24px;
+}
+.t-drill .field {
+  flex: 1;
+  background: linear-gradient(180deg, #042f2e 0%, #03241f 100%);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.t-drill .field .yard {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.15);
+}
 
-.t-welcome .stage { padding: 80px 64px 64px; flex-direction: column; gap: 32px; justify-content: center; }
-.t-bts .stage { padding: 0; align-items: stretch; }
-.t-bts .photo { background:
-  radial-gradient(at 40% 40%, rgba(255,255,255,0.06) 0%, transparent 60%),
-  linear-gradient(180deg, #08283a 0%, #021018 100%); }
-.t-bts .content { position: relative; z-index: 2; padding: 80px 64px 64px;
-  display: flex; flex-direction: column; justify-content: flex-end; height: 100%; width: 100%; box-sizing: border-box; }
-.t-fact .stage { padding: 80px 64px 64px; flex-direction: column; gap: 24px; justify-content: center; }
+.t-welcome .stage {
+  padding: 80px 64px 64px;
+  flex-direction: column;
+  gap: 32px;
+  justify-content: center;
+}
+.t-bts .stage {
+  padding: 0;
+  align-items: stretch;
+}
+.t-bts .photo {
+  background:
+    radial-gradient(at 40% 40%, rgba(255, 255, 255, 0.06) 0%, transparent 60%),
+    linear-gradient(180deg, #08283a 0%, #021018 100%);
+}
+.t-bts .content {
+  position: relative;
+  z-index: 2;
+  padding: 80px 64px 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+.t-fact .stage {
+  padding: 80px 64px 64px;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: center;
+}
 
 /* T11 — OFFENSE VS DEFENSE matchup (uses sky + rose accents) */
-.t-matchup .stage { padding: 0; flex-direction: row; }
-.t-matchup .half { flex: 1; padding: 56px 56px 64px; display: flex; flex-direction: column;
-  justify-content: flex-end; position: relative; overflow: hidden; gap: 16px; }
-.t-matchup .half.off { background: linear-gradient(180deg, rgba(56,189,248,0.40) 0%, rgba(56,189,248,0.12) 100%); }
-.t-matchup .half.def { background: linear-gradient(180deg, rgba(251,113,133,0.40) 0%, rgba(251,113,133,0.12) 100%); }
+.t-matchup .stage {
+  padding: 0;
+  flex-direction: row;
+}
+.t-matchup .half {
+  flex: 1;
+  padding: 56px 56px 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+  overflow: hidden;
+  gap: 16px;
+}
+.t-matchup .half.off {
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.4) 0%, rgba(56, 189, 248, 0.12) 100%);
+}
+.t-matchup .half.def {
+  background: linear-gradient(180deg, rgba(251, 113, 133, 0.4) 0%, rgba(251, 113, 133, 0.12) 100%);
+}
 /* Photo sits as a background band: opaque through the middle, fading to transparent
    at the top of the stats section so stats read on a clean tinted background. */
-.t-matchup .matchup-bg { position: absolute; inset: 0; background-size: cover;
-  background-position: center 35%; z-index: 0; pointer-events: none;
-  -webkit-mask-image: linear-gradient(180deg,
-    rgba(0,0,0,0)    0%,
-    rgba(0,0,0,0)   22%,
-    rgba(0,0,0,1)   38%,
-    rgba(0,0,0,1)   60%,
-    rgba(0,0,0,0)   78%);
-          mask-image: linear-gradient(180deg,
-    rgba(0,0,0,0)    0%,
-    rgba(0,0,0,0)   22%,
-    rgba(0,0,0,1)   38%,
-    rgba(0,0,0,1)   60%,
-    rgba(0,0,0,0)   78%); }
-.t-matchup .matchup-bg.placeholder { display: flex; align-items: center; justify-content: center;
-  background: rgba(0,0,0,0.10); font-family: var(--font-heading); font-size: 20px;
-  letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-muted); font-weight: 700; }
+.t-matchup .matchup-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 35%;
+  z-index: 0;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0) 22%,
+    rgba(0, 0, 0, 1) 38%,
+    rgba(0, 0, 0, 1) 60%,
+    rgba(0, 0, 0, 0) 78%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0) 22%,
+    rgba(0, 0, 0, 1) 38%,
+    rgba(0, 0, 0, 1) 60%,
+    rgba(0, 0, 0, 0) 78%
+  );
+}
+.t-matchup .matchup-bg.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.1);
+  font-family: var(--font-heading);
+  font-size: 20px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  font-weight: 700;
+}
 /* Per-side photo tile shown at the top of each half. Real uploads use
    background-image; placeholder uses a dashed outline with caption. */
-.t-matchup .matchup-photo { position: relative; width: 100%;
-  flex: 1 1 auto; min-height: 0; align-self: stretch;
-  border-radius: 12px; overflow: hidden;
-  background-size: cover; background-position: center top;
-  border: 2px dashed rgba(255,255,255,0.22);
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-heading); font-size: 16px; letter-spacing: 0.22em;
-  text-transform: uppercase; color: var(--fg-muted); font-weight: 700; }
-.t-matchup .matchup-photo.has-image { border: none; }
-.t-matchup .matchup-photo.has-image span { display: none; }
-.t-matchup .matchup-photo.has-image > img.img-scaled {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: cover; transform-origin: center center;
-  display: block; pointer-events: none;
+.t-matchup .matchup-photo {
+  position: relative;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  align-self: stretch;
+  border-radius: 12px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center top;
+  border: 2px dashed rgba(255, 255, 255, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 16px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  font-weight: 700;
 }
-.t-matchup .matchup-content { position: relative; z-index: 1; display: flex; flex-direction: column;
-  justify-content: space-between; height: 100%; }
-.t-matchup .vs { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-  width: 96px; height: 96px; border-radius: 50%; background: var(--bg);
-  display: flex; align-items: center; justify-content: center; z-index: 5;
-  font-family: var(--font-heading); font-weight: 800; font-size: 38px; color: var(--fg);
-  border: 4px solid var(--primary); }
+.t-matchup .matchup-photo.has-image {
+  border: none;
+}
+.t-matchup .matchup-photo.has-image span {
+  display: none;
+}
+.t-matchup .matchup-photo.has-image > img.img-scaled {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: center center;
+  display: block;
+  pointer-events: none;
+}
+.t-matchup .matchup-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+.t-matchup .vs {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 38px;
+  color: var(--fg);
+  border: 4px solid var(--primary);
+}
 
 /* T12 — GAME (head-to-head, logo + prominent meta/score banner) */
-.t-game .stage { padding: 0; flex-direction: row; }
-.t-game .half { flex: 1; padding: 60px 56px 280px; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 28px; position: relative;
-  overflow: hidden; text-align: center; }
-.t-game .game-logo { width: 437px; height: 437px; border-radius: 32px;
-  background-size: contain; background-repeat: no-repeat; background-position: center;
-  border: 2px dashed rgba(255,255,255,0.22);
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-heading); font-size: 14px; letter-spacing: 0.22em;
-  text-transform: uppercase; color: var(--fg-muted); font-weight: 700; }
-.t-game .game-logo.has-image { border: none; }
-.t-game .game-logo.has-image span { display: none; }
-.t-game .game-logo { position: relative; }
-.t-game .game-logo.has-image > img.img-scaled {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: contain; transform-origin: center center;
-  display: block; pointer-events: none;
+.t-game .stage {
+  padding: 0;
+  flex-direction: row;
 }
-.t-game .game-name { font-size: 72px; line-height: 0.95; letter-spacing: -0.01em;
-  margin: 0; text-transform: uppercase; }
-.t-game .game-tag { display: inline-block; padding: 10px 22px; border-radius: 999px;
-  font-family: var(--font-body); font-weight: 700; font-size: 20px; letter-spacing: 0.12em;
-  text-transform: uppercase; }
-.t-game .vs { position: absolute; top: 346px; left: 50%; transform: translate(-50%, -50%);
-  width: 88px; height: 88px; border-radius: 50%; background: var(--bg);
-  display: flex; align-items: center; justify-content: center; z-index: 5;
-  font-family: var(--font-heading); font-weight: 800; font-size: 35px; color: var(--fg);
-  border: 4px solid var(--primary); }
+.t-game .half {
+  flex: 1;
+  padding: 60px 56px 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.t-game .game-logo {
+  width: 437px;
+  height: 437px;
+  border-radius: 32px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: 2px dashed rgba(255, 255, 255, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 14px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  font-weight: 700;
+}
+.t-game .game-logo.has-image {
+  border: none;
+}
+.t-game .game-logo.has-image span {
+  display: none;
+}
+.t-game .game-logo {
+  position: relative;
+}
+.t-game .game-logo.has-image > img.img-scaled {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform-origin: center center;
+  display: block;
+  pointer-events: none;
+}
+.t-game .game-name {
+  font-size: 72px;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-transform: uppercase;
+}
+.t-game .game-tag {
+  display: inline-block;
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.t-game .vs {
+  position: absolute;
+  top: 346px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 35px;
+  color: var(--fg);
+  border: 4px solid var(--primary);
+}
 
 /* Prominent bottom banner */
-.t-game .game-banner { position: absolute; left: 0; right: 0; bottom: 0;
-  background: var(--bg); border-top: 3px solid var(--primary);
-  padding: 36px 56px; z-index: 6; box-sizing: border-box;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 12px; min-height: 220px; }
-.t-game .game-banner.meta .gb-when { font-family: var(--font-heading); font-weight: 800;
-  font-size: 64px; line-height: 1; color: var(--fg); letter-spacing: 0.02em;
-  display: flex; align-items: center; gap: 24px; text-transform: uppercase;
-  white-space: nowrap; }
-.t-game .game-banner.meta .gb-dot { color: var(--primary); }
-.t-game .game-banner.meta .gb-venue { font-family: var(--font-body); font-weight: 600;
-  font-size: 28px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-muted); }
-.t-game .game-banner.score { flex-direction: row; gap: 48px; min-height: 240px; }
-.t-game .game-banner.score .gb-score { font-family: var(--font-heading); font-weight: 800;
-  font-size: 180px; line-height: 0.9; letter-spacing: -0.03em; flex: 1; text-align: center;
-  display: flex; align-items: center; justify-content: center; }
-.t-game .game-banner.score .gb-score .fs-wrap { line-height: 0.9; }
-.t-game .game-banner.score .gb-mid { font-family: var(--font-heading); font-weight: 700;
-  font-size: 22px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--fg-muted);
-  white-space: nowrap; }
+.t-game .game-banner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg);
+  border-top: 3px solid var(--primary);
+  padding: 36px 56px;
+  z-index: 6;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 220px;
+}
+.t-game .game-banner.meta .gb-when {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 64px;
+  line-height: 1;
+  color: var(--fg);
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.t-game .game-banner.meta .gb-dot {
+  color: var(--primary);
+}
+.t-game .game-banner.meta .gb-venue {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 28px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.t-game .game-banner.score {
+  flex-direction: row;
+  gap: 48px;
+  min-height: 240px;
+}
+.t-game .game-banner.score .gb-score {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 180px;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  flex: 1;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.t-game .game-banner.score .gb-score .fs-wrap {
+  line-height: 0.9;
+}
+.t-game .game-banner.score .gb-mid {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  white-space: nowrap;
+}
 
 /* Portrait (4:5) and Story (9:16): same logo treatment as square; the
    logo+name+tag block is centered vertically between the top of the screen
    and the top of the bottom time/place banner via the half's flex centering. */
-body[data-aspect="portrait"] .t-game .vs { top: 481px; }
-body[data-aspect="story"] .t-game .vs { top: 746px; }
+body[data-aspect="portrait"] .t-game .vs {
+  top: 481px;
+}
+body[data-aspect="story"] .t-game .vs {
+  top: 746px;
+}
 
 /* Story aspect: banner taller, sits above safe-zone overlay area */
-body[data-aspect="story"] .t-game .game-banner { min-height: 320px; padding: 56px 56px; }
-body[data-aspect="story"] .t-game .game-banner.meta .gb-when { font-size: 96px; }
-body[data-aspect="story"] .t-game .game-banner.meta.stacked { gap: 6px; min-height: 420px; }
-body[data-aspect="story"] .t-game .game-banner.meta .gb-venue { font-size: 40px; margin-top: 14px; }
-body[data-aspect="story"] .t-game .game-banner.score .gb-score { font-size: 220px; }
+body[data-aspect="story"] .t-game .game-banner {
+  min-height: 320px;
+  padding: 56px 56px;
+}
+body[data-aspect="story"] .t-game .game-banner.meta .gb-when {
+  font-size: 96px;
+}
+body[data-aspect="story"] .t-game .game-banner.meta.stacked {
+  gap: 6px;
+  min-height: 420px;
+}
+body[data-aspect="story"] .t-game .game-banner.meta .gb-venue {
+  font-size: 40px;
+  margin-top: 14px;
+}
+body[data-aspect="story"] .t-game .game-banner.score .gb-score {
+  font-size: 220px;
+}
 
 /* Story aspect: diagonal split (home top-left, away bottom-right).
    Diagonal tilts ~15° off horizontal — gentle, not a 45° split. */
-body[data-aspect="story"] .t-game .stage { display: block; position: absolute; inset: 0; }
+body[data-aspect="story"] .t-game .stage {
+  display: block;
+  position: absolute;
+  inset: 0;
+}
 body[data-aspect="story"] .t-game .half {
-  position: absolute; inset: 0; padding: 80px; gap: 24px;
-  flex-direction: column; text-align: left;
+  position: absolute;
+  inset: 0;
+  padding: 80px;
+  gap: 24px;
+  flex-direction: column;
+  text-align: left;
 }
 body[data-aspect="story"] .t-game .half.home {
   clip-path: polygon(0 0, 100% 0, 100% 26%, 0 52%);
@@ -370,50 +941,91 @@ body[data-aspect="story"] .t-game .half.away {
   padding: 0;
 }
 /* Story diagonals: logo and text occupy opposite corners of each half. */
-body[data-aspect="story"] .t-game .half .game-logo { position: absolute; }
+body[data-aspect="story"] .t-game .half .game-logo {
+  position: absolute;
+}
 body[data-aspect="story"] .t-game .half .game-text {
-  position: absolute; display: flex; flex-direction: column; gap: 20px;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   max-width: 540px;
 }
-body[data-aspect="story"] .t-game .half.home .game-logo { top: 80px; left: 80px; }
+body[data-aspect="story"] .t-game .half.home .game-logo {
+  top: 80px;
+  left: 80px;
+}
 body[data-aspect="story"] .t-game .half.home .game-text {
-  top: 140px; right: 80px; align-items: flex-end; text-align: right;
+  top: 140px;
+  right: 80px;
+  align-items: flex-end;
+  text-align: right;
 }
-body[data-aspect="story"] .t-game .half.away .game-logo { right: 80px; bottom: 540px; }
+body[data-aspect="story"] .t-game .half.away .game-logo {
+  right: 80px;
+  bottom: 540px;
+}
 body[data-aspect="story"] .t-game .half.away .game-text {
-  bottom: 600px; left: 80px; align-items: flex-start; text-align: left;
+  bottom: 600px;
+  left: 80px;
+  align-items: flex-start;
+  text-align: left;
 }
-body[data-aspect="story"] .t-game .half .game-tag { align-self: auto; }
-body[data-aspect="story"] .t-game .vs { top: 750px; }
-
+body[data-aspect="story"] .t-game .half .game-tag {
+  align-self: auto;
+}
+body[data-aspect="story"] .t-game .vs {
+  top: 750px;
+}
 
 /* ---------- NORWEGIAN FLAG (proportions 22x16; cross at cols 6-10, rows 6-10; blue inset cols 7-9, rows 7-9) ----------
    The Scandinavian cross is the UNION of a vertical bar and a horizontal bar.
    Layering (first = top): blue vert ∪ blue horiz over white vert ∪ white horiz over red base. */
 .no-flag {
-  display: inline-block; aspect-ratio: 22 / 16; height: 100%;
+  display: inline-block;
+  aspect-ratio: 22 / 16;
+  height: 100%;
   background:
     /* Blue vertical bar — cols 7..9 (full height) */
-    linear-gradient(to right,
-      transparent 0, transparent calc(7/22*100%),
-      #00205b calc(7/22*100%), #00205b calc(9/22*100%),
-      transparent calc(9/22*100%), transparent 100%),
+    linear-gradient(
+      to right,
+      transparent 0,
+      transparent calc(7 / 22 * 100%),
+      #00205b calc(7 / 22 * 100%),
+      #00205b calc(9 / 22 * 100%),
+      transparent calc(9 / 22 * 100%),
+      transparent 100%
+    ),
     /* Blue horizontal bar — rows 7..9 (full width) */
-    linear-gradient(to bottom,
-      transparent 0, transparent calc(7/16*100%),
-      #00205b calc(7/16*100%), #00205b calc(9/16*100%),
-      transparent calc(9/16*100%), transparent 100%),
+    linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent calc(7 / 16 * 100%),
+        #00205b calc(7 / 16 * 100%),
+        #00205b calc(9 / 16 * 100%),
+        transparent calc(9 / 16 * 100%),
+        transparent 100%
+      ),
     /* White vertical bar — cols 6..10 (full height) */
-    linear-gradient(to right,
-      transparent 0, transparent calc(6/22*100%),
-      #fff calc(6/22*100%), #fff calc(10/22*100%),
-      transparent calc(10/22*100%), transparent 100%),
+    linear-gradient(
+        to right,
+        transparent 0,
+        transparent calc(6 / 22 * 100%),
+        #fff calc(6 / 22 * 100%),
+        #fff calc(10 / 22 * 100%),
+        transparent calc(10 / 22 * 100%),
+        transparent 100%
+      ),
     /* White horizontal bar — rows 6..10 (full width) */
-    linear-gradient(to bottom,
-      transparent 0, transparent calc(6/16*100%),
-      #fff calc(6/16*100%), #fff calc(10/16*100%),
-      transparent calc(10/16*100%), transparent 100%),
-    /* Red field */
-    #ba0c2f;
+    linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent calc(6 / 16 * 100%),
+        #fff calc(6 / 16 * 100%),
+        #fff calc(10 / 16 * 100%),
+        transparent calc(10 / 16 * 100%),
+        transparent 100%
+      ),
+    /* Red field */ #ba0c2f;
   position: relative;
 }

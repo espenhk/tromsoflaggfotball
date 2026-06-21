@@ -312,15 +312,27 @@ body[data-aspect="story"] .t-game .half {
 }
 body[data-aspect="story"] .t-game .half.home {
   clip-path: polygon(0 0, 100% 0, 100% 26%, 0 52%);
-  align-items: flex-start; justify-content: flex-start;
-  padding: 120px 80px 0 80px;
+  padding: 0;
 }
 body[data-aspect="story"] .t-game .half.away {
   clip-path: polygon(0 52%, 100% 26%, 100% 100%, 0 100%);
-  align-items: flex-end; justify-content: flex-end;
-  padding: 0 80px 460px 80px;
-  text-align: right;
+  padding: 0;
 }
+/* Story diagonals: logo and text occupy opposite corners of each half. */
+body[data-aspect="story"] .t-game .half .game-logo { position: absolute; }
+body[data-aspect="story"] .t-game .half .game-text {
+  position: absolute; display: flex; flex-direction: column; gap: 20px;
+  max-width: 540px;
+}
+body[data-aspect="story"] .t-game .half.home .game-logo { top: 80px; left: 80px; }
+body[data-aspect="story"] .t-game .half.home .game-text {
+  top: 140px; right: 80px; align-items: flex-end; text-align: right;
+}
+body[data-aspect="story"] .t-game .half.away .game-logo { right: 80px; bottom: 540px; }
+body[data-aspect="story"] .t-game .half.away .game-text {
+  bottom: 600px; left: 80px; align-items: flex-start; text-align: left;
+}
+body[data-aspect="story"] .t-game .half .game-tag { align-self: auto; }
 body[data-aspect="story"] .t-game .vs { top: 750px; }
 
 

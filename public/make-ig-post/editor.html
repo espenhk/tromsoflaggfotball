@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <title>Tromsø Flaggfotball — IG Frame Editor</title>
-    <link rel="stylesheet" href="frames.css?v=12" />
+    <link rel="stylesheet" href="frames.css?v=13" />
     <script src="chrome.js"></script>
     <script>
       // Apply TUIL theme override when launched with ?theme=tuil
@@ -1576,6 +1576,8 @@
             renderPreview();
           });
         });
+        if (!area._stepperBound) {
+        area._stepperBound = true;
         area.addEventListener('click', e => {
           const btn = e.target.closest('[data-stepper-minus], [data-stepper-plus]');
           if (!btn) return;
@@ -1624,6 +1626,7 @@
           s[id] = pt;
           renderPreview();
         }, true);
+        }
         area.querySelectorAll('[data-field-check]').forEach(inp => {
           inp.addEventListener('change', e => {
             state.values[e.target.dataset.fieldCheck] = e.target.checked;

@@ -794,6 +794,7 @@ body[data-aspect="story"] .t-player .player-badge {
   font-size: 20px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  margin-top: 22px;
 }
 .t-game .vs {
   position: absolute;

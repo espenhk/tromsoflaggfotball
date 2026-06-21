@@ -1052,7 +1052,13 @@
           const logo = (id, src, label) => {
             if (!src) return `<div class="game-logo"><span>[ ${label} ]</span></div>`;
             const s = imgScales[id] || 1;
-            return `<div class="game-logo has-image"><img class="img-scaled" src="${String(src).replace(/"/g,'%22')}" style="transform:scale(${s});"></div>`;
+            // Use background-image (not <img> + object-fit) so html2canvas
+            // preserves the logo's aspect ratio on export. html2canvas v1.4.1
+            // does not honor `object-fit: contain` and would stretch the
+            // image to fill the square box.
+            const safeSrc = String(src).replace(/"/g, '%22');
+            const sizePct = Math.round((s || 1) * 100);
+            return `<div class="game-logo has-image" style="background-image:url(&quot;${safeSrc}&quot;); background-size:${sizePct}% auto; background-repeat:no-repeat; background-position:center;"><span>${label}</span></div>`;
           };
           const nameFS = gameNameSize(Math.max((d.hName||'').length, (d.aName||'').length));
           const isStory = document.body.getAttribute('data-aspect') === 'story';

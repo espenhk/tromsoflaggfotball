@@ -2620,7 +2620,6 @@
     const dims = ASPECT_DIMS[state.aspect] || ASPECT_DIMS.square;
     const prevTransform = tile.style.transform;
     try {
-      const htmlToImage = await loadHtmlToImage();
       tile.style.transform = 'none';
       try {
         if (document.fonts) {

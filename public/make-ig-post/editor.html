@@ -2193,10 +2193,28 @@
         fetchAsDataUrl(new URL('fonts/Syne-VariableFont_wght.ttf', location.href).href, 'font/ttf'),
         fetchAsDataUrl(new URL('fonts/Outfit-VariableFont_wght.ttf', location.href).href, 'font/ttf'),
       ]);
+      // Use plain `format('truetype')` (not 'truetype-variations'): Chrome's
+      // SVG foreignObject rasterizer accepts variable TTFs when declared with
+      // a wide weight range + 'truetype', but silently drops the face when
+      // the format hint is 'truetype-variations'. That drop is what made
+      // exported text fall back to a system serif/Arial — wider metrics
+      // shifted alignment, collapsed flex gaps, and broke the venue line.
       _embeddedFontCSS = `
-        @font-face { font-family: 'Syne'; src: url(${syne}) format('truetype-variations'); font-weight: 400 800; font-style: normal; }
-        @font-face { font-family: 'Outfit'; src: url(${outfit}) format('truetype-variations'); font-weight: 100 900; font-style: normal; }
+        @font-face { font-family: 'Syne'; src: url(${syne}) format('truetype'); font-weight: 400 800; font-style: normal; font-display: block; }
+        @font-face { font-family: 'Outfit'; src: url(${outfit}) format('truetype'); font-weight: 100 900; font-style: normal; font-display: block; }
       `;
+      // Also embed concrete per-weight Syne + Outfit from Google Fonts as a
+      // belt-and-braces fallback: if the variable axis somehow doesn't apply
+      // inside the SVG sandbox for a particular weight (700/800), the static
+      // face still matches exactly.
+      try {
+        const baseCss = await fetchGoogleFontsAsEmbeddedCss(
+          'https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Outfit:wght@300;400;500;600;700&display=swap'
+        );
+        _embeddedFontCSS += '\n' + baseCss;
+      } catch (e) {
+        console.warn('Default font embed failed', e);
+      }
       // When the TUIL theme is active, also embed Inter (the in-browser fallback
       // for the gitignored Neue Haas Grotesk) so the exported PNGs use the same
       // typography as the editor preview. Without this, html-to-image's SVG

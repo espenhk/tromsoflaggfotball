@@ -949,9 +949,12 @@
       const oR = hexToRgb(oC),         dR = hexToRgb(dC);
       // Photo tile: real image when uploaded, dashed placeholder otherwise.
       // Wrap URL in quotes so long data: URIs don't trip up CSS parsing.
-      const photo = (src, label) => src
-        ? `<div class="matchup-photo has-image" style='background-image:url("${String(src).replace(/"/g, "%22")}");'></div>`
-        : `<div class="matchup-photo"><span>[ ${label} ]</span></div>`;
+      const imgScales = (state.imageScales) || {};
+      const photo = (id, src, label) => {
+        if (!src) return `<div class="matchup-photo"><span>[ ${label} ]</span></div>`;
+        const s = imgScales[id] || 1;
+        return `<div class="matchup-photo has-image"><img class="img-scaled" src="${String(src).replace(/"/g,'%22')}" style="transform:scale(${s});"></div>`;
+      };
       const half = (side, c, r, photoSrc, photoLabel, label, first, last, tag, stats) => `
         <div class="half ${side}" style="background:linear-gradient(180deg, rgba(${r},0.40) 0%, rgba(${r},0.12) 100%);">
           <div style="font-family:var(--font-body); font-size:24px; color:${c}; letter-spacing:0.18em; text-transform:uppercase; font-weight:700;">${label}</div>
@@ -967,9 +970,9 @@
       const oStats = [[d.oS1l,d.oS1v],[d.oS2l,d.oS2v],[d.oS3l,d.oS3v]];
       const dStats = [[d.dS1l,d.dS1v],[d.dS2l,d.dS2v],[d.dS3l,d.dS3v]];
       return `<div class="stage">
-        ${half('off', oC, oR, d.oPhoto, 'angrep · photo', 'ANGREP', d.oFirst, d.oLast, d.oTag, oStats)}
+        ${half('off', oC, oR, 'oPhoto', d.oPhoto, 'angrep · photo', 'ANGREP', d.oFirst, d.oLast, d.oTag, oStats)}
         <div class="vs">VS</div>
-        ${half('def', dC, dR, d.dPhoto, 'forsvar · photo', 'FORSVAR', d.dFirst, d.dLast, d.dTag, dStats)}
+        ${half('def', dC, dR, 'dPhoto', d.dPhoto, 'forsvar · photo', 'FORSVAR', d.dFirst, d.dLast, d.dTag, dStats)}
       </div>`;
     },
     cls: 't-matchup',

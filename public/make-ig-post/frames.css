@@ -205,11 +205,12 @@ body[data-aspect="story"] .t-player .right-col {
     var(--bg) 80%,
     var(--bg) 100%);
   pointer-events: none;
+  box-sizing: border-box;
 }
 body[data-aspect="story"] .t-player .right-col > * { pointer-events: auto; }
 body[data-aspect="story"] .t-player .jersey {
-  bottom: auto; top: 64px; left: auto; right: 56px;
-  font-size: 180px; transform: none; z-index: 6;
+  bottom: auto; top: 64px; left: 56px; right: auto;
+  font-size: 240px; transform: none; z-index: 6;
   text-shadow: 0 4px 24px rgba(0,8,13,0.5);
 }
 

@@ -230,6 +230,15 @@
     border:1px solid rgba(13,106,106,0.5); border-radius:6px; padding:6px 10px; cursor:pointer;
     font-family:var(--font-body); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; }
   .image-field .image-remove:hover { color:#fb7185; border-color:#fb7185; }
+  .image-field .image-scale-row { display:flex; align-items:center; gap:8px; margin-top:8px; }
+  .image-field .image-scale-row .isr-label { flex:0 0 auto; font-family:var(--font-body); font-size:11px;
+    color:var(--fg-muted); letter-spacing:0.08em; text-transform:uppercase; margin:0; }
+  .image-field .image-scale-row .isr-label span { color:var(--fg); font-weight:700; margin-left:4px; }
+  .image-field .image-scale-row input[type=range] { flex:1 1 auto; accent-color:var(--primary); margin:0; }
+  .image-field .image-scale-row .isr-reset { flex:0 0 auto; background:transparent; color:var(--fg-muted);
+    border:1px solid rgba(13,106,106,0.5); border-radius:6px; padding:2px 8px; cursor:pointer;
+    font-size:13px; line-height:1; }
+  .image-field .image-scale-row .isr-reset:hover { color:var(--primary); border-color:var(--primary); }
 </style>
 </head>
 <body>

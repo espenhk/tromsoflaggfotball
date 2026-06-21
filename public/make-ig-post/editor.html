@@ -2499,6 +2499,8 @@
             aspect: state.aspect,
             topEndZone: state.topEndZone,
             currentSlide: state.currentSlide,
+            bg: document.documentElement.getAttribute('data-bg') || 'royal',
+            theme: document.documentElement.getAttribute('data-theme') || 'default',
             slides: JSON.parse(JSON.stringify(state.slides)),
           },
         };

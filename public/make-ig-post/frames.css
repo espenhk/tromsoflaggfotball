@@ -213,6 +213,16 @@ body[data-aspect="story"] .t-player .jersey {
   font-size: 240px; transform: none; z-index: 6;
   text-shadow: 0 4px 24px rgba(0,8,13,0.5);
 }
+/* Club badge watermark — top-right, ~2x jersey number size, sits behind the
+   photo so it reads as a subtle background mark. Only shown in story mode. */
+.t-player .player-badge { display: none; }
+body[data-aspect="story"] .t-player .player-badge {
+  display: block; position: absolute; top: -60px; right: -80px;
+  width: 480px; height: 480px; z-index: 1;
+  background-image: url('assets/tuil-logo.svg');
+  background-repeat: no-repeat; background-size: contain; background-position: center;
+  pointer-events: none;
+}
 
 .t-drill .stage { padding: 80px 64px 64px; flex-direction: column; gap: 24px; }
 .t-drill .field { flex: 1; background: linear-gradient(180deg, #042f2e 0%, #03241f 100%);

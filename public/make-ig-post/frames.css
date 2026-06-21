@@ -197,12 +197,12 @@ body[data-aspect="story"] .t-player .right-col {
   position: absolute; left: 0; right: 0; top: 0; bottom: 0;
   width: 100%; background: transparent;
   z-index: 5;
-  padding: 0 64px 200px 64px;
+  padding: 0 64px 140px 64px;
   display: flex; flex-direction: column; justify-content: flex-end;
   gap: 16px;
   background-image: linear-gradient(180deg,
-    rgba(0,0,0,0) 50%,
-    var(--bg) 80%,
+    rgba(0,0,0,0) 70%,
+    var(--bg) 90%,
     var(--bg) 100%);
   pointer-events: none;
   box-sizing: border-box;

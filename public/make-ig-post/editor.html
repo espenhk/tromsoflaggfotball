@@ -2660,22 +2660,44 @@
         })));
       } catch (_) {}
       await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-      const fontEmbedCSS = await buildEmbeddedFontCSS();
-      // Render twice — the first pass primes html-to-image's internal image
-      // cache; the second pass is what we actually keep. Without this the
-      // very first export of a freshly-uploaded photo would sometimes come
-      // back with a blank/black photo area.
-      const opts = {
-        width: dims.w,
-        height: dims.h,
-        pixelRatio: 1,
-        cacheBust: true,
-        skipFonts: false,
-        fontEmbedCSS,
-      };
-      await htmlToImage.toPng(tile, opts).catch(() => {});
-      const dataUrl = await htmlToImage.toPng(tile, opts);
-      return await (await fetch(dataUrl)).blob();
+      try {
+        // Primary export path: canvas rendering uses the browser's actual
+        // computed layout and loaded fonts. The old SVG foreignObject path can
+        // silently swap fonts, changing TUIL game banner/footer metrics.
+        const html2canvas = await loadHtml2Canvas();
+        const canvas = await html2canvas(tile, {
+          width: dims.w,
+          height: dims.h,
+          scale: 1,
+          backgroundColor: null,
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          imageTimeout: 15000,
+          scrollX: 0,
+          scrollY: 0,
+          windowWidth: dims.w,
+          windowHeight: dims.h,
+        });
+        return await new Promise((resolve, reject) => {
+          canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Canvas export failed')), 'image/png');
+        });
+      } catch (canvasErr) {
+        console.warn('Canvas export failed, falling back to SVG export', canvasErr);
+        const htmlToImage = await loadHtmlToImage();
+        const fontEmbedCSS = await buildEmbeddedFontCSS();
+        const opts = {
+          width: dims.w,
+          height: dims.h,
+          pixelRatio: 1,
+          cacheBust: true,
+          skipFonts: false,
+          fontEmbedCSS,
+        };
+        await htmlToImage.toPng(tile, opts).catch(() => {});
+        const dataUrl = await htmlToImage.toPng(tile, opts);
+        return await (await fetch(dataUrl)).blob();
+      }
     } finally {
       tile.style.transform = prevTransform;
     }

@@ -1,119 +1,28 @@
-import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair, Menu, X, UserPlus, ShieldCheck, Megaphone, ConeIcon, ShoppingBag, Send, CheckCircle2 } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, UserPlus, Menu, X, ShieldCheck, Megaphone, ConeIcon, ShoppingBag, Send, CheckCircle2, Code2 } from "lucide-react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/i18n/LanguageProvider";
 import heroBg from "@/assets/hero-bg.png";
 import BrandLogo from "@/components/BrandLogo";
 import { useTheme } from "@/theme/ThemeProvider";
-import FieldDiagram from "@/components/FieldDiagram";
 import LanguageToggle from "@/components/LanguageToggle";
 import { useT } from "@/i18n/LanguageProvider";
 import type { TranslationKey } from "@/i18n/dictionaries";
+import {
+  positionSlugMap,
+  offensePositions,
+  defensePositions,
+  type PositionEntry,
+} from "@/data/positions";
+
+// Defer the 1.5k-line FieldDiagram bundle until the section is reached.
+const FieldDiagram = lazy(() => import("@/components/FieldDiagram"));
+const FieldDiagramFallback = () => (
+  <div className="w-full aspect-[2/3] rounded-xl bg-card/40 border border-border animate-pulse" />
+);
 
 const POSITIONS_URL = "/posisjoner";
-
-const positionSlugMap: Record<string, string> = {
-  "Quarterback": "quarterback",
-  "Running Back": "running-back",
-  "Center": "center",
-  "Wide Receiver": "wide-receiver",
-  "Rusher": "rusher",
-  "Defensive Back": "defensive-back",
-  "Safety": "safety",
-};
-
-// Position cards source data — text fields are translation keys, resolved at render time.
-type PositionEntry = {
-  name: string;
-  abbr: string;
-  taglineKey: TranslationKey;
-  icon: React.ReactNode;
-  glowBg: string;
-  supColor?: string;
-  roleKey: TranslationKey;
-  traitsKey: TranslationKey;
-  nflExamples: string;
-};
-
-const offensePositions: PositionEntry[] = [
-  {
-    name: "Quarterback",
-    abbr: "QB",
-    taglineKey: "pos.qb.tagline",
-    icon: <Star className="w-5 h-5 text-amber-400" />,
-    glowBg: "bg-amber-400/10",
-    supColor: "text-amber-400",
-    roleKey: "pos.qb.role",
-    traitsKey: "pos.qb.traits",
-    nflExamples: "Patrick Mahomes, Josh Allen, Lamar Jackson",
-  },
-  {
-    name: "Running Back",
-    abbr: "RB",
-    taglineKey: "pos.rb.tagline",
-    icon: <Zap className="w-5 h-5 text-emerald-400" />,
-    glowBg: "bg-emerald-400/10",
-    supColor: "text-emerald-400",
-    roleKey: "pos.rb.role",
-    traitsKey: "pos.rb.traits",
-    nflExamples: "Derrick Henry, Saquon Barkley, Christian McCaffrey",
-  },
-  {
-    name: "Center",
-    abbr: "C",
-    taglineKey: "pos.c.tagline",
-    icon: <Users className="w-5 h-5" />,
-    glowBg: "bg-sky-400/10",
-    roleKey: "pos.c.role",
-    traitsKey: "pos.c.traits",
-    nflExamples: "Travis Kelce (TE), Jason Kelce",
-  },
-  {
-    name: "Wide Receiver",
-    abbr: "WR",
-    taglineKey: "pos.wr.tagline",
-    icon: <Target className="w-5 h-5" />,
-    glowBg: "bg-sky-400/10",
-    roleKey: "pos.wr.role",
-    traitsKey: "pos.wr.traits",
-    nflExamples: "Tyreek Hill, Ja'Marr Chase, CeeDee Lamb",
-  },
-];
-
-const defensePositions: PositionEntry[] = [
-  {
-    name: "Rusher",
-    abbr: "R",
-    taglineKey: "pos.r.tagline",
-    icon: <Crosshair className="w-5 h-5 text-orange-400" />,
-    glowBg: "bg-orange-400/10",
-    supColor: "text-orange-400",
-    roleKey: "pos.r.role",
-    traitsKey: "pos.r.traits",
-    nflExamples: "Myles Garrett, Micah Parsons, T.J. Watt",
-  },
-  {
-    name: "Defensive Back",
-    abbr: "DB",
-    taglineKey: "pos.db.tagline",
-    icon: <Shield className="w-5 h-5" />,
-    glowBg: "bg-rose-400/10",
-    roleKey: "pos.db.role",
-    traitsKey: "pos.db.traits",
-    nflExamples: "Sauce Gardner, Patrick Surtain II, Jalen Ramsey",
-  },
-  {
-    name: "Safety",
-    abbr: "S",
-    taglineKey: "pos.s.tagline",
-    icon: <Eye className="w-5 h-5" />,
-    glowBg: "bg-rose-400/10",
-    roleKey: "pos.s.role",
-    traitsKey: "pos.s.traits",
-    nflExamples: "Kyle Hamilton, Derwin James, Jessie Bates III",
-  },
-];
 
 const navItemIds = ["om", "treninger", "spillet", "coachene", "kom-i-gang", "video", "faq"] as const;
 const navItemKeyFor = (id: typeof navItemIds[number]): TranslationKey => {

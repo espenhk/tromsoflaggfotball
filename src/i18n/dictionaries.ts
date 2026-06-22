@@ -402,6 +402,7 @@ const en: Record<TranslationKey, string> = {
 
   // Footer
   "footer.brand": "Tromsø Flag Football",
+  "footer.howIDidIt": "How this site was built",
 
   // FieldDiagram
   "fd.offense": "Offense",

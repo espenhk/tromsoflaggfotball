@@ -685,6 +685,7 @@ const TryTrainingSection = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder={t("try.namePh")}
+                  aria-invalid={status === "error" && name.trim().length < 1}
                   className={inputCls}
                 />
               </label>
@@ -697,6 +698,7 @@ const TryTrainingSection = () => {
                   value={contact}
                   onChange={(e) => setContact(e.target.value)}
                   placeholder={t("try.contactPh")}
+                  aria-invalid={status === "error" && contact.trim().length < 3}
                   className={inputCls}
                 />
               </label>

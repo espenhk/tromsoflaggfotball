@@ -151,6 +151,7 @@ const no = {
 
   // ── Footer ────────────────────────────────────────────
   "footer.brand": "Tromsø Flaggfotball",
+  "footer.howIDidIt": "Hvordan denne siden ble laget",
 
   // ── FieldDiagram ──────────────────────────────────────
   "fd.offense": "Angrep",
@@ -201,10 +202,10 @@ const no = {
 
   // ── HowIDidIt page chrome (steps stay NO-only for length) ─
   "hid.headerTitle": "Hvordan denne siden ble laget",
-  "hid.h": "Bygget med GPT-5.2 + Lovable",
+  "hid.h": "Bygget med GPT-5 + Lovable",
   "hid.p1.pre":
     "Denne nettsiden startet som en enkel Canva-side. Den visuelle identiteten — farger, fonter, og designretning — ble utviklet gjennom samtaler med ",
-  "hid.p1.strong": "GPT-5.2",
+  "hid.p1.strong": "GPT-5",
   "hid.p1.mid": ". Deretter ble alt bygget ut til en interaktiv nettside med ",
   "hid.p1.linkText": "Lovable",
   "hid.p1.post": ".",
@@ -401,6 +402,7 @@ const en: Record<TranslationKey, string> = {
 
   // Footer
   "footer.brand": "Tromsø Flag Football",
+  "footer.howIDidIt": "How this site was built",
 
   // FieldDiagram
   "fd.offense": "Offense",
@@ -453,10 +455,10 @@ const en: Record<TranslationKey, string> = {
 
   // HowIDidIt
   "hid.headerTitle": "How this site was built",
-  "hid.h": "Built with GPT-5.2 + Lovable",
+  "hid.h": "Built with GPT-5 + Lovable",
   "hid.p1.pre":
     "This website started as a simple Canva page. The visual identity — colors, fonts and design direction — was developed through conversations with ",
-  "hid.p1.strong": "GPT-5.2",
+  "hid.p1.strong": "GPT-5",
   "hid.p1.mid": ". Then it was all built out into an interactive site with ",
   "hid.p1.linkText": "Lovable",
   "hid.p1.post": ".",

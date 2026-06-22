@@ -1,4 +1,4 @@
-import { useLang } from "@/i18n/LanguageProvider";
+import { useLang, useT } from "@/i18n/LanguageProvider";
 
 /**
  * Compact NO|EN pill toggle. Clicking anywhere on the pill swaps to the other language.
@@ -6,6 +6,7 @@ import { useLang } from "@/i18n/LanguageProvider";
  */
 const LanguageToggle = ({ className = "" }: { className?: string }) => {
   const { lang, setLang } = useLang();
+  const t = useT();
 
   return (
     <button
@@ -14,7 +15,7 @@ const LanguageToggle = ({ className = "" }: { className?: string }) => {
       className={`inline-flex items-center rounded-full border border-white/15 bg-background/40 backdrop-blur p-0.5 text-[10px] font-heading font-bold cursor-pointer ${className}`}
       role="switch"
       aria-checked={lang === "en"}
-      aria-label="Language"
+      aria-label={t("nav.languageLabel")}
     >
       <span
         className={`px-2 py-0.5 rounded-full transition-colors ${

@@ -4,11 +4,11 @@ import { ArrowLeft, ChevronDown, Star, Zap, Users, Target, Crosshair, Shield, Ey
 import FieldDiagram from "@/components/FieldDiagram";
 import BrandLogo from "@/components/BrandLogo";
 import { useTheme } from "@/theme/ThemeProvider";
-// QB and WR images are intentionally swapped — the source PDF had them mislabeled
-import qbImg from "@/assets/positions/wide-receiver.png";
+import { useT } from "@/i18n/LanguageProvider";
+import qbImg from "@/assets/positions/quarterback.png";
 import centerImg from "@/assets/positions/center.png";
 import rbImg from "@/assets/positions/running-back.png";
-import wrImg from "@/assets/positions/quarterback.png";
+import wrImg from "@/assets/positions/wide-receiver.png";
 import dbImg from "@/assets/positions/defensive-back.png";
 import rusherImg from "@/assets/positions/rusher.png";
 import safetyImg from "@/assets/positions/safety.png";
@@ -228,6 +228,7 @@ const defensePositions = defenseOrder.map((id) => byId[id]);
 const Posisjoner = () => {
   const { hash } = useLocation();
   const { theme } = useTheme();
+  const t = useT();
   const [openId, setOpenId] = useState<string | null>(null);
   // Fullscreen diagram view shown when user lands on /posisjoner without a target hash
   const [showFullscreen, setShowFullscreen] = useState<boolean>(!hash);
@@ -265,7 +266,7 @@ const Posisjoner = () => {
             <ArrowLeft className="w-4 h-4" />
             <BrandLogo variant="mark" whiteMark alt="Logo" className="h-6 w-auto" />
           </Link>
-          <h1 className="font-heading font-medium text-white text-sm">Posisjoner i flaggfotball</h1>
+          <h1 className="font-heading font-medium text-white text-sm">{t("posPage.headerTitle")}</h1>
         </div>
       </nav>
 
@@ -286,21 +287,10 @@ const Posisjoner = () => {
         {/* Intro */}
         <section className="space-y-6">
           <div className="space-y-3">
-            <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">Posisjoner i flaggfotball</h2>
-            <p className="text-muted-foreground font-body leading-relaxed max-w-2xl">
-              I flaggfotball spilles det 5 mot 5, og posisjonene er i hovedsak de samme som i tackle-fotball, men uten
-              linjemenn. Hver posisjon har en unik rolle, og hvert spill er en maskin der alle må gjøre sin del. Trykk
-              på en spiller på banen — eller en posisjon i listen — for å lese mer.
-            </p>
-            <p className="text-muted-foreground font-body leading-relaxed max-w-2xl">
-              Alle posisjoner i flaggfotball har fordeler – og det beste er at spillere ikke trenger en bestemt
-              kroppsbygning for å lykkes.
-            </p>
-            <p className="text-muted-foreground font-body leading-relaxed max-w-2xl">
-              Flaggfotball er utrolig inkluderende, og mange spillere med ulik utvikling finner en posisjon der de kan
-              være konkurransedyktige. I flaggfotball spiller hver spiller både angrep og forsvar, noe som betyr at
-              allsidige spillere som behersker flere ferdigheter har størst suksess.
-            </p>
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">{t("posPage.h2")}</h2>
+            <p className="text-muted-foreground font-body leading-relaxed max-w-2xl">{t("posPage.intro1")}</p>
+            <p className="text-muted-foreground font-body leading-relaxed max-w-2xl">{t("posPage.intro2")}</p>
+            <p className="text-muted-foreground font-body leading-relaxed max-w-2xl">{t("posPage.intro3")}</p>
           </div>
 
           {/* Compact field diagram for navigation while browsing the list */}
@@ -311,7 +301,7 @@ const Posisjoner = () => {
 
         {/* Offense */}
         <section className="space-y-4">
-          <h3 className="font-heading text-lg font-medium text-sky-400">Angrep</h3>
+          <h3 className="font-heading text-lg font-medium text-sky-400">{t("posPage.offense")}</h3>
           <div>
             {offensePositions.map((pos) => (
               <PositionRow
@@ -326,7 +316,7 @@ const Posisjoner = () => {
 
         {/* Defense */}
         <section className="space-y-4">
-          <h3 className="font-heading text-lg font-medium text-rose-400">Forsvar</h3>
+          <h3 className="font-heading text-lg font-medium text-rose-400">{t("posPage.defense")}</h3>
           <div>
             {defensePositions.map((pos) => (
               <PositionRow
@@ -345,7 +335,7 @@ const Posisjoner = () => {
             className={`text-sm hover:underline font-body inline-flex items-center gap-1 ${theme === "tuil" ? "text-rose-300" : "text-primary"}`}
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            Tilbake til hovedsiden
+            {t("posPage.back")}
           </Link>
         </div>
       </main>
@@ -354,6 +344,7 @@ const Posisjoner = () => {
 };
 
 const PositionRow = ({ pos, open, onToggle }: { pos: PositionData; open: boolean; onToggle: () => void }) => {
+  const t = useT();
   return (
     <article id={pos.id} className="scroll-mt-20 group relative border-t border-white/5 last:border-b">
       {/* Glow background on hover (desktop) */}
@@ -394,7 +385,7 @@ const PositionRow = ({ pos, open, onToggle }: { pos: PositionData; open: boolean
 
               <div className="pt-1">
                 <h5 className={`text-xs font-heading font-medium uppercase tracking-wider ${pos.accentColor} mb-2`}>
-                  Ferdigheter & egenskaper
+                  {t("posPage.skillsLabel")}
                 </h5>
                 <ul className="space-y-1.5">
                   {pos.skills.map((skill) => (
@@ -413,13 +404,13 @@ const PositionRow = ({ pos, open, onToggle }: { pos: PositionData; open: boolean
 
               <div>
                 <h5 className="text-xs font-heading font-medium uppercase tracking-wider text-foreground mb-1">
-                  Hvem passer som {pos.name.toLowerCase()}?
+                  {t("posPage.whoFitsPrefix")} {pos.name.toLowerCase()}?
                 </h5>
                 <p className="text-sm text-muted-foreground font-body leading-relaxed">{pos.whoFits}</p>
               </div>
 
               <p className="text-xs font-body text-muted-foreground">
-                <span className="text-foreground font-semibold">NFL-forbilder:</span> {pos.nflExamples}
+                <span className="text-foreground font-semibold">{t("posPage.nflLabel")}</span> {pos.nflExamples}
               </p>
             </div>
 

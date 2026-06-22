@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { ArrowUpRight } from "lucide-react";
+import { useT } from "@/i18n/LanguageProvider";
+import type { TranslationKey } from "@/i18n/dictionaries";
 
 // Map field-diagram dot ids → /posisjoner slugs
 const idToSlug: Record<string, string> = {
@@ -15,39 +17,26 @@ const idToSlug: Record<string, string> = {
   "DB-SA": "safety",
 };
 
-const positionFullNames: Record<string, string> = {
-  QB: "QB – Quarterback",
-  C: "C – Center",
-  WR: "WR – Wide Receiver",
-  RB: "RB – Running Back",
-  R: "R – Rusher",
-  DB: "DB – Defensive Back",
-  S: "S – Safety",
-};
-
-const positionDescriptions: Record<string, string> = {
-  QB: "Lagets playmaker og leder på banen. Kaster ballen til medspillere og styrer spillet.",
-  C: "Starter hvert spill ved å snappe ballen til QB. Går deretter ut som mottaker eller blokkerer rusheren.",
-  WR: "Løper ruter og fanger pasninger fra QB. Målet er å bli fri fra forsvareren og ta imot ballen.",
-  RB: "Tar imot ballen fra QB og løper med den. Kan også brukes som mottaker på korte pasninger.",
-  R: "Starter 7 yards fra ballen med hånden i året. Kan rushe mot QB så fort de klarer etter snap. Laget kan ha 0–2 rushere per spill.",
-  DB: "Dekker motstanderens mottakere tett. Hindrer pasninger og drar flagget til ballbæreren.",
-  S: "Siste skanse i forsvaret. Leser spillet bakfra, hjelper til med dekning og sikrer mot lange pasninger.",
-};
+// Position labels/descriptions live in i18n. Tooltip components call
+// useT() and resolve `fd.full.${abbr}` / `fd.desc.${abbr}` at render time.
+const POSITION_ABBRS = ["QB", "C", "WR", "RB", "R", "DB", "S"] as const;
+type PositionAbbr = typeof POSITION_ABBRS[number];
+const isKnownPosition = (s: string): s is PositionAbbr =>
+  (POSITION_ABBRS as readonly string[]).includes(s);
 
 type OffenseTabId = "formasjon" | "kastespill" | "løpespill";
 type DefenseTabId = "formasjon" | "soneforsvar" | "mann-mot-mann";
 
-const offenseTabs: { id: OffenseTabId; label: string }[] = [
-  { id: "formasjon", label: "Formasjon" },
-  { id: "kastespill", label: "Kastespill" },
-  { id: "løpespill", label: "Løpespill" },
+const offenseTabs: { id: OffenseTabId; labelKey: TranslationKey }[] = [
+  { id: "formasjon", labelKey: "fd.tab.formasjon" },
+  { id: "kastespill", labelKey: "fd.tab.kastespill" },
+  { id: "løpespill", labelKey: "fd.tab.lopespill" },
 ];
 
-const defenseTabs: { id: DefenseTabId; label: string }[] = [
-  { id: "formasjon", label: "Formasjon" },
-  { id: "soneforsvar", label: "Soneforsvar" },
-  { id: "mann-mot-mann", label: "Man-man" },
+const defenseTabs: { id: DefenseTabId; labelKey: TranslationKey }[] = [
+  { id: "formasjon", labelKey: "fd.tab.formasjon" },
+  { id: "soneforsvar", labelKey: "fd.tab.soneforsvar" },
+  { id: "mann-mot-mann", labelKey: "fd.tab.mannmotmann" },
 ];
 
 // ------------------------------------------------------------------
@@ -774,6 +763,7 @@ const FieldDiagram = ({
   const showPlaySelector = variant === "simple" && (activeTab === "kastespill" || activeTab === "løpespill");
   const availablePlays = activeTab === "kastespill" ? passPlays : runPlays;
   const selectedPlay = showPlaySelector ? (availablePlays.find((p) => p.id === selectedPlayId) ?? null) : null;
+  const t = useT();
 
   // Build offense players, applying play overrides if present
   const baseOff = baseOffense(activeTab);
@@ -840,7 +830,7 @@ const FieldDiagram = ({
             className={`bg-rose-950/80 backdrop-blur-md ${fullscreen ? "border-b-0" : "border-2 border-b-0 border-rose-400/20 rounded-t-xl"} overflow-hidden`}
           >
             <div className="text-[10px] font-heading font-bold text-rose-300/50 tracking-widest uppercase text-center py-1 bg-rose-950/30">
-              Forsvar
+              {t("fd.defense")}
             </div>
             <div className="flex">
               {defenseTabs.map((tab) => (
@@ -856,7 +846,7 @@ const FieldDiagram = ({
                       : "bg-rose-950/30 text-rose-300/30 hover:text-rose-300/50 hover:bg-rose-950/50"
                   }`}
                 >
-                  {tab.label}
+                  {t(tab.labelKey)}
                 </button>
               ))}
             </div>
@@ -1301,11 +1291,11 @@ const FieldDiagram = ({
           >
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-sky-400 inline-block" />
-              <span className="text-[10px] text-white/60 font-body">Angrep</span>
+              <span className="text-[10px] text-white/60 font-body">{t("fd.offense")}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-rose-400 inline-block" />
-              <span className="text-[10px] text-white/60 font-body">Forsvar</span>
+              <span className="text-[10px] text-white/60 font-body">{t("fd.defense")}</span>
             </div>
           </div>
         </div>
@@ -1326,7 +1316,7 @@ const FieldDiagram = ({
                       : "bg-sky-950/30 text-sky-300/30 hover:text-sky-300/50 hover:bg-sky-950/50"
                   }`}
                 >
-                  {tab.label}
+                  {t(tab.labelKey)}
                 </button>
               ))}
             </div>
@@ -1340,7 +1330,7 @@ const FieldDiagram = ({
                       : "bg-sky-950/50 text-sky-300/60 hover:text-sky-200"
                   }`}
                 >
-                  Standard
+                  {t("fd.standard")}
                 </button>
                 {availablePlays.map((play) => (
                   <button
@@ -1358,7 +1348,7 @@ const FieldDiagram = ({
               </div>
             )}
             <div className="text-[10px] font-heading font-bold text-sky-300/50 tracking-widest uppercase text-center py-1 bg-sky-950/30">
-              Angrep
+              {t("fd.offense")}
             </div>
           </div>
         </div>
@@ -1428,13 +1418,18 @@ const AnimatedPlayerDot = ({
   const resolvedColor = colorMap[color] || "#38bdf8";
 
   const isActive = activeTooltip === id;
+  const t = useT();
   // Tooltip lookup uses the position abbreviation, not custom play labels (X/Y/Z/Q)
   const tooltipKey =
     displayLabel.length === 1
       ? (({ X: "WR", Y: "WR", Z: "WR", Q: "QB" } as Record<string, string>)[displayLabel] ?? displayLabel)
       : displayLabel;
-  const description = positionDescriptions[tooltipKey] || "";
-  const fullName = positionFullNames[tooltipKey] || tooltipKey;
+  const description = isKnownPosition(tooltipKey)
+    ? t(`fd.desc.${tooltipKey}` as TranslationKey)
+    : "";
+  const fullName = isKnownPosition(tooltipKey)
+    ? t(`fd.full.${tooltipKey}` as TranslationKey)
+    : tooltipKey;
   const tooltipAlign = pos.left > 60 ? "right-0" : pos.left < 40 ? "left-0" : "left-1/2 -translate-x-1/2";
 
   const handleClick = (e: React.MouseEvent) => {
@@ -1492,7 +1487,7 @@ const AnimatedPlayerDot = ({
               onClick={handleNavClick}
               className="inline-flex items-center gap-1 text-[11px] font-heading font-bold text-primary hover:underline"
             >
-              Les mer <ArrowUpRight className="w-3 h-3" strokeWidth={2.5} />
+              {t("fd.readMore")} <ArrowUpRight className="w-3 h-3" strokeWidth={2.5} />
             </button>
           )}
         </div>

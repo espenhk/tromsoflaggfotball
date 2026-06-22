@@ -1,5 +1,21 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
-import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+};
+
+// Constant-time string equality (length leak is acceptable here).
+function safeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < a.length; i++) {
+    mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return mismatch === 0;
+}
 
 const TOKEN_TTL_SECONDS = 60 * 60; // 1 hour
 
@@ -63,7 +79,7 @@ Deno.serve(async (req) => {
     }
 
     const passwordOk =
-      typeof password === "string" && password.length > 0 && password === expected;
+      typeof password === "string" && password.length > 0 && safeEqual(password, expected);
     const tokenOk = !passwordOk && (await verifyToken(token, expected));
     if (!passwordOk && !tokenOk) {
       return new Response(JSON.stringify({ error: "unauthorized" }), {

@@ -129,12 +129,12 @@ const steps: Step[] = [
   {
     phase: "Fase 0",
     icon: <Sparkles size={20} />,
-    title: "Utgangspunktet: Canva + GPT-5.2",
+    title: "Utgangspunktet: Canva + GPT-5",
     description:
-      "Prosjektet startet ikke med kode — det startet med en enkel Canva-side og en lang samtale med GPT-5.2. Før noe ble bygget i Lovable, var den visuelle identiteten allerede definert.",
+      "Prosjektet startet ikke med kode — det startet med en enkel Canva-side og en lang samtale med GPT-5. Før noe ble bygget i Lovable, var den visuelle identiteten allerede definert.",
     details: [
       "Den opprinnelige nettsiden var bygget som en enkel one-pager i Canva. Funksjonell, men statisk — ingen interaktivitet, ingen animasjoner, ingen mulighet for å utvide innhold dynamisk.",
-      "Gjennom en serie samtaler med GPT-5.2 ble den visuelle retningen utforsket: arktisk tema, mørke bakgrunner, nordlys-grønne aksenter. GPT foreslo fargepaletter, fontkombos og layout-prinsipper.",
+      "Gjennom en serie samtaler med GPT-5 ble den visuelle retningen utforsket: arktisk tema, mørke bakgrunner, nordlys-grønne aksenter. GPT foreslo fargepaletter, fontkombos og layout-prinsipper.",
       "Font-valget landet på Syne (geometrisk, fet — perfekt for overskrifter) og Outfit (moderne, lettlest — ideell for brødtekst). Begge ble valgt for å balansere sportslighet med lesbarhet.",
       "Fargepaletten ble definert i HSL: natt-blå (#001a14) som bakgrunn, fjord-teal som sekundær, nordlys-grønn som primærfarge, og is-mint som aksent. Alt inspirert av Tromsøs arktiske landskap.",
       "Logo, ikoner og det overordnede designspråket var altså klart før Lovable kom inn i bildet. Lovable-jobben handlet om å ta en statisk visjon og gjøre den levende.",
@@ -267,10 +267,10 @@ export default function HowIDidIt() {
       {/* Intro */}
       <section className="max-w-3xl mx-auto px-6 pt-16 pb-8">
         <h2 className="font-heading font-extrabold text-3xl md:text-4xl text-foreground mb-4">
-          Bygget med GPT-5.2 + Lovable
+          Bygget med GPT-5 + Lovable
         </h2>
         <p className="text-muted-foreground font-body leading-relaxed text-lg mb-2">
-          Denne nettsiden startet som en enkel Canva-side. Den visuelle identiteten — farger, fonter, og designretning — ble utviklet gjennom samtaler med <strong className="text-foreground/80">GPT-5.2</strong>. Deretter ble alt bygget ut til en interaktiv nettside med <a href="https://lovable.dev" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Lovable</a>.
+          Denne nettsiden startet som en enkel Canva-side. Den visuelle identiteten — farger, fonter, og designretning — ble utviklet gjennom samtaler med <strong className="text-foreground/80">GPT-5</strong>. Deretter ble alt bygget ut til en interaktiv nettside med <a href="https://lovable.dev" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Lovable</a>.
         </p>
         <p className="text-muted-foreground font-body leading-relaxed">
           Ingen manuell koding. Ingen Figma. Bare naturlig språk, to AI-er, og en visjon om å gjøre flaggfotball tilgjengelig.

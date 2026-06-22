@@ -1,119 +1,28 @@
-import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, Star, Shield, Zap, Target, Eye, Crosshair, Menu, X, UserPlus, ShieldCheck, Megaphone, ConeIcon, ShoppingBag, Send, CheckCircle2 } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, UserPlus, Menu, X, ShieldCheck, Megaphone, ConeIcon, ShoppingBag, Send, CheckCircle2, Code2 } from "lucide-react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/i18n/LanguageProvider";
 import heroBg from "@/assets/hero-bg.png";
 import BrandLogo from "@/components/BrandLogo";
 import { useTheme } from "@/theme/ThemeProvider";
-import FieldDiagram from "@/components/FieldDiagram";
 import LanguageToggle from "@/components/LanguageToggle";
 import { useT } from "@/i18n/LanguageProvider";
 import type { TranslationKey } from "@/i18n/dictionaries";
+import {
+  positionSlugMap,
+  offensePositions,
+  defensePositions,
+  type PositionEntry,
+} from "@/data/positions";
+
+// Defer the 1.5k-line FieldDiagram bundle until the section is reached.
+const FieldDiagram = lazy(() => import("@/components/FieldDiagram"));
+const FieldDiagramFallback = () => (
+  <div className="w-full aspect-[2/3] rounded-xl bg-card/40 border border-border animate-pulse" />
+);
 
 const POSITIONS_URL = "/posisjoner";
-
-const positionSlugMap: Record<string, string> = {
-  "Quarterback": "quarterback",
-  "Running Back": "running-back",
-  "Center": "center",
-  "Wide Receiver": "wide-receiver",
-  "Rusher": "rusher",
-  "Defensive Back": "defensive-back",
-  "Safety": "safety",
-};
-
-// Position cards source data — text fields are translation keys, resolved at render time.
-type PositionEntry = {
-  name: string;
-  abbr: string;
-  taglineKey: TranslationKey;
-  icon: React.ReactNode;
-  glowBg: string;
-  supColor?: string;
-  roleKey: TranslationKey;
-  traitsKey: TranslationKey;
-  nflExamples: string;
-};
-
-const offensePositions: PositionEntry[] = [
-  {
-    name: "Quarterback",
-    abbr: "QB",
-    taglineKey: "pos.qb.tagline",
-    icon: <Star className="w-5 h-5 text-amber-400" />,
-    glowBg: "bg-amber-400/10",
-    supColor: "text-amber-400",
-    roleKey: "pos.qb.role",
-    traitsKey: "pos.qb.traits",
-    nflExamples: "Patrick Mahomes, Josh Allen, Lamar Jackson",
-  },
-  {
-    name: "Running Back",
-    abbr: "RB",
-    taglineKey: "pos.rb.tagline",
-    icon: <Zap className="w-5 h-5 text-emerald-400" />,
-    glowBg: "bg-emerald-400/10",
-    supColor: "text-emerald-400",
-    roleKey: "pos.rb.role",
-    traitsKey: "pos.rb.traits",
-    nflExamples: "Derrick Henry, Saquon Barkley, Christian McCaffrey",
-  },
-  {
-    name: "Center",
-    abbr: "C",
-    taglineKey: "pos.c.tagline",
-    icon: <Users className="w-5 h-5" />,
-    glowBg: "bg-sky-400/10",
-    roleKey: "pos.c.role",
-    traitsKey: "pos.c.traits",
-    nflExamples: "Travis Kelce (TE), Jason Kelce",
-  },
-  {
-    name: "Wide Receiver",
-    abbr: "WR",
-    taglineKey: "pos.wr.tagline",
-    icon: <Target className="w-5 h-5" />,
-    glowBg: "bg-sky-400/10",
-    roleKey: "pos.wr.role",
-    traitsKey: "pos.wr.traits",
-    nflExamples: "Tyreek Hill, Ja'Marr Chase, CeeDee Lamb",
-  },
-];
-
-const defensePositions: PositionEntry[] = [
-  {
-    name: "Rusher",
-    abbr: "R",
-    taglineKey: "pos.r.tagline",
-    icon: <Crosshair className="w-5 h-5 text-orange-400" />,
-    glowBg: "bg-orange-400/10",
-    supColor: "text-orange-400",
-    roleKey: "pos.r.role",
-    traitsKey: "pos.r.traits",
-    nflExamples: "Myles Garrett, Micah Parsons, T.J. Watt",
-  },
-  {
-    name: "Defensive Back",
-    abbr: "DB",
-    taglineKey: "pos.db.tagline",
-    icon: <Shield className="w-5 h-5" />,
-    glowBg: "bg-rose-400/10",
-    roleKey: "pos.db.role",
-    traitsKey: "pos.db.traits",
-    nflExamples: "Sauce Gardner, Patrick Surtain II, Jalen Ramsey",
-  },
-  {
-    name: "Safety",
-    abbr: "S",
-    taglineKey: "pos.s.tagline",
-    icon: <Eye className="w-5 h-5" />,
-    glowBg: "bg-rose-400/10",
-    roleKey: "pos.s.role",
-    traitsKey: "pos.s.traits",
-    nflExamples: "Kyle Hamilton, Derwin James, Jessie Bates III",
-  },
-];
 
 const navItemIds = ["om", "treninger", "spillet", "coachene", "kom-i-gang", "video", "faq"] as const;
 const navItemKeyFor = (id: typeof navItemIds[number]): TranslationKey => {
@@ -169,8 +78,17 @@ const Index = () => {
         setMobileMenuOpen(false);
       }
     };
-    if (mobileMenuOpen) document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    const keyHandler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileMenuOpen(false);
+    };
+    if (mobileMenuOpen) {
+      document.addEventListener("mousedown", handler);
+      document.addEventListener("keydown", keyHandler);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handler);
+      document.removeEventListener("keydown", keyHandler);
+    };
   }, [mobileMenuOpen]);
 
   return (
@@ -474,9 +392,18 @@ const Index = () => {
               {theme === "tuil" ? "Flaggfotball" : t("footer.brand")}
             </span>
           </div>
-          <p className={`text-xs ${theme === "tuil" ? "text-white/80" : "text-muted-foreground"}`}>
-            2026 Tromsø Flaggfotball / TUIL
-          </p>
+          <div className={`flex items-center gap-4 text-xs ${theme === "tuil" ? "text-white/80" : "text-muted-foreground"}`}>
+            <Link
+              to="/how-i-did-it"
+              className="inline-flex items-center gap-1.5 hover:underline"
+            >
+              <Code2 className="w-3.5 h-3.5" />
+              {t("footer.howIDidIt")}
+            </Link>
+            <span>
+              © {new Date().getFullYear()} Tromsø Flaggfotball / TUIL
+            </span>
+          </div>
         </div>
       </footer>
     </div>
@@ -566,7 +493,9 @@ const GameSection = () => {
 
           {/* Field diagram - center */}
           <div>
-            <FieldDiagram onPositionNavigate={goToPosition} />
+            <Suspense fallback={<FieldDiagramFallback />}>
+              <FieldDiagram onPositionNavigate={goToPosition} />
+            </Suspense>
             <Link
               to={POSITIONS_URL}
               className={`inline-block text-sm font-body hover:opacity-80 transition-opacity mt-4 ${theme === "tuil" ? "text-rose-300" : "text-primary"}`}
@@ -589,7 +518,9 @@ const GameSection = () => {
         {/* Mobile: stacked layout */}
         <div className="space-y-6 md:hidden">
           <div>
-            <FieldDiagram onPositionNavigate={goToPosition} />
+            <Suspense fallback={<FieldDiagramFallback />}>
+              <FieldDiagram onPositionNavigate={goToPosition} />
+            </Suspense>
             <Link
               to={POSITIONS_URL}
               className={`inline-block text-sm font-body hover:opacity-80 transition-opacity mt-4 ${theme === "tuil" ? "text-rose-300" : "text-primary"}`}
@@ -643,7 +574,7 @@ const TrainingSection = () => {
           <div className="rounded-xl overflow-hidden border border-border flex-1 h-[180px] md:h-auto md:self-stretch">
             <iframe
               className="w-full h-full"
-              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=TUIL+Arena,+Tromsø&maptype=satellite&zoom=17"
+              src={`https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"}&q=TUIL+Arena,+Tromsø&maptype=satellite&zoom=17`}
               title="TUIL Arena, Tromsø"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
@@ -754,6 +685,7 @@ const TryTrainingSection = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder={t("try.namePh")}
+                  aria-invalid={status === "error" && name.trim().length < 1}
                   className={inputCls}
                 />
               </label>
@@ -766,6 +698,7 @@ const TryTrainingSection = () => {
                   value={contact}
                   onChange={(e) => setContact(e.target.value)}
                   placeholder={t("try.contactPh")}
+                  aria-invalid={status === "error" && contact.trim().length < 3}
                   className={inputCls}
                 />
               </label>
@@ -883,11 +816,24 @@ const CoachCard = ({
 }) => {
   const [open, setOpen] = useState(false);
   const { theme } = useTheme();
+  const toggle = () => setOpen((o) => !o);
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggle();
+    }
+  };
   return (
     <article className="relative md:border-0 border-t border-white/5 first:border-t-0">
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full text-left py-2 md:py-1.5"
+      {/* Custom toggle container — using a real <button> would nest the
+          <a tel:> phone link inside it, which is invalid HTML. */}
+      <div
+        role="button"
+        tabIndex={0}
+        aria-expanded={open}
+        onClick={toggle}
+        onKeyDown={onKeyDown}
+        className="w-full text-left py-2 md:py-1.5 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
       >
         {/* Desktop layout */}
         <div className="hidden md:grid grid-cols-[24px_140px_1fr_auto_auto] items-center gap-x-4">
@@ -917,7 +863,7 @@ const CoachCard = ({
             className={`w-3.5 h-3.5 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
           />
         </div>
-      </button>
+      </div>
       <div className={`grid transition-[grid-template-rows,opacity,margin] duration-300 ease-out ${open ? "mt-1 md:mt-2 grid-rows-[1fr] opacity-100" : "mt-0 grid-rows-[0fr] opacity-0"}`}>
         <div className="min-h-0 overflow-hidden">
           <div className="pl-8 md:pl-9 pr-3 pb-2 md:pb-1 space-y-1.5">
@@ -1038,7 +984,9 @@ const FaqItem = ({ q, a }: { q: string; a: string }) => {
   const isTuil = theme === "tuil";
   return (
     <button
+      type="button"
       onClick={() => setOpen(!open)}
+      aria-expanded={open}
       className={`w-full text-left rounded-xl p-4 transition-all ${
         isTuil
           ? "bg-white/15 border border-white/25 hover:bg-white/25 hover:border-white/40"

@@ -816,11 +816,24 @@ const CoachCard = ({
 }) => {
   const [open, setOpen] = useState(false);
   const { theme } = useTheme();
+  const toggle = () => setOpen((o) => !o);
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggle();
+    }
+  };
   return (
     <article className="relative md:border-0 border-t border-white/5 first:border-t-0">
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full text-left py-2 md:py-1.5"
+      {/* Custom toggle container — using a real <button> would nest the
+          <a tel:> phone link inside it, which is invalid HTML. */}
+      <div
+        role="button"
+        tabIndex={0}
+        aria-expanded={open}
+        onClick={toggle}
+        onKeyDown={onKeyDown}
+        className="w-full text-left py-2 md:py-1.5 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
       >
         {/* Desktop layout */}
         <div className="hidden md:grid grid-cols-[24px_140px_1fr_auto_auto] items-center gap-x-4">
@@ -850,7 +863,7 @@ const CoachCard = ({
             className={`w-3.5 h-3.5 text-muted-foreground shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
           />
         </div>
-      </button>
+      </div>
       <div className={`grid transition-[grid-template-rows,opacity,margin] duration-300 ease-out ${open ? "mt-1 md:mt-2 grid-rows-[1fr] opacity-100" : "mt-0 grid-rows-[0fr] opacity-0"}`}>
         <div className="min-h-0 overflow-hidden">
           <div className="pl-8 md:pl-9 pr-3 pb-2 md:pb-1 space-y-1.5">

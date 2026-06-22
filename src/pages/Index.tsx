@@ -383,9 +383,18 @@ const Index = () => {
               {theme === "tuil" ? "Flaggfotball" : t("footer.brand")}
             </span>
           </div>
-          <p className={`text-xs ${theme === "tuil" ? "text-white/80" : "text-muted-foreground"}`}>
-            2026 Tromsø Flaggfotball / TUIL
-          </p>
+          <div className={`flex items-center gap-4 text-xs ${theme === "tuil" ? "text-white/80" : "text-muted-foreground"}`}>
+            <Link
+              to="/how-i-did-it"
+              className="inline-flex items-center gap-1.5 hover:underline"
+            >
+              <Code2 className="w-3.5 h-3.5" />
+              {t("footer.howIDidIt")}
+            </Link>
+            <span>
+              © {new Date().getFullYear()} Tromsø Flaggfotball / TUIL
+            </span>
+          </div>
         </div>
       </footer>
     </div>

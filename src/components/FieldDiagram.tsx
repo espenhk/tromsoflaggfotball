@@ -830,7 +830,7 @@ const FieldDiagram = ({
             className={`bg-rose-950/80 backdrop-blur-md ${fullscreen ? "border-b-0" : "border-2 border-b-0 border-rose-400/20 rounded-t-xl"} overflow-hidden`}
           >
             <div className="text-[10px] font-heading font-bold text-rose-300/50 tracking-widest uppercase text-center py-1 bg-rose-950/30">
-              Forsvar
+              {t("fd.defense")}
             </div>
             <div className="flex">
               {defenseTabs.map((tab) => (
@@ -846,7 +846,7 @@ const FieldDiagram = ({
                       : "bg-rose-950/30 text-rose-300/30 hover:text-rose-300/50 hover:bg-rose-950/50"
                   }`}
                 >
-                  {tab.label}
+                  {t(tab.labelKey)}
                 </button>
               ))}
             </div>

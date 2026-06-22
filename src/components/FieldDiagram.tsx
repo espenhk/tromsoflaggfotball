@@ -763,6 +763,7 @@ const FieldDiagram = ({
   const showPlaySelector = variant === "simple" && (activeTab === "kastespill" || activeTab === "løpespill");
   const availablePlays = activeTab === "kastespill" ? passPlays : runPlays;
   const selectedPlay = showPlaySelector ? (availablePlays.find((p) => p.id === selectedPlayId) ?? null) : null;
+  const t = useT();
 
   // Build offense players, applying play overrides if present
   const baseOff = baseOffense(activeTab);

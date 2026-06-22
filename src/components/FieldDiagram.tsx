@@ -1291,11 +1291,11 @@ const FieldDiagram = ({
           >
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-sky-400 inline-block" />
-              <span className="text-[10px] text-white/60 font-body">Angrep</span>
+              <span className="text-[10px] text-white/60 font-body">{t("fd.offense")}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-rose-400 inline-block" />
-              <span className="text-[10px] text-white/60 font-body">Forsvar</span>
+              <span className="text-[10px] text-white/60 font-body">{t("fd.defense")}</span>
             </div>
           </div>
         </div>
@@ -1316,7 +1316,7 @@ const FieldDiagram = ({
                       : "bg-sky-950/30 text-sky-300/30 hover:text-sky-300/50 hover:bg-sky-950/50"
                   }`}
                 >
-                  {tab.label}
+                  {t(tab.labelKey)}
                 </button>
               ))}
             </div>
@@ -1330,7 +1330,7 @@ const FieldDiagram = ({
                       : "bg-sky-950/50 text-sky-300/60 hover:text-sky-200"
                   }`}
                 >
-                  Standard
+                  {t("fd.standard")}
                 </button>
                 {availablePlays.map((play) => (
                   <button
@@ -1348,7 +1348,7 @@ const FieldDiagram = ({
               </div>
             )}
             <div className="text-[10px] font-heading font-bold text-sky-300/50 tracking-widest uppercase text-center py-1 bg-sky-950/30">
-              Angrep
+              {t("fd.offense")}
             </div>
           </div>
         </div>

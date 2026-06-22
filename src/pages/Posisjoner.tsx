@@ -4,11 +4,10 @@ import { ArrowLeft, ChevronDown, Star, Zap, Users, Target, Crosshair, Shield, Ey
 import FieldDiagram from "@/components/FieldDiagram";
 import BrandLogo from "@/components/BrandLogo";
 import { useTheme } from "@/theme/ThemeProvider";
-// QB and WR images are intentionally swapped — the source PDF had them mislabeled
-import qbImg from "@/assets/positions/wide-receiver.png";
+import qbImg from "@/assets/positions/quarterback.png";
 import centerImg from "@/assets/positions/center.png";
 import rbImg from "@/assets/positions/running-back.png";
-import wrImg from "@/assets/positions/quarterback.png";
+import wrImg from "@/assets/positions/wide-receiver.png";
 import dbImg from "@/assets/positions/defensive-back.png";
 import rusherImg from "@/assets/positions/rusher.png";
 import safetyImg from "@/assets/positions/safety.png";

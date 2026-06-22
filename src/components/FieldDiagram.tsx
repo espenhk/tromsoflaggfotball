@@ -1418,13 +1418,18 @@ const AnimatedPlayerDot = ({
   const resolvedColor = colorMap[color] || "#38bdf8";
 
   const isActive = activeTooltip === id;
+  const t = useT();
   // Tooltip lookup uses the position abbreviation, not custom play labels (X/Y/Z/Q)
   const tooltipKey =
     displayLabel.length === 1
       ? (({ X: "WR", Y: "WR", Z: "WR", Q: "QB" } as Record<string, string>)[displayLabel] ?? displayLabel)
       : displayLabel;
-  const description = positionDescriptions[tooltipKey] || "";
-  const fullName = positionFullNames[tooltipKey] || tooltipKey;
+  const description = isKnownPosition(tooltipKey)
+    ? t(`fd.desc.${tooltipKey}` as TranslationKey)
+    : "";
+  const fullName = isKnownPosition(tooltipKey)
+    ? t(`fd.full.${tooltipKey}` as TranslationKey)
+    : tooltipKey;
   const tooltipAlign = pos.left > 60 ? "right-0" : pos.left < 40 ? "left-0" : "left-1/2 -translate-x-1/2";
 
   const handleClick = (e: React.MouseEvent) => {
@@ -1482,7 +1487,7 @@ const AnimatedPlayerDot = ({
               onClick={handleNavClick}
               className="inline-flex items-center gap-1 text-[11px] font-heading font-bold text-primary hover:underline"
             >
-              Les mer <ArrowUpRight className="w-3 h-3" strokeWidth={2.5} />
+              {t("fd.readMore")} <ArrowUpRight className="w-3 h-3" strokeWidth={2.5} />
             </button>
           )}
         </div>

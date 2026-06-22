@@ -344,6 +344,7 @@ const Posisjoner = () => {
 };
 
 const PositionRow = ({ pos, open, onToggle }: { pos: PositionData; open: boolean; onToggle: () => void }) => {
+  const t = useT();
   return (
     <article id={pos.id} className="scroll-mt-20 group relative border-t border-white/5 last:border-b">
       {/* Glow background on hover (desktop) */}
@@ -384,7 +385,7 @@ const PositionRow = ({ pos, open, onToggle }: { pos: PositionData; open: boolean
 
               <div className="pt-1">
                 <h5 className={`text-xs font-heading font-medium uppercase tracking-wider ${pos.accentColor} mb-2`}>
-                  Ferdigheter & egenskaper
+                  {t("posPage.skillsLabel")}
                 </h5>
                 <ul className="space-y-1.5">
                   {pos.skills.map((skill) => (
@@ -403,13 +404,13 @@ const PositionRow = ({ pos, open, onToggle }: { pos: PositionData; open: boolean
 
               <div>
                 <h5 className="text-xs font-heading font-medium uppercase tracking-wider text-foreground mb-1">
-                  Hvem passer som {pos.name.toLowerCase()}?
+                  {t("posPage.whoFitsPrefix")} {pos.name.toLowerCase()}?
                 </h5>
                 <p className="text-sm text-muted-foreground font-body leading-relaxed">{pos.whoFits}</p>
               </div>
 
               <p className="text-xs font-body text-muted-foreground">
-                <span className="text-foreground font-semibold">NFL-forbilder:</span> {pos.nflExamples}
+                <span className="text-foreground font-semibold">{t("posPage.nflLabel")}</span> {pos.nflExamples}
               </p>
             </div>
 

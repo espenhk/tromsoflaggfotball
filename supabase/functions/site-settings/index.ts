@@ -1,5 +1,11 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
-import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+};
 
 async function hmacSha256(key: string, msg: string): Promise<Uint8Array> {
   const enc = new TextEncoder();
@@ -47,6 +53,17 @@ Deno.serve(async (req) => {
     );
 
     if (req.method === "GET") {
+      // Require an admin token for GET as well — site_settings is already
+      // readable via the public RLS policy on the table; this endpoint is
+      // admin-only to match the POST handler.
+      const token = new URL(req.url).searchParams.get("token");
+      const expectedPw = Deno.env.get("ADMIN_PASSWORD");
+      if (!expectedPw || !(await verifyToken(token, expectedPw))) {
+        return new Response(JSON.stringify({ error: "unauthorized" }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
       const { data, error } = await supabase
         .from("site_settings")
         .select("theme, reveal_mode, updated_at")

@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { ArrowUpRight } from "lucide-react";
+import { useT } from "@/i18n/LanguageProvider";
+import type { TranslationKey } from "@/i18n/dictionaries";
 
 // Map field-diagram dot ids → /posisjoner slugs
 const idToSlug: Record<string, string> = {
@@ -15,39 +17,26 @@ const idToSlug: Record<string, string> = {
   "DB-SA": "safety",
 };
 
-const positionFullNames: Record<string, string> = {
-  QB: "QB – Quarterback",
-  C: "C – Center",
-  WR: "WR – Wide Receiver",
-  RB: "RB – Running Back",
-  R: "R – Rusher",
-  DB: "DB – Defensive Back",
-  S: "S – Safety",
-};
-
-const positionDescriptions: Record<string, string> = {
-  QB: "Lagets playmaker og leder på banen. Kaster ballen til medspillere og styrer spillet.",
-  C: "Starter hvert spill ved å snappe ballen til QB. Går deretter ut som mottaker eller blokkerer rusheren.",
-  WR: "Løper ruter og fanger pasninger fra QB. Målet er å bli fri fra forsvareren og ta imot ballen.",
-  RB: "Tar imot ballen fra QB og løper med den. Kan også brukes som mottaker på korte pasninger.",
-  R: "Starter 7 yards fra ballen med hånden i året. Kan rushe mot QB så fort de klarer etter snap. Laget kan ha 0–2 rushere per spill.",
-  DB: "Dekker motstanderens mottakere tett. Hindrer pasninger og drar flagget til ballbæreren.",
-  S: "Siste skanse i forsvaret. Leser spillet bakfra, hjelper til med dekning og sikrer mot lange pasninger.",
-};
+// Position labels/descriptions live in i18n. Tooltip components call
+// useT() and resolve `fd.full.${abbr}` / `fd.desc.${abbr}` at render time.
+const POSITION_ABBRS = ["QB", "C", "WR", "RB", "R", "DB", "S"] as const;
+type PositionAbbr = typeof POSITION_ABBRS[number];
+const isKnownPosition = (s: string): s is PositionAbbr =>
+  (POSITION_ABBRS as readonly string[]).includes(s);
 
 type OffenseTabId = "formasjon" | "kastespill" | "løpespill";
 type DefenseTabId = "formasjon" | "soneforsvar" | "mann-mot-mann";
 
-const offenseTabs: { id: OffenseTabId; label: string }[] = [
-  { id: "formasjon", label: "Formasjon" },
-  { id: "kastespill", label: "Kastespill" },
-  { id: "løpespill", label: "Løpespill" },
+const offenseTabs: { id: OffenseTabId; labelKey: TranslationKey }[] = [
+  { id: "formasjon", labelKey: "fd.tab.formasjon" },
+  { id: "kastespill", labelKey: "fd.tab.kastespill" },
+  { id: "løpespill", labelKey: "fd.tab.lopespill" },
 ];
 
-const defenseTabs: { id: DefenseTabId; label: string }[] = [
-  { id: "formasjon", label: "Formasjon" },
-  { id: "soneforsvar", label: "Soneforsvar" },
-  { id: "mann-mot-mann", label: "Man-man" },
+const defenseTabs: { id: DefenseTabId; labelKey: TranslationKey }[] = [
+  { id: "formasjon", labelKey: "fd.tab.formasjon" },
+  { id: "soneforsvar", labelKey: "fd.tab.soneforsvar" },
+  { id: "mann-mot-mann", labelKey: "fd.tab.mannmotmann" },
 ];
 
 // ------------------------------------------------------------------

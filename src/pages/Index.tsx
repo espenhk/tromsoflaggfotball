@@ -969,7 +969,9 @@ const FaqItem = ({ q, a }: { q: string; a: string }) => {
   const isTuil = theme === "tuil";
   return (
     <button
+      type="button"
       onClick={() => setOpen(!open)}
+      aria-expanded={open}
       className={`w-full text-left rounded-xl p-4 transition-all ${
         isTuil
           ? "bg-white/15 border border-white/25 hover:bg-white/25 hover:border-white/40"

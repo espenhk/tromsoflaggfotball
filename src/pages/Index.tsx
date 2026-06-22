@@ -475,7 +475,9 @@ const GameSection = () => {
 
           {/* Field diagram - center */}
           <div>
-            <FieldDiagram onPositionNavigate={goToPosition} />
+            <Suspense fallback={<FieldDiagramFallback />}>
+              <FieldDiagram onPositionNavigate={goToPosition} />
+            </Suspense>
             <Link
               to={POSITIONS_URL}
               className={`inline-block text-sm font-body hover:opacity-80 transition-opacity mt-4 ${theme === "tuil" ? "text-rose-300" : "text-primary"}`}
@@ -498,7 +500,9 @@ const GameSection = () => {
         {/* Mobile: stacked layout */}
         <div className="space-y-6 md:hidden">
           <div>
-            <FieldDiagram onPositionNavigate={goToPosition} />
+            <Suspense fallback={<FieldDiagramFallback />}>
+              <FieldDiagram onPositionNavigate={goToPosition} />
+            </Suspense>
             <Link
               to={POSITIONS_URL}
               className={`inline-block text-sm font-body hover:opacity-80 transition-opacity mt-4 ${theme === "tuil" ? "text-rose-300" : "text-primary"}`}

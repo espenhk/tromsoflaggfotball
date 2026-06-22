@@ -78,8 +78,17 @@ const Index = () => {
         setMobileMenuOpen(false);
       }
     };
-    if (mobileMenuOpen) document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    const keyHandler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileMenuOpen(false);
+    };
+    if (mobileMenuOpen) {
+      document.addEventListener("mousedown", handler);
+      document.addEventListener("keydown", keyHandler);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handler);
+      document.removeEventListener("keydown", keyHandler);
+    };
   }, [mobileMenuOpen]);
 
   return (

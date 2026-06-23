@@ -415,15 +415,17 @@ body {
   border-radius: 12px;
   z-index: 3;
 }
-/* Desc card sits centered on the goal line into our own end zone (x=10 in field
-   coords) so it doesn't cover the spotted-ball area higher up the field. Per-aspect
-   bottom offsets are derived from the field crop (see ASPECT_DIMS in editor.html). */
+/* Desc card floats above the bottom chrome. It is anchored by its bottom edge
+   so additional lines push the card UPWARD instead of into the footer/reply
+   area. The `--desc-offset` custom property (set inline per-template via the
+   "Text card nudge" adjuster) lets the user shift it up (negative) or down
+   (positive) when it collides with controls or other elements. */
 .t-rule .rule-desc-card {
   position: absolute;
-  bottom: 98px;
+  /* 48px footer + 24px air above it */
+  bottom: calc(72px + var(--desc-offset, 0px));
   left: 48px;
   right: 48px;
-  transform: translateY(50%);
   padding: 22px 32px;
   background: rgba(0, 0, 0, 0.62);
   backdrop-filter: blur(8px);
@@ -436,7 +438,7 @@ body {
   line-height: 1.5;
 }
 body[data-aspect="portrait"] .t-rule .rule-desc-card {
-  bottom: 90px;
+  bottom: calc(72px + var(--desc-offset, 0px));
 }
 .t-rule .rule-desc-card strong {
   color: var(--fg);
@@ -458,7 +460,8 @@ body[data-aspect="story"] .t-rule .rule-title-card {
   top: 120px;
 }
 body[data-aspect="story"] .t-rule .rule-desc-card {
-  bottom: 160px;
+  /* 280px IG sticker safe-zone (reply bar etc.) + 24px air */
+  bottom: calc(304px + var(--desc-offset, 0px));
 }
 body[data-aspect="story"] .tile .wordmark {
   display: none;

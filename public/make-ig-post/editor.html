@@ -1911,8 +1911,12 @@
         area.querySelectorAll('[data-offset]').forEach(inp => {
           inp.addEventListener('input', e => {
             const fid = e.target.dataset.offset;
-            state.values[fid] = parseInt(e.target.value, 10) || 0;
-            renderFields();
+            const n = parseInt(e.target.value, 10) || 0;
+            state.values[fid] = n;
+            // Update the inline value readout next to the label without
+            // re-rendering the whole field panel (would drop slider focus).
+            const lbl = e.target.closest('.field')?.querySelector('label > span');
+            if (lbl) lbl.textContent = `(${n > 0 ? '+' : ''}${n}px)`;
             renderPreview();
           });
         });

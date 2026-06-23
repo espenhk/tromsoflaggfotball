@@ -880,6 +880,7 @@
             { type:'point', x:25, y:12.5, color:'qb',    label:'10' },
           ]},
           { id:'desc', label:'Explanation (HTML ok)', type:'textarea', default:'<strong style="color:var(--fg);">Du får 4 forsøk («downs») til å rykke ballen 10 yards.</strong> Klarer du det, får du 4 nye forsøk fra det punktet.' },
+          { id:'descOffset', label:'Text card nudge (px, − up / + down)', type:'offset', default: 0 },
           { id:'wm_right', label:'Wordmark right', type:'text', default:'REGELTORSDAG' },
         ],
         render: d => `<div class="stage">
@@ -889,7 +890,7 @@
             <div class="rule-title-card">
               <div class="h-display" style="font-size:72px; line-height:0.95;">${d.titleA}<br>${d.titleB}</div>
             </div>
-            <div class="rule-desc-card">${d.desc}</div>
+            <div class="rule-desc-card" style="--desc-offset:${(+d.descOffset||0)}px;">${d.desc}</div>
           </div>
         </div>`,
         cls: 't-rule',
@@ -910,6 +911,7 @@
             { label:'2', color:'wr', x:0, y:8.5,  r:1.0, width:0.32, route: [[3,0],[3,3]] },
           ]},
           { id:'desc', label:'Explanation (HTML ok)', type:'textarea', default:'<strong style="color:var(--fg);">Hvorfor:</strong> Slant tvinger nær-CB innover. Flat utnytter rommet han forlot.' },
+          { id:'descOffset', label:'Text card nudge (px, − up / + down)', type:'offset', default: 0 },
           { id:'wm_right', label:'Wordmark right', type:'text', default:'UKENS KONSEPT' },
         ],
         render: d => `<div class="stage">
@@ -919,7 +921,7 @@
             <div class="rule-title-card">
               <div class="h-display" style="font-size:72px; line-height:0.95;">${d.titleA}<br>${d.titleB}</div>
             </div>
-            <div class="rule-desc-card">${d.desc}</div>
+            <div class="rule-desc-card" style="--desc-offset:${(+d.descOffset||0)}px;">${d.desc}</div>
           </div>
         </div>`,
         cls: 't-rule',

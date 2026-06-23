@@ -1908,6 +1908,14 @@
             renderPreview();
           });
         });
+        area.querySelectorAll('[data-offset]').forEach(inp => {
+          inp.addEventListener('input', e => {
+            const fid = e.target.dataset.offset;
+            state.values[fid] = parseInt(e.target.value, 10) || 0;
+            renderFields();
+            renderPreview();
+          });
+        });
       }
 
       // ----------------------------------------------------------------

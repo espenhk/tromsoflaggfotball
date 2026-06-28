@@ -790,6 +790,19 @@ body[data-aspect="story"] .t-player .player-badge {
   transform-origin: center center;
   pointer-events: none;
 }
+/* Explicit-pixel <img> path: width/height are set inline by JS after the
+   image loads (fit-contain × user scale). Anchored at center via 50/50
+   plus negative margins (also set inline) so html2canvas exports match
+   the on-screen layout exactly — no CSS transform involved. */
+.t-game .game-logo.has-image > img.game-logo-img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  pointer-events: none;
+  max-width: none;
+  max-height: none;
+}
 .t-game .game-name {
   font-size: 72px;
   line-height: 0.95;

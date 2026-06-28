@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <title>Tromsø Flaggfotball — IG Frame Editor</title>
-    <link rel="stylesheet" href="frames.css?v=13" />
+   <link rel="stylesheet" href="frames.css?v=14" />
     <script src="chrome.js"></script>
     <script>
       // Apply TUIL theme override when launched with ?theme=tuil
@@ -1062,12 +1062,13 @@
           const logo = (id, src, label) => {
             if (!src) return `<div class="game-logo"><span>[ ${label} ]</span></div>`;
             const s = imgScales[id] || 1;
-            // Use background-image (not <img> + object-fit) so html2canvas
-            // preserves the logo's aspect ratio on export. html2canvas v1.4.1
-            // does not honor `object-fit: contain` and would stretch the
-            // image to fill the square box.
-            const safeSrc = String(src).replace(/"/g, '%22');
-            return `<div class="game-logo has-image"><div class="game-logo-bg" style="background-image:url(&quot;${safeSrc}&quot;); transform:scale(${s});"></div><span>${label}</span></div>`;
+            // Render as an <img> whose pixel width/height is computed post-load
+            // (see fitGameLogos in renderPreview). html2canvas v1.4.1 doesn't
+            // honor `object-fit: contain` and unreliably scales background-image
+            // when the carrier has a CSS `transform`, so we bake the
+            // fit-contain math into explicit width/height attributes instead.
+            const safeSrc = String(src).replace(/"/g, '&quot;');
+            return `<div class="game-logo has-image"><img class="game-logo-img" src="${safeSrc}" data-scale="${s}" alt=""><span>${label}</span></div>`;
           };
           const isStory = document.body.getAttribute('data-aspect') === 'story';
           const nameFS = gameNameSize(Math.max((d.hName||'').length, (d.aName||'').length), isStory);
@@ -2134,6 +2135,33 @@
           const s = scales[linkPrimary(state.tpl, fid)];
           if (s && s > 5) el.style.fontSize = s + 'pt';
         });
+
+        // Game template logos: compute exact fit-contain pixel dimensions
+        // post-load (multiplied by the per-image user scale) and bake them
+        // into the <img> width/height + center-anchor margins. Avoids the
+        // html2canvas issues with `object-fit: contain` and with `transform`
+        // affecting background-image rendering — both of which were producing
+        // squished/stretched logos on export.
+        wrap.querySelectorAll('.t-game .game-logo.has-image > img.game-logo-img').forEach(img => {
+          const fit = () => {
+            const box = img.parentElement;
+            if (!box) return;
+            const bw = box.clientWidth, bh = box.clientHeight;
+            const iw = img.naturalWidth, ih = img.naturalHeight;
+            if (!iw || !ih || !bw || !bh) return;
+            const scale = parseFloat(img.dataset.scale) || 1;
+            const ratio = Math.min(bw / iw, bh / ih) * scale;
+            const w = iw * ratio;
+            const h = ih * ratio;
+            img.style.width = w + 'px';
+            img.style.height = h + 'px';
+            img.style.marginLeft = (-w / 2) + 'px';
+            img.style.marginTop = (-h / 2) + 'px';
+          };
+          if (img.complete && img.naturalWidth) fit();
+          else img.addEventListener('load', fit, { once: true });
+        });
+
       }
       document.querySelectorAll('#picker button').forEach(b => {
         b.addEventListener('click', () => {

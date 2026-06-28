@@ -2224,7 +2224,11 @@
         });
         bar.querySelector('[data-slide-add]')?.addEventListener('click', () => {
           snapshotSlide();
-          state.slides.push(blankSlide(state.tpl));
+          const current = state.slides[state.currentSlide];
+          const copy = current
+            ? JSON.parse(JSON.stringify(current))
+            : blankSlide(state.tpl);
+          state.slides.push(copy);
           loadSlide(state.slides.length - 1);
           renderForm();
           renderPreview();

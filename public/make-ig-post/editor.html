@@ -2135,6 +2135,33 @@
           const s = scales[linkPrimary(state.tpl, fid)];
           if (s && s > 5) el.style.fontSize = s + 'pt';
         });
+
+        // Game template logos: compute exact fit-contain pixel dimensions
+        // post-load (multiplied by the per-image user scale) and bake them
+        // into the <img> width/height + center-anchor margins. Avoids the
+        // html2canvas issues with `object-fit: contain` and with `transform`
+        // affecting background-image rendering — both of which were producing
+        // squished/stretched logos on export.
+        wrap.querySelectorAll('.t-game .game-logo.has-image > img.game-logo-img').forEach(img => {
+          const fit = () => {
+            const box = img.parentElement;
+            if (!box) return;
+            const bw = box.clientWidth, bh = box.clientHeight;
+            const iw = img.naturalWidth, ih = img.naturalHeight;
+            if (!iw || !ih || !bw || !bh) return;
+            const scale = parseFloat(img.dataset.scale) || 1;
+            const ratio = Math.min(bw / iw, bh / ih) * scale;
+            const w = iw * ratio;
+            const h = ih * ratio;
+            img.style.width = w + 'px';
+            img.style.height = h + 'px';
+            img.style.marginLeft = (-w / 2) + 'px';
+            img.style.marginTop = (-h / 2) + 'px';
+          };
+          if (img.complete && img.naturalWidth) fit();
+          else img.addEventListener('load', fit, { once: true });
+        });
+
       }
       document.querySelectorAll('#picker button').forEach(b => {
         b.addEventListener('click', () => {

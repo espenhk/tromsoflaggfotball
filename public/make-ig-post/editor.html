@@ -2815,23 +2815,32 @@
               await document.fonts.ready;
             }
           } catch (_) {}
-          // Preload every background-image referenced inside the tile so the
-          // exporter never snapshots a half-loaded photo (which caused the
-          // occasional "black background" export).
+          // Wait for every image referenced inside the tile — both
+          // background-image URLs AND <img> tags (game logos, matchup crests,
+          // wordmark art). Without this a race can snapshot a half-loaded
+          // photo ("black background") or a zero-sized logo.
           try {
-            const els = tile.querySelectorAll('*');
             const urls = new Set();
-            els.forEach(el => {
+            tile.querySelectorAll('*').forEach(el => {
               const bg = (el.style && el.style.backgroundImage) || '';
               const m = bg.match(/url\((["']?)(.*?)\1\)/);
               if (m && m[2]) urls.add(m[2]);
             });
-            await Promise.all([...urls].map(src => new Promise(res => {
+            const bgWaits = [...urls].map(src => new Promise(res => {
               const img = new Image();
               img.onload = img.onerror = () => res();
               img.src = src;
-            })));
+            }));
+            const imgWaits = [...tile.querySelectorAll('img')].map(img => new Promise(res => {
+              if (img.complete && img.naturalWidth) return res();
+              img.addEventListener('load', () => res(), { once: true });
+              img.addEventListener('error', () => res(), { once: true });
+            }));
+            await Promise.all([...bgWaits, ...imgWaits]);
           } catch (_) {}
+          // Two rAFs so any post-load fit hooks (fitGameLogos, shrink-to-fit)
+          // finish before we snapshot.
+          await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
           await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
           // html2canvas does not honor CSS `filter` (brightness/invert), so the
           // TUIL wordmark PNG renders in its native dark color against the dark
@@ -2921,40 +2930,8 @@
         const originalLabel = btn.textContent;
         btn.disabled = true;
         try {
-          snapshotSlide();
-          const total = state.slides.length;
-          const startIdx = state.currentSlide;
-          // Pre-render every slide to a blob BEFORE prompting the user to save.
-          // This way each subsequent save can fire from a fresh button-click —
-          // mandatory on iOS for navigator.share() to keep opening the share
-          // sheet instead of silently downloading.
-          const items = [];
-          for (let i = startIdx; i < total; i++) {
-            if (i !== startIdx) {
-              loadSlide(i);
-              renderForm();
-              renderPreview();
-              await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-            }
-            btn.textContent = `Preparing ${i - startIdx + 1}/${total - startIdx}…`;
-            const blob = await exportCurrentTile();
-            items.push({ blob, filename: slideFilename(state.slides[i], i) });
-          }
-          // Save the first one immediately (we're still in the original click's
-          // user activation), then prompt for each remaining one.
-          for (let k = 0; k < items.length; k++) {
-            if (k === 0) {
-              await saveOrShareImage(items[k].blob, items[k].filename);
-            } else {
-              try {
-                await showActionModal(
-                  `Slide ${k}/${items.length} saved.`,
-                  `Save slide ${k + 1}/${items.length}`
-                );
-              } catch { break; }
-              await saveOrShareImage(items[k].blob, items[k].filename);
-            }
-          }
+          const items = await prepareExportItems({ allAspects: false, btn });
+          await deliverExportItems(items);
           await promptLogExport('export');
         } catch (err) {
           console.error(err);
@@ -2969,49 +2946,95 @@
         const btn = document.getElementById('export-all-aspects-btn');
         const originalLabel = btn.textContent;
         btn.disabled = true;
-        const aspects = ['square', 'portrait', 'story'];
-        const originalAspect = state.aspect;
         try {
-          snapshotSlide();
-          const slide = state.slides[state.currentSlide];
-          const items = [];
-          for (let i = 0; i < aspects.length; i++) {
-            const a = aspects[i];
-            state.aspect = a;
-            document.querySelectorAll('#aspect-row button').forEach(x =>
-              x.classList.toggle('active', x.dataset.aspect === a));
-            renderPreview();
-            await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-            btn.textContent = `Preparing ${a} (${i+1}/${aspects.length})…`;
-            const blob = await exportCurrentTile();
-            items.push({ blob, filename: slideFilename(slide, state.currentSlide, a), aspect: a });
-          }
-          for (let k = 0; k < items.length; k++) {
-            if (k === 0) {
-              await saveOrShareImage(items[k].blob, items[k].filename);
-            } else {
-              try {
-                await showActionModal(
-                  `${items[k-1].aspect} saved.`,
-                  `Save ${items[k].aspect} (${k+1}/${items.length})`
-                );
-              } catch { break; }
-              await saveOrShareImage(items[k].blob, items[k].filename);
-            }
-          }
+          const items = await prepareExportItems({ allAspects: true, btn });
+          await deliverExportItems(items);
           await promptLogExport('all-aspects');
         } catch (err) {
           console.error(err);
           alert('Export failed: ' + (err && err.message ? err.message : err));
         } finally {
-          state.aspect = originalAspect;
-          document.querySelectorAll('#aspect-row button').forEach(x =>
-            x.classList.toggle('active', x.dataset.aspect === originalAspect));
-          renderPreview();
           btn.disabled = false;
           btn.textContent = originalLabel;
         }
       });
+
+      // ----------------------------------------------------------------
+      // Shared export pipeline. Both buttons funnel through this so any
+      // new template automatically gets the same font/image/layout waits.
+      //
+      //   • Always exports every slide 1..N (never just "from currentSlide").
+      //   • allAspects=true → every slide × every aspect (square/portrait/story).
+      //   • Fully restores the editor's original slide + aspect afterwards,
+      //     so the user's working view is never mutated by exporting.
+      // ----------------------------------------------------------------
+      async function prepareExportItems({ allAspects, btn }) {
+        snapshotSlide();
+        const originalIdx = state.currentSlide;
+        const originalAspect = state.aspect;
+        const aspects = allAspects ? ['square', 'portrait', 'story'] : [state.aspect];
+        const total = state.slides.length * aspects.length;
+        const items = [];
+        let step = 0;
+        try {
+          for (let a = 0; a < aspects.length; a++) {
+            const aspect = aspects[a];
+            for (let i = 0; i < state.slides.length; i++) {
+              step++;
+              if (btn) {
+                btn.textContent = allAspects
+                  ? `Preparing ${aspect} ${i + 1}/${state.slides.length} (${step}/${total})…`
+                  : `Preparing ${i + 1}/${state.slides.length}…`;
+              }
+              // Load slide + aspect and let the standard render path run.
+              // Do it whether or not it's the "current" combo — the second
+              // pass guarantees shrink-to-fit / logo-fit run against the
+              // correct aspect dimensions.
+              if (state.currentSlide !== i) loadSlide(i);
+              else loadSlide(i); // still re-sync sidebar
+              state.aspect = aspect;
+              document.querySelectorAll('#aspect-row button').forEach(x =>
+                x.classList.toggle('active', x.dataset.aspect === aspect));
+              renderForm();
+              renderPreview();
+              await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+              const blob = await exportCurrentTile();
+              const filename = allAspects
+                ? slideFilename(state.slides[i], i, aspect)
+                : slideFilename(state.slides[i], i);
+              items.push({ blob, filename, aspect, slideIdx: i });
+            }
+          }
+        } finally {
+          // Restore the editor exactly as the user left it.
+          state.aspect = originalAspect;
+          document.querySelectorAll('#aspect-row button').forEach(x =>
+            x.classList.toggle('active', x.dataset.aspect === originalAspect));
+          if (state.slides[originalIdx]) loadSlide(originalIdx);
+          renderForm();
+          renderPreview();
+        }
+        return items;
+      }
+
+      async function deliverExportItems(items) {
+        for (let k = 0; k < items.length; k++) {
+          if (k === 0) {
+            await saveOrShareImage(items[k].blob, items[k].filename);
+          } else {
+            const prev = items[k - 1];
+            const cur = items[k];
+            const label = cur.aspect !== prev.aspect
+              ? `Save ${cur.aspect} · slide ${cur.slideIdx + 1} (${k + 1}/${items.length})`
+              : `Save slide ${cur.slideIdx + 1} (${k + 1}/${items.length})`;
+            const info = `Saved ${k}/${items.length}.`;
+            try {
+              await showActionModal(info, label);
+            } catch { break; }
+            await saveOrShareImage(cur.blob, cur.filename);
+          }
+        }
+      }
 
       function fitPreview() {
         const area = document.querySelector('.preview-area');

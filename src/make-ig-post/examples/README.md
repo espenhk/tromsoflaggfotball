@@ -9,6 +9,14 @@ this README from the current template definitions in `editor.html`. Do it
 whenever you add, rename, or remove a template field (the CI test in
 `__tests__/examples.test.ts` will otherwise fail).
 
+**Visual regression:** `__tests__/pixel-diff.test.ts` re-renders every
+committed example through the live editor and pixel-diffs the result
+against the checked-in PNG (≤1% mismatched pixels tolerated). If a
+template's rendering changes intentionally, refresh the baselines with
+`npm run ig:examples`. Otherwise investigate the drift before merging.
+The test needs the Vite dev server running on `:8080` and a Playwright
+Chromium binary — it skips gracefully when either is missing.
+
 The example JSON is also directly consumable by the editor's
 **Import from JSON** button.
 

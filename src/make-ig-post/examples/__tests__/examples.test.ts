@@ -24,20 +24,48 @@ const ASPECTS = ["square", "portrait", "story"] as const;
  * entries inside its `fields:` array — enough to catch a rename/addition/
  * removal of a template field without needing to eval the whole file.
  */
+function sliceBalanced(src: string, openIdx: number): string {
+  // openIdx points at an opening `[` or `{`. Returns the substring between it
+  // and its matching closer, respecting nested brackets and quoted strings.
+  const open = src[openIdx];
+  const close = open === "[" ? "]" : open === "{" ? "}" : null;
+  if (!close) throw new Error("sliceBalanced: not on a bracket");
+  let depth = 0;
+  let inStr: string | null = null;
+  let esc = false;
+  for (let i = openIdx; i < src.length; i++) {
+    const ch = src[i];
+    if (inStr) {
+      if (esc) { esc = false; continue; }
+      if (ch === "\\") { esc = true; continue; }
+      if (ch === inStr) inStr = null;
+      continue;
+    }
+    if (ch === "'" || ch === '"' || ch === "`") { inStr = ch; continue; }
+    if (ch === "[" || ch === "{") depth++;
+    else if (ch === "]" || ch === "}") {
+      depth--;
+      if (depth === 0) return src.slice(openIdx + 1, i);
+    }
+  }
+  throw new Error("sliceBalanced: unbalanced");
+}
+
 function extractTemplateSchemas(): Record<string, string[]> {
   const src = readFileSync(EDITOR_HTML, "utf8");
   const out: Record<string, string[]> = {};
-  // Split on `T.<key> = {` template declarations. Skip index 0 (preamble).
-  const chunks = src.split(/\n\s*T\.([a-zA-Z0-9_]+)\s*=\s*\{/);
-  for (let i = 1; i < chunks.length; i += 2) {
-    const key = chunks[i];
-    const body = chunks[i + 1];
-    // Grab the `fields:` array body up to the matching closing bracket. A
-    // greedy [\s\S]*? that stops at `],` works because template bodies always
-    // put a non-array key (label, render, cls, …) right after `fields`.
-    const m = /fields\s*:\s*\[([\s\S]*?)\n\s*\],?\s*\n/.exec(body);
-    if (!m) continue;
-    const fieldsBody = m[1];
+  const headerRe = /\n\s*T\.([a-zA-Z0-9_]+)\s*=\s*\{/g;
+  let match: RegExpExecArray | null;
+  while ((match = headerRe.exec(src)) !== null) {
+    const key = match[1];
+    // Find `fields:` inside the template body and grab its balanced array.
+    const after = src.slice(match.index);
+    const fm = /\bfields\s*:\s*\[/.exec(after);
+    if (!fm) continue;
+    const bracketIdx = match.index + fm.index + fm[0].length - 1;
+    let fieldsBody: string;
+    try { fieldsBody = sliceBalanced(src, bracketIdx); }
+    catch { continue; }
     // Match every `id:'…'` or `id:"…"` inside the fields array. This ignores
     // nested `item:` sub-fields on list types — those aren't top-level slide
     // values, so we don't need to check them here.

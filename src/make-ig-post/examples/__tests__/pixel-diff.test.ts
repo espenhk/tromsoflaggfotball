@@ -62,15 +62,13 @@ describe("IG editor examples — visual drift", async () => {
   }
 
   const { chromium } = pw;
-  let browser: import("playwright").Browser;
-  let page: import("playwright").Page;
+  let browser: Awaited<ReturnType<typeof chromium.launch>>;
+  let page: Awaited<ReturnType<Awaited<ReturnType<typeof chromium.launch>>["newPage"]>>;
   let templates: Array<{ key: string; fields: Array<{ id: string; default: unknown }> }>;
 
   beforeAll(async () => {
     browser = await chromium.launch({ headless: true });
-    const ctx = await browser.new_context
-      ? await (browser as any).new_context({ viewport: { width: 1400, height: 1800 } })
-      : await browser.newContext({ viewport: { width: 1400, height: 1800 } });
+    const ctx = await browser.newContext({ viewport: { width: 1400, height: 1800 } });
     page = await ctx.newPage();
     await page.goto(EDITOR_URL, { waitUntil: "domcontentloaded" });
     await page.evaluate(() => localStorage.removeItem("tff-ig-editor-state-v1"));

@@ -62,6 +62,19 @@ describe("IG editor examples — visual drift", async () => {
   }
 
   const { chromium } = pw;
+  // Verify a browser binary is actually available before declaring tests —
+  // otherwise the whole suite errors out on `beforeAll`.
+  let browserAvailable = true;
+  try {
+    const b = await chromium.launch({ headless: true });
+    await b.close();
+  } catch {
+    browserAvailable = false;
+  }
+  if (!browserAvailable) {
+    it.skip("Playwright browser binary not installed (`npx playwright install chromium`) — skipped", () => {});
+    return;
+  }
   let browser: Awaited<ReturnType<typeof chromium.launch>>;
   let page: Awaited<ReturnType<Awaited<ReturnType<typeof chromium.launch>>["newPage"]>>;
   let templates: Array<{ key: string; fields: Array<{ id: string; default: unknown }> }>;

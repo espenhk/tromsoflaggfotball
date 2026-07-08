@@ -683,6 +683,15 @@ body[data-aspect="story"] .t-player .player-badge {
   color: var(--fg-muted);
   font-weight: 700;
 }
+/* Cap the photo tile so it can't grow into a super-tall block in
+   portrait/story exports. Without this, `flex:1 1 auto` lets the photo
+   swallow the taller frame and pushes stats/footer chrome out of view. */
+body[data-aspect="portrait"] .t-matchup .matchup-photo,
+body[data-aspect="story"] .t-matchup .matchup-photo {
+  flex: 0 0 auto;
+  aspect-ratio: 4 / 5;
+  max-height: 42%;
+}
 .t-matchup .matchup-photo.has-image {
   border: none;
 }

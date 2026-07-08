@@ -2111,6 +2111,43 @@
           }
         });
 
+        // Generic shrink-to-fit for any `.h-display` (main heading) that isn't
+        // already handled by a template-specific fit hook above. Measures each
+        // <br>-separated line against the parent content width and scales
+        // the whole heading down proportionally. Prevents titles like the
+        // schedule "treninger." line from horizontally clipping when a user
+        // enters longer copy or when a template default runs long.
+        wrap.querySelectorAll('.h-display').forEach(el => {
+          if (el.closest('.player-name, .matchup-name, .fact-big')) return;
+          if (el.dataset.fitDone === '1') return;
+          const parent = el.parentElement;
+          if (!parent) return;
+          const cs = getComputedStyle(parent);
+          const padL = parseFloat(cs.paddingLeft) || 0;
+          const padR = parseFloat(cs.paddingRight) || 0;
+          const maxW = parent.clientWidth - padL - padR;
+          if (maxW <= 0) return;
+          // Only measure widest natural line; keep existing wrapping.
+          const startPx = parseFloat(getComputedStyle(el).fontSize) || 96;
+          let widest = 0;
+          // Split on <br>, measure each fragment's inline text width.
+          const html = el.innerHTML;
+          const meas = document.createElement('span');
+          meas.style.cssText = `visibility:hidden;position:absolute;white-space:nowrap;font:${getComputedStyle(el).font};letter-spacing:${getComputedStyle(el).letterSpacing};`;
+          document.body.appendChild(meas);
+          html.split(/<br\s*\/?>/i).forEach(frag => {
+            meas.innerHTML = frag;
+            if (meas.offsetWidth > widest) widest = meas.offsetWidth;
+          });
+          meas.remove();
+          if (widest > maxW) {
+            const ratio = (maxW / widest) * 0.99;
+            const newPx = Math.max(24, Math.floor(startPx * ratio));
+            el.style.fontSize = newPx + 'px';
+          }
+          el.dataset.fitDone = '1';
+        });
+
         // Measure the natural rendered font-size (in pt) of every wrapped field
         // that doesn't have a user override yet. Updates the stepper input so it
         // shows the actual current size — clicking + now increments from the

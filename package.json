@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "ig:examples": "python3 scripts/gen_ig_examples.py"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

@@ -1,0 +1,19 @@
+{
+  "tpl": "pos101",
+  "chrome": "curve",
+  "accent": "primary",
+  "photo": null,
+  "photoCutout": false,
+  "imageScales": {},
+  "values": {
+    "eyebrow": "Posisjonsskolen · 03 av 07",
+    "abbr": "RB",
+    "name": "Running back",
+    "tagline": "Eksplosiv ballbærer. Tar både handoffs og korte pasninger. Trenger akselerasjon over de første 5 yardene.",
+    "r1": "Mottar handoffs i bakfeltet",
+    "r2": "Sekundærmottaker på pasning",
+    "r3": "Blokkerer rushere",
+    "r4": "Leser hull i forsvaret",
+    "wm_right": "POSISJONSSKOLEN"
+  }
+}

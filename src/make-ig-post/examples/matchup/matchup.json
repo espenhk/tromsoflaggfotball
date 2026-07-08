@@ -1,0 +1,33 @@
+{
+  "tpl": "matchup",
+  "chrome": "curve",
+  "accent": "primary",
+  "photo": null,
+  "photoCutout": false,
+  "imageScales": {},
+  "values": {
+    "oColor": "#38bdf8",
+    "oPhoto": "http://localhost:8080/make-ig-post/examples-assets/ig-ex-athlete-a.jpg",
+    "oFirst": "Lukas",
+    "oLast": "Hagen",
+    "oTag": "WR · #11",
+    "oS1l": "Y/G snitt",
+    "oS1v": "86",
+    "oS2l": "TD",
+    "oS2v": "7",
+    "oS3l": "40-yd",
+    "oS3v": "4.6s",
+    "dColor": "#fb7185",
+    "dPhoto": "http://localhost:8080/make-ig-post/examples-assets/ig-ex-athlete-b.jpg",
+    "dFirst": "Henrik",
+    "dLast": "Berg",
+    "dTag": "CB · #24 · BODØ",
+    "dS1l": "INT",
+    "dS1v": "5",
+    "dS2l": "Pull",
+    "dS2v": "19",
+    "dS3l": "40-yd",
+    "dS3v": "4.5s",
+    "wm_right": "RUNDE 04 · LØRDAG"
+  }
+}

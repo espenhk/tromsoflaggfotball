@@ -1,0 +1,68 @@
+{
+  "tpl": "drill",
+  "chrome": "curve",
+  "accent": "primary",
+  "photo": null,
+  "photoCutout": false,
+  "imageScales": {},
+  "values": {
+    "eyebrow": "Ukens konsept · 08 av 30",
+    "titleA": "Slant-Flat",
+    "titleB": "<span style=\"color:var(--chrome);\">combination.</span>",
+    "origin": {
+      "x": 15,
+      "y": 12.5
+    },
+    "pointScale": 1.8,
+    "players": [
+      {
+        "label": "Q",
+        "color": "qb",
+        "x": 0,
+        "y": 0,
+        "r": 1,
+        "width": 0.32,
+        "route": []
+      },
+      {
+        "label": "1",
+        "color": "wr",
+        "x": 0,
+        "y": -8.5,
+        "r": 1,
+        "width": 0.32,
+        "route": [
+          [
+            3,
+            4
+          ],
+          [
+            9,
+            8
+          ]
+        ]
+      },
+      {
+        "label": "2",
+        "color": "wr",
+        "x": 0,
+        "y": 8.5,
+        "r": 1,
+        "width": 0.32,
+        "route": [
+          [
+            3,
+            0
+          ],
+          [
+            3,
+            3
+          ]
+        ]
+      }
+    ],
+    "desc": "<strong style=\"color:var(--fg);\">Hvorfor:</strong> Slant tvinger nær-CB innover. Flat utnytter rommet han forlot.",
+    "descOffset": 0,
+    "wm_right": "UKENS KONSEPT"
+  }
+}

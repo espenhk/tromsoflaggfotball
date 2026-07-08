@@ -336,6 +336,9 @@
         <button class="secondary" id="export-all-aspects-btn">Export all aspect ratios</button>
       </div>
       <div class="actions">
+        <button class="secondary" id="import-json-btn">Import from JSON…</button>
+      </div>
+      <div class="actions">
         <button class="secondary" id="history-btn">Saved exports…</button>
       </div>
     </aside>
@@ -3057,6 +3060,206 @@
       renderForm();
       fitPreview();
       renderPreview();
+
+      // ----------------------------------------------------------------
+      // JSON import — accepts either a single-slide payload
+      // ({tpl, values|data, aspect?, chrome?, accent?, ...}) or a full
+      // session payload ({slides:[…], aspect?, currentSlide?}), plus
+      // the shape emitted by the "Saved exports" log
+      // ({payload: {slides:[…], aspect?, …}}). Auto-detects the shape.
+      // ----------------------------------------------------------------
+      function coerceSlide(raw) {
+        if (!raw || typeof raw !== 'object') return null;
+        const tpl = raw.tpl;
+        if (!tpl || !T[tpl]) return null;
+        const src = raw.values || raw.data || {};
+        const defaults = {};
+        T[tpl].fields.forEach(f => {
+          defaults[f.id] = JSON.parse(JSON.stringify(f.default));
+        });
+        // Only copy over keys that the template actually declares.
+        const values = { ...defaults };
+        for (const k of Object.keys(src)) {
+          if (k in defaults) values[k] = src[k];
+        }
+        return {
+          tpl,
+          chrome: raw.chrome || 'curve',
+          accent: raw.accent || 'primary',
+          photo: raw.photo || null,
+          photoCutout: !!raw.photoCutout,
+          values,
+          fontScales: raw.fontScales ? JSON.parse(JSON.stringify(raw.fontScales)) : {},
+          imageScales: raw.imageScales ? JSON.parse(JSON.stringify(raw.imageScales)) : {},
+        };
+      }
+      // Returns { slides, aspect?, currentSlide? } or null if unrecognized.
+      function detectImportShape(obj) {
+        if (!obj || typeof obj !== 'object') return null;
+        // History log entry: {payload:{slides,…}}
+        if (obj.payload && Array.isArray(obj.payload.slides)) {
+          return {
+            slides: obj.payload.slides,
+            aspect: obj.payload.aspect,
+            currentSlide: obj.payload.currentSlide,
+          };
+        }
+        // Full session: {slides:[…]}
+        if (Array.isArray(obj.slides)) {
+          return { slides: obj.slides, aspect: obj.aspect, currentSlide: obj.currentSlide };
+        }
+        // Bare array of slides
+        if (Array.isArray(obj) && obj.length && obj[0] && obj[0].tpl) {
+          return { slides: obj };
+        }
+        // Single slide: has a tpl key
+        if (obj.tpl && T[obj.tpl]) {
+          return { slides: [obj], aspect: obj.aspect, single: true };
+        }
+        return null;
+      }
+      function importJsonPayload(obj, opts) {
+        const shape = detectImportShape(obj);
+        if (!shape) throw new Error('Unrecognized JSON shape — expected a slide, an array of slides, or a session/export-log payload.');
+        const coerced = shape.slides.map(coerceSlide).filter(Boolean);
+        if (!coerced.length) throw new Error('No valid slides found (unknown template key?).');
+        opts = opts || {};
+        if (shape.single && opts.mode === 'append') {
+          snapshotSlide();
+          state.slides.push(coerced[0]);
+          loadSlide(state.slides.length - 1);
+        } else {
+          state.slides = coerced;
+          if (shape.aspect === 'square' || shape.aspect === 'portrait' || shape.aspect === 'story') {
+            state.aspect = shape.aspect;
+          }
+          const idx = Math.min(Math.max(0, shape.currentSlide || 0), state.slides.length - 1);
+          loadSlide(idx);
+        }
+        document.querySelectorAll('#aspect-row button').forEach(b =>
+          b.classList.toggle('active', b.dataset.aspect === state.aspect));
+        renderSlideBar && renderSlideBar();
+        renderForm();
+        renderPreview();
+        savePersisted && savePersisted();
+      }
+      function showImportModal() {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
+        overlay.innerHTML = `
+          <div style="background:#0a1a22;border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:24px;max-width:520px;width:100%;font-family:var(--font-body),system-ui,sans-serif;color:#f0fcfa;">
+            <div style="font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:16px;letter-spacing:0.04em;margin-bottom:6px;">Import from JSON</div>
+            <div style="font-size:12px;color:#9ec;margin-bottom:12px;line-height:1.5;">Paste a slide, a session export, or a saved-export payload — the shape is auto-detected. Multi-slide imports replace the current deck; a single-slide payload can either replace or append.</div>
+            <textarea data-json placeholder='{ "tpl": "player", "values": { … } }  or  { "slides": [ … ] }' style="width:100%;height:200px;padding:10px 12px;border-radius:8px;border:1px solid rgba(13,106,106,0.6);background:#021018;color:#f0fcfa;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;box-sizing:border-box;resize:vertical;"></textarea>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+              <label style="font-size:12px;color:#9ec;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+                <input type="file" data-file accept="application/json,.json" style="display:none;">
+                <span style="padding:8px 12px;border:1px solid rgba(13,106,106,0.6);border-radius:8px;">Load .json file…</span>
+              </label>
+              <label style="font-size:12px;color:#9ec;cursor:pointer;display:inline-flex;align-items:center;gap:6px;margin-left:auto;">
+                <input type="checkbox" data-append style="accent-color:var(--primary);">
+                Append instead of replace (single-slide only)
+              </label>
+            </div>
+            <div data-error style="color:#f88;font-size:12px;margin-top:10px;min-height:16px;"></div>
+            <div style="display:flex;gap:8px;margin-top:14px;">
+              <button data-cancel style="flex:1;padding:10px;background:transparent;color:#9ec;border:1px solid rgba(13,106,106,0.6);border-radius:8px;font-family:var(--font-heading),system-ui,sans-serif;font-weight:700;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;">Cancel</button>
+              <button data-go style="flex:1;padding:10px;background:var(--primary,#54c59e);color:#021018;border:none;border-radius:8px;font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;">Import</button>
+            </div>
+          </div>`;
+        document.body.appendChild(overlay);
+        const ta = overlay.querySelector('[data-json]');
+        const err = overlay.querySelector('[data-error]');
+        const cleanup = () => overlay.remove();
+        overlay.addEventListener('click', ev => { if (ev.target === overlay) cleanup(); });
+        overlay.querySelector('[data-cancel]').onclick = cleanup;
+        overlay.querySelector('[data-file]').addEventListener('change', ev => {
+          const f = ev.target.files && ev.target.files[0];
+          if (!f) return;
+          const r = new FileReader();
+          r.onload = e => { ta.value = String(e.target.result || ''); };
+          r.readAsText(f);
+        });
+        overlay.querySelector('[data-go]').onclick = () => {
+          err.textContent = '';
+          const txt = ta.value.trim();
+          if (!txt) { err.textContent = 'Paste some JSON first.'; return; }
+          let obj;
+          try { obj = JSON.parse(txt); }
+          catch (e) { err.textContent = 'Not valid JSON: ' + e.message; return; }
+          const append = overlay.querySelector('[data-append]').checked;
+          try {
+            importJsonPayload(obj, { mode: append ? 'append' : 'replace' });
+            cleanup();
+          } catch (e) {
+            err.textContent = e.message || String(e);
+          }
+        };
+      }
+      document.getElementById('import-json-btn').addEventListener('click', showImportModal);
+
+      // ----------------------------------------------------------------
+      // Headless-generator API. Exposed on `window.__IG_EDITOR` so a
+      // Playwright-driven regeneration script can:
+      //   • enumerate templates + their field schemas + defaults
+      //   • load a single-slide payload
+      //   • switch aspect
+      //   • trigger the same export pipeline the UI uses
+      // No functional impact on the human editor.
+      // ----------------------------------------------------------------
+      window.__IG_EDITOR = {
+        // Version bump when the API changes so the generator can guard against
+        // running against an older editor build.
+        apiVersion: 1,
+        listTemplates() {
+          return Object.keys(T).map(k => ({
+            key: k,
+            label: T[k].label || k,
+            cls: T[k].cls || '',
+            fields: T[k].fields.map(f => ({
+              id: f.id,
+              label: f.label || f.id,
+              type: f.type || 'text',
+              default: JSON.parse(JSON.stringify(f.default)),
+            })),
+          }));
+        },
+        // Returns just the list of field ids for a template — the CI test uses
+        // this to detect drift between examples and the current schema.
+        fieldIds(tpl) {
+          return T[tpl] ? T[tpl].fields.map(f => f.id) : null;
+        },
+        async loadPayload(payload) {
+          importJsonPayload(payload, { mode: 'replace' });
+          await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+        },
+        async setAspect(aspect) {
+          if (!ASPECT_DIMS[aspect]) throw new Error('Unknown aspect: ' + aspect);
+          state.aspect = aspect;
+          document.querySelectorAll('#aspect-row button').forEach(b =>
+            b.classList.toggle('active', b.dataset.aspect === aspect));
+          renderPreview();
+          await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+          await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+        },
+        // Runs the standard export pipeline for the currently-loaded slide +
+        // aspect and returns the PNG as a base64 string. The generator saves
+        // this to disk. Uses the same code path as the human "Export PNG"
+        // button so any layout/font/scale fix applies here too.
+        async exportCurrentAsBase64() {
+          const blob = await exportCurrentTile();
+          return await new Promise((resolve, reject) => {
+            const r = new FileReader();
+            r.onload = () => {
+              const s = String(r.result || '');
+              const i = s.indexOf(',');
+              resolve(i >= 0 ? s.slice(i + 1) : s);
+            };
+            r.onerror = () => reject(new Error('base64 encode failed'));
+            r.readAsDataURL(blob);
+          });
+        },
+      };
     </script>
   </body>
 </html>

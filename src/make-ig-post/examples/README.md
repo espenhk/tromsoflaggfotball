@@ -18,16 +18,16 @@ The example JSON is also directly consumable by the editor's
 
 | Field | Type | Default |
 | --- | --- | --- |
-| `eyebrow` | text | `"M\u00f8t laget \u00b7 04 av 18"` |
+| `eyebrow` | text | `"Møt laget · 04 av 18"` |
 | `first` | text | `"Magnus"` |
-| `last` | text | `"S\u00e6tre"` |
+| `last` | text | `"Sætre"` |
 | `jersey` | text | `"07"` |
-| `pos_label` | text | `"QUARTERBACK \u00b7 #07"` |
+| `pos_label` | text | `"QUARTERBACK · #07"` |
 | `season` | text | `"3."` |
 | `from` | text | `"Tromsdalen"` |
-| `background` | text | `"H\u00e5ndball"` |
-| `quote` | textarea | `"\u00abDet handler om \u00e5 lese spillet f\u00f8r det skjer.\u00bb"` |
-| `wm_right` | text | `"QB \u00b7 69\u00b0 NORD"` |
+| `background` | text | `"Håndball"` |
+| `quote` | textarea | `"«Det handler om å lese spillet før det skjer.»"` |
+| `wm_right` | text | `"QB · 69° NORD"` |
 
 Example JSON: [`player/player.json`](player/player.json)
 
@@ -39,12 +39,12 @@ Example JSON: [`player/player.json`](player/player.json)
 
 | Field | Type | Default |
 | --- | --- | --- |
-| `eyebrow` | text | `"Posisjonsskolen \u00b7 03 av 07"` |
+| `eyebrow` | text | `"Posisjonsskolen · 03 av 07"` |
 | `abbr` | text | `"RB"` |
 | `name` | text | `"Running back"` |
-| `tagline` | textarea | `"Eksplosiv ballb\u00e6rer. Tar b\u00e5de handoffs og korte pasninger. Trenger…` |
+| `tagline` | textarea | `"Eksplosiv ballbærer. Tar både handoffs og korte pasninger. Trenger akseleras…` |
 | `r1` | text | `"Mottar handoffs i bakfeltet"` |
-| `r2` | text | `"Sekund\u00e6rmottaker p\u00e5 pasning"` |
+| `r2` | text | `"Sekundærmottaker på pasning"` |
 | `r3` | text | `"Blokkerer rushere"` |
 | `r4` | text | `"Leser hull i forsvaret"` |
 | `wm_right` | text | `"POSISJONSSKOLEN"` |
@@ -59,10 +59,10 @@ Example JSON: [`pos101/pos101.json`](pos101/pos101.json)
 
 | Field | Type | Default |
 | --- | --- | --- |
-| `week` | text | `"Uke 23 \u00b7 02 \u2014 08 juni"` |
+| `week` | text | `"Uke 23 · 02 — 08 juni"` |
 | `title` | text | `"Ukens treninger."` |
-| `events` | list | `[{"date": "TIRSDAG", "time": "19:00\u201321:00", "info": "Templarheimen \u00b…` |
-| `footnote` | text | `"\u00c5pne treninger. Bare m\u00f8t opp."` |
+| `events` | list | `[{"date": "TIRSDAG", "time": "19:00–21:00", "info": "Templarheimen · 7-on-7"}…` |
+| `footnote` | text | `"Åpne treninger. Bare møt opp."` |
 | `wm_right` | text | `"UKE 23"` |
 
 Example JSON: [`schedule/schedule.json`](schedule/schedule.json)
@@ -75,18 +75,18 @@ Example JSON: [`schedule/schedule.json`](schedule/schedule.json)
 
 | Field | Type | Default |
 | --- | --- | --- |
-| `badge` | text | `"\u00c5PENT FOR ALLE"` |
-| `date` | text | `"L\u00f8rdag 14. juni \u00b7 12:00"` |
-| `titleA` | text | `"\u00c5pen"` |
+| `badge` | text | `"ÅPENT FOR ALLE"` |
+| `date` | text | `"Lørdag 14. juni · 12:00"` |
+| `titleA` | text | `"Åpen"` |
 | `titleB` | text | `"trening."` |
-| `desc` | textarea | `"Aldri pr\u00f8vd flaggfotball? Kom som du er. Vi har ekstra flagg, baller og…` |
+| `desc` | textarea | `"Aldri prøvd flaggfotball? Kom som du er. Vi har ekstra flagg, baller og kaff…` |
 | `meta1_l` | text | `"Sted"` |
 | `meta1_v` | text | `"Tromsdalen"` |
 | `meta2_l` | text | `"Varighet"` |
 | `meta2_v` | text | `"2 timer"` |
 | `meta3_l` | text | `"Pris"` |
 | `meta3_v` | text | `"Gratis"` |
-| `wm_right` | text | `"\u00c5PEN TRENING"` |
+| `wm_right` | text | `"ÅPEN TRENING"` |
 
 Example JSON: [`event/event.json`](event/event.json)
 
@@ -99,11 +99,11 @@ Example JSON: [`event/event.json`](event/event.json)
 | Field | Type | Default |
 | --- | --- | --- |
 | `eyebrow` | text | `"Vi er kvalifisert"` |
-| `titleA` | text | `"Troms\u00f8"` |
+| `titleA` | text | `"Tromsø"` |
 | `titleB` | text | `"til <span style=\"color:var(--chrome);\">NM.</span>"` |
-| `desc` | textarea | `"For f\u00f8rste gang i klubbens historie. Vi reiser til Oslo 22.\u201324. au…` |
+| `desc` | textarea | `"For første gang i klubbens historie. Vi reiser til Oslo 22.–24. august for å…` |
 | `m1l` | text | `"Dato"` |
-| `m1v` | text | `"22\u201324 AUG"` |
+| `m1v` | text | `"22–24 AUG"` |
 | `m2l` | text | `"Sted"` |
 | `m2v` | text | `"EKEBERG, OSLO"` |
 | `m3l` | text | `"Lag"` |
@@ -123,10 +123,10 @@ Example JSON: [`nm/nm.json`](nm/nm.json)
 | `eyebrow` | text | `"Vi vokser"` |
 | `titleA` | text | `"Bli med"` |
 | `titleB` | text | `"<span style=\"color:var(--chrome);\">oss.</span>"` |
-| `subtitle` | textarea | `"Du trenger ikke ha spilt f\u00f8r. Du trenger ikke utstyr.<br><strong style=…` |
-| `s1t` | text | `"M\u00f8t opp"` |
-| `s1d` | text | `"Tirsdag, torsdag eller l\u00f8rdag."` |
-| `s2t` | text | `"L\u00e5n utstyr"` |
+| `subtitle` | textarea | `"Du trenger ikke ha spilt før. Du trenger ikke utstyr.<br><strong style=\"col…` |
+| `s1t` | text | `"Møt opp"` |
+| `s1d` | text | `"Tirsdag, torsdag eller lørdag."` |
+| `s2t` | text | `"Lån utstyr"` |
 | `s2d` | text | `"Vi har flagg + ball klart."` |
 | `s3t` | text | `"Kom igjen"` |
 | `s3d` | text | `"Du er en av oss."` |
@@ -142,9 +142,9 @@ Example JSON: [`welcome/welcome.json`](welcome/welcome.json)
 
 | Field | Type | Default |
 | --- | --- | --- |
-| `eyebrow` | text | `"Bak laget \u00b7 04"` |
+| `eyebrow` | text | `"Bak laget · 04"` |
 | `titleA` | text | `"Etter siste"` |
-| `titleB` | text | `"fl\u00f8yt."` |
+| `titleB` | text | `"fløyt."` |
 | `caption` | textarea | `"Klubbhuset i Tromsdalen, en torsdag i mai. Termoser med kaffe, et par klemme…` |
 | `wm_right` | text | `"BAK LAGET"` |
 
@@ -162,7 +162,7 @@ Example JSON: [`bts/bts.json`](bts/bts.json)
 | `big` | text | `"2028"` |
 | `titleA` | text | `"Flaggfotball"` |
 | `titleB` | text | `"blir <span style=\"color:var(--chrome);\">olympisk gren.</span>"` |
-| `desc` | textarea | `"For f\u00f8rste gang debuterer flaggfotball p\u00e5 OL-programmet i Los Ange…` |
+| `desc` | textarea | `"For første gang debuterer flaggfotball på OL-programmet i Los Angeles 2028. …` |
 | `wm_right` | text | `"VISSTE DU?"` |
 
 Example JSON: [`fact/fact.json`](fact/fact.json)
@@ -175,11 +175,11 @@ Example JSON: [`fact/fact.json`](fact/fact.json)
 
 | Field | Type | Default |
 | --- | --- | --- |
-| `eyebrow` | text | `"Regeltorsdag \u00b7 12 av 24"` |
+| `eyebrow` | text | `"Regeltorsdag · 12 av 24"` |
 | `titleA` | text | `"Hva er"` |
 | `titleB` | text | `"en <span style=\"color:var(--chrome);\">first down?</span>"` |
 | `figure` | figure | `[{"type": "area", "points": [[15, 2], [25, 2], [25, 23], [15, 23]], "color": …` |
-| `desc` | textarea | `"<strong style=\"color:var(--fg);\">Du f\u00e5r 4 fors\u00f8k (\u00abdowns\u0…` |
+| `desc` | textarea | `"<strong style=\"color:var(--fg);\">Du får 4 forsøk («downs») til å rykke bal…` |
 | `descOffset` | offset | `0` |
 | `wm_right` | text | `"REGELTORSDAG"` |
 
@@ -193,13 +193,13 @@ Example JSON: [`rule/rule.json`](rule/rule.json)
 
 | Field | Type | Default |
 | --- | --- | --- |
-| `eyebrow` | text | `"Ukens konsept \u00b7 08 av 30"` |
+| `eyebrow` | text | `"Ukens konsept · 08 av 30"` |
 | `titleA` | text | `"Slant-Flat"` |
 | `titleB` | text | `"<span style=\"color:var(--chrome);\">combination.</span>"` |
 | `origin` | origin | `{"x": 15, "y": 12.5}` |
 | `pointScale` | scale | `1.8` |
 | `players` | players | `[{"label": "Q", "color": "qb", "x": 0, "y": 0, "r": 1, "width": 0.32, "route"…` |
-| `desc` | textarea | `"<strong style=\"color:var(--fg);\">Hvorfor:</strong> Slant tvinger n\u00e6r-…` |
+| `desc` | textarea | `"<strong style=\"color:var(--fg);\">Hvorfor:</strong> Slant tvinger nær-CB in…` |
 | `descOffset` | offset | `0` |
 | `wm_right` | text | `"UKENS KONSEPT"` |
 
@@ -217,7 +217,7 @@ Example JSON: [`drill/drill.json`](drill/drill.json)
 | `oPhoto` | image | `""` |
 | `oFirst` | text | `"Lukas"` |
 | `oLast` | text | `"Hagen"` |
-| `oTag` | text | `"WR \u00b7 #11"` |
+| `oTag` | text | `"WR · #11"` |
 | `oS1l` | text | `"Y/G snitt"` |
 | `oS1v` | text | `"86"` |
 | `oS2l` | text | `"TD"` |
@@ -228,14 +228,14 @@ Example JSON: [`drill/drill.json`](drill/drill.json)
 | `dPhoto` | image | `""` |
 | `dFirst` | text | `"Henrik"` |
 | `dLast` | text | `"Berg"` |
-| `dTag` | text | `"CB \u00b7 #24 \u00b7 BOD\u00d8"` |
+| `dTag` | text | `"CB · #24 · BODØ"` |
 | `dS1l` | text | `"INT"` |
 | `dS1v` | text | `"5"` |
 | `dS2l` | text | `"Pull"` |
 | `dS2v` | text | `"19"` |
 | `dS3l` | text | `"40-yd"` |
 | `dS3v` | text | `"4.5s"` |
-| `wm_right` | text | `"RUNDE 04 \u00b7 L\u00d8RDAG"` |
+| `wm_right` | text | `"RUNDE 04 · LØRDAG"` |
 
 Example JSON: [`matchup/matchup.json`](matchup/matchup.json)
 
@@ -250,19 +250,19 @@ Example JSON: [`matchup/matchup.json`](matchup/matchup.json)
 | `isPostGame` | checkbox | `false` |
 | `hColor` | colorPick | `"#54c59e"` |
 | `hLogo` | image | `""` |
-| `hName` | text | `"TROMS\u00d8"` |
+| `hName` | text | `"TROMSØ"` |
 | `hTag` | text | `"FLAGGFOTBALL"` |
 | `hScore` | text | `"28"` |
 | `aColor` | colorPick | `"#fb7185"` |
 | `aLogo` | image | `""` |
-| `aName` | text | `"BOD\u00d8"` |
+| `aName` | text | `"BODØ"` |
 | `aTag` | text | `"GLIMT FLAG"` |
 | `aScore` | text | `"14"` |
-| `gDate` | text | `"L\u00d8R 14. JUNI"` |
+| `gDate` | text | `"LØR 14. JUNI"` |
 | `gTime` | text | `"KL 14:00"` |
 | `gVenue` | text | `"TROMSDALEN KUNSTGRESS"` |
 | `gResult` | text | `"FULL TID"` |
-| `wm_right` | text | `"RUNDE 04 \u00b7 L\u00d8RDAG"` |
+| `wm_right` | text | `"RUNDE 04 · LØRDAG"` |
 
 Example JSON: [`game/game.json`](game/game.json)
 

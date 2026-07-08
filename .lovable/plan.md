@@ -1,75 +1,80 @@
+## Plan: IG Editor — text fixes, JSON import, examples, CI
 
-Mål
+### 1. Text-issue fixes (all templates × all aspect ratios)
 
-- Fikse mobil-spacingen i posisjonslisten uten å ødelegge desktop, som allerede ser bra ut.
+Re-audit each template in headless Chromium at square/portrait/story, capture screenshots, then patch the specific issues found. Known / likely offenders from earlier passes:
 
-Hva som faktisk skjer nå
+- **schedule** — event rows can push the footnote past the safe area in portrait; time column wraps awkwardly on story.
+- **welcome** — 3-column step grid gets cramped in story; step descs wrap into 3 lines and overflow card.
+- **event** — meta row (3 pairs, 32px gap) overflows story; description sometimes clips against the meta divider.
+- **pos101** — 4-item responsibility grid stays 2-col in story, forcing narrow columns that wrap items awkwardly.
+- **nm / fact** — big display type has fixed 120/380px sizes that ignore aspect; clips edges in story.
+- **matchup / game** — team-name lines and score/status can misalign vertically after fs overrides.
+- **rule / rule2** — floating text box adjuster (added earlier) sometimes overlaps footer in portrait when body is short.
+- **bts** — 96px title wraps into 3 lines with real content and covers photo caption gutter.
 
-- Koden ligger i `src/pages/Index.tsx`.
-- Mobiloppsettet for seksjonen ligger i `GameSection` (`ca. linje 501–534`).
-- Selve “havet av plass” kommer ikke fra containeren rundt lista. Mobil-listene bruker allerede `space-y-0`.
-- Problemet sitter i `PositionCard` (`ca. linje 637–709`), som brukes likt på desktop og mobil.
-- Den viktigste synderen er `tagline` på `ca. linje 687`: den er fortsatt synlig når kortet er lukket. På desktop ser det ut som bevisst kortinnhold. På mobil, i en smal og tett stack, leses den samme høyden som tomrom mellom elementene.
-- På mobil blir dette ekstra stygt fordi:
-  - teksten kan wrappe til flere linjer
-  - kortene ikke har tydelig “boks”-bakgrunn i lukket state
-  - samme desktop-orienterte komponent brukes i en helt annen mobilkontekst
-- Strukturen er også skjør: hele kortet er en `<button>` som inneholder `div`, `h3` og `p`. Det er dårlig/fragil button-markup og kan gi ulik oppførsel i mobilnettlesere.
+Fix pattern (already established): use shrink-to-fit hook + `min()` clamps on hard-coded px sizes so preview and export stay consistent per aspect. No template rewrites — only clamp/wrap fixes.
 
-Plan for å fikse det
+### 2. Import from JSON
 
-1. Skille mobil og desktop tydelig
-- Ikke prøve flere mikrojuseringer i samme komponent.
-- Lage en egen kompakt mobilvariant for posisjonskortene, eller en tydelig mobilgren i `PositionCard`.
-- Desktop beholdes visuelt nesten urørt.
+- Add a small "Import JSON" button next to the existing export controls.
+- Accepts either a paste (textarea modal) or a `.json` file upload.
+- Auto-detect payload shape:
+  - If shape matches a **single slide** (`{tpl, data, aspect?}`) → replace current slide (with confirm) or append.
+  - If shape matches a **session export** (`{slides:[...], aspect?, ...}` — same shape the current export log emits) → replace `state.slides` and reset `currentSlide` to 0.
+- Validate `tpl` against `T` keys, drop unknown fields safely, then re-render.
 
-2. Gjøre lukket mobilkort mye enklere
-- I lukket mobilstate skal kortet kun vise:
-  - ikon
-  - navn
-  - forkortelse
-  - chevron
-- `tagline` flyttes inn i utvidet innhold på mobil.
-- Dette kutter den falske høyden som nå oppleves som mellomrom.
+### 3. Example gallery + README + CI test
 
-3. Rydde HTML-strukturen
-- Bytte fra “hele kortet er en button” til:
-  - en ytre `article/div`
-  - en intern `button` kun for toggle-header
-  - et separat collapsible content-område under
-- Dette gjør høyden mer forutsigbar og reduserer mobilspesifikke rendering-avvik.
+**Location** (matches your instruction — with the app source, not `public/`):
 
-4. Gjøre collapse-state helt flat
-- Sørge for at lukket state ikke har noen synlig tekst, margin eller padding som fortsatt tar høyde.
-- Beholde grid-basert animasjon, men bare på detaljinnholdet.
-- Eventuell toppmargin på detaljinnhold skal kun eksistere når kortet er åpent.
+```text
+src/make-ig-post/examples/
+  README.md                    ← template docs (schema + preview)
+  <template>/
+    <template>.json            ← generic sample data (one slide)
+    <template>-square.png
+    <template>-portrait.png
+    <template>-story.png
+```
 
-5. Finjustere mobilvisuell rytme
-- Stramme inn `py`, `gap` og line-height eksplisitt på mobil.
-- Legge inn en svært subtil separator/border mellom mobilradene, så de oppleves som kompakte listeelementer i stedet for store luftlommer.
-- Desktop-spacingen rundt kortene beholdes.
+**Sample content:** generic, uses openly-available images (Unsplash / Wikimedia direct URLs) for `photo` / `logo` fields so the JSON is self-contained.
 
-6. Verifisere på riktige størrelser
-- Kontrollere mobil på minst:
-  - 390px bredde
-  - 320px bredde
-- Teste både lukket og åpen state for alle posisjoner.
-- Kontrollere at desktop fortsatt ser ut som nå.
-- Sjekke at navn/forkortelser ikke wraper stygt.
+**README.md structure** (auto-generated per template):
 
-Berørte kodeområder
+- Template key + display label
+- JSON schema (fields, types, defaults) derived from `T[tpl].fields`
+- Embedded thumbnails of the 3 aspect exports
+- Notes on fields with special behavior (list, figure, image, HTML-allowed)
 
-- `src/pages/Index.tsx:501–534` — mobil-layout for “Dette er flaggfotball”
-- `src/pages/Index.tsx:637–709` — `PositionCard`
+**Regeneration script** (`scripts/gen-ig-examples.mjs`):
 
-Hva jeg ikke planlegger å endre i denne runden
+- Headless Chromium loads `editor.html` for each template, applies the sample JSON, exports square/portrait/story via the editor's own export pipeline, saves PNGs + JSON + rebuilds the README.
+- Uses each template's default field values as the seed for the sample JSON (plus generic images).
 
-- `FieldDiagram`
-- global CSS i `src/index.css`
-- desktop-layouten rundt diagrammet, utover å koble inn den riktige card-varianten
+**CI test** (`src/make-ig-post/examples/__tests__/examples.test.ts`):
 
-Forventet resultat
+- For every `tpl` in `T`, assert:
+  - `<template>/<template>.json` exists and its `data` keys match the current `T[tpl].fields` id set (fails when a template gains/renames a field without updating the example).
+  - Three PNGs exist and are non-empty.
+  - README contains a section header for the template.
+- Fast checks (no rendering) so the test suite stays snappy. Regeneration is a manual `npm run ig:examples` command referenced in the failure hint.
 
-- Mobil får en tett, ryddig og tydelig posisjonsliste uten kunstig luft mellom elementene.
-- Desktop beholder uttrykket som allerede fungerer.
-- Åpnede kort blir fortsatt lesbare, men de lukkede kortene slutter å se ut som om de har store tomrom mellom seg.
+### 4. Documentation & self-updating
+
+- Add a `## Maintenance` block to the README explaining: whenever you add/rename a field in a template, or add a new template, run `npm run ig:examples` and commit the resulting json/png diffs. The CI test enforces this.
+
+### Deliverables (files touched)
+
+- `public/make-ig-post/editor.html` — text clamps, import JSON UI + handler
+- `public/make-ig-post/frames.css` — a few overflow/clamp rules
+- `src/make-ig-post/examples/**` — 12 folders × (1 json + 3 png) + README
+- `scripts/gen-ig-examples.mjs` — regeneration script
+- `package.json` — `ig:examples` script
+- `src/make-ig-post/examples/__tests__/examples.test.ts` — CI drift test
+
+### Risks / decisions to confirm before I start
+
+- Example PNG size: I'll export at the editor's native 1080px so they're usable as references but that adds ~1MB/template to the repo. If you'd rather have smaller thumbnails (e.g. 540px webp), say so. -> fine.
+- CI-style test scope: strict (fails on field-set drift + file presence) but does **not** pixel-diff the PNGs (would be flaky across font/Chromium versions). Say if you want pixel-diff too. -> no pixel diff is fine.
+- The example JSON's image URLs will point at Unsplash direct-download URLs. Those are stable-ish but not eternally guaranteed. Alternative: check a few tiny placeholder images into the repo. -> add to repo.

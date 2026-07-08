@@ -119,7 +119,7 @@ def render_readme(templates_meta):
         lines.append("| Field | Type | Default |")
         lines.append("| --- | --- | --- |")
         for f in tpl["fields"]:
-            default_repr = json.dumps(f["default"])
+            default_repr = json.dumps(f["default"], ensure_ascii=False)
             if len(default_repr) > 80:
                 default_repr = default_repr[:77] + "…"
             default_repr = default_repr.replace("|", "\\|")

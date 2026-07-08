@@ -1,0 +1,20 @@
+{
+  "tpl": "player",
+  "chrome": "curve",
+  "accent": "primary",
+  "photo": "http://localhost:8080/make-ig-post/examples-assets/ig-ex-player.jpg",
+  "photoCutout": false,
+  "imageScales": {},
+  "values": {
+    "eyebrow": "Møt laget · 04 av 18",
+    "first": "Magnus",
+    "last": "Sætre",
+    "jersey": "07",
+    "pos_label": "QUARTERBACK · #07",
+    "season": "3.",
+    "from": "Tromsdalen",
+    "background": "Håndball",
+    "quote": "«Det handler om å lese spillet før det skjer.»",
+    "wm_right": "QB · 69° NORD"
+  }
+}

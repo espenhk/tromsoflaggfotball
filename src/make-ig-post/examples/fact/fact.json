@@ -1,0 +1,16 @@
+{
+  "tpl": "fact",
+  "chrome": "curve",
+  "accent": "primary",
+  "photo": null,
+  "photoCutout": false,
+  "imageScales": {},
+  "values": {
+    "eyebrow": "Visste du?",
+    "big": "2028",
+    "titleA": "Flaggfotball",
+    "titleB": "blir <span style=\"color:var(--chrome);\">olympisk gren.</span>",
+    "desc": "For første gang debuterer flaggfotball på OL-programmet i Los Angeles 2028. Sporten vokser raskere enn noen annen lagidrett globalt.",
+    "wm_right": "VISSTE DU?"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "tpl": "bts",
+  "chrome": "curve",
+  "accent": "primary",
+  "photo": "http://localhost:8080/make-ig-post/examples-assets/ig-ex-candid.jpg",
+  "photoCutout": false,
+  "imageScales": {},
+  "values": {
+    "eyebrow": "Bak laget · 04",
+    "titleA": "Etter siste",
+    "titleB": "fløyt.",
+    "caption": "Klubbhuset i Tromsdalen, en torsdag i mai. Termoser med kaffe, et par klemmer, planer for helga. Det er her laget faktisk bygges.",
+    "wm_right": "BAK LAGET"
+  }
+}

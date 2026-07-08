@@ -1,0 +1,26 @@
+{
+  "tpl": "game",
+  "chrome": "curve",
+  "accent": "primary",
+  "photo": null,
+  "photoCutout": false,
+  "imageScales": {},
+  "values": {
+    "isPostGame": false,
+    "hColor": "#54c59e",
+    "hLogo": "http://localhost:8080/make-ig-post/examples-assets/ig-ex-logo-a.png",
+    "hName": "TROMSØ",
+    "hTag": "FLAGGFOTBALL",
+    "hScore": "28",
+    "aColor": "#fb7185",
+    "aLogo": "http://localhost:8080/make-ig-post/examples-assets/ig-ex-logo-b.png",
+    "aName": "BODØ",
+    "aTag": "GLIMT FLAG",
+    "aScore": "14",
+    "gDate": "LØR 14. JUNI",
+    "gTime": "KL 14:00",
+    "gVenue": "TROMSDALEN KUNSTGRESS",
+    "gResult": "FULL TID",
+    "wm_right": "RUNDE 04 · LØRDAG"
+  }
+}

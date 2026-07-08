@@ -1,0 +1,80 @@
+{
+  "tpl": "rule",
+  "chrome": "curve",
+  "accent": "primary",
+  "photo": null,
+  "photoCutout": false,
+  "imageScales": {},
+  "values": {
+    "eyebrow": "Regeltorsdag · 12 av 24",
+    "titleA": "Hva er",
+    "titleB": "en <span style=\"color:var(--chrome);\">first down?</span>",
+    "figure": [
+      {
+        "type": "area",
+        "points": [
+          [
+            15,
+            2
+          ],
+          [
+            25,
+            2
+          ],
+          [
+            25,
+            23
+          ],
+          [
+            15,
+            23
+          ]
+        ],
+        "color": "primary"
+      },
+      {
+        "type": "line",
+        "x1": 15,
+        "y1": 1,
+        "x2": 15,
+        "y2": 24,
+        "color": "white",
+        "width": 0.32
+      },
+      {
+        "type": "line",
+        "x1": 25,
+        "y1": 1,
+        "x2": 25,
+        "y2": 24,
+        "color": "chrome",
+        "width": 0.32
+      },
+      {
+        "type": "arrow",
+        "x1": 15,
+        "y1": 6,
+        "x2": 25,
+        "y2": 6,
+        "color": "chrome",
+        "width": 0.32
+      },
+      {
+        "type": "point",
+        "x": 15,
+        "y": 12.5,
+        "color": "chrome"
+      },
+      {
+        "type": "point",
+        "x": 25,
+        "y": 12.5,
+        "color": "qb",
+        "label": "10"
+      }
+    ],
+    "desc": "<strong style=\"color:var(--fg);\">Du får 4 forsøk («downs») til å rykke ballen 10 yards.</strong> Klarer du det, får du 4 nye forsøk fra det punktet.",
+    "descOffset": 0,
+    "wm_right": "REGELTORSDAG"
+  }
+}

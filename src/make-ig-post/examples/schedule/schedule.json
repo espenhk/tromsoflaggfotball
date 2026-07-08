@@ -1,0 +1,31 @@
+{
+  "tpl": "schedule",
+  "chrome": "curve",
+  "accent": "primary",
+  "photo": null,
+  "photoCutout": false,
+  "imageScales": {},
+  "values": {
+    "week": "Uke 23 · 02 — 08 juni",
+    "title": "Ukens treninger.",
+    "events": [
+      {
+        "date": "TIRSDAG",
+        "time": "19:00–21:00",
+        "info": "Templarheimen · 7-on-7"
+      },
+      {
+        "date": "TORSDAG",
+        "time": "19:00–21:00",
+        "info": "Templarheimen · Drills"
+      },
+      {
+        "date": "LØRDAG",
+        "time": "11:00–13:00",
+        "info": "Tromsdalen · Scrimmage"
+      }
+    ],
+    "footnote": "Åpne treninger. Bare møt opp.",
+    "wm_right": "UKE 23"
+  }
+}

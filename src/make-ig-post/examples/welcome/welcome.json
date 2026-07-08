@@ -1,0 +1,21 @@
+{
+  "tpl": "welcome",
+  "chrome": "curve",
+  "accent": "primary",
+  "photo": null,
+  "photoCutout": false,
+  "imageScales": {},
+  "values": {
+    "eyebrow": "Vi vokser",
+    "titleA": "Bli med",
+    "titleB": "<span style=\"color:var(--chrome);\">oss.</span>",
+    "subtitle": "Du trenger ikke ha spilt før. Du trenger ikke utstyr.<br><strong style=\"color:var(--fg);\">Du må bare møte opp.</strong>",
+    "s1t": "Møt opp",
+    "s1d": "Tirsdag, torsdag eller lørdag.",
+    "s2t": "Lån utstyr",
+    "s2d": "Vi har flagg + ball klart.",
+    "s3t": "Kom igjen",
+    "s3d": "Du er en av oss.",
+    "wm_right": "BLI MED"
+  }
+}

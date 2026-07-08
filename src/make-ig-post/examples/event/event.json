@@ -1,0 +1,22 @@
+{
+  "tpl": "event",
+  "chrome": "curve",
+  "accent": "primary",
+  "photo": "http://localhost:8080/make-ig-post/examples-assets/ig-ex-event.jpg",
+  "photoCutout": false,
+  "imageScales": {},
+  "values": {
+    "badge": "ÅPENT FOR ALLE",
+    "date": "Lørdag 14. juni · 12:00",
+    "titleA": "Åpen",
+    "titleB": "trening.",
+    "desc": "Aldri prøvd flaggfotball? Kom som du er. Vi har ekstra flagg, baller og kaffe. Tromsdalen kunstgress.",
+    "meta1_l": "Sted",
+    "meta1_v": "Tromsdalen",
+    "meta2_l": "Varighet",
+    "meta2_v": "2 timer",
+    "meta3_l": "Pris",
+    "meta3_v": "Gratis",
+    "wm_right": "ÅPEN TRENING"
+  }
+}

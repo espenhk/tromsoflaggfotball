@@ -1,0 +1,21 @@
+{
+  "tpl": "nm",
+  "chrome": "curve",
+  "accent": "primary",
+  "photo": null,
+  "photoCutout": false,
+  "imageScales": {},
+  "values": {
+    "eyebrow": "Vi er kvalifisert",
+    "titleA": "Tromsø",
+    "titleB": "til <span style=\"color:var(--chrome);\">NM.</span>",
+    "desc": "For første gang i klubbens historie. Vi reiser til Oslo 22.–24. august for å spille mot landets beste.",
+    "m1l": "Dato",
+    "m1v": "22–24 AUG",
+    "m2l": "Sted",
+    "m2v": "EKEBERG, OSLO",
+    "m3l": "Lag",
+    "m3v": "12",
+    "wm_right": "NM 2026"
+  }
+}

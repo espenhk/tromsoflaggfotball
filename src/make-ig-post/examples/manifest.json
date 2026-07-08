@@ -1,0 +1,188 @@
+{
+  "templates": {
+    "player": {
+      "label": "Player intro",
+      "fields": [
+        "eyebrow",
+        "first",
+        "last",
+        "jersey",
+        "pos_label",
+        "season",
+        "from",
+        "background",
+        "quote",
+        "wm_right"
+      ]
+    },
+    "pos101": {
+      "label": "Position 101",
+      "fields": [
+        "eyebrow",
+        "abbr",
+        "name",
+        "tagline",
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "wm_right"
+      ]
+    },
+    "schedule": {
+      "label": "Schedule",
+      "fields": [
+        "week",
+        "title",
+        "events",
+        "footnote",
+        "wm_right"
+      ]
+    },
+    "event": {
+      "label": "Event",
+      "fields": [
+        "badge",
+        "date",
+        "titleA",
+        "titleB",
+        "desc",
+        "meta1_l",
+        "meta1_v",
+        "meta2_l",
+        "meta2_v",
+        "meta3_l",
+        "meta3_v",
+        "wm_right"
+      ]
+    },
+    "nm": {
+      "label": "NM",
+      "fields": [
+        "eyebrow",
+        "titleA",
+        "titleB",
+        "desc",
+        "m1l",
+        "m1v",
+        "m2l",
+        "m2v",
+        "m3l",
+        "m3v",
+        "wm_right"
+      ]
+    },
+    "welcome": {
+      "label": "Bli med",
+      "fields": [
+        "eyebrow",
+        "titleA",
+        "titleB",
+        "subtitle",
+        "s1t",
+        "s1d",
+        "s2t",
+        "s2d",
+        "s3t",
+        "s3d",
+        "wm_right"
+      ]
+    },
+    "bts": {
+      "label": "BTS",
+      "fields": [
+        "eyebrow",
+        "titleA",
+        "titleB",
+        "caption",
+        "wm_right"
+      ]
+    },
+    "fact": {
+      "label": "Visste du?",
+      "fields": [
+        "eyebrow",
+        "big",
+        "titleA",
+        "titleB",
+        "desc",
+        "wm_right"
+      ]
+    },
+    "rule": {
+      "label": "Rule",
+      "fields": [
+        "eyebrow",
+        "titleA",
+        "titleB",
+        "figure",
+        "desc",
+        "descOffset",
+        "wm_right"
+      ]
+    },
+    "drill": {
+      "label": "Play/concept",
+      "fields": [
+        "eyebrow",
+        "titleA",
+        "titleB",
+        "origin",
+        "pointScale",
+        "players",
+        "desc",
+        "descOffset",
+        "wm_right"
+      ]
+    },
+    "matchup": {
+      "label": "Matchup",
+      "fields": [
+        "oColor",
+        "oPhoto",
+        "oFirst",
+        "oLast",
+        "oTag",
+        "oS1l",
+        "oS1v",
+        "oS2l",
+        "oS2v",
+        "oS3l",
+        "oS3v",
+        "dColor",
+        "dPhoto",
+        "dFirst",
+        "dLast",
+        "dTag",
+        "dS1l",
+        "dS1v",
+        "dS2l",
+        "dS2v",
+        "dS3l",
+        "dS3v",
+        "wm_right"
+      ]
+    },
+    "game": {
+      "label": "Game",
+      "fields": [
+        "isPostGame",
+        "hColor",
+        "hLogo",
+        "hName",
+        "hTag",
+        "hScore",
+        "aColor",
+        "aLogo",
+        "aName",
+        "aTag",
+        "aScore",
+        "gDate",
+        "gTime",
+        "gVenue",
+        "gResult",
+        "wm_right"
+      ]
+    }
+  }
+}

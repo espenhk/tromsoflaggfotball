@@ -68,7 +68,7 @@ Deno.serve(async (req) => {
       // List without the payload (could be huge); fetch payload on demand.
       const { data, error } = await supabase
         .from("ig_post_exports")
-        .select("id, name, kind, slide_count, photos_dropped, created_at, updated_at, payload->aspect")
+        .select("id, name, kind, slide_count, photos_dropped, created_at, updated_at, templates, payload->aspect")
         .order("created_at", { ascending: false })
         .limit(500);
       if (error) throw error;

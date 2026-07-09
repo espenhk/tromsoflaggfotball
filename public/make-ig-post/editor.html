@@ -2743,6 +2743,51 @@
         const overlay = document.createElement('div');
         overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
         let cache = [];
+        // Persist filter/sort/search choices for the lifetime of the modal.
+        const filters = {
+          template: (function(){ try { return localStorage.getItem('mip-hist-template') || '__all__'; } catch(_) { return '__all__'; } })(),
+          sort:     (function(){ try { return localStorage.getItem('mip-hist-sort') || 'date-desc'; } catch(_) { return 'date-desc'; } })(),
+          q:        '',
+        };
+        // Very small fuzzy match: every char of needle appears in haystack in order.
+        // Returns a score (lower = better) or -1 if no match.
+        const fuzzyScore = (needle, hay) => {
+          if (!needle) return 0;
+          const n = needle.toLowerCase(); const h = (hay || '').toLowerCase();
+          if (h.includes(n)) return 0; // substring wins
+          let i = 0, j = 0, gaps = 0, lastMatch = -1;
+          while (i < n.length && j < h.length) {
+            if (n[i] === h[j]) {
+              if (lastMatch >= 0) gaps += (j - lastMatch - 1);
+              lastMatch = j; i++;
+            }
+            j++;
+          }
+          return i === n.length ? 1 + gaps : -1;
+        };
+        const filterAndSort = (all) => {
+          let list = all.slice();
+          if (filters.template !== '__all__') {
+            list = list.filter(e => Array.isArray(e.templates) && e.templates.includes(filters.template));
+          }
+          if (filters.q.trim()) {
+            const q = filters.q.trim();
+            list = list
+              .map(e => ({ e, s: fuzzyScore(q, e.name) }))
+              .filter(x => x.s >= 0)
+              .sort((a, b) => a.s - b.s)
+              .map(x => x.e);
+          }
+          if (!filters.q.trim()) {
+            list.sort((a, b) => {
+              if (filters.sort === 'name-asc')  return String(a.name).localeCompare(String(b.name));
+              if (filters.sort === 'name-desc') return String(b.name).localeCompare(String(a.name));
+              if (filters.sort === 'date-asc')  return new Date(a.created_at) - new Date(b.created_at);
+              return new Date(b.created_at) - new Date(a.created_at); // date-desc default
+            });
+          }
+          return list;
+        };
         const render = async () => {
           overlay.innerHTML = `<div style="background:#0a1a22;border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:20px;max-width:520px;width:100%;font-family:var(--font-body),system-ui,sans-serif;color:#9ec;">Loading…</div>`;
           try {
@@ -2753,7 +2798,28 @@
             overlay.querySelector('[data-close]').onclick = () => overlay.remove();
             return;
           }
-          const list = cache;
+          const paint = () => {
+          const list = filterAndSort(cache);
+          // Union of templates across ALL saved exports (not just filtered).
+          const templateSet = new Set();
+          cache.forEach(e => (e.templates || []).forEach(t => templateSet.add(t)));
+          const templateOptions = Array.from(templateSet).sort();
+          const opt = (v, label, sel) => `<option value="${v}"${sel===v?' selected':''}>${label}</option>`;
+          const controls = `
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+              <select data-template style="padding:7px 8px;border-radius:8px;border:1px solid rgba(13,106,106,0.5);background:#021018;color:#f0fcfa;font-size:12px;">
+                ${opt('__all__','All templates',filters.template)}
+                ${templateOptions.map(t => opt(t, t, filters.template)).join('')}
+              </select>
+              <select data-sort style="padding:7px 8px;border-radius:8px;border:1px solid rgba(13,106,106,0.5);background:#021018;color:#f0fcfa;font-size:12px;">
+                ${opt('date-desc','Newest first',filters.sort)}
+                ${opt('date-asc','Oldest first',filters.sort)}
+                ${opt('name-asc','Name A→Z',filters.sort)}
+                ${opt('name-desc','Name Z→A',filters.sort)}
+              </select>
+            </div>
+            <input data-search type="search" placeholder="Search name (fuzzy)…" value="${String(filters.q).replace(/"/g,'&quot;')}" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid rgba(13,106,106,0.5);background:#021018;color:#f0fcfa;font-size:13px;margin-bottom:10px;box-sizing:border-box;">
+          `;
           const rows = list.length ? list.map(e => `
             <div data-id="${e.id}" style="border:1px solid rgba(13,106,106,0.4);border-radius:10px;padding:12px;margin-bottom:8px;background:rgba(2,16,24,0.6);">
               <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
@@ -2761,27 +2827,41 @@
               </div>
               <div style="font-size:11px;color:#9ec;margin-bottom:10px;">
                 ${fmtDate(e.created_at)} · ${e.slide_count} slide${e.slide_count===1?'':'s'} · ${e.aspect || '—'}${e.photos_dropped ? ' · photos dropped' : ''}
+                ${Array.isArray(e.templates) && e.templates.length ? ` · <span style="color:#54c59e;">${e.templates.join(', ')}</span>` : ''}
               </div>
               <div style="display:flex;gap:6px;flex-wrap:wrap;">
                 <button data-load style="flex:1;min-width:80px;padding:8px 10px;background:var(--primary,#54c59e);color:#021018;border:none;border-radius:8px;font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;">Load</button>
                 <button data-export style="padding:8px 10px;background:transparent;color:#9ec;border:1px solid rgba(13,106,106,0.6);border-radius:8px;font-size:12px;cursor:pointer;">JSON</button>
                 <button data-delete style="padding:8px 10px;background:transparent;color:#f88;border:1px solid rgba(200,80,80,0.5);border-radius:8px;font-size:12px;cursor:pointer;">Delete</button>
               </div>
-            </div>`).join('') : `<div style="text-align:center;color:#9ec;padding:24px 0;font-size:13px;">No saved exports yet. Export a post and you'll be asked to name it.</div>`;
+            </div>`).join('') : `<div style="text-align:center;color:#9ec;padding:24px 0;font-size:13px;">${cache.length ? 'No exports match the current filters.' : "No saved exports yet. Export a post and you'll be asked to name it."}</div>`;
           overlay.innerHTML = `
             <div style="background:#0a1a22;border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:20px;max-width:520px;width:100%;max-height:80vh;display:flex;flex-direction:column;font-family:var(--font-body),system-ui,sans-serif;color:#f0fcfa;">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-                <div style="font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:16px;letter-spacing:0.04em;">Saved exports (${list.length}) · cloud</div>
+                <div style="font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:16px;letter-spacing:0.04em;">Saved exports (${list.length}${list.length !== cache.length ? ` / ${cache.length}` : ''}) · cloud</div>
                 <button data-close style="background:transparent;color:#9ec;border:none;font-size:22px;cursor:pointer;line-height:1;">×</button>
               </div>
+              ${controls}
               <div data-list style="overflow:auto;padding-right:4px;">${rows}</div>
               <div style="display:flex;gap:8px;margin-top:12px;">
                 <button data-refresh style="flex:1;padding:9px 10px;background:transparent;color:#9ec;border:1px solid rgba(13,106,106,0.6);border-radius:8px;font-size:12px;cursor:pointer;">Refresh</button>
-                ${list.length ? `<button data-clear-all style="padding:9px 10px;background:transparent;color:#f88;border:1px solid rgba(200,80,80,0.5);border-radius:8px;font-size:12px;cursor:pointer;">Clear all</button>` : ''}
+                ${cache.length ? `<button data-clear-all style="padding:9px 10px;background:transparent;color:#f88;border:1px solid rgba(200,80,80,0.5);border-radius:8px;font-size:12px;cursor:pointer;">Clear all</button>` : ''}
               </div>
             </div>`;
           overlay.querySelector('[data-close]').onclick = () => overlay.remove();
           overlay.querySelector('[data-refresh]').onclick = () => render();
+          const tplSel = overlay.querySelector('[data-template]');
+          const sortSel = overlay.querySelector('[data-sort]');
+          const searchInp = overlay.querySelector('[data-search]');
+          if (tplSel) tplSel.onchange = () => { filters.template = tplSel.value; try { localStorage.setItem('mip-hist-template', filters.template); } catch(_){}; paint(); };
+          if (sortSel) sortSel.onchange = () => { filters.sort = sortSel.value; try { localStorage.setItem('mip-hist-sort', filters.sort); } catch(_){}; paint(); };
+          if (searchInp) {
+            searchInp.oninput = () => { filters.q = searchInp.value; paint(); };
+            // Preserve focus + caret across repaints while typing.
+            setTimeout(() => {
+              try { searchInp.focus(); const v = searchInp.value; searchInp.setSelectionRange(v.length, v.length); } catch(_){}
+            }, 0);
+          }
           overlay.querySelectorAll('[data-id]').forEach(row => {
             const id = row.dataset.id;
             row.querySelector('[data-load]').onclick = async () => {
@@ -2820,6 +2900,8 @@
             try { await historyApi('clear'); render(); }
             catch (e) { alert('Clear failed: ' + e.message); }
           };
+          };
+          paint();
         };
         document.body.appendChild(overlay);
         overlay.addEventListener('click', (ev) => { if (ev.target === overlay) overlay.remove(); });

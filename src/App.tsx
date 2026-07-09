@@ -31,7 +31,6 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/how-i-did-it" element={<HowIDidIt />} />
             <Route path="/posisjoner" element={<Posisjoner />} />
-            <Route path="/sosialt-mock" element={<SosialtMock />} />
 
             {/* Admin (password-protected) */}
             <Route path="/admin" element={<AdminGate />}>
@@ -39,6 +38,7 @@ const App = () => (
               <Route path="pameldinger" element={<Pameldinger />} />
               <Route path="make-ig-post" element={<MakeIgPost />} />
               <Route path="training-plans" element={<TrainingPlans />} />
+              <Route path="sosialt-mock" element={<SosialtMock />} />
             </Route>
 
 

@@ -20,6 +20,11 @@ const links = [
     title: "Treningsplaner",
     description: "Treningsopplegg og øvelser for alle aldersgrupper.",
   },
+  {
+    to: "/admin/sosialt-mock",
+    title: "Sosialt (mockup)",
+    description: "Forhåndsvisning av sosiale medier-feeden.",
+  },
 ];
 
 const AdminIndex = () => {

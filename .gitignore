@@ -30,3 +30,6 @@ public/make-ig-post/fonts/NHaasGrotesk*
 # Secrets
 .env
 .env.*
+
+# Local plans (not synced — see AGENTS.md)
+plans/

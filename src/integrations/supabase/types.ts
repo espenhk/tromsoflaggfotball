@@ -23,6 +23,7 @@ export type Database = {
           payload: Json
           photos_dropped: boolean
           slide_count: number
+          templates: string[] | null
           updated_at: string
         }
         Insert: {
@@ -33,6 +34,7 @@ export type Database = {
           payload: Json
           photos_dropped?: boolean
           slide_count?: number
+          templates?: string[] | null
           updated_at?: string
         }
         Update: {
@@ -43,6 +45,7 @@ export type Database = {
           payload?: Json
           photos_dropped?: boolean
           slide_count?: number
+          templates?: string[] | null
           updated_at?: string
         }
         Relationships: []
@@ -148,7 +151,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      ig_post_extract_templates: { Args: { p: Json }; Returns: string[] }
     }
     Enums: {
       [_ in never]: never

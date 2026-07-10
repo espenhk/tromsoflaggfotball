@@ -2803,13 +2803,22 @@
           // Union of templates across ALL saved exports (not just filtered).
           const templateSet = new Set();
           cache.forEach(e => (e.templates || []).forEach(t => templateSet.add(t)));
-          const templateOptions = Array.from(templateSet).sort();
+          // Build a label map from the picker buttons so dropdown names match
+          // the editor's template selector (e.g. "T01 · Player") instead of
+          // showing the short internal IDs.
+          const tplLabelMap = {};
+          document.querySelectorAll('.picker button[data-tpl]').forEach(b => {
+            tplLabelMap[b.dataset.tpl] = (b.textContent || '').trim();
+          });
+          const tplLabel = (id) => tplLabelMap[id] || (T[id]?.label) || id;
+          const templateOptions = Array.from(templateSet)
+            .sort((a, b) => tplLabel(a).localeCompare(tplLabel(b)));
           const opt = (v, label, sel) => `<option value="${v}"${sel===v?' selected':''}>${label}</option>`;
           const controls = `
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
               <select data-template style="padding:7px 8px;border-radius:8px;border:1px solid rgba(13,106,106,0.5);background:#021018;color:#f0fcfa;font-size:12px;">
                 ${opt('__all__','All templates',filters.template)}
-                ${templateOptions.map(t => opt(t, t, filters.template)).join('')}
+                ${templateOptions.map(t => opt(t, tplLabel(t), filters.template)).join('')}
               </select>
               <select data-sort style="padding:7px 8px;border-radius:8px;border:1px solid rgba(13,106,106,0.5);background:#021018;color:#f0fcfa;font-size:12px;">
                 ${opt('date-desc','Newest first',filters.sort)}

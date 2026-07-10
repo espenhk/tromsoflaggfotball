@@ -41,14 +41,14 @@
       .field label { display:block; font-family:var(--font-body); font-size:11px;
         letter-spacing:0.18em; text-transform:uppercase; color:var(--fg-muted); margin-bottom:6px; font-weight:600; }
       .field input, .field textarea, .field select { width:100%; padding:10px 12px;
-        background:#021018; border:1px solid rgba(13,106,106,0.5); border-radius:6px;
+        background:var(--bg-muted); border:1px solid rgba(13,106,106,0.5); border-radius:6px;
         color:var(--fg); font-family:var(--font-body); font-size:14px; box-sizing:border-box; }
       .field textarea { resize:vertical; min-height: 60px; font-family: var(--font-body); }
       .field input:focus, .field textarea:focus, .field select:focus { outline:none; border-color:var(--primary); }
       .font-scale-row { display:inline-flex; align-items:center; gap:6px; flex-shrink:0; }
       .field-input-row { display:flex; align-items:flex-start; gap:8px; }
       .field-input-row > input, .field-input-row > textarea { flex:1 1 auto; min-width:0; }
-      .fs-stepper { display:inline-flex; align-items:center; gap:2px; background:#021018;
+      .fs-stepper { display:inline-flex; align-items:center; gap:2px; background:var(--bg-muted);
         border:1px solid rgba(13,106,106,0.5); border-radius:6px; padding:2px; }
       .fs-stepper button { width:28px; height:28px; background:transparent; color:var(--fg);
         border:none; border-radius:4px; cursor:pointer; font-family:var(--font-body);
@@ -65,7 +65,7 @@
       .field-pair .pair-cell { flex:1; min-width:0; display:flex; flex-direction:column; }
       .field-pair .pair-cell label { display:block; font-family:var(--font-body); font-size:10px;
         letter-spacing:0.14em; text-transform:uppercase; color:var(--fg-muted); margin-bottom:4px; font-weight:600; }
-      .field-pair .pair-cell input { width:100%; padding:8px 10px; background:#021018;
+      .field-pair .pair-cell input { width:100%; padding:8px 10px; background:var(--bg-muted);
         border:1px solid rgba(13,106,106,0.5); border-radius:6px; color:var(--fg);
         font-family:var(--font-body); font-size:13px; box-sizing:border-box; }
       /* Inline font-size override wrapper — keep parent's line-height so vertical
@@ -133,7 +133,7 @@
       .accent-row button[data-acc="rusher"].active  { background:#fb923c; }
       .accent-row button[data-acc="blue"].active    { background:#38bdf8; }
       .help-link { font-size:12px; color:var(--primary); text-decoration:none; }
-      .list-field .list-row { background:#021018; border:1px solid rgba(13,106,106,0.4);
+      .list-field .list-row { background:var(--bg-muted); border:1px solid rgba(13,106,106,0.4);
         border-radius:8px; padding:12px 12px 4px; margin-bottom:10px; }
       .list-field .list-row-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
       .list-field .list-row-label { font-family:var(--font-heading); font-weight:700; font-size:11px;
@@ -149,11 +149,11 @@
       .list-field .list-add:hover { border-color:var(--chrome); background:rgba(84,197,158,0.05); }
 
       /* Figure (coordinate-based diagram) editor */
-      .fig-field .fig-row { background:#021018; border:1px solid rgba(13,106,106,0.4);
+      .fig-field .fig-row { background:var(--bg-muted); border:1px solid rgba(13,106,106,0.4);
         border-radius:8px; padding:10px 12px; margin-bottom:8px; }
       .fig-field .fig-row-head { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
       .fig-field .fig-row-head .fig-color-wrap { position:relative; display:inline-flex; align-items:center; flex:0 0 auto; }
-      .fig-field .fig-row-head .fig-color-wrap select { background:#08141a; color:var(--fg);
+      .fig-field .fig-row-head .fig-color-wrap select { background:var(--bg-muted); color:var(--fg);
         border:1px solid rgba(13,106,106,0.5); border-radius:6px; padding:5px 8px 5px 26px;
         font-family:var(--font-body); font-size:12px; }
       .fig-field .fig-row-head .fig-color-wrap .fig-swatch { position:absolute; left:7px; top:50%;
@@ -167,7 +167,7 @@
       .fig-field .fig-coords { display:flex; flex-wrap:wrap; gap:6px 8px; align-items:flex-end; }
       .fig-field .fig-mini { display:flex; flex-direction:column; gap:2px; font-family:var(--font-body);
         font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--fg-muted); }
-      .fig-field .fig-mini input { width:64px; padding:6px 8px; background:#08141a; color:var(--fg);
+      .fig-field .fig-mini input { width:64px; padding:6px 8px; background:var(--bg-muted); color:var(--fg);
         border:1px solid rgba(13,106,106,0.5); border-radius:5px; font-family:var(--font-body); font-size:13px; }
       .fig-field .fig-mini.fig-wide input { width:100%; min-width:260px; }
       .fig-field .fig-mini.fig-wide { flex:1; }
@@ -193,7 +193,7 @@
       .fig-field .fig-type-pill.active { background:var(--primary); color:var(--natt-500); border-color:var(--primary); }
       .fig-field .fig-legend { font-family:var(--font-body); font-size:11px; color:var(--fg-muted);
         margin:2px 0 8px 0; line-height:1.5; }
-      .fig-field .fig-legend code { background:#08141a; padding:1px 5px; border-radius:3px; color:var(--chrome); font-size:11px; }
+      .fig-field .fig-legend code { background:var(--bg-muted); padding:1px 5px; border-radius:3px; color:var(--chrome); font-size:11px; }
       .fig-field .fig-route { margin-top:10px; padding-top:8px; border-top:1px dashed rgba(13,106,106,0.4); }
       .fig-field .fig-route-label { font-family:var(--font-body); font-size:11px; color:var(--fg-muted);
         text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px; }
@@ -201,7 +201,7 @@
         font-style:italic; padding:4px 0 6px; }
       .fig-field .fig-route-row { display:flex; align-items:flex-end; gap:6px; margin-bottom:6px; }
       .fig-field .fig-route-tag { display:inline-flex; align-items:center; justify-content:center;
-        width:22px; height:22px; border-radius:50%; background:#08141a; border:1px solid rgba(13,106,106,0.5);
+        width:22px; height:22px; border-radius:50%; background:var(--bg-muted); border:1px solid rgba(13,106,106,0.5);
         color:var(--chrome); font-family:var(--font-heading); font-weight:800; font-size:11px; align-self:center; }
       .fig-field .fig-add-pt { flex:1 1 100%; margin-top:4px; }
 
@@ -1524,7 +1524,7 @@
             const o = v || { x: 15, y: 12.5 };
             return `<div class="field fig-field"><label>${f.label}</label>
               <div class="fig-legend">All player positions are relative to this point. <code>x</code> = down-field (10 = own goal line, 60 = opposing), <code>y</code> = cross-field (0–25).</div>
-              <div class="fig-coords" style="background:#021018; border:1px solid rgba(13,106,106,0.4); border-radius:8px; padding:10px;">
+              <div class="fig-coords" style="background:var(--bg-muted); border:1px solid rgba(13,106,106,0.4); border-radius:8px; padding:10px;">
                 <label class="fig-mini">x (down-field)<input type="number" step="0.5" data-origin="${f.id}|x" value="${o.x}"></label>
                 <label class="fig-mini">y (cross-field)<input type="number" step="0.5" data-origin="${f.id}|y" value="${o.y}"></label>
               </div>
@@ -2541,7 +2541,7 @@
           const overlay = document.createElement('div');
           overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
           overlay.innerHTML = `
-            <div style="background:#0a1a22;border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:28px;max-width:360px;width:100%;text-align:center;font-family:var(--font-body),system-ui,sans-serif;color:#f0fcfa;">
+            <div style="background:var(--bg-elevated);border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:28px;max-width:360px;width:100%;text-align:center;font-family:var(--font-body),system-ui,sans-serif;color:#f0fcfa;">
               <div style="font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:18px;letter-spacing:0.04em;margin-bottom:18px;">${title}</div>
               <button data-go style="width:100%;padding:14px 16px;background:var(--primary,#54c59e);color:#021018;border:none;border-radius:10px;font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:14px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;margin-bottom:10px;">${btnLabel}</button>
               <button data-cancel style="width:100%;padding:10px 16px;background:transparent;color:#9ec;border:1px solid rgba(13,106,106,0.6);border-radius:10px;font-family:var(--font-body),system-ui,sans-serif;font-size:13px;cursor:pointer;">Cancel</button>
@@ -2667,10 +2667,10 @@
           const overlay = document.createElement('div');
           overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
           overlay.innerHTML = `
-            <div style="background:#0a1a22;border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:24px;max-width:420px;width:100%;font-family:var(--font-body),system-ui,sans-serif;color:#f0fcfa;">
+            <div style="background:var(--bg-elevated);border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:24px;max-width:420px;width:100%;font-family:var(--font-body),system-ui,sans-serif;color:#f0fcfa;">
               <div style="font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:16px;letter-spacing:0.04em;margin-bottom:6px;">Save to export log</div>
               <div style="font-size:12px;color:#9ec;margin-bottom:14px;">Name this version so you can reopen and edit it later.</div>
-              <input data-name type="text" value="${String(defaultName).replace(/"/g,'&quot;')}" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(13,106,106,0.6);background:#021018;color:#f0fcfa;font-family:inherit;font-size:14px;margin-bottom:14px;box-sizing:border-box;">
+              <input data-name type="text" value="${String(defaultName).replace(/"/g,'&quot;')}" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(13,106,106,0.6);background:var(--bg-muted);color:#f0fcfa;font-family:inherit;font-size:14px;margin-bottom:14px;box-sizing:border-box;">
               <div style="display:flex;gap:8px;">
                 <button data-skip style="flex:1;padding:11px 12px;background:transparent;color:#9ec;border:1px solid rgba(13,106,106,0.6);border-radius:10px;font-family:var(--font-body),system-ui,sans-serif;font-size:13px;cursor:pointer;">Skip</button>
                 <button data-save style="flex:2;padding:11px 12px;background:var(--primary,#54c59e);color:#021018;border:none;border-radius:10px;font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">Save</button>
@@ -2789,12 +2789,12 @@
           return list;
         };
         const render = async () => {
-          overlay.innerHTML = `<div style="background:#0a1a22;border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:20px;max-width:520px;width:100%;font-family:var(--font-body),system-ui,sans-serif;color:#9ec;">Loading…</div>`;
+          overlay.innerHTML = `<div style="background:var(--bg-elevated);border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:20px;max-width:520px;width:100%;font-family:var(--font-body),system-ui,sans-serif;color:#9ec;">Loading…</div>`;
           try {
             const r = await historyApi('list');
             cache = Array.isArray(r.entries) ? r.entries : [];
           } catch (e) {
-            overlay.innerHTML = `<div style="background:#0a1a22;border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:20px;max-width:520px;width:100%;font-family:var(--font-body),system-ui,sans-serif;color:#f88;">Could not load saved exports: ${String(e.message).replace(/</g,'&lt;')}<div style="margin-top:12px;"><button data-close style="padding:8px 12px;background:transparent;color:#9ec;border:1px solid rgba(13,106,106,0.6);border-radius:8px;cursor:pointer;">Close</button></div></div>`;
+            overlay.innerHTML = `<div style="background:var(--bg-elevated);border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:20px;max-width:520px;width:100%;font-family:var(--font-body),system-ui,sans-serif;color:#f88;">Could not load saved exports: ${String(e.message).replace(/</g,'&lt;')}<div style="margin-top:12px;"><button data-close style="padding:8px 12px;background:transparent;color:#9ec;border:1px solid rgba(13,106,106,0.6);border-radius:8px;cursor:pointer;">Close</button></div></div>`;
             overlay.querySelector('[data-close]').onclick = () => overlay.remove();
             return;
           }
@@ -2816,23 +2816,23 @@
           const opt = (v, label, sel) => `<option value="${v}"${sel===v?' selected':''}>${label}</option>`;
           const controls = `
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-              <select data-template style="padding:7px 8px;border-radius:8px;border:1px solid rgba(13,106,106,0.5);background:#021018;color:#f0fcfa;font-size:12px;">
+              <select data-template style="padding:7px 8px;border-radius:8px;border:1px solid rgba(13,106,106,0.5);background:var(--bg-muted);color:#f0fcfa;font-size:12px;">
                 ${opt('__all__','All templates',filters.template)}
                 ${templateOptions.map(t => opt(t, tplLabel(t), filters.template)).join('')}
               </select>
-              <select data-sort style="padding:7px 8px;border-radius:8px;border:1px solid rgba(13,106,106,0.5);background:#021018;color:#f0fcfa;font-size:12px;">
+              <select data-sort style="padding:7px 8px;border-radius:8px;border:1px solid rgba(13,106,106,0.5);background:var(--bg-muted);color:#f0fcfa;font-size:12px;">
                 ${opt('date-desc','Newest first',filters.sort)}
                 ${opt('date-asc','Oldest first',filters.sort)}
                 ${opt('name-asc','Name A→Z',filters.sort)}
                 ${opt('name-desc','Name Z→A',filters.sort)}
               </select>
             </div>
-            <input data-search type="search" placeholder="Search name (fuzzy)…" value="${String(filters.q).replace(/"/g,'&quot;')}" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid rgba(13,106,106,0.5);background:#021018;color:#f0fcfa;font-size:13px;margin-bottom:10px;box-sizing:border-box;">
+            <input data-search type="search" placeholder="Search name (fuzzy)…" value="${String(filters.q).replace(/"/g,'&quot;')}" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid rgba(13,106,106,0.5);background:var(--bg-muted);color:#f0fcfa;font-size:13px;margin-bottom:10px;box-sizing:border-box;">
           `;
           const rows = list.length ? list.map(e => `
             <div data-id="${e.id}" style="border:1px solid rgba(13,106,106,0.4);border-radius:10px;padding:12px;margin-bottom:8px;background:rgba(2,16,24,0.6);">
               <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-                <input data-rename type="text" value="${String(e.name).replace(/"/g,'&quot;')}" style="flex:1;padding:6px 8px;border-radius:6px;border:1px solid rgba(13,106,106,0.5);background:#021018;color:#f0fcfa;font-family:inherit;font-size:13px;">
+                <input data-rename type="text" value="${String(e.name).replace(/"/g,'&quot;')}" style="flex:1;padding:6px 8px;border-radius:6px;border:1px solid rgba(13,106,106,0.5);background:var(--bg-muted);color:#f0fcfa;font-family:inherit;font-size:13px;">
               </div>
               <div style="font-size:11px;color:#9ec;margin-bottom:10px;">
                 ${fmtDate(e.created_at)} · ${e.slide_count} slide${e.slide_count===1?'':'s'} · ${e.aspect || '—'}${e.photos_dropped ? ' · photos dropped' : ''}
@@ -2845,7 +2845,7 @@
               </div>
             </div>`).join('') : `<div style="text-align:center;color:#9ec;padding:24px 0;font-size:13px;">${cache.length ? 'No exports match the current filters.' : "No saved exports yet. Export a post and you'll be asked to name it."}</div>`;
           overlay.innerHTML = `
-            <div style="background:#0a1a22;border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:20px;max-width:520px;width:100%;max-height:80vh;display:flex;flex-direction:column;font-family:var(--font-body),system-ui,sans-serif;color:#f0fcfa;">
+            <div style="background:var(--bg-elevated);border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:20px;max-width:520px;width:100%;max-height:80vh;display:flex;flex-direction:column;font-family:var(--font-body),system-ui,sans-serif;color:#f0fcfa;">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
                 <div style="font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:16px;letter-spacing:0.04em;">Saved exports (${list.length}${list.length !== cache.length ? ` / ${cache.length}` : ''}) · cloud</div>
                 <button data-close style="background:transparent;color:#9ec;border:none;font-size:22px;cursor:pointer;line-height:1;">×</button>
@@ -3275,10 +3275,10 @@
         const overlay = document.createElement('div');
         overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
         overlay.innerHTML = `
-          <div style="background:#0a1a22;border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:24px;max-width:520px;width:100%;font-family:var(--font-body),system-ui,sans-serif;color:#f0fcfa;">
+          <div style="background:var(--bg-elevated);border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:24px;max-width:520px;width:100%;font-family:var(--font-body),system-ui,sans-serif;color:#f0fcfa;">
             <div style="font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:16px;letter-spacing:0.04em;margin-bottom:6px;">Import from JSON</div>
             <div style="font-size:12px;color:#9ec;margin-bottom:12px;line-height:1.5;">Paste a slide, a session export, or a saved-export payload — the shape is auto-detected. Multi-slide imports replace the current deck; a single-slide payload can either replace or append.</div>
-            <textarea data-json placeholder='{ "tpl": "player", "values": { … } }  or  { "slides": [ … ] }' style="width:100%;height:200px;padding:10px 12px;border-radius:8px;border:1px solid rgba(13,106,106,0.6);background:#021018;color:#f0fcfa;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;box-sizing:border-box;resize:vertical;"></textarea>
+            <textarea data-json placeholder='{ "tpl": "player", "values": { … } }  or  { "slides": [ … ] }' style="width:100%;height:200px;padding:10px 12px;border-radius:8px;border:1px solid rgba(13,106,106,0.6);background:var(--bg-muted);color:#f0fcfa;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;box-sizing:border-box;resize:vertical;"></textarea>
             <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
               <label style="font-size:12px;color:#9ec;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
                 <input type="file" data-file accept="application/json,.json" style="display:none;">

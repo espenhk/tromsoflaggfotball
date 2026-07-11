@@ -2232,6 +2232,17 @@
           else img.addEventListener('load', fit, { once: true });
         });
 
+        // Optional photo-credit overlay ("Foto: <name>") in a subtle bottom corner.
+        try {
+          const tile = wrap.querySelector('.tile');
+          if (tile && state.creditOnImage && state.photoCredit && state.tpl !== 'game') {
+            const el = document.createElement('div');
+            el.className = 'photo-credit-overlay';
+            el.textContent = 'Foto: ' + state.photoCredit;
+            el.style.cssText = 'position:absolute;right:24px;bottom:96px;font-family:var(--font-body),system-ui,sans-serif;font-size:16px;color:rgba(230,230,230,0.72);letter-spacing:0.04em;text-shadow:0 1px 2px rgba(0,0,0,0.35);pointer-events:none;z-index:5;';
+            tile.appendChild(el);
+          }
+        } catch (_) {}
       }
       document.querySelectorAll('#picker button').forEach(b => {
         b.addEventListener('click', () => {

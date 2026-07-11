@@ -328,6 +328,22 @@
         First run downloads ~70MB. Then ~5s/image.
       </div>
 
+      <div id="photo-credit-section" style="display:none; margin-top:14px; padding:12px; background:var(--bg-muted); border:1px solid var(--border); border-radius:8px;">
+        <label style="display:block; font-family:var(--font-body); font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--fg-muted); margin-bottom:6px; font-weight:600;">Photo credit</label>
+        <input type="text" id="photo-credit-input" placeholder="Fotografens navn" style="width:100%; padding:8px 10px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:6px; color:var(--fg); font-family:var(--font-body); font-size:13px; box-sizing:border-box;" />
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px; font-family:var(--font-body); font-size:12px; color:var(--fg-muted);">
+          <input type="checkbox" id="credit-on-image-toggle" style="width:auto; accent-color: var(--primary);" />
+          <label for="credit-on-image-toggle" style="cursor:pointer;">Also print "Foto: …" on the exported image</label>
+        </div>
+        <div style="font-size:11px; color:var(--fg-muted); margin-top:6px; line-height:1.4;">Adds 📸 credit to the generated caption. Optional overlay is placed subtly in the corner.</div>
+      </div>
+
+      <h3>7. Caption</h3>
+      <div class="actions">
+        <button class="secondary" id="caption-config-btn">Edit tags &amp; hashtags…</button>
+        <button class="secondary" id="caption-preview-btn">Preview caption…</button>
+      </div>
+
       <div class="actions">
         <button class="secondary" id="reset-btn">Reset fields</button>
         <button id="export-btn">Export PNG</button>

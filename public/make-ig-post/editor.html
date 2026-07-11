@@ -3102,6 +3102,7 @@
         const originalLabel = btn.textContent;
         btn.disabled = true;
         try {
+          await maybeShowCaptionBeforeExport();
           const items = await prepareExportItems({ allAspects: false, btn });
           await deliverExportItems(items);
           await promptLogExport('export');
@@ -3119,6 +3120,7 @@
         const originalLabel = btn.textContent;
         btn.disabled = true;
         try {
+          await maybeShowCaptionBeforeExport();
           const items = await prepareExportItems({ allAspects: true, btn });
           await deliverExportItems(items);
           await promptLogExport('all-aspects');

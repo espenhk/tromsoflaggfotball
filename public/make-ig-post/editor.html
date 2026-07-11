@@ -3431,6 +3431,248 @@
           });
         },
       };
+
+      // ================================================================
+      // Caption generator + tag/hashtag config
+      // ================================================================
+      const CAPTION_CFG_KEY = 'tff-caption-config-v1';
+      const DEFAULT_CAPTION_CFG = {
+        alwaysTags: ['@flaggfotball', '@amerikanskfotballnorge'],
+        alwaysHashtags: ['#flaggfotball', '#amerikanskfotballnorge'],
+        optionalTags: [],
+        optionalHashtags: [],
+      };
+      function loadCaptionCfg() {
+        try {
+          const raw = localStorage.getItem(CAPTION_CFG_KEY);
+          if (!raw) return { ...DEFAULT_CAPTION_CFG };
+          const p = JSON.parse(raw);
+          return {
+            alwaysTags: Array.isArray(p.alwaysTags) ? p.alwaysTags : DEFAULT_CAPTION_CFG.alwaysTags,
+            alwaysHashtags: Array.isArray(p.alwaysHashtags) ? p.alwaysHashtags : DEFAULT_CAPTION_CFG.alwaysHashtags,
+            optionalTags: Array.isArray(p.optionalTags) ? p.optionalTags : [],
+            optionalHashtags: Array.isArray(p.optionalHashtags) ? p.optionalHashtags : [],
+          };
+        } catch { return { ...DEFAULT_CAPTION_CFG }; }
+      }
+      function saveCaptionCfg(cfg) {
+        try { localStorage.setItem(CAPTION_CFG_KEY, JSON.stringify(cfg)); } catch (_) {}
+      }
+      function toLines(arr) { return (arr || []).join('\n'); }
+      function fromLines(str) {
+        return String(str || '').split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+      }
+
+      // Build a human-readable caption from the current slides' text fields.
+      function generateCaptionBody() {
+        try { snapshotSlide(); } catch (_) {}
+        const slides = state.slides.length ? state.slides : [state];
+        const parts = [];
+        slides.forEach((s, i) => {
+          const t = T[s.tpl];
+          if (!t) return;
+          const v = s.values || {};
+          const grab = (k) => (typeof v[k] === 'string' ? v[k].replace(/<[^>]+>/g, '').trim() : '');
+          const header = [grab('eyebrow'), [grab('titleA'), grab('titleB')].filter(Boolean).join(' ')].filter(Boolean).join(' — ');
+          const lines = [];
+          if (header) lines.push(header);
+          if (s.tpl === 'player') {
+            const name = [grab('first'), grab('last')].filter(Boolean).join(' ');
+            const pos = grab('pos_label');
+            const jersey = grab('jersey');
+            const meta = [name, pos, jersey ? `#${jersey}` : ''].filter(Boolean).join(' · ');
+            if (meta) lines.push(meta);
+            const quote = grab('quote');
+            if (quote) lines.push('“' + quote + '”');
+          } else if (s.tpl === 'game') {
+            const home = [grab('hName'), grab('hScore')].filter(Boolean).join(' ');
+            const away = [grab('aName'), grab('aScore')].filter(Boolean).join(' ');
+            const line = [home, away].filter(Boolean).join(' vs ');
+            if (line) lines.push(line);
+            const when = [grab('gDate'), grab('gTime'), grab('gVenue')].filter(Boolean).join(' · ');
+            if (when) lines.push(when);
+          } else if (s.tpl === 'matchup') {
+            const o = [grab('oFirst'), grab('oLast'), grab('oTag')].filter(Boolean).join(' ');
+            const d = [grab('dFirst'), grab('dLast'), grab('dTag')].filter(Boolean).join(' ');
+            if (o || d) lines.push([o, d].filter(Boolean).join(' vs '));
+          } else if (s.tpl === 'schedule') {
+            if (grab('week')) lines.push(grab('week'));
+            if (grab('footnote')) lines.push(grab('footnote'));
+          } else {
+            ['desc', 'caption', 'tagline', 'subtitle'].forEach(k => {
+              const g = grab(k); if (g) lines.push(g);
+            });
+          }
+          if (lines.length) parts.push((slides.length > 1 ? `Slide ${i + 1}: ` : '') + lines.join('\n'));
+        });
+        // Photo credit from current slide (fallback: any slide with credit)
+        const credit = (state.photoCredit && state.photoCredit.trim())
+          || (slides.find(s => s.photoCredit && s.photoCredit.trim()) || {}).photoCredit;
+        if (credit) parts.push('📸: ' + credit.trim());
+        return parts.join('\n\n').trim();
+      }
+
+      function buildFullCaption({ optionalPicked = { tags: [], hashtags: [] } } = {}) {
+        const cfg = loadCaptionCfg();
+        const body = generateCaptionBody();
+        const alwaysLine = [...cfg.alwaysTags, ...cfg.alwaysHashtags].join(' ').trim();
+        const optLine = [...(optionalPicked.tags || []), ...(optionalPicked.hashtags || [])].join(' ').trim();
+        return [body, alwaysLine, optLine].filter(Boolean).join('\n\n');
+      }
+
+      async function copyToClipboard(text) {
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+            return true;
+          }
+        } catch (_) {}
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed'; ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.focus(); ta.select();
+          const ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          return ok;
+        } catch { return false; }
+      }
+
+      function openCaptionConfigModal() {
+        const cfg = loadCaptionCfg();
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px;';
+        const box = document.createElement('div');
+        box.style.cssText = 'background:var(--bg-elevated);border:1px solid var(--border);border-radius:14px;padding:22px;max-width:560px;width:100%;font-family:var(--font-body),system-ui,sans-serif;color:var(--fg);max-height:90vh;overflow-y:auto;';
+        const mkField = (label, val, hint) => `
+          <div style="margin-bottom:14px;">
+            <label style="display:block;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--fg-muted);margin-bottom:6px;font-weight:700;">${label}</label>
+            <textarea data-k="${label}" style="width:100%;min-height:70px;padding:10px;background:var(--bg-muted);border:1px solid var(--border);border-radius:8px;color:var(--fg);font-family:var(--font-body);font-size:13px;box-sizing:border-box;">${val.replace(/</g, '&lt;')}</textarea>
+            <div style="font-size:11px;color:var(--fg-muted);margin-top:4px;">${hint}</div>
+          </div>`;
+        box.innerHTML = `
+          <div style="font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:18px;margin-bottom:14px;">Caption tags &amp; hashtags</div>
+          ${mkField('always-tags', toLines(cfg.alwaysTags), 'One per line. Always appended to captions.')}
+          ${mkField('always-hashtags', toLines(cfg.alwaysHashtags), 'One per line. Always appended.')}
+          ${mkField('optional-tags', toLines(cfg.optionalTags), 'One per line. Offered as checkboxes when generating.')}
+          ${mkField('optional-hashtags', toLines(cfg.optionalHashtags), 'One per line. Offered as checkboxes when generating.')}
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;">
+            <button data-cancel style="padding:9px 14px;background:transparent;color:var(--fg-muted);border:1px solid var(--border);border-radius:8px;cursor:pointer;">Cancel</button>
+            <button data-save style="padding:9px 14px;background:var(--primary);color:var(--primary-fg);border:none;border-radius:8px;cursor:pointer;font-weight:700;">Save</button>
+          </div>`;
+        overlay.appendChild(box);
+        document.body.appendChild(overlay);
+        const close = () => overlay.remove();
+        box.querySelector('[data-cancel]').onclick = close;
+        box.querySelector('[data-save]').onclick = () => {
+          const get = (k) => fromLines(box.querySelector(`[data-k="${k}"]`).value);
+          saveCaptionCfg({
+            alwaysTags: get('always-tags'),
+            alwaysHashtags: get('always-hashtags'),
+            optionalTags: get('optional-tags'),
+            optionalHashtags: get('optional-hashtags'),
+          });
+          close();
+        };
+      }
+
+      // Caption popup with optional-tag checkboxes and copy-to-clipboard.
+      // Returns a promise that resolves when "Continue" or "Close" is pressed.
+      function openCaptionModal({ continueLabel = 'Continue' } = {}) {
+        return new Promise((resolve) => {
+          const cfg = loadCaptionCfg();
+          const overlay = document.createElement('div');
+          overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px;';
+          const box = document.createElement('div');
+          box.style.cssText = 'background:var(--bg-elevated);border:1px solid var(--border);border-radius:14px;padding:22px;max-width:620px;width:100%;font-family:var(--font-body),system-ui,sans-serif;color:var(--fg);max-height:92vh;overflow-y:auto;';
+          const hasOptional = (cfg.optionalTags.length + cfg.optionalHashtags.length) > 0;
+          const optToggleId = 'cap-use-optional';
+          const optListHtml = hasOptional ? `
+            <div style="display:flex;align-items:center;gap:8px;margin:10px 0 6px;">
+              <input type="checkbox" id="${optToggleId}" style="accent-color:var(--primary);" />
+              <label for="${optToggleId}" style="cursor:pointer;font-size:13px;">Include optional tags/hashtags</label>
+            </div>
+            <div id="cap-optional-panel" style="display:none;padding:10px;background:var(--bg-muted);border:1px solid var(--border);border-radius:8px;margin-bottom:10px;">
+              ${cfg.optionalTags.map((t, i) => `<label style="display:inline-flex;align-items:center;gap:6px;margin:4px 12px 4px 0;font-size:13px;"><input type="checkbox" data-opt-tag="${i}" style="accent-color:var(--primary);" />${t.replace(/</g,'&lt;')}</label>`).join('')}
+              ${cfg.optionalHashtags.map((t, i) => `<label style="display:inline-flex;align-items:center;gap:6px;margin:4px 12px 4px 0;font-size:13px;"><input type="checkbox" data-opt-hash="${i}" style="accent-color:var(--primary);" />${t.replace(/</g,'&lt;')}</label>`).join('')}
+            </div>` : '';
+          box.innerHTML = `
+            <div style="font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:18px;margin-bottom:10px;">Suggested caption</div>
+            <div style="font-size:12px;color:var(--fg-muted);margin-bottom:10px;">Auto-generated from your slide fields. Edit freely before copying.</div>
+            ${optListHtml}
+            <textarea id="cap-text" style="width:100%;min-height:220px;padding:12px;background:var(--bg-muted);border:1px solid var(--border);border-radius:8px;color:var(--fg);font-family:var(--font-body);font-size:14px;box-sizing:border-box;line-height:1.5;"></textarea>
+            <div style="display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;">
+              <button data-config style="padding:9px 14px;background:transparent;color:var(--fg-muted);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;">Edit tags…</button>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button data-copy style="padding:9px 14px;background:transparent;color:var(--primary);border:1px solid var(--primary);border-radius:8px;cursor:pointer;font-weight:700;">Copy</button>
+                <button data-continue style="padding:9px 14px;background:var(--primary);color:var(--primary-fg);border:none;border-radius:8px;cursor:pointer;font-weight:700;">${continueLabel}</button>
+              </div>
+            </div>
+            <div id="cap-toast" style="font-size:12px;color:var(--primary);margin-top:8px;height:16px;"></div>`;
+          overlay.appendChild(box);
+          document.body.appendChild(overlay);
+
+          const ta = box.querySelector('#cap-text');
+          const rebuild = () => {
+            const picked = { tags: [], hashtags: [] };
+            if (hasOptional && box.querySelector('#' + optToggleId).checked) {
+              box.querySelectorAll('[data-opt-tag]').forEach(el => { if (el.checked) picked.tags.push(cfg.optionalTags[+el.dataset.optTag]); });
+              box.querySelectorAll('[data-opt-hash]').forEach(el => { if (el.checked) picked.hashtags.push(cfg.optionalHashtags[+el.dataset.optHash]); });
+            }
+            ta.value = buildFullCaption({ optionalPicked: picked });
+          };
+          rebuild();
+          if (hasOptional) {
+            const tog = box.querySelector('#' + optToggleId);
+            const panel = box.querySelector('#cap-optional-panel');
+            tog.addEventListener('change', () => {
+              panel.style.display = tog.checked ? 'block' : 'none';
+              rebuild();
+            });
+            box.querySelectorAll('[data-opt-tag], [data-opt-hash]').forEach(el => el.addEventListener('change', rebuild));
+          }
+          box.querySelector('[data-config]').onclick = () => { overlay.remove(); openCaptionConfigModal(); resolve(); };
+          box.querySelector('[data-copy]').onclick = async () => {
+            const ok = await copyToClipboard(ta.value);
+            box.querySelector('#cap-toast').textContent = ok ? 'Copied to clipboard.' : 'Copy failed — select and copy manually.';
+          };
+          const done = () => { overlay.remove(); resolve(); };
+          box.querySelector('[data-continue]').onclick = done;
+          overlay.addEventListener('click', (e) => { if (e.target === overlay) done(); });
+        });
+      }
+
+      // Show the caption popup once per session before the very first export.
+      let _captionShownThisSession = false;
+      async function maybeShowCaptionBeforeExport() {
+        if (_captionShownThisSession) return;
+        _captionShownThisSession = true;
+        await openCaptionModal({ continueLabel: 'Continue to export' });
+      }
+
+      // Wire sidebar buttons and photo-credit inputs.
+      (function wireCaptionAndCredit() {
+        const cfgBtn = document.getElementById('caption-config-btn');
+        const prevBtn = document.getElementById('caption-preview-btn');
+        if (cfgBtn) cfgBtn.addEventListener('click', openCaptionConfigModal);
+        if (prevBtn) prevBtn.addEventListener('click', () => openCaptionModal({ continueLabel: 'Close' }));
+
+        const pcInput = document.getElementById('photo-credit-input');
+        const pcToggle = document.getElementById('credit-on-image-toggle');
+        if (pcInput) {
+          pcInput.addEventListener('input', () => {
+            state.photoCredit = pcInput.value;
+            snapshotSlide(); savePersisted(); renderPreview();
+          });
+        }
+        if (pcToggle) {
+          pcToggle.addEventListener('change', () => {
+            state.creditOnImage = pcToggle.checked;
+            snapshotSlide(); savePersisted(); renderPreview();
+          });
+        }
+      })();
     </script>
   </body>
 </html>

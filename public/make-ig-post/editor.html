@@ -1197,6 +1197,8 @@
           accent: state.accent,
           photo: state.photo,
           photoCutout: state.photoCutout,
+        photoCredit: state.photoCredit || '',
+        creditOnImage: !!state.creditOnImage,
           values: JSON.parse(JSON.stringify(state.values)),
           fontScales: JSON.parse(JSON.stringify(state.fontScales || {})),
           imageScales: JSON.parse(JSON.stringify(state.imageScales || {})),
@@ -1212,6 +1214,8 @@
         state.accent = s.accent;
         state.photo = s.photo;
         state.photoCutout = s.photoCutout;
+        state.photoCredit = s.photoCredit || '';
+        state.creditOnImage = !!s.creditOnImage;
         state.values = JSON.parse(JSON.stringify(s.values));
         state.fontScales = JSON.parse(JSON.stringify(s.fontScales || {}));
         state.imageScales = JSON.parse(JSON.stringify(s.imageScales || {}));
@@ -1234,6 +1238,16 @@
         if (up && lbl) {
           if (state.photo) { up.classList.add('has-image'); lbl.textContent = state.photoCutout ? '✓ Background removed' : '✓ Image loaded'; }
           else { up.classList.remove('has-image'); lbl.textContent = 'Drop or click to upload'; }
+        }
+        // Photo-credit section visibility: hide for logo-only templates (game).
+        const pcSec = document.getElementById('photo-credit-section');
+        if (pcSec) {
+          const logoOnly = state.tpl === 'game';
+          pcSec.style.display = logoOnly ? 'none' : 'block';
+          const pcInput = document.getElementById('photo-credit-input');
+          const pcToggle = document.getElementById('credit-on-image-toggle');
+          if (pcInput) pcInput.value = state.photoCredit || '';
+          if (pcToggle) pcToggle.checked = !!state.creditOnImage;
         }
       }
 

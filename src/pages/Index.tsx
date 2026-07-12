@@ -675,6 +675,9 @@ const TryTrainingSection = () => {
           >
             <div className="min-h-0 overflow-hidden">
               <div className="space-y-4 pb-4">
+            <p className="text-sm font-body text-muted-foreground leading-relaxed">
+              {t("try.note")}
+            </p>
             <div className="grid md:grid-cols-2 gap-4">
               <label className="block">
                 <span className="block text-sm font-body text-muted-foreground mb-1.5">{t("try.name")}</span>

@@ -1555,13 +1555,14 @@
               consumedPair.add(fid);
               const sf = t.fields.find(x => x.id === fid);
               if (!sf) return '';
-              const sv = state.values[fid] ?? sf.default ?? '';
-              return `<div class="pair-cell"><label>${sf.label}</label><input type="text" data-field="${fid}" value="${escAttr(sv)}"></div>`;
+              const sv = state.values[fid] ?? '';
+              const ph = fieldPlaceholder(sf);
+              return `<div class="pair-cell"><label>${sf.label}</label><input type="text" data-field="${fid}" value="${escAttr(sv)}" placeholder="${escAttr(ph)}"></div>`;
             }).join('');
             const fsInput = fieldFsHTML(state.tpl, pair[0], scales);
             return `<div class="field"><div class="field-pair">${cells}${fsInput}</div></div>`;
           }
-          const v = state.values[f.id] ?? f.default;
+          const v = state.values[f.id] ?? (f.type === 'text' || f.type === 'textarea' ? '' : f.default);
           if (f.type === 'list') {
             const count = (v || []).length;
             const minRows = typeof f.min === 'number' ? f.min : 1;
@@ -1572,7 +1573,11 @@
                   <span class="list-row-label">${f.label.slice(0,-1) || 'Item'} ${i+1}</span>
                   <button type="button" class="list-row-remove" data-remove="${f.id}|${i}" title="Remove"${count <= minRows ? ' disabled style="opacity:.35;cursor:not-allowed;"' : ''}>×</button>
                 </div>
-                ${f.item.map(sf => `<div class="field" style="margin-bottom:8px;"><label>${sf.label}</label><input type="text" data-list-field="${f.id}|${i}|${sf.id}" value="${escAttr(row[sf.id] ?? sf.default ?? '')}"></div>`).join('')}
+                ${f.item.map(sf => {
+                  const raw = row[sf.id];
+                  const ph = typeof sf.default === 'string' ? sf.default : '';
+                  return `<div class="field" style="margin-bottom:8px;"><label>${sf.label}</label><input type="text" data-list-field="${f.id}|${i}|${sf.id}" value="${escAttr(raw ?? '')}" placeholder="${escAttr(ph)}"></div>`;
+                }).join('')}
               </div>`).join('');
             const addDisabled = count >= maxRows;
             const addBtn = `<button type="button" class="list-add" data-add="${f.id}"${addDisabled ? ' disabled style="opacity:.35;cursor:not-allowed;"' : ''}>＋ Add ${f.label.slice(0,-1).toLowerCase()}</button>`;

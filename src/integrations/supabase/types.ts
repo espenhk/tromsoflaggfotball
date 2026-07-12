@@ -37,6 +37,7 @@ export type Database = {
       }
       ig_post_exports: {
         Row: {
+          caption: string | null
           created_at: string
           id: string
           kind: string
@@ -48,6 +49,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          caption?: string | null
           created_at?: string
           id?: string
           kind?: string
@@ -59,6 +61,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          caption?: string | null
           created_at?: string
           id?: string
           kind?: string
@@ -68,6 +71,66 @@ export type Database = {
           slide_count?: number
           templates?: string[] | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      matches: {
+        Row: {
+          away_color: string | null
+          away_logo: string | null
+          away_name: string
+          away_score: number | null
+          away_tag: string | null
+          created_at: string
+          home_color: string | null
+          home_logo: string | null
+          home_name: string
+          home_score: number | null
+          home_tag: string | null
+          id: string
+          kicks_off_at: string
+          notes: string | null
+          round_label: string | null
+          updated_at: string
+          venue: string | null
+        }
+        Insert: {
+          away_color?: string | null
+          away_logo?: string | null
+          away_name: string
+          away_score?: number | null
+          away_tag?: string | null
+          created_at?: string
+          home_color?: string | null
+          home_logo?: string | null
+          home_name: string
+          home_score?: number | null
+          home_tag?: string | null
+          id?: string
+          kicks_off_at: string
+          notes?: string | null
+          round_label?: string | null
+          updated_at?: string
+          venue?: string | null
+        }
+        Update: {
+          away_color?: string | null
+          away_logo?: string | null
+          away_name?: string
+          away_score?: number | null
+          away_tag?: string | null
+          created_at?: string
+          home_color?: string | null
+          home_logo?: string | null
+          home_name?: string
+          home_score?: number | null
+          home_tag?: string | null
+          id?: string
+          kicks_off_at?: string
+          notes?: string | null
+          round_label?: string | null
+          updated_at?: string
+          venue?: string | null
         }
         Relationships: []
       }

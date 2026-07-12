@@ -335,6 +335,7 @@ const PosisjonerInner = () => {
           </div>
         </section>
 
+        <SectionAnchor anchor="end" />
         <div className="pt-2 pb-8">
           <Link
             to="/#spillet"
@@ -348,6 +349,24 @@ const PosisjonerInner = () => {
     </div>
   );
 };
+
+const IntroSlot = ({ fallbackParas }: { fallbackParas: string[] }) => {
+  const slot = useSlot("intro");
+  if (slot) return <MdBlock md={slot.body} />;
+  return (
+    <>
+      {fallbackParas.map((p, i) => (
+        <p key={i} className="text-muted-foreground font-body leading-relaxed max-w-2xl">{p}</p>
+      ))}
+    </>
+  );
+};
+
+const Posisjoner = () => (
+  <ContentBlocksProvider page="posisjoner">
+    <PosisjonerInner />
+  </ContentBlocksProvider>
+);
 
 const PositionRow = ({ pos, open, onToggle }: { pos: PositionData; open: boolean; onToggle: () => void }) => {
   const t = useT();

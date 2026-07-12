@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useLang } from "@/i18n/LanguageProvider";
+import { useTheme } from "@/theme/ThemeProvider";
 import BrandLogo from "@/components/BrandLogo";
 import tuilLogo from "@/assets/tuil-logo.svg";
 
@@ -41,6 +42,7 @@ function firstFamily(stack: string): string {
 
 const PressKit = () => {
   const { lang } = useLang();
+  const { theme } = useTheme();
   const [tokens, setTokens] = useState({
     background: "",
     foreground: "",
@@ -51,16 +53,20 @@ const PressKit = () => {
   });
 
   useEffect(() => {
-    const cs = getComputedStyle(document.documentElement);
-    setTokens({
-      background: cs.getPropertyValue("--background"),
-      foreground: cs.getPropertyValue("--foreground"),
-      primary: cs.getPropertyValue("--primary"),
-      accent: cs.getPropertyValue("--accent"),
-      heading: cs.getPropertyValue("--font-heading"),
-      body: cs.getPropertyValue("--font-body"),
+    // Wait a frame so the theme class on <html> is applied before we sample.
+    const raf = requestAnimationFrame(() => {
+      const cs = getComputedStyle(document.documentElement);
+      setTokens({
+        background: cs.getPropertyValue("--background"),
+        foreground: cs.getPropertyValue("--foreground"),
+        primary: cs.getPropertyValue("--primary"),
+        accent: cs.getPropertyValue("--accent"),
+        heading: cs.getPropertyValue("--font-heading"),
+        body: cs.getPropertyValue("--font-body"),
+      });
     });
-  }, []);
+    return () => cancelAnimationFrame(raf);
+  }, [theme]);
 
   const facts = lang === "no"
     ? [

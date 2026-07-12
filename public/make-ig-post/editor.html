@@ -1022,6 +1022,8 @@
           { id:'dS2v', label:'Def stat 2 value', type:'text', default:'19' },
           { id:'dS3l', label:'Def stat 3 label', type:'text', default:'40-yd' },
           { id:'dS3v', label:'Def stat 3 value', type:'text', default:'4.5s' },
+          { id:'vsShow', label:'Show VS badge', type:'checkbox', default:true },
+          { id:'vsSize', label:'VS badge size (px)', type:'text', default:'96' },
           { id:'wm_right', label:'Wordmark right', type:'text', default:'RUNDE 04 · LØRDAG' },
         ],
         render: d => {
@@ -1049,9 +1051,15 @@
             </div>`;
           const oStats = [[d.oS1l,d.oS1v],[d.oS2l,d.oS2v],[d.oS3l,d.oS3v]];
           const dStats = [[d.dS1l,d.dS1v],[d.dS2l,d.dS2v],[d.dS3l,d.dS3v]];
+          const vsShow = d.vsShow !== false;
+          const vsSize = Math.max(40, Math.min(320, parseInt(d.vsSize, 10) || 96));
+          const vsFs = Math.round(vsSize * 0.4);
+          const vsHtml = vsShow
+            ? `<div class="vs" data-vs-center-target=".matchup-photo" style="width:${vsSize}px;height:${vsSize}px;font-size:${vsFs}px;">VS</div>`
+            : '';
           return `<div class="stage">
             ${half('off', oC, oR, 'oPhoto', d.oPhoto, 'angrep · photo', 'ANGREP', d.oFirst, d.oLast, d.oTag, oStats)}
-            <div class="vs">VS</div>
+            ${vsHtml}
             ${half('def', dC, dR, 'dPhoto', d.dPhoto, 'forsvar · photo', 'FORSVAR', d.dFirst, d.dLast, d.dTag, dStats)}
           </div>`;
         },
@@ -1106,6 +1114,8 @@
           { id:'gTime',  label:'Time',         type:'text', default:'KL 14:00' },
           { id:'gVenue', label:'Venue',        type:'text', default:'TROMSDALEN KUNSTGRESS' },
           { id:'gResult',label:'Result label (post-game)', type:'text', default:'FULL TID' },
+          { id:'vsShow', label:'Show VS badge', type:'checkbox', default:true },
+          { id:'vsSize', label:'VS badge size (px)', type:'text', default:'88' },
           { id:'wm_right', label:'Wordmark right', type:'text', default:'RUNDE 04 · LØRDAG' },
         ],
         render: d => {
@@ -1163,6 +1173,12 @@
                   <div class="gb-venue">${d.gVenue}</div>
                 </div>`;
               })();
+          const vsShow = d.vsShow !== false;
+          const vsSize = Math.max(40, Math.min(320, parseInt(d.vsSize, 10) || 88));
+          const vsFs = Math.round(vsSize * 0.4);
+          const vsHtml = vsShow
+            ? `<div class="vs" data-vs-center-target=".game-logo" style="width:${vsSize}px;height:${vsSize}px;font-size:${vsFs}px;">VS</div>`
+            : '';
           return `<div class="stage${d.isPostGame ? ' is-post' : ''}">
             ${isStory ? `
             <svg class="game-diag-bg" viewBox="0 0 1080 1920" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1180,7 +1196,7 @@
               <polygon points="0,998 1080,499 1080,1920 0,1920" fill="url(#hg-away)"/>
             </svg>` : ''}
             ${half('home', hC, hR, 'hLogo', d.hLogo, 'home · logo', d.hName, d.hTag)}
-            <div class="vs">VS</div>
+            ${vsHtml}
             ${half('away', aC, aR, 'aLogo', d.aLogo, 'away · logo', d.aName, d.aTag)}
             ${banner}
           </div>`;

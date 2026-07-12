@@ -476,7 +476,7 @@ const GameSection = () => {
   const goToPosition = (slug: string) => navigate(`/posisjoner#${slug}`);
 
   return (
-    <section id="spillet" className="py-16 px-6 scroll-mt-16 bg-card/50">
+    <section id="spillet" className="py-16 px-6 scroll-mt-16">
       <div className="max-w-6xl mx-auto">
         <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2">
           {t("game.h")}

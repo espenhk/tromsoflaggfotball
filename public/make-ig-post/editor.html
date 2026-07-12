@@ -2202,12 +2202,22 @@
         // recomputed below.
         const scales = state.fontScales || {};
         const fieldTypes = {};
-        t.fields.forEach(f => { fieldTypes[f.id] = f.type; });
+        const fieldPh = {};
+        t.fields.forEach(f => {
+          fieldTypes[f.id] = f.type;
+          fieldPh[f.id] = fieldPlaceholder(f);
+        });
         const scaledValues = new Proxy(state.values, {
           get(target, prop) {
-            const raw = target[prop];
+            let raw = target[prop];
             const ft = fieldTypes[prop];
             if (ft !== 'text' && ft !== 'textarea') return raw;
+            // Empty text/textarea values fall back to the field placeholder so
+            // the preview design stays intact even before the user fills in
+            // real content. Export is gated separately.
+            if (raw == null || String(raw).trim() === '') {
+              raw = fieldPh[prop] != null ? fieldPh[prop] : '';
+            }
             if (isAutoFit(state.tpl, prop)) return raw;
             const s = scales[linkPrimary(state.tpl, prop)];
             const text = raw == null ? '' : raw;

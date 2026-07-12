@@ -1815,6 +1815,29 @@
             renderPreview();
           });
         });
+        area.querySelectorAll('[data-image-lib-pick]').forEach(btn => {
+          btn.addEventListener('click', e => {
+            const fid = e.currentTarget.dataset.imageLibPick;
+            openImageLibraryModal({
+              onPick: (dataUrl) => {
+                state.values[fid] = dataUrl;
+                renderForm();
+                renderPreview();
+              }
+            });
+          });
+        });
+        area.querySelectorAll('[data-image-lib-save]').forEach(btn => {
+          btn.addEventListener('click', e => {
+            const fid = e.currentTarget.dataset.imageLibSave;
+            const dataUrl = state.values[fid];
+            if (!dataUrl) return;
+            const name = prompt('Name for this image in the library:', 'image');
+            if (!name) return;
+            addToImageLibrary({ name: name.trim() || 'image', dataUrl });
+            alert('Saved to library.');
+          });
+        });
 
         // ---------- FIGURE field handlers ----------
         area.querySelectorAll('[data-fig]').forEach(sel => {

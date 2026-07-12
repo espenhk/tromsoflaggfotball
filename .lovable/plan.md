@@ -1,71 +1,70 @@
-## Instagram editor
 
-### 1. Placeholder-style defaults + required validation
+This is a large batch of features. Grouping into phases so we can ship in reviewable chunks. Confirm the whole plan (or trim it) before I start.
 
-- Move every field's current `default` string into a new `placeholder` property in each template's `fields` config in `public/make-ig-post/editor.html` (all `T.<tpl>` blocks). Actual `default` becomes `""`.
-- Field renderer: apply the value to the `placeholder=` attribute on `<input>`/`<textarea>` (and analogous "empty" visual for image pickers), so tapping the field shows an empty editable state — no manual-delete step.
-- Preview render path: when a field is empty, fall back to the placeholder string only for display, styled dimmed (e.g. `opacity:0.4`) so it's obviously not a real value.
-- Add a `required` flag (default true; a few genuinely optional ones like `descOffset`, `wm_right`, secondary meta labels can be marked optional).
-- Export guard: before running PNG export, scan current slides for empty required fields. If any, block export, highlight the offending fields, show a toast "Fyll ut alle felter før eksport" and scroll the first offender into view.
+## 1. Site pages
 
-### 2. Matchup / player matchup "VS" circle
+### 1a. Position quiz — `/quiz` (public)
+- 6 questions (NO+EN), lightweight, no backend. Result → suggested position + link into `/posisjoner#<slug>`.
+- Style matches existing zebra sections. Question card with progress dots, animated transitions.
+- Scoring: each answer weights the 7 positions in `src/data/positions.ts`; highest score wins, ties show top 2.
+- Add nav link + a card on `/` linking to it.
 
-- In `frames.css`, position `.vs` absolutely centered vertically to the image row (currently sits between text). Compute using the image row's bounding box so it stays centered vs. the two `.matchup-photo` boxes regardless of below-text height.
-- Add two new template fields on both `matchup` and `game` templates:
-  - `vsShow` (boolean toggle, default true)
-  - `vsSize` (number/range 60–240px, default current size)
-- Wire the toggle to hide `.vs` when off, and the size to a CSS variable on the frame root (`--vs-size`).
+### 1b. Press kit — `/presse` (public)
+- Single long page: club blurb (NO+EN), key facts (founded, roster size, home venue, colors, contact), logo downloads (SVG+PNG from `src/assets/tuil-logo.svg`), color swatches with hex, typography spec, 4–6 photo thumbnails with "download all" (zip on the fly with `jszip`), press contact email.
+- Add link in footer.
 
-### 3. "Bli med" flexible steps (2–6)
+### 1c. i18n for `/posisjoner`, `/how-i-did-it`, FAQ
+- All strings routed through `useT()` and `dictionaries.ts`.
+- Existing `LanguageToggle` already handles switching; just extend the dictionary and swap literals.
 
-- Replace hard-coded `s1/s2/s3` fields with a dynamic list editor: `steps: [{title, desc}, …]` stored in slide values.
-- Default 2 steps. Add "+ Legg til steg" button up to max 6. Each row has a "Fjern" (min 2).
-- Render logic: 1–3 steps = single row (existing grid). 4–6 steps = two rows using CSS grid `repeat(3, 1fr)` with the second row filling remaining items.
-- Update examples/manifest so the `welcome` fields no longer hard-code `s1t..s3d`; migrate the existing example to the new shape.
+## 2. IG editor — new templates
+Under `public/make-ig-post/`:
 
-### 4. Caption generation via LLM
+- **`quote`** — big pull-quote with attribution + optional small photo. Fields: `quoteText`, `author`, `authorRole`, `photo`, `wm_right`.
+- **`standings`** — league table. Fields: `title`, `subtitle`, `rows` (array: team, w, l, pf, pa, pts — up to 8 rows), `wm_right`. Renders as a semantic table styled to match `frames.css`.
+- **`matchlist`** — list of games. Fields: `title`, `subtitle`, `rows` (array: date, time, home, away, venue, homeScore?, awayScore?). Rows with scores render as results; rows without render as upcoming (time+venue).
 
-- Add a new Supabase Edge Function `ig-caption` that takes `{ slides, brandContext }` and calls Lovable AI Gateway (`google/gemini-3-flash-preview`, `generateText`) with a Norwegian system prompt: "Skriv en naturlig, varm bildetekst på norsk basert på disse slides. Ikke bruk emoji med mindre input har det. Ikke lag hashtags — de legges til separat."
-- Editor's caption preview UI: replace the current concatenation with a call to this function. Keep the existing surrounding structure (tags + photo credit + hashtags appended after the LLM body).
-- Fallback: on network/gateway failure, fall back to current concatenated caption and show a subtle "AI utilgjengelig — bruker enkel bildetekst" note.
+Add example JSON under `src/make-ig-post/examples/` + update `manifest.json`, and add to `renderPreview` in `editor.html`.
 
-## Main site
+## 3. Matches datastore + "load from matches" picker
 
-### 5. Påmelding email dispatch — status + steps
+New table `matches` (Cloud):
+```
+id uuid pk, kicks_off_at timestamptz, venue text,
+home_name text, home_tag text, home_logo text, home_color text, home_score int null,
+away_name text, away_tag text, away_logo text, away_color text, away_score int null,
+round_label text null, notes text null,
+created_at, updated_at
+```
+- GRANT + RLS: `anon` SELECT (public schedule), `authenticated` full CRUD via admin gate (matches existing pattern; admin section is password-gated in-app, not by auth — so we'll gate writes to `service_role` only and expose an edge function `matches-admin` protected by `ADMIN_PASSWORD`, mirroring `list-signups`).
 
-Email dispatch is already wired: `src/pages/Index.tsx` invokes `send-transactional-email` with template `training-signup-notification` after insert, currently hardcoded to `espenhkristensen@gmail.com`. To turn this into a defined admin recipient list:
+Admin CRUD page `/admin/matches`: table with add/edit/delete rows (date, teams, scores, venue).
 
-Steps:
+IG editor: in the top bar of the `game` and `matchlist` templates, add a **"Load from matches"** button. Opens a modal listing matches (filter: upcoming / past / all), user ticks rows → for `game` it fills the currently-selected slide; for `matchlist` it appends the ticked rows to the `rows` field.
 
-1. Confirm the app-email infrastructure (`setup_email_infra` + `scaffold_transactional_email`) is already deployed. Verify the `training-signup-notification` template exists in `supabase/functions/_shared/transactional-email-templates/` and is registered.
-2. Decide where the admin recipient list lives. Recommend a new `admin_notification_recipients` table (columns: `email`, `active`, `created_at`) with RLS so only admin can manage it — or, for a simpler v1, an env-var comma-separated list `TRAINING_SIGNUP_NOTIFY_EMAILS`.
-3. Add a small Edge Function (or extend `list-signups`) that returns the current recipient list, and a UI in `/admin` to add/remove emails (only if we go the table route).
-4. Change `Index.tsx` to invoke a wrapper Edge Function `notify-training-signup` that reads the recipient list and fans out one `send-transactional-email` call per recipient (each with its own idempotency key `training-signup-${id}-${email}`), instead of calling `send-transactional-email` directly with a single hardcoded email.
-5. Deploy the new/edited edge functions and test with two addresses.
+Also: on `/` we can optionally render an upcoming-matches strip later — not in this plan unless you want it.
 
-I'll present the choice (env var vs. table+admin UI) and only implement after confirmation.
+## 4. IG editor — autosave, undo/redo, captions with export
 
-### 6. Reframe påmelding as "show interest"
-
-- Update `try.h`, `try.sub`, `try.cta`, `try.submit`, `try.success` copy in `src/i18n/dictionaries.ts` (no + en) to say this is an interest signal, not a binding registration.
-- Add a small info line under the form heading: "Vi sjekker påmeldinger med jevne mellomrom. For raskt svar, ta kontakt via Facebook eller Instagram." (+ EN).
-
-### 7. Error text with links
-
-- Split `try.error` into a JSX-rendered message (not a raw string) so we can embed:
-  - An anchor on "en av trenerne" → `href="#coachene"` (scrolls to coaches section — id already used by nav).
-  - A short follow-up sentence with links to the club's Instagram and Facebook (reuse the URLs from the existing social section).
-- Keep both language variants.
+- **Autosave**: debounce (800 ms) writes of the working state to a new `ig_post_drafts` row keyed by a local `draft_id` in localStorage. Restore prompt on load if a draft exists. Manual "Save draft as…" already isn't in scope — this is just crash-recovery autosave.
+- **Undo/redo**: keep an in-memory ring buffer (max 100) of state snapshots. `Ctrl/Cmd+Z` / `Ctrl/Cmd+Shift+Z`. Toolbar buttons too. Snapshot on debounced change, not on every keystroke, to avoid noise.
+- **Captions saved with export**: add a caption `<textarea>` in the export panel. On export, include `caption` in the `payload` written to `ig_post_exports`. Add a "Copy caption" button. Extend `ig_post_exports` with an optional `caption text` column (nullable, no default) via migration.
 
 ## Technical notes
 
-- Editor changes are contained to `public/make-ig-post/editor.html` and `public/make-ig-post/frames.css`.
-- New edge functions: `ig-caption` (AI), optionally `notify-training-signup` (fan-out). Both use the shared gateway/AI patterns already in the project.
-- Placeholder defaults require regenerating `src/make-ig-post/examples/*` — I'll rerun `npm run ig:examples` after the field changes and update the example JSONs where they still reference removed defaults (mainly `welcome`).
-- No schema changes required for editor work. For section 5, a migration is only needed if we choose the recipient-table route.
+- All new tables get GRANT + RLS in the same migration.
+- No new secrets required; matches admin uses existing `ADMIN_PASSWORD`.
+- New deps: `jszip` (press kit + potentially carousel zip export later).
+- Undo/redo lives in the editor iframe; keep it self-contained in `editor.html`.
+- i18n additions: extend `TranslationKey` union in `dictionaries.ts` and both `no`/`en` dicts.
 
-## Open questions before I start
+## Suggested ship order (each is one turn)
+1. Matches table + admin CRUD page + edge function
+2. IG templates: `quote`, `standings`, `matchlist` (+ examples + manifest)
+3. IG "Load from matches" picker for `game` and `matchlist`
+4. IG autosave + undo/redo + captions-with-export (+ migration)
+5. Position quiz page
+6. Press kit page
+7. i18n pass for `/posisjoner`, `/how-i-did-it`, FAQ
 
-1. Section 5: env-var recipient list (fast, no UI) vs. DB table + admin UI (more work, self-serve)? -> do the UI approach, I want to edit recipients from the /admin page.
-2. Section 4 caption LLM: OK to use `google/gemini-3-flash-preview` (fast, low cost) as default? Any tone/length hints to bake into the system prompt? -> OK, tone should be positive and professional, without becoming gaudy.
-3. Section 2: keep the same default VS size as today, or set a new default (e.g. 140px)? -> current default is fine
+Reply "go" to start with #1, or tell me to reorder / drop items.

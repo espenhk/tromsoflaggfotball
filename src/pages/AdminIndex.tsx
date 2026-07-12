@@ -21,6 +21,11 @@ const links = [
     description: "Treningsopplegg og øvelser for alle aldersgrupper.",
   },
   {
+    to: "/admin/matches",
+    title: "Kamper",
+    description: "Registrer kommende og ferdigspilte kamper. Brukes til Instagram-poster.",
+  },
+  {
     to: "/admin/sosialt-mock",
     title: "Sosialt (mockup)",
     description: "Forhåndsvisning av sosiale medier-feeden.",

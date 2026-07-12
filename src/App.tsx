@@ -10,6 +10,7 @@ import Posisjoner from "./pages/Posisjoner.tsx";
 import MakeIgPost from "./pages/MakeIgPost.tsx";
 import Pameldinger from "./pages/Pameldinger.tsx";
 import AdminIndex from "./pages/AdminIndex.tsx";
+import AdminMatches from "./pages/AdminMatches.tsx";
 import SosialtMock from "./pages/SosialtMock.tsx";
 import AdminGate from "./components/AdminGate.tsx";
 import NotFound from "./pages/NotFound.tsx";
@@ -38,6 +39,7 @@ const App = () => (
               <Route path="pameldinger" element={<Pameldinger />} />
               <Route path="make-ig-post" element={<MakeIgPost />} />
               <Route path="training-plans" element={<TrainingPlans />} />
+              <Route path="matches" element={<AdminMatches />} />
               <Route path="sosialt-mock" element={<SosialtMock />} />
             </Route>
 

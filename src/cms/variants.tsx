@@ -49,9 +49,10 @@ function s(data: Record<string, unknown>, key: string): string {
 
 const SectionShell = ({
   title,
+  id,
   children,
-}: { title?: string | null; children: React.ReactNode }) => (
-  <section className="py-12 px-6">
+}: { title?: string | null; id?: string; children: React.ReactNode }) => (
+  <section id={id} className="py-12 px-6 scroll-mt-16">
     <div className="max-w-3xl mx-auto">
       {title && (
         <h2 className="font-display text-3xl md:text-4xl mb-4">{title}</h2>
@@ -61,13 +62,19 @@ const SectionShell = ({
   </section>
 );
 
+/** Derive a scroll-target id from a CMS block's key. `foo-cms` → `foo`. */
+function blockAnchorId(block: ContentBlock): string | undefined {
+  if (!block.key) return undefined;
+  return block.key.replace(/-cms$/, "");
+}
+
 const MarkdownRenderer = (block: ContentBlock) => {
   const { lang } = useLang();
   const body = pickLang(block.body_md_no, block.body_md_en, lang);
   const title = pickLang(block.title_no, block.title_en, lang);
   if (!body?.trim()) return null;
   return (
-    <SectionShell title={title || null}>
+    <SectionShell title={title || null} id={blockAnchorId(block)}>
       <MdBlock md={body} />
     </SectionShell>
   );
@@ -83,7 +90,7 @@ const TrainingInfoRenderer = (block: ContentBlock) => {
   const map = s(data, "map_url");
   const notes = bi(data, "notes_md", lang);
   return (
-    <SectionShell title={title}>
+    <SectionShell title={title} id={blockAnchorId(block)}>
       <dl className="grid sm:grid-cols-3 gap-4 mb-4">
         {weekday && (
           <div>
@@ -135,7 +142,7 @@ const MapRenderer = (block: ContentBlock) => {
   const bbox = `${lng - delta},${lat - delta},${lng + delta},${lat + delta}`;
   const src = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lng}`;
   return (
-    <SectionShell title={title || null}>
+    <SectionShell title={title || null} id={blockAnchorId(block)}>
       {label && <p className="text-muted-foreground mb-3">{label}</p>}
       <div className="aspect-video rounded-xl overflow-hidden border border-border">
         <iframe title={label || "Map"} src={src} className="w-full h-full" loading="lazy" />
@@ -161,7 +168,7 @@ const ImageRenderer = (block: ContentBlock) => {
   const caption = bi(data, "caption", lang);
   if (!src) return null;
   return (
-    <SectionShell title={title || null}>
+    <SectionShell title={title || null} id={blockAnchorId(block)}>
       <figure className="rounded-xl overflow-hidden border border-border bg-card/50">
         <img src={src} alt={alt} className="w-full h-auto" loading="lazy" />
         {caption && (
@@ -205,7 +212,7 @@ const VideoRenderer = (block: ContentBlock) => {
   const caption = bi(data, "caption", lang);
   if (!embed) return null;
   return (
-    <SectionShell title={title || null}>
+    <SectionShell title={title || null} id={blockAnchorId(block)}>
       <div className="aspect-video rounded-xl overflow-hidden border border-border">
         <iframe
           src={embed}

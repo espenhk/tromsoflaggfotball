@@ -298,12 +298,14 @@ const PosisjonerInner = () => {
               fallbackParas={[t("posPage.intro1"), t("posPage.intro2"), t("posPage.intro3")]}
             />
           </div>
+          <AfterSection page="posisjoner" after="intro" />
 
           {/* Compact field diagram for navigation while browsing the list */}
           {!showFullscreen && (
             <FieldDiagram onPositionNavigate={openAndScroll} navigateMode="direct" variant="simple" />
           )}
         </section>
+        <AfterSection page="posisjoner" after="field" />
 
         {/* Offense */}
         <section className="space-y-4">
@@ -319,6 +321,7 @@ const PosisjonerInner = () => {
             ))}
           </div>
         </section>
+        <AfterSection page="posisjoner" after="offense" />
 
         {/* Defense */}
         <section className="space-y-4">

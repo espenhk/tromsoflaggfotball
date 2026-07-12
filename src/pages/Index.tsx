@@ -234,6 +234,7 @@ const IndexInner = () => {
           </p>
         </div>
       </section>
+      <AfterSection page="home" after="om" />
 
       {/* Åpent for alle + Prøv en trening */}
       <section className="py-16 px-6">
@@ -257,6 +258,7 @@ const IndexInner = () => {
           </div>
         </div>
       </section>
+      <AfterSection page="home" after="open" />
 
       {/* Treninger */}
       <TrainingSection />
@@ -282,6 +284,7 @@ const IndexInner = () => {
           </div>
         </div>
       </section>
+      <AfterSection page="home" after="coachene" />
 
       {/* Kom i gang */}
       <section id="kom-i-gang" className="py-16 px-6 scroll-mt-16">
@@ -338,6 +341,7 @@ const IndexInner = () => {
           </div>
         </div>
       </section>
+      <AfterSection page="home" after="kom-i-gang" />
 
       {/* Video */}
       <section id="video" className="py-16 px-6 scroll-mt-16">
@@ -359,6 +363,7 @@ const IndexInner = () => {
           </div>
         </div>
       </section>
+      <AfterSection page="home" after="video" />
 
       {/* FAQ */}
       <section id="faq" className="py-16 px-6 scroll-mt-16">

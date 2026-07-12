@@ -121,10 +121,12 @@ const PressKitInner = () => {
         <Link to="/" className="text-sm text-muted-foreground hover:text-primary">← {T.back}</Link>
         <h1 className="font-display text-5xl md:text-6xl mt-3 mb-3">{T.heading}</h1>
         <IntroSlot fallback={T.intro} />
+        <AfterSection page="presse" after="intro" />
 
         <Section title={T.about}>
           <SlotOrText slotKey="about.body" fallback={T.aboutBody} />
         </Section>
+        <AfterSection page="presse" after="about" />
 
         <Section title={T.facts}>
           <dl className="grid sm:grid-cols-2 gap-x-8 gap-y-3 max-w-2xl">
@@ -136,6 +138,7 @@ const PressKitInner = () => {
             ))}
           </dl>
         </Section>
+        <AfterSection page="presse" after="facts" />
 
         <Section title={T.logos}>
           <div className="grid sm:grid-cols-2 gap-6">
@@ -153,6 +156,7 @@ const PressKitInner = () => {
             />
           </div>
         </Section>
+        <AfterSection page="presse" after="logos" />
 
         <Section title={T.colors}>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl">
@@ -169,6 +173,7 @@ const PressKitInner = () => {
             ))}
           </div>
         </Section>
+        <AfterSection page="presse" after="colors" />
 
         <Section title={T.typography}>
           <div className="grid sm:grid-cols-2 gap-4 max-w-3xl">
@@ -192,6 +197,7 @@ const PressKitInner = () => {
             </div>
           </div>
         </Section>
+        <AfterSection page="presse" after="typography" />
 
         <Section title={T.contact}>
           <SlotOrText slotKey="contact.body" fallback={T.contactBody} muted />

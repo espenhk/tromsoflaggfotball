@@ -2223,6 +2223,27 @@
           matchupNames.forEach(el => { el.style.fontSize = sharedSize + 'px'; });
         }
 
+        // Vertically center the VS badge on the image/logo row. The badge is
+        // absolutely-positioned inside the tile; targets are the sibling
+        // .matchup-photo (for T11) or .game-logo (for T12) elements. We
+        // compute the midpoint of the *first* target relative to the tile
+        // and update the badge's `top`. Skips when the badge is hidden or
+        // the target isn't in the layout yet.
+        wrap.querySelectorAll('.vs[data-vs-center-target]').forEach(vs => {
+          const tile = vs.closest('.tile');
+          if (!tile) return;
+          const sel = vs.getAttribute('data-vs-center-target');
+          const target = tile.querySelector(sel);
+          if (!target) return;
+          const tileRect = tile.getBoundingClientRect();
+          const tRect = target.getBoundingClientRect();
+          if (!tRect.height) return;
+          const scale = tileRect.height > 0 ? (tile.offsetHeight / tileRect.height) : 1;
+          const midYPx = ((tRect.top + tRect.height / 2) - tileRect.top) * scale;
+          vs.style.top = midYPx + 'px';
+          vs.style.transform = 'translate(-50%, -50%)';
+        });
+
         // Fact template "big" number/word — shrink-to-fit width so long values
         // don't overflow and a per-field size override can't cause horizontal
         // overlap. Mirrors the player-name / pos-abbr approach.

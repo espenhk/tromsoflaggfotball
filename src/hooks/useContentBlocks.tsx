@@ -104,11 +104,9 @@ export const MdBlock = ({ md, className }: { md: string; className?: string }) =
 export const SectionAnchor = ({
   anchor,
   className = "",
-  striped = false,
 }: {
   anchor: string;
   className?: string;
-  striped?: boolean;
 }) => {
   const { lang } = useLang();
   const { blocks } = useContentBlocks();
@@ -118,14 +116,13 @@ export const SectionAnchor = ({
   if (sections.length === 0) return null;
   return (
     <>
-      {sections.map((s, i) => {
+      {sections.map((s) => {
         const body = lang === "en" ? (s.body_md_en?.trim() || s.body_md_no) : s.body_md_no;
         const title = lang === "en" ? (s.title_en?.trim() || s.title_no) : s.title_no;
-        const stripe = striped && i % 2 === 0 ? "bg-card/50" : "";
         return (
           <section
             key={s.id}
-            className={`py-12 px-6 ${stripe} ${className}`}
+            className={`py-12 px-6 ${className}`}
           >
             <div className="max-w-3xl mx-auto">
               {title && (

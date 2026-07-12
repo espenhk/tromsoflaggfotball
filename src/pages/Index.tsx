@@ -745,7 +745,16 @@ const TryTrainingSection = () => {
             </label>
 
             {status === "error" && (
-              <p className="text-sm font-body text-destructive">{t("try.error")}</p>
+              <p className="text-sm font-body text-destructive">
+                {t("try.errorPre")}
+                <a
+                  href="#coachene"
+                  className="underline decoration-destructive/40 hover:decoration-destructive"
+                >
+                  {t("try.errorLink")}
+                </a>
+                {t("try.errorPost")}
+              </p>
             )}
               </div>
             </div>

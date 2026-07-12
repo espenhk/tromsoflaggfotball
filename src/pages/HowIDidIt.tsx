@@ -2,6 +2,8 @@ import { useState } from "react";
 import { ArrowLeft, ChevronDown, ChevronUp, Sparkles, MessageSquare, Code2, Layers, Palette, Rocket, Eye, Zap } from "lucide-react";
 import canvaOriginal from "@/assets/canva-original.png";
 import { useNavigate } from "react-router-dom";
+import { useLang } from "@/i18n/LanguageProvider";
+import LanguageToggle from "@/components/LanguageToggle";
 
 /* ── Mini preview components ────────────────────────────── */
 
@@ -246,6 +248,7 @@ const steps: Step[] = [
 export default function HowIDidIt() {
   const navigate = useNavigate();
   const [openStep, setOpenStep] = useState<number | null>(null);
+  const { lang } = useLang();
 
   return (
     <div className="min-h-screen bg-background">
@@ -259,10 +262,20 @@ export default function HowIDidIt() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <h1 className="font-heading font-medium text-foreground text-sm">
-            Hvordan denne siden ble laget
+            {lang === "no" ? "Hvordan denne siden ble laget" : "How this site was built"}
           </h1>
+          <div className="ml-auto"><LanguageToggle /></div>
         </div>
       </div>
+
+      {lang === "en" && (
+        <div className="max-w-3xl mx-auto px-6 pt-6">
+          <div className="rounded-md border border-primary/40 bg-primary/5 px-4 py-3 text-sm text-muted-foreground">
+            Heads up — this personal build log is currently written in Norwegian only.
+            The main site is fully translated.
+          </div>
+        </div>
+      )}
 
       {/* Intro */}
       <section className="max-w-3xl mx-auto px-6 pt-16 pb-8">

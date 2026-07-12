@@ -1037,4 +1037,26 @@ const FaqItem = ({ q, a }: { q: string; a: string }) => {
   );
 };
 
+const HeroTagline = ({ fallback }: { fallback: string }) => {
+  const slot = useSlot("hero.tagline");
+  if (slot) {
+    return (
+      <div className="mb-6 max-w-2xl">
+        <MdBlock md={slot.body} className="text-sm tracking-widest uppercase [&_p]:text-muted-foreground" />
+      </div>
+    );
+  }
+  return (
+    <p className="font-body text-muted-foreground text-sm tracking-widest uppercase mb-6">
+      {fallback}
+    </p>
+  );
+};
+
+const Index = () => (
+  <ContentBlocksProvider page="home">
+    <IndexInner />
+  </ContentBlocksProvider>
+);
+
 export default Index;

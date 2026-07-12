@@ -1,0 +1,56 @@
+{
+  "tpl": "standings",
+  "chrome": "curve",
+  "accent": "primary",
+  "photo": null,
+  "photoCutout": false,
+  "imageScales": {},
+  "values": {
+    "eyebrow": "NORSK FLAGGFOTBALL · 2026",
+    "title": "Tabell etter runde 04.",
+    "rows": [
+      {
+        "team": "Tromsø Flaggfotball",
+        "w": "4",
+        "l": "0",
+        "pf": "112",
+        "pa": "46",
+        "pts": "12"
+      },
+      {
+        "team": "Bodø Glimt Flag",
+        "w": "3",
+        "l": "1",
+        "pf": "88",
+        "pa": "62",
+        "pts": "9"
+      },
+      {
+        "team": "Oslo Vikings",
+        "w": "2",
+        "l": "2",
+        "pf": "74",
+        "pa": "71",
+        "pts": "6"
+      },
+      {
+        "team": "Bergen Storm",
+        "w": "1",
+        "l": "3",
+        "pf": "58",
+        "pa": "92",
+        "pts": "3"
+      },
+      {
+        "team": "Stavanger Oilers",
+        "w": "0",
+        "l": "4",
+        "pf": "42",
+        "pa": "103",
+        "pts": "0"
+      }
+    ],
+    "footnote": "W vinst · L tap · PF poeng for · PA poeng mot",
+    "wm_right": "TABELL R04"
+  }
+}

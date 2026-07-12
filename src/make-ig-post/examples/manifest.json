@@ -69,7 +69,8 @@
         "m2v",
         "m3l",
         "m3v",
-        "wm_right"
+        "wm_right",
+        "flagImage"
       ]
     },
     "welcome": {

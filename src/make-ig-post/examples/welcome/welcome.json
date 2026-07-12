@@ -11,9 +11,14 @@
     "titleB": "<span style=\"color:var(--chrome);\">oss.</span>",
     "subtitle": "Du trenger ikke ha spilt før. Du trenger ikke utstyr.<br><strong style=\"color:var(--fg);\">Du må bare møte opp.</strong>",
     "steps": [
-      { "t": "Møt opp", "d": "Tirsdag, torsdag eller lørdag." },
-      { "t": "Lån utstyr", "d": "Vi har flagg + ball klart." },
-      { "t": "Kom igjen", "d": "Du er en av oss." }
+      {
+        "t": "Møt opp",
+        "d": "Tirsdag, torsdag eller lørdag."
+      },
+      {
+        "t": "Lån utstyr",
+        "d": "Vi har flagg + ball klart."
+      }
     ],
     "wm_right": "BLI MED"
   }

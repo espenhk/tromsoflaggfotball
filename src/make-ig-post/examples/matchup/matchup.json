@@ -28,6 +28,8 @@
     "dS2v": "19",
     "dS3l": "40-yd",
     "dS3v": "4.5s",
+    "vsShow": true,
+    "vsSize": "96",
     "wm_right": "RUNDE 04 · LØRDAG"
   }
 }

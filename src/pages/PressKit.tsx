@@ -1,10 +1,66 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useLang } from "@/i18n/LanguageProvider";
 import BrandLogo from "@/components/BrandLogo";
 import tuilLogo from "@/assets/tuil-logo.svg";
 
+// Convert an HSL string like "195 100% 4%" to #rrggbb.
+function hslVarToHex(hsl: string): string {
+  const m = hsl.trim().match(/^(-?[\d.]+)\s+(-?[\d.]+)%\s+(-?[\d.]+)%/);
+  if (!m) return "#000000";
+  const h = parseFloat(m[1]) / 360;
+  const s = parseFloat(m[2]) / 100;
+  const l = parseFloat(m[3]) / 100;
+  const hue2rgb = (p: number, q: number, t: number) => {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1 / 6) return p + (q - p) * 6 * t;
+    if (t < 1 / 2) return q;
+    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+    return p;
+  };
+  let r: number, g: number, b: number;
+  if (s === 0) {
+    r = g = b = l;
+  } else {
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    r = hue2rgb(p, q, h + 1 / 3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1 / 3);
+  }
+  const toHex = (n: number) =>
+    Math.round(n * 255).toString(16).padStart(2, "0");
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`.toUpperCase();
+}
+
+function firstFamily(stack: string): string {
+  const first = stack.split(",")[0]?.trim() ?? "";
+  return first.replace(/^['"]|['"]$/g, "");
+}
+
 const PressKit = () => {
   const { lang } = useLang();
+  const [tokens, setTokens] = useState({
+    background: "",
+    foreground: "",
+    primary: "",
+    accent: "",
+    heading: "",
+    body: "",
+  });
+
+  useEffect(() => {
+    const cs = getComputedStyle(document.documentElement);
+    setTokens({
+      background: cs.getPropertyValue("--background"),
+      foreground: cs.getPropertyValue("--foreground"),
+      primary: cs.getPropertyValue("--primary"),
+      accent: cs.getPropertyValue("--accent"),
+      heading: cs.getPropertyValue("--font-heading"),
+      body: cs.getPropertyValue("--font-body"),
+    });
+  }, []);
 
   const facts = lang === "no"
     ? [
@@ -16,12 +72,15 @@ const PressKit = () => {
         ["League", "Norwegian Flag Football, 5v5"],
       ];
 
-  const palette: { name: string; token: string; bg: string; fg: string }[] = [
-    { name: lang === "no" ? "Bakgrunn" : "Background", token: "--background", bg: "hsl(var(--background))", fg: "hsl(var(--foreground))" },
-    { name: lang === "no" ? "Forgrunn" : "Foreground", token: "--foreground", bg: "hsl(var(--foreground))", fg: "hsl(var(--background))" },
-    { name: lang === "no" ? "Primær" : "Primary",    token: "--primary",    bg: "hsl(var(--primary))",    fg: "hsl(var(--primary-foreground))" },
-    { name: lang === "no" ? "Aksent" : "Accent",     token: "--accent",     bg: "hsl(var(--accent))",     fg: "hsl(var(--accent-foreground))" },
+  const palette: { name: string; hex: string; bg: string; fg: string }[] = [
+    { name: lang === "no" ? "Bakgrunn" : "Background", hex: hslVarToHex(tokens.background), bg: "hsl(var(--background))", fg: "hsl(var(--foreground))" },
+    { name: lang === "no" ? "Forgrunn" : "Foreground", hex: hslVarToHex(tokens.foreground), bg: "hsl(var(--foreground))", fg: "hsl(var(--background))" },
+    { name: lang === "no" ? "Primær" : "Primary",     hex: hslVarToHex(tokens.primary),    bg: "hsl(var(--primary))",    fg: "hsl(var(--primary-foreground))" },
+    { name: lang === "no" ? "Aksent" : "Accent",      hex: hslVarToHex(tokens.accent),     bg: "hsl(var(--accent))",     fg: "hsl(var(--accent-foreground))" },
   ];
+
+  const headingFont = firstFamily(tokens.heading);
+  const bodyFont = firstFamily(tokens.body);
 
   const T = {
     heading: lang === "no" ? "Pressekit" : "Press kit",
@@ -36,9 +95,6 @@ const PressKit = () => {
     logos: lang === "no" ? "Logoer" : "Logos",
     colors: lang === "no" ? "Farger" : "Colours",
     typography: lang === "no" ? "Typografi" : "Typography",
-    typoBody: lang === "no"
-      ? "Sidens typografi følger aktivt tema via CSS-variabler (--font-heading / --font-body)."
-      : "Site typography follows the active theme via CSS variables (--font-heading / --font-body).",
     contact: lang === "no" ? "Kontakt" : "Contact",
     contactBody: lang === "no"
       ? "For intervjuer eller henvendelser, se trenerne på forsiden."
@@ -89,13 +145,13 @@ const PressKit = () => {
         <Section title={T.colors}>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl">
             {palette.map((c) => (
-              <div key={c.token} className="rounded-lg overflow-hidden border border-border">
+              <div key={c.name} className="rounded-lg overflow-hidden border border-border">
                 <div className="h-24 flex items-center justify-center" style={{ background: c.bg, color: c.fg }}>
                   <span className="font-heading text-xs uppercase tracking-widest">Aa</span>
                 </div>
                 <div className="p-3 bg-card/50">
                   <div className="font-heading font-semibold text-sm text-foreground">{c.name}</div>
-                  <div className="text-xs text-muted-foreground font-mono">{c.token}</div>
+                  <div className="text-xs text-muted-foreground font-mono">{c.hex}</div>
                 </div>
               </div>
             ))}
@@ -103,15 +159,24 @@ const PressKit = () => {
         </Section>
 
         <Section title={T.typography}>
-          <p className="text-muted-foreground max-w-2xl">{T.typoBody}</p>
-          <div className="mt-4 rounded-lg border border-border bg-card/50 p-6">
-            <div className="font-heading text-4xl mb-2 text-foreground">
-              {lang === "no" ? "Overskrift" : "Heading"}
+          <div className="grid sm:grid-cols-2 gap-4 max-w-3xl">
+            <div className="rounded-lg border border-border bg-card/50 p-6">
+              <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+                {lang === "no" ? "Overskrifter" : "Headings"} · {headingFont}
+              </div>
+              <div className="font-heading text-4xl text-foreground">
+                {lang === "no" ? "Overskrift" : "Heading"}
+              </div>
             </div>
-            <div className="font-body text-base text-foreground">
-              {lang === "no"
-                ? "Brødtekst — den kvikke brune reven hopper over den late hunden."
-                : "Body text — the quick brown fox jumps over the lazy dog."}
+            <div className="rounded-lg border border-border bg-card/50 p-6">
+              <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+                {lang === "no" ? "Brødtekst" : "Body"} · {bodyFont}
+              </div>
+              <div className="font-body text-base text-foreground">
+                {lang === "no"
+                  ? "Den kvikke brune reven hopper over den late hunden."
+                  : "The quick brown fox jumps over the lazy dog."}
+              </div>
             </div>
           </div>
         </Section>

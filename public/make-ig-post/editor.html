@@ -1486,15 +1486,21 @@
           }
           const v = state.values[f.id] ?? f.default;
           if (f.type === 'list') {
+            const count = (v || []).length;
+            const minRows = typeof f.min === 'number' ? f.min : 1;
+            const maxRows = typeof f.max === 'number' ? f.max : Infinity;
             const rows = (v || []).map((row, i) => `
               <div class="list-row" data-list="${f.id}" data-row="${i}">
                 <div class="list-row-head">
                   <span class="list-row-label">${f.label.slice(0,-1) || 'Item'} ${i+1}</span>
-                  <button type="button" class="list-row-remove" data-remove="${f.id}|${i}" title="Remove">×</button>
+                  <button type="button" class="list-row-remove" data-remove="${f.id}|${i}" title="Remove"${count <= minRows ? ' disabled style="opacity:.35;cursor:not-allowed;"' : ''}>×</button>
                 </div>
                 ${f.item.map(sf => `<div class="field" style="margin-bottom:8px;"><label>${sf.label}</label><input type="text" data-list-field="${f.id}|${i}|${sf.id}" value="${escAttr(row[sf.id] ?? sf.default ?? '')}"></div>`).join('')}
               </div>`).join('');
-            return `<div class="field list-field"><label>${f.label}</label>${rows}<button type="button" class="list-add" data-add="${f.id}">＋ Add ${f.label.slice(0,-1).toLowerCase()}</button></div>`;
+            const addDisabled = count >= maxRows;
+            const addBtn = `<button type="button" class="list-add" data-add="${f.id}"${addDisabled ? ' disabled style="opacity:.35;cursor:not-allowed;"' : ''}>＋ Add ${f.label.slice(0,-1).toLowerCase()}</button>`;
+            const cap = isFinite(maxRows) ? `<span style="font-size:11px;color:var(--fg-muted);margin-left:8px;">${count} / ${maxRows}</span>` : '';
+            return `<div class="field list-field"><label>${f.label}</label>${rows}${addBtn}${cap}</div>`;
           }
           if (f.type === 'figure') {
             const rows = (v || []).map((sh, i) => {
@@ -1760,6 +1766,7 @@
           btn.addEventListener('click', e => {
             const fid = e.currentTarget.dataset.add;
             const f = t.fields.find(x => x.id === fid);
+            if (typeof f.max === 'number' && (state.values[fid]||[]).length >= f.max) return;
             const blank = {};
             f.item.forEach(sf => blank[sf.id] = sf.default ?? '');
             state.values[fid].push(blank);
@@ -1770,6 +1777,9 @@
         area.querySelectorAll('[data-remove]').forEach(btn => {
           btn.addEventListener('click', e => {
             const [fid, idx] = e.currentTarget.dataset.remove.split('|');
+            const f = t.fields.find(x => x.id === fid);
+            const minR = f && typeof f.min === 'number' ? f.min : 1;
+            if ((state.values[fid]||[]).length <= minR) return;
             state.values[fid].splice(+idx, 1);
             renderForm();
             renderPreview();

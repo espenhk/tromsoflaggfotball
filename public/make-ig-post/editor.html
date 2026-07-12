@@ -289,6 +289,15 @@
        <button data-tpl="matchlist">T15 · Match list</button>
       </div>
 
+      <div id="load-matches-row" style="display:none; margin-top:8px;">
+        <button class="secondary" id="load-matches-btn" style="width:100%;">📅 Load from matches…</button>
+      </div>
+
+      <div id="history-row" style="display:flex; gap:6px; margin-top:10px;">
+        <button class="secondary" id="undo-btn" style="flex:1;" title="Ctrl/Cmd+Z">↶ Undo</button>
+        <button class="secondary" id="redo-btn" style="flex:1;" title="Ctrl/Cmd+Shift+Z">↷ Redo</button>
+      </div>
+
       <h3>2. Aspect ratio</h3>
       <div class="aspect-row" id="aspect-row">
         <button data-aspect="square" class="active">1:1 Square</button>
@@ -365,6 +374,10 @@
       <div class="actions">
         <button class="secondary" id="caption-config-btn">Edit tags &amp; hashtags…</button>
         <button class="secondary" id="caption-preview-btn">Preview caption…</button>
+      </div>
+      <textarea id="caption-textarea" placeholder="Skriv Instagram-caption her (lagres sammen med eksporten)…" style="width:100%; min-height:110px; margin-top:8px; padding:10px 12px; background:var(--bg-muted); border:1px solid var(--border); border-radius:8px; color:var(--fg); font-family:var(--font-body); font-size:13px; box-sizing:border-box; resize:vertical;"></textarea>
+      <div class="actions" style="margin-top:6px;">
+        <button class="secondary" id="copy-caption-btn" style="flex:1;">📋 Copy caption</button>
       </div>
 
       <div class="actions">
@@ -1543,6 +1556,12 @@
           b.classList.toggle('active', b.dataset.acc === state.accent));
         document.querySelectorAll('#aspect-row button').forEach(b =>
           b.classList.toggle('active', b.dataset.aspect === state.aspect));
+        // Load-from-matches button: only for game & matchlist templates.
+        const lmRow = document.getElementById('load-matches-row');
+        if (lmRow) {
+          const show = state.tpl === 'game' || state.tpl === 'matchlist';
+          lmRow.style.display = show ? 'block' : 'none';
+        }
         // Photo upload widget
         const up = document.getElementById('upload');
         const lbl = document.getElementById('upload-label');
@@ -3115,6 +3134,7 @@
           name: name || suggestExportName(),
           kind: kind || 'export',
           slideCount: state.slides.length,
+          caption: (typeof getCaption === 'function' ? getCaption() : null),
           payload: {
             aspect: state.aspect,
             topEndZone: state.topEndZone,
@@ -3122,6 +3142,7 @@
             bg: document.documentElement.getAttribute('data-bg') || 'royal',
             theme: document.documentElement.getAttribute('data-theme') || 'default',
             slides: JSON.parse(JSON.stringify(state.slides)),
+            caption: (typeof getCaption === 'function' ? getCaption() : null),
           },
         };
       }
@@ -3133,6 +3154,7 @@
           slide_count: entry.slideCount,
           payload: entry.payload,
           photos_dropped: false,
+          caption: entry.caption || null,
         };
         try {
           await historyApi('save', payload);
@@ -4287,6 +4309,293 @@
           });
         }
       })();
+
+      // ================================================================
+      // Undo / redo history — snapshots every debounced save.
+      // ================================================================
+      (function wireHistory() {
+        const MAX_HISTORY = 100;
+        const past = [];
+        const future = [];
+        let suspend = false;
+        let last = null;
+
+        function snapshot() {
+          try {
+            snapshotSlide();
+            return JSON.stringify({
+              aspect: state.aspect,
+              topEndZone: state.topEndZone,
+              currentSlide: state.currentSlide,
+              slides: state.slides,
+            });
+          } catch (_) { return null; }
+        }
+        function updateButtons() {
+          const u = document.getElementById('undo-btn');
+          const r = document.getElementById('redo-btn');
+          if (u) u.disabled = past.length === 0;
+          if (r) r.disabled = future.length === 0;
+        }
+        function push() {
+          if (suspend) return;
+          const s = snapshot();
+          if (!s || s === last) return;
+          if (last != null) past.push(last);
+          if (past.length > MAX_HISTORY) past.shift();
+          future.length = 0;
+          last = s;
+          updateButtons();
+        }
+        function restore(json) {
+          try {
+            const p = JSON.parse(json);
+            suspend = true;
+            state.aspect = p.aspect || 'square';
+            state.topEndZone = !!p.topEndZone;
+            state.slides = p.slides;
+            document.body.setAttribute('data-aspect', state.aspect);
+            const idx = Math.min(Math.max(0, p.currentSlide || 0), (p.slides || []).length - 1);
+            loadSlide(idx);
+            syncPickerUI();
+            renderForm();
+            renderPreview();
+            renderSlideBar && renderSlideBar();
+            savePersisted();
+          } finally {
+            suspend = false;
+          }
+        }
+        function undo() {
+          if (past.length === 0) return;
+          const prev = past.pop();
+          if (last != null) future.push(last);
+          last = prev;
+          restore(prev);
+          updateButtons();
+        }
+        function redo() {
+          if (future.length === 0) return;
+          const next = future.pop();
+          if (last != null) past.push(last);
+          last = next;
+          restore(next);
+          updateButtons();
+        }
+
+        // Seed with current state.
+        last = snapshot();
+        updateButtons();
+
+        // Hook savePersisted so every debounced save also snapshots history.
+        const orig = savePersisted;
+        savePersisted = function () {
+          orig();
+          setTimeout(push, 220);
+        };
+
+        document.getElementById('undo-btn')?.addEventListener('click', undo);
+        document.getElementById('redo-btn')?.addEventListener('click', redo);
+        window.addEventListener('keydown', (e) => {
+          const meta = e.ctrlKey || e.metaKey;
+          if (!meta) return;
+          const tag = (e.target && e.target.tagName) || '';
+          // Don't hijack while user is typing in a field (browser undo is nicer there).
+          if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
+          if (e.key === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
+          else if ((e.key === 'z' && e.shiftKey) || e.key === 'y') { e.preventDefault(); redo(); }
+        });
+      })();
+
+      // ================================================================
+      // Caption textarea — persisted locally, saved with export.
+      // ================================================================
+      const CAPTION_KEY = 'tff-ig-editor-caption-v1';
+      function getCaption() {
+        const el = document.getElementById('caption-textarea');
+        return el ? el.value : '';
+      }
+      (function wireCaption() {
+        const el = document.getElementById('caption-textarea');
+        if (!el) return;
+        try { el.value = localStorage.getItem(CAPTION_KEY) || ''; } catch (_) {}
+        let t = null;
+        el.addEventListener('input', () => {
+          if (t) clearTimeout(t);
+          t = setTimeout(() => {
+            try { localStorage.setItem(CAPTION_KEY, el.value); } catch (_) {}
+          }, 300);
+        });
+        const copy = document.getElementById('copy-caption-btn');
+        if (copy) copy.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(el.value || '');
+            copy.textContent = '✓ Copied';
+            setTimeout(() => { copy.textContent = '📋 Copy caption'; }, 1500);
+          } catch (_) { alert('Kunne ikke kopiere. Marker teksten manuelt.'); }
+        });
+      })();
+
+      // (buildExportSnapshot and persistEntry now pass the caption through
+      // directly; no wrapper needed here.)
+
+      // ================================================================
+      // Load from matches — modal picker for `game` and `matchlist`.
+      // ================================================================
+      const MATCHES_SB_URL = 'https://nlktiaocimgmxntderyq.supabase.co/rest/v1/matches';
+      const MATCHES_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5sa3RpYW9jaW1nbXhudGRlcnlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzOTQ4MjksImV4cCI6MjA5NDk3MDgyOX0.L6tWS2sJ8pGe9lM9_X1Ha4HQhjY82Mv5b0jvoE95-KI';
+
+      async function fetchMatches() {
+        const res = await fetch(MATCHES_SB_URL + '?select=*&order=kicks_off_at.desc', {
+          headers: { apikey: MATCHES_ANON, Authorization: 'Bearer ' + MATCHES_ANON },
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      }
+
+      function fmtMatchDate(iso) {
+        const d = new Date(iso);
+        return d.toLocaleDateString('no-NO', { weekday: 'short', day: '2-digit', month: 'short' }).toUpperCase();
+      }
+      function fmtMatchTime(iso) {
+        const d = new Date(iso);
+        return 'KL ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+      }
+
+      function applyMatchToGameSlide(m) {
+        // Only touch the currently-loaded slide.
+        const played = m.home_score != null || m.away_score != null;
+        const v = state.values;
+        v.hName = (m.home_name || '').toUpperCase();
+        v.hTag = m.home_tag || '';
+        v.hLogo = m.home_logo || '';
+        v.hColor = m.home_color || '#54c59e';
+        v.aName = (m.away_name || '').toUpperCase();
+        v.aTag = m.away_tag || '';
+        v.aLogo = m.away_logo || '';
+        v.aColor = m.away_color || '#fb7185';
+        v.gDate = fmtMatchDate(m.kicks_off_at);
+        v.gTime = fmtMatchTime(m.kicks_off_at);
+        v.gVenue = (m.venue || '').toUpperCase();
+        if (played) {
+          v.isPostGame = true;
+          v.hScore = m.home_score == null ? '' : String(m.home_score);
+          v.aScore = m.away_score == null ? '' : String(m.away_score);
+          v.gResult = 'FULL TID';
+        } else {
+          v.isPostGame = false;
+        }
+        if (m.round_label) v.wm_right = m.round_label;
+        snapshotSlide(); savePersisted(); renderForm(); renderPreview();
+      }
+
+      function appendMatchesToMatchlist(rows) {
+        const cur = Array.isArray(state.values.rows) ? state.values.rows : [];
+        const mapped = rows.map(m => ({
+          date: fmtMatchDate(m.kicks_off_at),
+          time: 'KL ' + String(new Date(m.kicks_off_at).getHours()).padStart(2, '0') + ':' + String(new Date(m.kicks_off_at).getMinutes()).padStart(2, '0'),
+          home: m.home_name || '',
+          away: m.away_name || '',
+          venue: m.venue || '',
+          homeScore: m.home_score == null ? '' : String(m.home_score),
+          awayScore: m.away_score == null ? '' : String(m.away_score),
+        }));
+        state.values.rows = cur.concat(mapped);
+        snapshotSlide(); savePersisted(); renderForm(); renderPreview();
+      }
+
+      async function openMatchesModal() {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;font-family:var(--font-body),system-ui,sans-serif;color:var(--fg);';
+        overlay.innerHTML = `
+          <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:14px;padding:20px;max-width:620px;width:100%;max-height:80vh;display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-family:var(--font-heading);font-weight:800;font-size:16px;letter-spacing:0.06em;">Kamper</div>
+              <div style="display:flex;gap:4px;font-size:12px;" id="mm-filter">
+                <button data-f="all" class="mm-f active" style="padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:var(--primary);color:var(--primary-fg);cursor:pointer;">Alle</button>
+                <button data-f="upcoming" class="mm-f" style="padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--fg-muted);cursor:pointer;">Kommende</button>
+                <button data-f="past" class="mm-f" style="padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--fg-muted);cursor:pointer;">Ferdigspilte</button>
+              </div>
+            </div>
+            <div id="mm-list" style="overflow-y:auto;flex:1;min-height:200px;font-size:13px;">Laster …</div>
+            <div style="display:flex;justify-content:space-between;gap:8px;">
+              <button data-cancel style="padding:10px 14px;background:transparent;color:var(--fg-muted);border:1px solid var(--border);border-radius:10px;cursor:pointer;">Avbryt</button>
+              <button data-apply style="padding:10px 18px;background:var(--primary);color:var(--primary-fg);border:none;border-radius:10px;font-family:var(--font-heading);font-weight:800;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">Bruk valgte</button>
+            </div>
+          </div>`;
+        document.body.appendChild(overlay);
+        const listEl = overlay.querySelector('#mm-list');
+        const filterEl = overlay.querySelector('#mm-filter');
+        const isMatchlist = state.tpl === 'matchlist';
+
+        let matches = [];
+        let filter = 'all';
+        let selected = new Set();
+
+        function render() {
+          const now = Date.now();
+          const filtered = matches.filter(m => {
+            const played = m.home_score != null || m.away_score != null;
+            if (filter === 'upcoming') return !played;
+            if (filter === 'past') return played;
+            return true;
+          });
+          if (!filtered.length) { listEl.innerHTML = '<div style="color:var(--fg-muted);padding:20px;text-align:center;">Ingen kamper.</div>'; return; }
+          const inputType = isMatchlist ? 'checkbox' : 'radio';
+          listEl.innerHTML = filtered.map(m => {
+            const played = m.home_score != null || m.away_score != null;
+            const scoreBit = played ? `<span style="color:var(--primary);font-weight:800;">${m.home_score ?? 0}–${m.away_score ?? 0}</span>` : `<span style="color:var(--fg-muted);">${fmtMatchTime(m.kicks_off_at)}</span>`;
+            const checked = selected.has(m.id) ? 'checked' : '';
+            return `<label style="display:flex;gap:10px;align-items:center;padding:10px;border-bottom:1px solid var(--border);cursor:pointer;">
+              <input type="${inputType}" name="mm-sel" data-id="${m.id}" ${checked} style="accent-color:var(--primary);">
+              <div style="flex:1;min-width:0;">
+                <div style="font-weight:700;">${m.home_name} <span style="color:var(--fg-muted);font-weight:400;">vs</span> ${m.away_name} ${scoreBit}</div>
+                <div style="color:var(--fg-muted);font-size:11px;">${fmtMatchDate(m.kicks_off_at)} · ${m.venue || ''} ${m.round_label ? '· ' + m.round_label : ''}</div>
+              </div>
+            </label>`;
+          }).join('');
+          listEl.querySelectorAll('input').forEach(inp => {
+            inp.addEventListener('change', () => {
+              const id = inp.getAttribute('data-id');
+              if (isMatchlist) {
+                if (inp.checked) selected.add(id); else selected.delete(id);
+              } else {
+                selected = new Set([id]);
+              }
+            });
+          });
+        }
+
+        filterEl.querySelectorAll('.mm-f').forEach(b => {
+          b.addEventListener('click', () => {
+            filter = b.dataset.f;
+            filterEl.querySelectorAll('.mm-f').forEach(x => {
+              const on = x === b;
+              x.style.background = on ? 'var(--primary)' : 'transparent';
+              x.style.color = on ? 'var(--primary-fg)' : 'var(--fg-muted)';
+            });
+            render();
+          });
+        });
+        overlay.querySelector('[data-cancel]').addEventListener('click', () => overlay.remove());
+        overlay.querySelector('[data-apply]').addEventListener('click', () => {
+          const picks = matches.filter(m => selected.has(m.id));
+          if (!picks.length) { overlay.remove(); return; }
+          if (isMatchlist) appendMatchesToMatchlist(picks);
+          else applyMatchToGameSlide(picks[0]);
+          overlay.remove();
+        });
+
+        try {
+          matches = await fetchMatches();
+          render();
+        } catch (e) {
+          listEl.innerHTML = '<div style="color:#ef4444;padding:20px;">Kunne ikke laste kamper: ' + (e.message || e) + '</div>';
+        }
+      }
+
+      document.getElementById('load-matches-btn')?.addEventListener('click', openMatchesModal);
+      syncPickerUI();
     </script>
   </body>
 </html>

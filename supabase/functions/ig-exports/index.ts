@@ -101,7 +101,7 @@ Deno.serve(async (req) => {
     }
 
     if (action === "save") {
-      const { name, kind, slide_count, payload, photos_dropped } = body;
+      const { name, kind, slide_count, payload, photos_dropped, caption } = body;
       if (typeof name !== "string" || !name.trim() || !payload || typeof payload !== "object") {
         return new Response(JSON.stringify({ error: "invalid input" }), {
           status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -121,6 +121,7 @@ Deno.serve(async (req) => {
           slide_count: Number.isFinite(slide_count) ? Number(slide_count) : 0,
           payload,
           photos_dropped: !!photos_dropped,
+          caption: typeof caption === "string" ? caption.slice(0, 4000) : null,
         })
         .select("id")
         .single();

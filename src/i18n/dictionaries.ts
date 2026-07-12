@@ -155,6 +155,8 @@ const no = {
   // ── Footer ────────────────────────────────────────────
   "footer.brand": "Tromsø Flaggfotball",
   "footer.howIDidIt": "Hvordan denne siden ble laget",
+  "footer.quiz": "Hvilken posisjon er du?",
+  "footer.press": "Pressekit",
 
   // ── FieldDiagram ──────────────────────────────────────
   "fd.offense": "Angrep",
@@ -409,6 +411,8 @@ const en: Record<TranslationKey, string> = {
   // Footer
   "footer.brand": "Tromsø Flag Football",
   "footer.howIDidIt": "How this site was built",
+  "footer.quiz": "Which position are you?",
+  "footer.press": "Press kit",
 
   // FieldDiagram
   "fd.offense": "Offense",

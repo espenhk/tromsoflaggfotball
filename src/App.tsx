@@ -8,6 +8,8 @@ import HowIDidIt from "./pages/HowIDidIt.tsx";
 import TrainingPlans from "./pages/TrainingPlans.tsx";
 import Posisjoner from "./pages/Posisjoner.tsx";
 import MakeIgPost from "./pages/MakeIgPost.tsx";
+import Quiz from "./pages/Quiz.tsx";
+import PressKit from "./pages/PressKit.tsx";
 import Pameldinger from "./pages/Pameldinger.tsx";
 import AdminIndex from "./pages/AdminIndex.tsx";
 import AdminMatches from "./pages/AdminMatches.tsx";
@@ -32,6 +34,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/how-i-did-it" element={<HowIDidIt />} />
             <Route path="/posisjoner" element={<Posisjoner />} />
+            <Route path="/quiz" element={<Quiz />} />
+            <Route path="/presse" element={<PressKit />} />
 
             {/* Admin (password-protected) */}
             <Route path="/admin" element={<AdminGate />}>

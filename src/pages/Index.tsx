@@ -400,6 +400,12 @@ const Index = () => {
               <Code2 className="w-3.5 h-3.5" />
               {t("footer.howIDidIt")}
             </Link>
+            <Link to="/quiz" className="hover:underline">
+              {t("footer.quiz")}
+            </Link>
+            <Link to="/presse" className="hover:underline">
+              {t("footer.press")}
+            </Link>
             <span>
               © {new Date().getFullYear()} Tromsø Flaggfotball / TUIL
             </span>

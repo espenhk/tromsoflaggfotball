@@ -610,7 +610,7 @@ const TryTrainingSection = () => {
       return;
     }
 
-    const { error } = await supabase
+    const { data: inserted, error } = await supabase
       .from("training_signups")
       .insert({
         name: trimmedName,
@@ -619,7 +619,9 @@ const TryTrainingSection = () => {
         preferred_date: preferredDate.trim() || null,
         message: message.trim() || null,
         language: lang,
-      });
+      })
+      .select("id")
+      .maybeSingle();
 
     if (error) {
       console.error("Sign-up insert failed", error);
@@ -627,25 +629,22 @@ const TryTrainingSection = () => {
       return;
     }
 
-    // Fire-and-forget notification email to the head coach.
-    // Safe to ignore failure here — the sign-up is already stored in the DB.
+    // Fire-and-forget notification fan-out. Recipients are managed from /admin
+    // via `admin_notification_recipients`. Safe to ignore failure here — the
+    // sign-up itself is already persisted.
     void supabase.functions
-      .invoke("send-transactional-email", {
+      .invoke("notify-training-signup", {
         body: {
-          templateName: "training-signup-notification",
-          recipientEmail: "espenhkristensen@gmail.com",
-          idempotencyKey: `training-signup-${Date.now()}-${trimmedContact}`,
-          templateData: {
-            name: trimmedName,
-            contact: trimmedContact,
-            ageGroup: ageGroup || null,
-            preferredDate: preferredDate.trim() || null,
-            message: message.trim() || null,
-            language: lang,
-          },
+          signupId: inserted?.id ?? null,
+          name: trimmedName,
+          contact: trimmedContact,
+          ageGroup: ageGroup || null,
+          preferredDate: preferredDate.trim() || null,
+          message: message.trim() || null,
+          language: lang,
         },
       })
-      .catch((err) => console.warn("Notification email failed (sign-up still saved):", err));
+      .catch((err) => console.warn("Notification fan-out failed (sign-up still saved):", err));
 
     setStatus("success");
     setName("");

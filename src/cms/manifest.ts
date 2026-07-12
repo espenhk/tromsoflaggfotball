@@ -20,13 +20,11 @@ export type CmsPage = "home" | "presse" | "quiz" | "posisjoner";
 export const CODE_MANIFEST: Record<CmsPage, CodeSection[]> = {
   home: [
     { key: "hero",         order: 10, label: "Hero" },
-    { key: "om",           order: 20, label: "Om sporten" },
     { key: "open",         order: 30, label: "Åpent for alle + Prøv en trening" },
     { key: "treninger",    order: 40, label: "Treninger" },
     { key: "spillet",      order: 50, label: "Banediagram + posisjoner" },
     { key: "coachene",     order: 60, label: "Coachene" },
     { key: "kom-i-gang",   order: 70, label: "Kom i gang" },
-    { key: "video",        order: 80, label: "Video" },
     { key: "faq",          order: 90, label: "FAQ" },
   ],
   presse: [

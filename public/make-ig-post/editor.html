@@ -567,22 +567,33 @@
           { id:'titleA', label:'Title 1', type:'text', default:'Bli med' },
           { id:'titleB', label:'Title 2 (HTML ok)', type:'text', default:'<span style="color:var(--chrome);">oss.</span>' },
           { id:'subtitle', label:'Subtitle (HTML ok)', type:'textarea', default:'Du trenger ikke ha spilt før. Du trenger ikke utstyr.<br><strong style="color:var(--fg);">Du må bare møte opp.</strong>' },
-          { id:'s1t', label:'Step 1 title', type:'text', default:'Møt opp' },
-          { id:'s1d', label:'Step 1 desc', type:'text', default:'Tirsdag, torsdag eller lørdag.' },
-          { id:'s2t', label:'Step 2 title', type:'text', default:'Lån utstyr' },
-          { id:'s2d', label:'Step 2 desc', type:'text', default:'Vi har flagg + ball klart.' },
-          { id:'s3t', label:'Step 3 title', type:'text', default:'Kom igjen' },
-          { id:'s3d', label:'Step 3 desc', type:'text', default:'Du er en av oss.' },
+          { id:'steps', label:'Steps', type:'list',
+            min: 2, max: 6,
+            item: [
+              { id:'t', label:'Title', default:'' },
+              { id:'d', label:'Description', default:'' },
+            ],
+            default: [
+              { t:'Møt opp', d:'Tirsdag, torsdag eller lørdag.' },
+              { t:'Lån utstyr', d:'Vi har flagg + ball klart.' },
+            ],
+          },
           { id:'wm_right', label:'Wordmark right', type:'text', default:'BLI MED' },
         ],
-        render: d => `<div class="stage">
-          <div class="eyebrow">${d.eyebrow}</div>
-          <div class="h-display" style="font-size:140px; line-height:0.95;">${d.titleA} ${d.titleB}</div>
-          <div style="font-family:var(--font-body); font-size:30px; color:var(--fg-muted); line-height:1.4; max-width:840px;">${d.subtitle}</div>
-          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:16px;">
-            ${[[d.s1t,d.s1d],[d.s2t,d.s2d],[d.s3t,d.s3d]].map(([t,desc],i)=>`<div style="padding:24px; background:rgba(84,197,158,0.08); border:1px solid rgba(84,197,158,0.3); border-radius:12px;"><div style="font-family:var(--font-heading); font-weight:800; font-size:48px; color:var(--chrome); line-height:1;">0${i+1}</div><div style="font-family:var(--font-heading); font-weight:700; font-size:26px; color:var(--fg); margin-top:12px;">${t}</div><div style="font-family:var(--font-body); font-size:24px; color:var(--fg-muted); margin-top:8px; line-height:1.4;">${desc}</div></div>`).join('')}
-          </div>
-        </div>`,
+        render: d => {
+          const steps = Array.isArray(d.steps) && d.steps.length ? d.steps : [];
+          const n = steps.length;
+          const cols = n <= 3 ? n : 3;
+          const gridStyle = `display:grid; grid-template-columns:repeat(${Math.max(1, cols)},1fr); gap:24px; margin-top:16px;`;
+          return `<div class="stage">
+            <div class="eyebrow">${d.eyebrow}</div>
+            <div class="h-display" style="font-size:140px; line-height:0.95;">${d.titleA} ${d.titleB}</div>
+            <div style="font-family:var(--font-body); font-size:30px; color:var(--fg-muted); line-height:1.4; max-width:840px;">${d.subtitle}</div>
+            <div style="${gridStyle}">
+              ${steps.map((s,i)=>`<div style="padding:24px; background:rgba(84,197,158,0.08); border:1px solid rgba(84,197,158,0.3); border-radius:12px;"><div style="font-family:var(--font-heading); font-weight:800; font-size:48px; color:var(--chrome); line-height:1;">${String(i+1).padStart(2,'0')}</div><div style="font-family:var(--font-heading); font-weight:700; font-size:26px; color:var(--fg); margin-top:12px;">${s.t || ''}</div><div style="font-family:var(--font-body); font-size:24px; color:var(--fg-muted); margin-top:8px; line-height:1.4;">${s.d || ''}</div></div>`).join('')}
+            </div>
+          </div>`;
+        },
         cls: 't-welcome',
       };
 

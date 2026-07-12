@@ -83,7 +83,7 @@ const abbrToPosition = (abbr: PosKey) => {
   return all.find((p) => p.abbr === abbr);
 };
 
-const Quiz = () => {
+const QuizInner = () => {
   const { lang } = useLang();
   const [answers, setAnswers] = useState<number[]>([]);
 
@@ -114,11 +114,11 @@ const Quiz = () => {
         <h1 className="font-display text-4xl md:text-5xl mt-3 mb-2">
           {lang === "no" ? "Hvilken posisjon er du?" : "Which position are you?"}
         </h1>
-        <p className="text-muted-foreground mb-8">
-          {lang === "no"
+        <QuizIntro fallback={
+          lang === "no"
             ? "Seks spørsmål. Svarene peker mot posisjonen som passer deg best."
-            : "Six questions. Your answers point to the position that fits you best."}
-        </p>
+            : "Six questions. Your answers point to the position that fits you best."
+        } />
 
         {!done && (
           <div className="rounded-lg border border-border bg-card/50 p-6">
@@ -199,8 +199,21 @@ const Quiz = () => {
           </div>
         )}
       </div>
+      <SectionAnchor anchor="end" striped />
     </main>
   );
 };
+
+const QuizIntro = ({ fallback }: { fallback: string }) => {
+  const slot = useSlot("intro");
+  if (slot) return <MdBlock md={slot.body} className="mb-8" />;
+  return <p className="text-muted-foreground mb-8">{fallback}</p>;
+};
+
+const Quiz = () => (
+  <ContentBlocksProvider page="quiz">
+    <QuizInner />
+  </ContentBlocksProvider>
+);
 
 export default Quiz;

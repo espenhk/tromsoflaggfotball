@@ -157,6 +157,7 @@ const no = {
   "footer.howIDidIt": "Hvordan denne siden ble laget",
   "footer.quiz": "Hvilken posisjon er du?",
   "footer.press": "Pressekit",
+  "game.quizCta": "Ta quizen: Hvilken posisjon passer deg? →",
 
   // ── FieldDiagram ──────────────────────────────────────
   "fd.offense": "Angrep",
@@ -413,6 +414,7 @@ const en: Record<TranslationKey, string> = {
   "footer.howIDidIt": "How this site was built",
   "footer.quiz": "Which position are you?",
   "footer.press": "Press kit",
+  "game.quizCta": "Take the quiz: which position fits you? →",
 
   // FieldDiagram
   "fd.offense": "Offense",

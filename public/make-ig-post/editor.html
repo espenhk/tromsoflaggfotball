@@ -1225,6 +1225,50 @@
         imageScales: {},
       };
 
+      // -------- Placeholders + required-field validation --------
+      // Every text/textarea field's `default` string is treated as a *placeholder*
+      // (shown in the empty input as grey hint text, and substituted into the
+      // preview so the design still looks complete). Actual state starts empty
+      // so we can tell a real user-entered value from a template preset. Fields
+      // with an `optional: true` flag, or whose id starts with `wm_` (chrome
+      // wordmark right), are never required. Lists keep their template default
+      // rows so example content is preserved and users can edit/remove them.
+      const WM_OPTIONAL_RE = /^wm_/;
+      function fieldPlaceholder(f) {
+        if (f.placeholder != null) return String(f.placeholder);
+        if (typeof f.default === 'string') return f.default;
+        return '';
+      }
+      function isRequired(f) {
+        if (f.optional === true || f.required === false) return false;
+        if (WM_OPTIONAL_RE.test(f.id)) return false;
+        if (f.type !== 'text' && f.type !== 'textarea') return false;
+        return fieldPlaceholder(f).trim().length > 0;
+      }
+      function initialValueFor(f) {
+        if (f.type === 'text' || f.type === 'textarea') return '';
+        return JSON.parse(JSON.stringify(f.default));
+      }
+      // Walk every slide's values against its template's required fields.
+      // Returns { slideIndex, fieldId, label } for the first miss, or null.
+      function firstMissingRequired() {
+        try { snapshotSlide(); } catch (_) {}
+        const slides = state.slides.length ? state.slides : [state];
+        for (let i = 0; i < slides.length; i++) {
+          const s = slides[i];
+          const t = T[s.tpl];
+          if (!t) continue;
+          for (const f of t.fields) {
+            if (!isRequired(f)) continue;
+            const v = s.values && s.values[f.id];
+            if (v == null || String(v).trim() === '') {
+              return { slideIndex: i, fieldId: f.id, label: f.label };
+            }
+          }
+        }
+        return null;
+      }
+
       function loadDefaults(tplId) {
         const t = T[tplId];
         state.values = {};

@@ -3152,6 +3152,7 @@
           slide_count: entry.slideCount,
           payload: entry.payload,
           photos_dropped: false,
+          caption: entry.caption || null,
         };
         try {
           await historyApi('save', payload);

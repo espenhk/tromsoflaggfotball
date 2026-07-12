@@ -518,10 +518,13 @@
           { id:'m3l', label:'Meta3 label', type:'text', default:'Lag' },
           { id:'m3v', label:'Meta3 value', type:'text', default:'12' },
           { id:'wm_right', label:'Wordmark right', type:'text', default:'NM 2026' },
+          { id:'flagImage', label:'Flag override image (blank = Norwegian flag)', type:'image', default:null },
         ],
         render: d => `<div class="stage">
-          <div style="height:240px; position:relative; overflow:hidden;">
-            <div class="no-flag" style="position:absolute; inset:0; height:100%; width:100%; aspect-ratio:auto;"></div>
+          <div style="height:240px; position:relative; overflow:hidden; display:flex; justify-content:center; align-items:center; background:#000;">
+            ${d.flagImage
+              ? `<div style="position:absolute; inset:0; background-image:url(${d.flagImage}); background-size:cover; background-position:center;"></div>`
+              : `<div class="no-flag" style="height:100%; width:auto;"></div>`}
           </div>
           <div class="body-area">
             <div class="eyebrow">${d.eyebrow}</div>

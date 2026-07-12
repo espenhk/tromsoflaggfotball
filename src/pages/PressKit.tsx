@@ -120,7 +120,7 @@ const PressKitInner = () => {
       <div className="max-w-4xl mx-auto px-6 py-16">
         <Link to="/" className="text-sm text-muted-foreground hover:text-primary">← {T.back}</Link>
         <h1 className="font-display text-5xl md:text-6xl mt-3 mb-3">{T.heading}</h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mb-12">{T.intro}</p>
+        <IntroSlot fallback={T.intro} />
 
         <Section title={T.about}>
           <SlotOrText slotKey="about.body" fallback={T.aboutBody} />

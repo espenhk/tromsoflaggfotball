@@ -3,8 +3,10 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/i18n/LanguageProvider";
+import { afterRange, type CmsPage } from "@/cms/manifest";
+import { getVariant } from "@/cms/variants";
 
-export type ContentPage = "home" | "presse" | "quiz" | "posisjoner";
+export type ContentPage = CmsPage;
 
 export type ContentBlock = {
   id: string;
@@ -17,6 +19,8 @@ export type ContentBlock = {
   body_md_en: string | null;
   sort_order: number;
   visible: boolean;
+  variant: string;
+  data: Record<string, unknown>;
 };
 
 type Ctx = {
@@ -45,7 +49,11 @@ export const ContentBlocksProvider = ({
         .eq("page", page)
         .eq("visible", true);
       if (!cancelled) {
-        setBlocks((data ?? []) as ContentBlock[]);
+        setBlocks(((data ?? []) as unknown as ContentBlock[]).map((b) => ({
+          ...b,
+          variant: (b as { variant?: string }).variant ?? "markdown",
+          data: ((b as { data?: unknown }).data as Record<string, unknown>) ?? {},
+        })));
         setLoaded(true);
       }
     })();
@@ -97,18 +105,47 @@ export const MdBlock = ({ md, className }: { md: string; className?: string }) =
 );
 
 /**
- * Render every visible free-section block for the given anchor id, in order.
- * The anchor id must match `key` on a `kind = 'section'` row.
- * Renders nothing when no sections exist for the anchor.
+ * Render every visible custom section that belongs after the code section
+ * identified by `after` — i.e. every DB row whose `sort_order` falls
+ * between this code section's order and the next one's.
+ *
+ * The rendered output depends on each block's `variant` (markdown, map,
+ * training-info, image, video, …).
  */
-export const SectionAnchor = ({
-  anchor,
-  className = "",
+export const AfterSection = ({
+  page,
+  after,
 }: {
-  anchor: string;
-  className?: string;
+  page: ContentPage;
+  after: string;
 }) => {
-  const { lang } = useLang();
+  const { blocks } = useContentBlocks();
+  const { from, to } = afterRange(page, after);
+  const sections = blocks
+    .filter(
+      (b) =>
+        b.kind === "section" &&
+        b.sort_order > from &&
+        b.sort_order < to,
+    )
+    .sort((a, b) => a.sort_order - b.sort_order);
+  if (sections.length === 0) return null;
+  return (
+    <>
+      {sections.map((s) => {
+        const V = getVariant(s.variant);
+        return <V.render key={s.id} {...s} />;
+      })}
+    </>
+  );
+};
+
+/**
+ * Legacy anchor renderer kept for backwards compatibility during the
+ * migration. Matches on the old `key`-based anchor semantics.
+ * Prefer `<AfterSection page="…" after="…" />` in new code.
+ */
+export const SectionAnchor = ({ anchor }: { anchor: string }) => {
   const { blocks } = useContentBlocks();
   const sections = blocks
     .filter((b) => b.kind === "section" && b.key === anchor)
@@ -117,23 +154,8 @@ export const SectionAnchor = ({
   return (
     <>
       {sections.map((s) => {
-        const body = lang === "en" ? (s.body_md_en?.trim() || s.body_md_no) : s.body_md_no;
-        const title = lang === "en" ? (s.title_en?.trim() || s.title_no) : s.title_no;
-        return (
-          <section
-            key={s.id}
-            className={`py-12 px-6 ${className}`}
-          >
-            <div className="max-w-3xl mx-auto">
-              {title && (
-                <h2 className="font-display text-3xl md:text-4xl mb-4">
-                  {title}
-                </h2>
-              )}
-              <MdBlock md={body ?? ""} />
-            </div>
-          </section>
-        );
+        const V = getVariant(s.variant);
+        return <V.render key={s.id} {...s} />;
       })}
     </>
   );

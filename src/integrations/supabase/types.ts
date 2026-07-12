@@ -40,6 +40,7 @@ export type Database = {
           body_md_en: string | null
           body_md_no: string
           created_at: string
+          data: Json
           id: string
           key: string
           kind: string
@@ -48,12 +49,14 @@ export type Database = {
           title_en: string | null
           title_no: string | null
           updated_at: string
+          variant: string
           visible: boolean
         }
         Insert: {
           body_md_en?: string | null
           body_md_no?: string
           created_at?: string
+          data?: Json
           id?: string
           key: string
           kind: string
@@ -62,12 +65,14 @@ export type Database = {
           title_en?: string | null
           title_no?: string | null
           updated_at?: string
+          variant?: string
           visible?: boolean
         }
         Update: {
           body_md_en?: string | null
           body_md_no?: string
           created_at?: string
+          data?: Json
           id?: string
           key?: string
           kind?: string
@@ -76,6 +81,7 @@ export type Database = {
           title_en?: string | null
           title_no?: string | null
           updated_at?: string
+          variant?: string
           visible?: boolean
         }
         Relationships: []

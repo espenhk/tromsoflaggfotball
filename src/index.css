@@ -166,6 +166,13 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
   }
+
+  /* Automatic zebra striping for full-width page sections.
+     Every even <section> child gets the muted card background — this way
+     inserting a CMS section shifts the alternation for every section below. */
+  .zebra > section:nth-of-type(even) {
+    background-color: hsl(var(--card) / 0.5);
+  }
 }
 
 /* ============================================================

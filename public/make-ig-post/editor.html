@@ -3734,6 +3734,53 @@
         return [body, alwaysLine, optLine].filter(Boolean).join('\n\n');
       }
 
+      // Async variant: fetch a smoother caption body from the ig-caption edge
+      // function (Lovable AI Gateway, Norwegian, positive+professional). Falls
+      // back to the deterministic local builder on any error so the modal
+      // never gets stuck.
+      const SUPABASE_FN_URL = 'https://nlktiaocimgmxntderyq.supabase.co/functions/v1/ig-caption';
+      const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5sa3RpYW9jaW1nbXhudGRlcnlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzOTQ4MjksImV4cCI6MjA5NDk3MDgyOX0.L6tWS2sJ8pGe9lM9_X1Ha4HQhjY82Mv5b0jvoE95-KI';
+      let _aiCaptionCache = null; // { key, body } — key is a hash of the raw body
+      async function aiGenerateCaptionBody() {
+        const raw = generateCaptionBody();
+        if (!raw) return { body: '', ai: false };
+        if (_aiCaptionCache && _aiCaptionCache.key === raw) {
+          return { body: _aiCaptionCache.body, ai: true };
+        }
+        try {
+          const resp = await fetch(SUPABASE_FN_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': SUPABASE_ANON,
+              'Authorization': `Bearer ${SUPABASE_ANON}`,
+            },
+            body: JSON.stringify({ rawBody: raw }),
+          });
+          if (!resp.ok) throw new Error('status ' + resp.status);
+          const data = await resp.json();
+          if (!data?.body) throw new Error('empty');
+          _aiCaptionCache = { key: raw, body: data.body };
+          return { body: data.body, ai: true };
+        } catch (e) {
+          console.warn('ig-caption fallback:', e);
+          return { body: raw, ai: false };
+        }
+      }
+
+      function composeCaption(body, cfg, optionalPicked) {
+        const alwaysLine = [...cfg.alwaysTags, ...cfg.alwaysHashtags].join(' ').trim();
+        const optLine = [...(optionalPicked.tags || []), ...(optionalPicked.hashtags || [])].join(' ').trim();
+        // Append the photo credit (📸: …) — kept out of the AI body so its
+        // structure is guaranteed. Same source as generateCaptionBody().
+        try { snapshotSlide(); } catch (_) {}
+        const slides = state.slides.length ? state.slides : [state];
+        const credit = (state.photoCredit && state.photoCredit.trim())
+          || (slides.find(s => s.photoCredit && s.photoCredit.trim()) || {}).photoCredit;
+        const creditLine = credit ? '📸: ' + credit.trim() : '';
+        return [body, creditLine, alwaysLine, optLine].filter(Boolean).join('\n\n');
+      }
+
       async function copyToClipboard(text) {
         try {
           if (navigator.clipboard && window.isSecureContext) {

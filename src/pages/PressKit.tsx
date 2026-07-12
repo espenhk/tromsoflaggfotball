@@ -4,6 +4,12 @@ import { useLang } from "@/i18n/LanguageProvider";
 import { useTheme } from "@/theme/ThemeProvider";
 import BrandLogo from "@/components/BrandLogo";
 import tuilLogo from "@/assets/tuil-logo.svg";
+import {
+  ContentBlocksProvider,
+  SectionAnchor,
+  MdBlock,
+  useSlot,
+} from "@/hooks/useContentBlocks";
 
 // Convert an HSL string like "195 100% 4%" to #rrggbb.
 function hslVarToHex(hsl: string): string {

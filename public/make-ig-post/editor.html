@@ -1269,6 +1269,33 @@
         return null;
       }
 
+      // Called from the export buttons. Returns true when it's safe to export;
+      // otherwise navigates to the offending slide, focuses the missing input,
+      // shows a message, and returns false.
+      function enforceRequiredBeforeExport() {
+        const miss = firstMissingRequired();
+        if (!miss) return true;
+        try {
+          if (state.currentSlide !== miss.slideIndex && typeof selectSlide === 'function') {
+            selectSlide(miss.slideIndex);
+          }
+        } catch (_) {}
+        // Defer focus/scroll one tick so any renderForm() from selectSlide runs first.
+        setTimeout(() => {
+          const inp = document.querySelector(`[data-field="${miss.fieldId}"]`);
+          if (inp) {
+            inp.scrollIntoView({ block: 'center', behavior: 'smooth' });
+            try { inp.focus(); } catch (_) {}
+            inp.style.outline = '2px solid #ef4444';
+            inp.style.outlineOffset = '2px';
+            setTimeout(() => { inp.style.outline = ''; inp.style.outlineOffset = ''; }, 2400);
+          }
+        }, 60);
+        alert(`Fyll ut «${miss.label}» før du eksporterer` +
+              (state.slides.length > 1 ? ` (slide ${miss.slideIndex + 1}).` : '.'));
+        return false;
+      }
+
       function loadDefaults(tplId) {
         const t = T[tplId];
         state.values = {};

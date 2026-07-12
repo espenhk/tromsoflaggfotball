@@ -508,6 +508,12 @@ const GameSection = () => {
             >
               {t("game.readMoreAll")}
             </Link>
+            <Link
+              to="/quiz"
+              className={`block text-sm font-body hover:opacity-80 transition-opacity mt-2 ${theme === "tuil" ? "text-rose-300" : "text-primary"}`}
+            >
+              {t("game.quizCta")}
+            </Link>
           </div>
 
           {/* Defense positions - right */}
@@ -532,6 +538,12 @@ const GameSection = () => {
               className={`inline-block text-sm font-body hover:opacity-80 transition-opacity mt-4 ${theme === "tuil" ? "text-rose-300" : "text-primary"}`}
             >
               {t("game.readMoreAll")}
+            </Link>
+            <Link
+              to="/quiz"
+              className={`block text-sm font-body hover:opacity-80 transition-opacity mt-2 ${theme === "tuil" ? "text-rose-300" : "text-primary"}`}
+            >
+              {t("game.quizCta")}
             </Link>
           </div>
 

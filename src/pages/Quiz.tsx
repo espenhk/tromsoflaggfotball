@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ContentBlocksProvider,
-  SectionAnchor,
+  AfterSection,
   MdBlock,
   useSlot,
 } from "@/hooks/useContentBlocks";
@@ -199,7 +199,7 @@ const QuizInner = () => {
           </div>
         )}
       </div>
-      <SectionAnchor anchor="end" />
+      <AfterSection page="quiz" after="quiz" />
     </main>
   );
 };

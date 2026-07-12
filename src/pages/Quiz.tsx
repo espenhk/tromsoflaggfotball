@@ -1,5 +1,11 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import {
+  ContentBlocksProvider,
+  SectionAnchor,
+  MdBlock,
+  useSlot,
+} from "@/hooks/useContentBlocks";
 import { useLang } from "@/i18n/LanguageProvider";
 import { offensePositions, defensePositions, positionSlugMap } from "@/data/positions";
 

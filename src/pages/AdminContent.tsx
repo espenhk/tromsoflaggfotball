@@ -629,6 +629,65 @@ const FieldInput = ({
   data: Record<string, unknown>;
   onChange: (value: unknown, subKey?: string) => void;
 }) => {
+  if (field.type === "list") {
+    const items = Array.isArray(data[field.key])
+      ? (data[field.key] as Record<string, unknown>[])
+      : [];
+    const setItems = (next: Record<string, unknown>[]) => onChange(next, field.key);
+    const updateItem = (i: number, patch: Record<string, unknown>) => {
+      const next = items.slice();
+      next[i] = { ...(next[i] ?? {}), ...patch };
+      setItems(next);
+    };
+    const move = (i: number, dir: -1 | 1) => {
+      const j = i + dir;
+      if (j < 0 || j >= items.length) return;
+      const next = items.slice();
+      [next[i], next[j]] = [next[j], next[i]];
+      setItems(next);
+    };
+    return (
+      <div>
+        <Label>{field.label}</Label>
+        <div className="space-y-3">
+          {items.map((item, i) => (
+            <div key={i} className="rounded-md border border-border bg-background/40 p-3">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xs text-muted-foreground">#{i + 1}</span>
+                <div className="ml-auto flex items-center gap-1">
+                  <button type="button" onClick={() => move(i, -1)} disabled={i === 0}
+                    className="text-xs px-2 rounded hover:bg-muted disabled:opacity-30">▲</button>
+                  <button type="button" onClick={() => move(i, 1)} disabled={i === items.length - 1}
+                    className="text-xs px-2 rounded hover:bg-muted disabled:opacity-30">▼</button>
+                  <button type="button"
+                    onClick={() => setItems(items.filter((_, k) => k !== i))}
+                    className="text-xs px-2 py-0.5 rounded border border-destructive/40 text-destructive hover:bg-destructive/10">
+                    Slett
+                  </button>
+                </div>
+              </div>
+              <div className="space-y-3">
+                {(field.itemFields ?? []).map((sub) => (
+                  <FieldInput
+                    key={sub.key}
+                    field={sub}
+                    data={item}
+                    onChange={(v, subKey) => updateItem(i, { [subKey ?? sub.key]: v })}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+          <button type="button"
+            onClick={() => setItems([...items, {}])}
+            className="text-xs px-3 py-1.5 rounded-md border border-dashed border-border text-muted-foreground hover:text-primary hover:border-primary">
+            + Legg til {field.itemLabel ?? "element"}
+          </button>
+        </div>
+        {field.help && <p className="text-xs text-muted-foreground mt-1">{field.help}</p>}
+      </div>
+    );
+  }
   if (field.bilingual) {
     return (
       <div>

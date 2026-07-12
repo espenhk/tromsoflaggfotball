@@ -46,7 +46,7 @@ function firstFamily(stack: string): string {
   return first.replace(/^['"]|['"]$/g, "");
 }
 
-const PressKit = () => {
+const PressKitInner = () => {
   const { lang } = useLang();
   const { theme } = useTheme();
   const [tokens, setTokens] = useState({
@@ -123,7 +123,7 @@ const PressKit = () => {
         <p className="text-lg text-muted-foreground max-w-2xl mb-12">{T.intro}</p>
 
         <Section title={T.about}>
-          <p className="text-foreground leading-relaxed max-w-2xl">{T.aboutBody}</p>
+          <SlotOrText slotKey="about.body" fallback={T.aboutBody} />
         </Section>
 
         <Section title={T.facts}>
@@ -194,7 +194,7 @@ const PressKit = () => {
         </Section>
 
         <Section title={T.contact}>
-          <p className="text-muted-foreground mb-2 max-w-2xl">{T.contactBody}</p>
+          <SlotOrText slotKey="contact.body" fallback={T.contactBody} muted />
           <Link
             to="/#coachene"
             className="inline-block font-heading text-lg text-primary hover:underline"
@@ -203,9 +203,40 @@ const PressKit = () => {
           </Link>
         </Section>
       </div>
+      <SectionAnchor anchor="end" striped />
     </main>
   );
 };
+
+const IntroSlot = ({ fallback }: { fallback: string }) => {
+  const slot = useSlot("intro");
+  if (slot) return <MdBlock md={slot.body} className="mb-12" />;
+  return <p className="text-lg text-muted-foreground max-w-2xl mb-12">{fallback}</p>;
+};
+
+const SlotOrText = ({
+  slotKey,
+  fallback,
+  muted = false,
+}: {
+  slotKey: string;
+  fallback: string;
+  muted?: boolean;
+}) => {
+  const slot = useSlot(slotKey);
+  if (slot) return <MdBlock md={slot.body} />;
+  return (
+    <p className={`${muted ? "text-muted-foreground mb-2" : "text-foreground"} leading-relaxed max-w-2xl`}>
+      {fallback}
+    </p>
+  );
+};
+
+const PressKit = () => (
+  <ContentBlocksProvider page="presse">
+    <PressKitInner />
+  </ContentBlocksProvider>
+);
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <section className="mb-12">

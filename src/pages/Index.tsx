@@ -393,16 +393,6 @@ const Index = () => {
             </span>
           </div>
           <div className={`flex items-center gap-4 text-xs ${theme === "tuil" ? "text-white/80" : "text-muted-foreground"}`}>
-            <Link
-              to="/how-i-did-it"
-              className="inline-flex items-center gap-1.5 hover:underline"
-            >
-              <Code2 className="w-3.5 h-3.5" />
-              {t("footer.howIDidIt")}
-            </Link>
-            <Link to="/quiz" className="hover:underline">
-              {t("footer.quiz")}
-            </Link>
             <Link to="/presse" className="hover:underline">
               {t("footer.press")}
             </Link>

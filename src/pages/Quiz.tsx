@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { useT } from "@/i18n/LanguageProvider";
+import { useLang } from "@/i18n/LanguageProvider";
 import { offensePositions, defensePositions, positionSlugMap } from "@/data/positions";
 
 type PosKey = "QB" | "RB" | "C" | "WR" | "R" | "DB" | "S";
@@ -78,12 +78,8 @@ const abbrToPosition = (abbr: PosKey) => {
 };
 
 const Quiz = () => {
-  const t = useT();
-  const [lang, setLang] = useState<"no" | "en">(document.documentElement.lang === "en" ? "en" : "no");
+  const { lang } = useLang();
   const [answers, setAnswers] = useState<number[]>([]);
-
-  // Keep in sync with global switch.
-  useMemoLang(setLang);
 
   const total = QUESTIONS.length;
   const idx = answers.length;
@@ -200,19 +196,5 @@ const Quiz = () => {
     </main>
   );
 };
-
-// Small hook: react to the shared LanguageProvider without importing its hook
-// twice (it may re-render if used inside a memo). We just watch the <html lang>.
-function useMemoLang(setLang: (l: "no" | "en") => void) {
-  useMemo(() => {
-    if (typeof MutationObserver === "undefined") return;
-    const el = document.documentElement;
-    const mo = new MutationObserver(() => {
-      setLang(el.lang === "en" ? "en" : "no");
-    });
-    mo.observe(el, { attributes: true, attributeFilter: ["lang"] });
-    return () => mo.disconnect();
-  }, [setLang]);
-}
 
 export default Quiz;

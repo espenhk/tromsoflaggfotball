@@ -5,6 +5,12 @@ import FieldDiagram from "@/components/FieldDiagram";
 import BrandLogo from "@/components/BrandLogo";
 import { useTheme } from "@/theme/ThemeProvider";
 import { useT } from "@/i18n/LanguageProvider";
+import {
+  ContentBlocksProvider,
+  SectionAnchor,
+  MdBlock,
+  useSlot,
+} from "@/hooks/useContentBlocks";
 import qbImg from "@/assets/positions/quarterback.png";
 import centerImg from "@/assets/positions/center.png";
 import rbImg from "@/assets/positions/running-back.png";
@@ -225,7 +231,7 @@ const byId = Object.fromEntries(positions.map((p) => [p.id, p]));
 const offensePositions = offenseOrder.map((id) => byId[id]);
 const defensePositions = defenseOrder.map((id) => byId[id]);
 
-const Posisjoner = () => {
+const PosisjonerInner = () => {
   const { hash } = useLocation();
   const { theme } = useTheme();
   const t = useT();
@@ -288,9 +294,9 @@ const Posisjoner = () => {
         <section className="space-y-6">
           <div className="space-y-3">
             <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">{t("posPage.h2")}</h2>
-            <p className="text-muted-foreground font-body leading-relaxed max-w-2xl">{t("posPage.intro1")}</p>
-            <p className="text-muted-foreground font-body leading-relaxed max-w-2xl">{t("posPage.intro2")}</p>
-            <p className="text-muted-foreground font-body leading-relaxed max-w-2xl">{t("posPage.intro3")}</p>
+            <IntroSlot
+              fallbackParas={[t("posPage.intro1"), t("posPage.intro2"), t("posPage.intro3")]}
+            />
           </div>
 
           {/* Compact field diagram for navigation while browsing the list */}
@@ -329,6 +335,7 @@ const Posisjoner = () => {
           </div>
         </section>
 
+        <SectionAnchor anchor="end" />
         <div className="pt-2 pb-8">
           <Link
             to="/#spillet"
@@ -342,6 +349,24 @@ const Posisjoner = () => {
     </div>
   );
 };
+
+const IntroSlot = ({ fallbackParas }: { fallbackParas: string[] }) => {
+  const slot = useSlot("intro");
+  if (slot) return <MdBlock md={slot.body} />;
+  return (
+    <>
+      {fallbackParas.map((p, i) => (
+        <p key={i} className="text-muted-foreground font-body leading-relaxed max-w-2xl">{p}</p>
+      ))}
+    </>
+  );
+};
+
+const Posisjoner = () => (
+  <ContentBlocksProvider page="posisjoner">
+    <PosisjonerInner />
+  </ContentBlocksProvider>
+);
 
 const PositionRow = ({ pos, open, onToggle }: { pos: PositionData; open: boolean; onToggle: () => void }) => {
   const t = useT();

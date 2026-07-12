@@ -35,6 +35,51 @@ export type Database = {
         }
         Relationships: []
       }
+      content_blocks: {
+        Row: {
+          body_md_en: string | null
+          body_md_no: string
+          created_at: string
+          id: string
+          key: string
+          kind: string
+          page: string
+          sort_order: number
+          title_en: string | null
+          title_no: string | null
+          updated_at: string
+          visible: boolean
+        }
+        Insert: {
+          body_md_en?: string | null
+          body_md_no?: string
+          created_at?: string
+          id?: string
+          key: string
+          kind: string
+          page: string
+          sort_order?: number
+          title_en?: string | null
+          title_no?: string | null
+          updated_at?: string
+          visible?: boolean
+        }
+        Update: {
+          body_md_en?: string | null
+          body_md_no?: string
+          created_at?: string
+          id?: string
+          key?: string
+          kind?: string
+          page?: string
+          sort_order?: number
+          title_en?: string | null
+          title_no?: string | null
+          updated_at?: string
+          visible?: boolean
+        }
+        Relationships: []
+      }
       ig_post_exports: {
         Row: {
           caption: string | null

@@ -1,70 +1,91 @@
 
-This is a large batch of features. Grouping into phases so we can ship in reviewable chunks. Confirm the whole plan (or trim it) before I start.
+## Goal
 
-## 1. Site pages
+Let you edit copy on the four "simple" pages (front page, `/presse`, `/quiz`, `/posisjoner`) without going through chat — including dropping in ad‑hoc markdown sections on the front page — while keeping the current design intact.
 
-### 1a. Position quiz — `/quiz` (public)
-- 6 questions (NO+EN), lightweight, no backend. Result → suggested position + link into `/posisjoner#<slug>`.
-- Style matches existing zebra sections. Question card with progress dots, animated transitions.
-- Scoring: each answer weights the 7 positions in `src/data/positions.ts`; highest score wins, ties show top 2.
-- Add nav link + a card on `/` linking to it.
+## How hard is it?
 
-### 1b. Press kit — `/presse` (public)
-- Single long page: club blurb (NO+EN), key facts (founded, roster size, home venue, colors, contact), logo downloads (SVG+PNG from `src/assets/tuil-logo.svg`), color swatches with hex, typography spec, 4–6 photo thumbnails with "download all" (zip on the fly with `jszip`), press contact email.
-- Add link in footer.
+Small. The site already has an admin area (`/admin`) behind a password gate, a database, and typed client bindings. There's no new infrastructure — one table, one edge function, one admin page, and small edits to the four target pages. Realistic scope: an afternoon.
 
-### 1c. i18n for `/posisjoner`, `/how-i-did-it`, FAQ
-- All strings routed through `useT()` and `dictionaries.ts`.
-- Existing `LanguageToggle` already handles switching; just extend the dictionary and swap literals.
+## Concept
 
-## 2. IG editor — new templates
-Under `public/make-ig-post/`:
+Two content shapes, both stored as rows in a `content_blocks` table:
 
-- **`quote`** — big pull-quote with attribution + optional small photo. Fields: `quoteText`, `author`, `authorRole`, `photo`, `wm_right`.
-- **`standings`** — league table. Fields: `title`, `subtitle`, `rows` (array: team, w, l, pf, pa, pts — up to 8 rows), `wm_right`. Renders as a semantic table styled to match `frames.css`.
-- **`matchlist`** — list of games. Fields: `title`, `subtitle`, `rows` (array: date, time, home, away, venue, homeScore?, awayScore?). Rows with scores render as results; rows without render as upcoming (time+venue).
+1. **Named slots** — a fixed key that a specific page already renders (e.g. `home.hero.tagline`, `presse.about.body`, `quiz.intro`). Editing the row changes the text in place; nothing about layout moves.
+2. **Free sections** — extra markdown blocks scoped to a page + placement anchor (e.g. `home:after-training`, `home:after-faq`). The page renders whatever free blocks exist for each anchor, in `sort_order`. This is how you "add a new section to the front page" without a code change.
 
-Add example JSON under `src/make-ig-post/examples/` + update `manifest.json`, and add to `renderPreview` in `editor.html`.
+Both are markdown; both render through the same component.
 
-## 3. Matches datastore + "load from matches" picker
+## Data model
 
-New table `matches` (Cloud):
+```text
+content_blocks
+  id            uuid pk
+  page          text     -- 'home' | 'presse' | 'quiz' | 'posisjoner'
+  key           text     -- slot key OR anchor id for free sections
+  kind          text     -- 'slot' | 'section'
+  title         text     -- section heading (sections only, optional)
+  body_md       text     -- markdown
+  sort_order    int      -- ordering within an anchor
+  visible       bool
+  updated_at    timestamptz
+  unique (page, key) where kind = 'slot'
 ```
-id uuid pk, kicks_off_at timestamptz, venue text,
-home_name text, home_tag text, home_logo text, home_color text, home_score int null,
-away_name text, away_tag text, away_logo text, away_color text, away_score int null,
-round_label text null, notes text null,
-created_at, updated_at
-```
-- GRANT + RLS: `anon` SELECT (public schedule), `authenticated` full CRUD via admin gate (matches existing pattern; admin section is password-gated in-app, not by auth — so we'll gate writes to `service_role` only and expose an edge function `matches-admin` protected by `ADMIN_PASSWORD`, mirroring `list-signups`).
 
-Admin CRUD page `/admin/matches`: table with add/edit/delete rows (date, teams, scores, venue).
+RLS: public `SELECT` (so the site can read without auth); writes only via the admin edge function using the existing admin token — matches how `matches-admin` already works.
 
-IG editor: in the top bar of the `game` and `matchlist` templates, add a **"Load from matches"** button. Opens a modal listing matches (filter: upcoming / past / all), user ticks rows → for `game` it fills the currently-selected slide; for `matchlist` it appends the ticked rows to the `rows` field.
+## Backend
 
-Also: on `/` we can optionally render an upcoming-matches strip later — not in this plan unless you want it.
+- One migration to create the table + grants + policies.
+- One edge function `content-admin` (mirrors `matches-admin`): verifies the admin session token, exposes `list`, `upsert`, `delete`, `reorder`.
+- Public reads go straight through the typed Supabase client from the page components — no function needed.
 
-## 4. IG editor — autosave, undo/redo, captions with export
+## Admin UI
 
-- **Autosave**: debounce (800 ms) writes of the working state to a new `ig_post_drafts` row keyed by a local `draft_id` in localStorage. Restore prompt on load if a draft exists. Manual "Save draft as…" already isn't in scope — this is just crash-recovery autosave.
-- **Undo/redo**: keep an in-memory ring buffer (max 100) of state snapshots. `Ctrl/Cmd+Z` / `Ctrl/Cmd+Shift+Z`. Toolbar buttons too. Snapshot on debounced change, not on every keystroke, to avoid noise.
-- **Captions saved with export**: add a caption `<textarea>` in the export panel. On export, include `caption` in the `payload` written to `ig_post_exports`. Add a "Copy caption" button. Extend `ig_post_exports` with an optional `caption text` column (nullable, no default) via migration.
+New route `/admin/content` (inside the existing `AdminGate`):
 
-## Technical notes
+- Page selector: Home / Presse / Quiz / Posisjoner.
+- **Slots** panel: fixed list of known keys for that page, each with a title, a markdown textarea, and a live preview. Save = upsert.
+- **Sections** panel: list of free blocks grouped by anchor. Add / edit / reorder (up/down buttons) / hide / delete. Each has title + markdown body + anchor dropdown.
+- Link card added to `/admin` index.
 
-- All new tables get GRANT + RLS in the same migration.
-- No new secrets required; matches admin uses existing `ADMIN_PASSWORD`.
-- New deps: `jszip` (press kit + potentially carousel zip export later).
-- Undo/redo lives in the editor iframe; keep it self-contained in `editor.html`.
-- i18n additions: extend `TranslationKey` union in `dictionaries.ts` and both `no`/`en` dicts.
+Editor is a plain `<textarea>` with a side-by-side rendered preview. No WYSIWYG.
 
-## Suggested ship order (each is one turn)
-1. Matches table + admin CRUD page + edge function
-2. IG templates: `quote`, `standings`, `matchlist` (+ examples + manifest)
-3. IG "Load from matches" picker for `game` and `matchlist`
-4. IG autosave + undo/redo + captions-with-export (+ migration)
-5. Position quiz page
-6. Press kit page
-7. i18n pass for `/posisjoner`, `/how-i-did-it`, FAQ
+## Rendering on the site
 
-Reply "go" to start with #1, or tell me to reorder / drop items.
+- New tiny hook `useContentBlocks(page)` that fetches all rows for a page once and caches them.
+- New `<MdBlock md={...} />` component using `react-markdown` + `remark-gfm`, styled with the site's typography tokens (Tailwind `prose` variant tuned to the theme).
+- Named slots: replace the current hard-coded string with `slot("home.hero.tagline") ?? "…default fallback…"`. The English/Norwegian dictionary stays authoritative when no CMS row exists, so the site never renders blank if you haven't touched a slot.
+- Free sections: each target page gets a handful of `<SectionAnchor id="home:after-training" />` markers. The anchor renders every visible section row for that id, in order, using a standard section shell (heading + markdown body, matching the zebra-stripe pattern already in the codebase).
+
+## Which slots to expose first
+
+Minimal, high-value set — everything else stays as code until you ask:
+
+- **Home:** hero tagline, "Dette er flaggfotball" intro paragraph, FAQ intro, footer brand line. Free-section anchors: `after-hero`, `after-training`, `after-positions`, `after-faq`.
+- **Presse:** intro, about body, contact body. Free-section anchor: `end`.
+- **Quiz:** intro, result footer. Free-section anchor: `end`.
+- **Posisjoner:** page intro. Free-section anchor: `end`.
+
+Bilingual: each slot/section row carries `body_md_no` and `body_md_en` (same for `title`), so the language toggle keeps working. Empty English falls back to Norwegian.
+
+## Adding a section to the front page — the actual flow
+
+1. Open `/admin/content`, pick **Home**.
+2. Under **Sections**, click **New section**, pick anchor `after-training`, type a title, paste markdown into the body, save.
+3. Reload the front page — the section is there, styled like the rest of the site.
+
+## Technical details
+
+- Deps: `react-markdown`, `remark-gfm` (both small, no config).
+- Sanitization: `react-markdown` escapes HTML by default; we do not enable `rehype-raw`, so admin markdown can't inject scripts.
+- Types: after the migration is approved, `src/integrations/supabase/types.ts` regenerates and the hook/page code lands.
+- Caching: single fetch per page load; realtime is not needed at this scale.
+- No changes to the IG editor, matches admin, training plans, or `/how-i-did-it`.
+
+## Out of scope
+
+- Image uploads (can add a storage bucket later if wanted).
+- Draft/publish workflow, versioning, scheduled publishing.
+- CMS-driven layout changes (reordering existing hard-coded sections, editing the field diagram, etc.).
+- Non-simple pages: `/make-ig-post`, `/pameldinger`, `/how-i-did-it`, training plans, admin pages.

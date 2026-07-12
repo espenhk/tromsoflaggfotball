@@ -1650,6 +1650,10 @@
                 </div>
                 <button type="button" class="image-remove" data-image-remove="${f.id}">Remove image</button>
               ` : ''}
+              <div class="image-lib-row">
+                <button type="button" class="image-lib-btn" data-image-lib-pick="${f.id}">📚 Pick from library</button>
+                ${hasImg ? `<button type="button" class="image-lib-btn" data-image-lib-save="${f.id}">⭐ Save to library</button>` : ''}
+              </div>
             </div>`;
           }
           const esc = escAttr(v);

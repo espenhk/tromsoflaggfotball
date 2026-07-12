@@ -1276,8 +1276,10 @@
         const miss = firstMissingRequired();
         if (!miss) return true;
         try {
-          if (state.currentSlide !== miss.slideIndex && typeof selectSlide === 'function') {
-            selectSlide(miss.slideIndex);
+          if (state.currentSlide !== miss.slideIndex) {
+            loadSlide(miss.slideIndex);
+            renderForm();
+            renderPreview();
           }
         } catch (_) {}
         // Defer focus/scroll one tick so any renderForm() from selectSlide runs first.

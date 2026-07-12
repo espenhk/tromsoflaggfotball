@@ -217,6 +217,7 @@ const IndexInner = () => {
           </div>
         </div>
       </section>
+      <div className="zebra">
       <SectionAnchor anchor="after-hero" />
 
       {/* Om sporten */}
@@ -235,7 +236,7 @@ const IndexInner = () => {
       </section>
 
       {/* Åpent for alle + Prøv en trening */}
-      <section className="py-16 px-6 bg-card/50">
+      <section className="py-16 px-6">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-start gap-4">
             <div className="text-primary mt-1">
@@ -283,7 +284,7 @@ const IndexInner = () => {
       </section>
 
       {/* Kom i gang */}
-      <section id="kom-i-gang" className="py-16 px-6 scroll-mt-16 bg-card/50">
+      <section id="kom-i-gang" className="py-16 px-6 scroll-mt-16">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             {t("links.h")}
@@ -360,7 +361,7 @@ const IndexInner = () => {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="py-16 px-6 scroll-mt-16 bg-card/50">
+      <section id="faq" className="py-16 px-6 scroll-mt-16">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8">
             {t("faq.h")}
@@ -390,6 +391,7 @@ const IndexInner = () => {
         </div>
       </section>
       <SectionAnchor anchor="after-faq" />
+      </div>
 
       {/* Footer */}
       <footer className={`py-8 px-6 ${theme === "tuil" ? "bg-primary border-t border-white/20" : "border-t border-border"}`}>

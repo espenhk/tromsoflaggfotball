@@ -3349,6 +3349,7 @@
       document.getElementById('export-btn').addEventListener('click', async () => {
         const btn = document.getElementById('export-btn');
         const originalLabel = btn.textContent;
+        if (!enforceRequiredBeforeExport()) return;
         btn.disabled = true;
         try {
           await maybeShowCaptionBeforeExport();
@@ -3367,6 +3368,7 @@
       document.getElementById('export-all-aspects-btn').addEventListener('click', async () => {
         const btn = document.getElementById('export-all-aspects-btn');
         const originalLabel = btn.textContent;
+        if (!enforceRequiredBeforeExport()) return;
         btn.disabled = true;
         try {
           await maybeShowCaptionBeforeExport();

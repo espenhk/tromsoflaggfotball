@@ -1,0 +1,52 @@
+{
+  "tpl": "matchlist",
+  "chrome": "curve",
+  "accent": "primary",
+  "photo": null,
+  "photoCutout": false,
+  "imageScales": {},
+  "values": {
+    "eyebrow": "SESONG 2026",
+    "title": "Vår og sommer.",
+    "rows": [
+      {
+        "date": "LØR 03. MAI",
+        "time": "14:00",
+        "home": "Tromsø",
+        "away": "Bodø",
+        "venue": "Tromsdalen",
+        "homeScore": "28",
+        "awayScore": "14"
+      },
+      {
+        "date": "LØR 17. MAI",
+        "time": "12:00",
+        "home": "Oslo Vikings",
+        "away": "Tromsø",
+        "venue": "Ekeberg",
+        "homeScore": "20",
+        "awayScore": "27"
+      },
+      {
+        "date": "LØR 14. JUNI",
+        "time": "14:00",
+        "home": "Tromsø",
+        "away": "Bergen Storm",
+        "venue": "Tromsdalen",
+        "homeScore": "",
+        "awayScore": ""
+      },
+      {
+        "date": "LØR 28. JUNI",
+        "time": "13:00",
+        "home": "Stavanger",
+        "away": "Tromsø",
+        "venue": "Åsen",
+        "homeScore": "",
+        "awayScore": ""
+      }
+    ],
+    "footnote": "Alle kamper er åpne for publikum.",
+    "wm_right": "TERMINLISTE"
+  }
+}

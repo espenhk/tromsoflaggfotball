@@ -69,7 +69,8 @@
         "m2v",
         "m3l",
         "m3v",
-        "wm_right"
+        "wm_right",
+        "flagImage"
       ]
     },
     "welcome": {
@@ -180,6 +181,36 @@
         "gResult",
         "vsShow",
         "vsSize",
+        "wm_right"
+      ]
+    },
+    "quote": {
+      "label": "Quote",
+      "fields": [
+        "eyebrow",
+        "quoteText",
+        "author",
+        "authorRole",
+        "wm_right"
+      ]
+    },
+    "standings": {
+      "label": "Standings",
+      "fields": [
+        "eyebrow",
+        "title",
+        "rows",
+        "footnote",
+        "wm_right"
+      ]
+    },
+    "matchlist": {
+      "label": "Match list",
+      "fields": [
+        "eyebrow",
+        "title",
+        "rows",
+        "footnote",
         "wm_right"
       ]
     }

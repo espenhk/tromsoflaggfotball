@@ -9,6 +9,14 @@ this README from the current template definitions in `editor.html`. Do it
 whenever you add, rename, or remove a template field (the CI test in
 `__tests__/examples.test.ts` will otherwise fail).
 
+**Visual regression:** `__tests__/pixel-diff.test.ts` re-renders every
+committed example through the live editor and pixel-diffs the result
+against the checked-in PNG (≤1% mismatched pixels tolerated). If a
+template's rendering changes intentionally, refresh the baselines with
+`npm run ig:examples`. Otherwise investigate the drift before merging.
+The test needs the Vite dev server running on `:8080` and a Playwright
+Chromium binary — it skips gracefully when either is missing.
+
 The example JSON is also directly consumable by the editor's
 **Import from JSON** button.
 
@@ -109,6 +117,7 @@ Example JSON: [`event/event.json`](event/event.json)
 | `m3l` | text | `"Lag"` |
 | `m3v` | text | `"12"` |
 | `wm_right` | text | `"NM 2026"` |
+| `flagImage` | image | `null` |
 
 Example JSON: [`nm/nm.json`](nm/nm.json)
 
@@ -124,12 +133,7 @@ Example JSON: [`nm/nm.json`](nm/nm.json)
 | `titleA` | text | `"Bli med"` |
 | `titleB` | text | `"<span style=\"color:var(--chrome);\">oss.</span>"` |
 | `subtitle` | textarea | `"Du trenger ikke ha spilt før. Du trenger ikke utstyr.<br><strong style=\"col…` |
-| `s1t` | text | `"Møt opp"` |
-| `s1d` | text | `"Tirsdag, torsdag eller lørdag."` |
-| `s2t` | text | `"Lån utstyr"` |
-| `s2d` | text | `"Vi har flagg + ball klart."` |
-| `s3t` | text | `"Kom igjen"` |
-| `s3d` | text | `"Du er en av oss."` |
+| `steps` | list | `[{"t": "Møt opp", "d": "Tirsdag, torsdag eller lørdag."}, {"t": "Lån utstyr",…` |
 | `wm_right` | text | `"BLI MED"` |
 
 Example JSON: [`welcome/welcome.json`](welcome/welcome.json)
@@ -235,6 +239,8 @@ Example JSON: [`drill/drill.json`](drill/drill.json)
 | `dS2v` | text | `"19"` |
 | `dS3l` | text | `"40-yd"` |
 | `dS3v` | text | `"4.5s"` |
+| `vsShow` | checkbox | `true` |
+| `vsSize` | stepper | `"96"` |
 | `wm_right` | text | `"RUNDE 04 · LØRDAG"` |
 
 Example JSON: [`matchup/matchup.json`](matchup/matchup.json)
@@ -262,6 +268,8 @@ Example JSON: [`matchup/matchup.json`](matchup/matchup.json)
 | `gTime` | text | `"KL 14:00"` |
 | `gVenue` | text | `"TROMSDALEN KUNSTGRESS"` |
 | `gResult` | text | `"FULL TID"` |
+| `vsShow` | checkbox | `true` |
+| `vsSize` | stepper | `"88"` |
 | `wm_right` | text | `"RUNDE 04 · LØRDAG"` |
 
 Example JSON: [`game/game.json`](game/game.json)
@@ -269,3 +277,51 @@ Example JSON: [`game/game.json`](game/game.json)
 ![game square](game/game-square.png)
 ![game portrait](game/game-portrait.png)
 ![game story](game/game-story.png)
+
+### `quote` — Quote
+
+| Field | Type | Default |
+| --- | --- | --- |
+| `eyebrow` | text | `"STEMMEN FRA LAGET"` |
+| `quoteText` | textarea | `"«Det handler ikke om hvor stor du er. Det handler om hvor raskt du leser spi…` |
+| `author` | text | `"Magnus Sætre"` |
+| `authorRole` | text | `"QB · #07"` |
+| `wm_right` | text | `"STEMMER"` |
+
+Example JSON: [`quote/quote.json`](quote/quote.json)
+
+![quote square](quote/quote-square.png)
+![quote portrait](quote/quote-portrait.png)
+![quote story](quote/quote-story.png)
+
+### `standings` — Standings
+
+| Field | Type | Default |
+| --- | --- | --- |
+| `eyebrow` | text | `"NORSK FLAGGFOTBALL · 2026"` |
+| `title` | text | `"Tabell etter runde 04."` |
+| `rows` | list | `[{"team": "Tromsø Flaggfotball", "w": "4", "l": "0", "pf": "112", "pa": "46",…` |
+| `footnote` | text | `"W vinst · L tap · PF poeng for · PA poeng mot"` |
+| `wm_right` | text | `"TABELL R04"` |
+
+Example JSON: [`standings/standings.json`](standings/standings.json)
+
+![standings square](standings/standings-square.png)
+![standings portrait](standings/standings-portrait.png)
+![standings story](standings/standings-story.png)
+
+### `matchlist` — Match list
+
+| Field | Type | Default |
+| --- | --- | --- |
+| `eyebrow` | text | `"SESONG 2026"` |
+| `title` | text | `"Vår og sommer."` |
+| `rows` | list | `[{"date": "LØR 03. MAI", "time": "14:00", "home": "Tromsø", "away": "Bodø", "…` |
+| `footnote` | text | `"Alle kamper er åpne for publikum."` |
+| `wm_right` | text | `"TERMINLISTE"` |
+
+Example JSON: [`matchlist/matchlist.json`](matchlist/matchlist.json)
+
+![matchlist square](matchlist/matchlist-square.png)
+![matchlist portrait](matchlist/matchlist-portrait.png)
+![matchlist story](matchlist/matchlist-story.png)

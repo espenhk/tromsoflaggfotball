@@ -1,0 +1,15 @@
+{
+  "tpl": "quote",
+  "chrome": "curve",
+  "accent": "primary",
+  "photo": null,
+  "photoCutout": false,
+  "imageScales": {},
+  "values": {
+    "eyebrow": "STEMMEN FRA LAGET",
+    "quoteText": "«Det handler ikke om hvor stor du er. Det handler om hvor raskt du leser spillet.»",
+    "author": "Magnus Sætre",
+    "authorRole": "QB · #07",
+    "wm_right": "STEMMER"
+  }
+}

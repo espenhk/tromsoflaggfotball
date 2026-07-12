@@ -284,6 +284,9 @@
         <button data-tpl="fact">T10 · Visste du?</button>
         <button data-tpl="matchup">T11 · Matchup</button>
         <button data-tpl="game">T12 · Game</button>
+       <button data-tpl="quote">T13 · Quote</button>
+       <button data-tpl="standings">T14 · Standings</button>
+       <button data-tpl="matchlist">T15 · Match list</button>
       </div>
 
       <h3>2. Aspect ratio</h3>
@@ -1202,6 +1205,174 @@
           </div>`;
         },
         cls: 't-game',
+      };
+
+      // ----------------------------------------------------------------
+      // T.quote — pull-quote / testimonial card
+      // ----------------------------------------------------------------
+      T.quote = {
+        label: 'Quote',
+        fields: [
+          { id:'eyebrow', label:'Eyebrow', type:'text', default:'STEMMEN FRA LAGET' },
+          { id:'quoteText', label:'Quote', type:'textarea', default:'«Det handler ikke om hvor stor du er. Det handler om hvor raskt du leser spillet.»' },
+          { id:'author', label:'Author', type:'text', default:'Magnus Sætre' },
+          { id:'authorRole', label:'Author role', type:'text', default:'QB · #07' },
+          { id:'wm_right', label:'Wordmark right', type:'text', default:'STEMMER' },
+        ],
+        render: d => `<div class="stage">
+          <div class="ph photo" data-photo data-label="[ portrait / candid ]" style="opacity:0.55;"></div>
+          <div class="content" style="justify-content:center;">
+            <div class="eyebrow">${d.eyebrow}</div>
+            <div style="font-family:var(--font-heading); font-weight:800; font-size:220px; line-height:0.7; color:var(--chrome); margin-bottom:-16px;">"</div>
+            <div style="font-family:var(--font-heading); font-weight:700; font-size:64px; color:var(--fg); line-height:1.15; max-width:920px;">${d.quoteText}</div>
+            <div style="margin-top:40px; padding-top:24px; border-top:1px solid rgba(84,197,158,0.4); display:flex; flex-direction:column; gap:6px;">
+              <div style="font-family:var(--font-heading); font-weight:800; font-size:32px; color:var(--fg);">${d.author}</div>
+              <div style="font-family:var(--font-body); font-size:22px; color:var(--chrome); letter-spacing:0.18em; text-transform:uppercase;">${d.authorRole}</div>
+            </div>
+          </div>
+        </div>`,
+        cls: 't-quote',
+      };
+
+      // ----------------------------------------------------------------
+      // T.standings — league table
+      // ----------------------------------------------------------------
+      T.standings = {
+        label: 'Standings',
+        fields: [
+          { id:'eyebrow', label:'Eyebrow', type:'text', default:'NORSK FLAGGFOTBALL · 2026' },
+          { id:'title', label:'Title', type:'text', default:'Tabell etter runde 04.' },
+          { id:'rows', label:'Teams', type:'list',
+            min: 1, max: 12,
+            item: [
+              { id:'team', label:'Team', default:'Lag' },
+              { id:'w', label:'W', default:'0' },
+              { id:'l', label:'L', default:'0' },
+              { id:'pf', label:'PF', default:'0' },
+              { id:'pa', label:'PA', default:'0' },
+              { id:'pts', label:'Pts', default:'0' },
+            ],
+            default: [
+              { team:'Tromsø Flaggfotball', w:'4', l:'0', pf:'112', pa:'46', pts:'12' },
+              { team:'Bodø Glimt Flag', w:'3', l:'1', pf:'88', pa:'62', pts:'9' },
+              { team:'Oslo Vikings', w:'2', l:'2', pf:'74', pa:'71', pts:'6' },
+              { team:'Bergen Storm', w:'1', l:'3', pf:'58', pa:'92', pts:'3' },
+              { team:'Stavanger Oilers', w:'0', l:'4', pf:'42', pa:'103', pts:'0' },
+            ],
+          },
+          { id:'footnote', label:'Footnote', type:'text', default:'W vinst · L tap · PF poeng for · PA poeng mot' },
+          { id:'wm_right', label:'Wordmark right', type:'text', default:'TABELL R04' },
+        ],
+        render: d => {
+          const rows = Array.isArray(d.rows) ? d.rows : [];
+          const isHome = (name) => /tromsø|tromso/i.test(name || '');
+          const th = (t, w) => `<th style="text-align:${w==='team'?'left':'right'}; padding:12px 8px; font-family:var(--font-body); font-size:20px; letter-spacing:0.18em; text-transform:uppercase; color:var(--fg-muted); font-weight:700; border-bottom:1px solid rgba(84,197,158,0.35);">${t}</th>`;
+          return `<div class="stage">
+            <div class="eyebrow">${d.eyebrow}</div>
+            <div class="h-display" style="font-size:80px; line-height:1;">${d.title}</div>
+            <div style="margin-top:12px; overflow:hidden;">
+              <table style="width:100%; border-collapse:collapse; font-family:var(--font-body); font-size:28px; color:var(--fg);">
+                <thead>
+                  <tr>
+                    <th style="text-align:left; padding:12px 8px; font-family:var(--font-body); font-size:20px; letter-spacing:0.18em; text-transform:uppercase; color:var(--fg-muted); font-weight:700; border-bottom:1px solid rgba(84,197,158,0.35); width:56px;">#</th>
+                    ${th('Lag','team')}${th('V','w')}${th('T','l')}${th('PF','pf')}${th('PA','pa')}${th('Poeng','pts')}
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows.map((r,i)=>{
+                    const hi = isHome(r.team);
+                    const rowBg = hi ? 'background:rgba(84,197,158,0.12);' : (i%2 ? 'background:rgba(255,255,255,0.02);' : '');
+                    const nameColor = hi ? 'color:var(--chrome); font-weight:800;' : 'color:var(--fg); font-weight:600;';
+                    return `<tr style="${rowBg}">
+                      <td style="padding:14px 8px; font-family:var(--font-heading); font-weight:800; color:var(--fg-muted);">${String(i+1).padStart(2,'0')}</td>
+                      <td style="padding:14px 8px; font-family:var(--font-heading); ${nameColor} font-size:30px;">${r.team||''}</td>
+                      <td style="padding:14px 8px; text-align:right; font-family:var(--font-heading); font-weight:700;">${r.w||'0'}</td>
+                      <td style="padding:14px 8px; text-align:right; font-family:var(--font-heading); font-weight:700;">${r.l||'0'}</td>
+                      <td style="padding:14px 8px; text-align:right; color:var(--fg-muted);">${r.pf||'0'}</td>
+                      <td style="padding:14px 8px; text-align:right; color:var(--fg-muted);">${r.pa||'0'}</td>
+                      <td style="padding:14px 8px; text-align:right; font-family:var(--font-heading); font-weight:800; color:var(--chrome); font-size:32px;">${r.pts||'0'}</td>
+                    </tr>`;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+            <div style="margin-top:auto; padding-top:16px; font-family:var(--font-body); font-size:20px; color:var(--fg-muted);">${d.footnote||''}</div>
+          </div>`;
+        },
+        cls: 't-standings',
+      };
+
+      // ----------------------------------------------------------------
+      // T.matchlist — schedule/results list. Rows with a score render as
+      // results; rows without render as upcoming (date/time/venue).
+      // ----------------------------------------------------------------
+      T.matchlist = {
+        label: 'Match list',
+        fields: [
+          { id:'eyebrow', label:'Eyebrow', type:'text', default:'SESONG 2026' },
+          { id:'title', label:'Title', type:'text', default:'Vår og sommer.' },
+          { id:'rows', label:'Matches', type:'list',
+            min: 1, max: 10,
+            item: [
+              { id:'date', label:'Date', default:'LØR 14. JUNI' },
+              { id:'time', label:'Time', default:'14:00' },
+              { id:'home', label:'Home', default:'Tromsø' },
+              { id:'away', label:'Away', default:'Bodø' },
+              { id:'venue', label:'Venue', default:'Tromsdalen' },
+              { id:'homeScore', label:'Home score (blank = upcoming)', default:'' },
+              { id:'awayScore', label:'Away score', default:'' },
+            ],
+            default: [
+              { date:'LØR 03. MAI', time:'14:00', home:'Tromsø', away:'Bodø', venue:'Tromsdalen', homeScore:'28', awayScore:'14' },
+              { date:'LØR 17. MAI', time:'12:00', home:'Oslo Vikings', away:'Tromsø', venue:'Ekeberg', homeScore:'20', awayScore:'27' },
+              { date:'LØR 14. JUNI', time:'14:00', home:'Tromsø', away:'Bergen Storm', venue:'Tromsdalen', homeScore:'', awayScore:'' },
+              { date:'LØR 28. JUNI', time:'13:00', home:'Stavanger', away:'Tromsø', venue:'Åsen', homeScore:'', awayScore:'' },
+            ],
+          },
+          { id:'footnote', label:'Footnote', type:'text', default:'Alle kamper er åpne for publikum.' },
+          { id:'wm_right', label:'Wordmark right', type:'text', default:'TERMINLISTE' },
+        ],
+        render: d => {
+          const rows = Array.isArray(d.rows) ? d.rows : [];
+          const hasScore = (r) => String(r.homeScore||'').trim() !== '' || String(r.awayScore||'').trim() !== '';
+          const isHome = (n) => /tromsø|tromso/i.test(n||'');
+          return `<div class="stage">
+            <div class="eyebrow">${d.eyebrow}</div>
+            <div class="h-display" style="font-size:88px; line-height:0.95;">${d.title}</div>
+            <div style="display:flex; flex-direction:column; gap:12px; margin-top:12px;">
+              ${rows.map(r => {
+                const played = hasScore(r);
+                const hs = String(r.homeScore||'').trim();
+                const as = String(r.awayScore||'').trim();
+                const won = played && hs !== '' && as !== '' && (
+                  (isHome(r.home) && Number(hs) > Number(as)) ||
+                  (isHome(r.away) && Number(as) > Number(hs))
+                );
+                const accent = played ? (won ? 'var(--chrome)' : 'var(--fg-muted)') : 'var(--chrome)';
+                const rightBlock = played
+                  ? `<div style="display:flex; align-items:center; gap:16px; font-family:var(--font-heading); font-weight:800; font-size:44px; color:${accent}; line-height:1;">
+                       <span>${hs}</span><span style="color:var(--fg-muted); font-size:28px;">—</span><span>${as}</span>
+                     </div>
+                     <div style="font-family:var(--font-body); font-size:18px; color:var(--fg-muted); letter-spacing:0.18em; text-transform:uppercase; margin-top:6px; text-align:right;">${won ? 'Seier' : 'Sluttresultat'}</div>`
+                  : `<div style="font-family:var(--font-heading); font-weight:700; font-size:36px; color:var(--chrome); line-height:1;">${r.time||''}</div>
+                     <div style="font-family:var(--font-body); font-size:20px; color:var(--fg-muted); margin-top:6px; text-align:right;">${r.venue||''}</div>`;
+                return `<div style="display:flex; align-items:center; gap:24px; padding:18px 24px; background:rgba(84,197,158,0.08); border-left:4px solid ${accent}; border-radius:0 8px 8px 0;">
+                  <div style="font-family:var(--font-heading); font-weight:800; font-size:24px; color:var(--fg); letter-spacing:0.06em; min-width:180px;">${r.date||''}</div>
+                  <div style="flex:1; min-width:0;">
+                    <div style="font-family:var(--font-heading); font-weight:700; font-size:30px; color:var(--fg); line-height:1.1;">
+                      <span style="${isHome(r.home)?'color:var(--chrome);':''}">${r.home||''}</span>
+                      <span style="color:var(--fg-muted); font-weight:500; margin:0 10px;">vs</span>
+                      <span style="${isHome(r.away)?'color:var(--chrome);':''}">${r.away||''}</span>
+                    </div>
+                  </div>
+                  <div style="text-align:right;">${rightBlock}</div>
+                </div>`;
+              }).join('')}
+            </div>
+            <div style="margin-top:auto; padding-top:12px; font-family:var(--font-body); font-size:20px; color:var(--fg-muted);">${d.footnote||''}</div>
+          </div>`;
+        },
+        cls: 't-matchlist',
       };
 
       // ----------------------------------------------------------------

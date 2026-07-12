@@ -119,6 +119,7 @@ const QuizInner = () => {
             ? "Seks spørsmål. Svarene peker mot posisjonen som passer deg best."
             : "Six questions. Your answers point to the position that fits you best."
         } />
+        <AfterSection page="quiz" after="intro" />
 
         {!done && (
           <div className="rounded-lg border border-border bg-card/50 p-6">

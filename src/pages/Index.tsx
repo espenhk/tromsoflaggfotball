@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/i18n/LanguageProvider";
 import {
   ContentBlocksProvider,
-  SectionAnchor,
+  AfterSection,
   MdBlock,
   useSlot,
 } from "@/hooks/useContentBlocks";
@@ -218,7 +218,7 @@ const IndexInner = () => {
         </div>
       </section>
       <div className="zebra">
-      <SectionAnchor anchor="after-hero" />
+      <AfterSection page="home" after="hero" />
 
       {/* Om sporten */}
       <section id="om" className="py-20 px-6 scroll-mt-16">
@@ -260,11 +260,11 @@ const IndexInner = () => {
 
       {/* Treninger */}
       <TrainingSection />
-      <SectionAnchor anchor="after-training" />
+      <AfterSection page="home" after="treninger" />
 
       {/* Banediagram + Posisjoner */}
       <GameSection />
-      <SectionAnchor anchor="after-positions" />
+      <AfterSection page="home" after="spillet" />
 
       {/* Coachene */}
       <section id="coachene" className="py-16 px-6 scroll-mt-16">
@@ -390,7 +390,7 @@ const IndexInner = () => {
           </div>
         </div>
       </section>
-      <SectionAnchor anchor="after-faq" />
+      <AfterSection page="home" after="faq" />
       </div>
 
       {/* Footer */}

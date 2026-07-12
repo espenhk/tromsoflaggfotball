@@ -49,6 +49,8 @@ type BlockInput = {
   body_md_en?: string | null;
   sort_order?: number;
   visible?: boolean;
+  variant?: string;
+  data?: Record<string, unknown> | null;
 };
 
 function clampStr(v: unknown, max: number): string | null {
@@ -82,6 +84,18 @@ function sanitize(input: BlockInput): Record<string, unknown> {
     out.sort_order = Math.trunc(n);
   }
   if (input.visible !== undefined) out.visible = !!input.visible;
+  if (input.variant !== undefined) {
+    const v = clampStr(input.variant, 60);
+    if (v) out.variant = v;
+  }
+  if (input.data !== undefined) {
+    // Accept any JSON-serialisable object; drop non-objects for safety.
+    if (input.data && typeof input.data === "object" && !Array.isArray(input.data)) {
+      out.data = input.data;
+    } else {
+      out.data = {};
+    }
+  }
   return out;
 }
 
@@ -161,6 +175,27 @@ Deno.serve(async (req) => {
       const { error } = await supabase.from("content_blocks").delete().eq("id", id);
       if (error) throw error;
       return new Response(JSON.stringify({ ok: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "reorder") {
+      const items = Array.isArray(body.order) ? body.order : [];
+      const updates = items
+        .map((it: unknown) => {
+          const rec = it as { id?: string; sort_order?: number };
+          const n = Number(rec?.sort_order);
+          return typeof rec?.id === "string" && Number.isFinite(n)
+            ? { id: rec.id, sort_order: Math.trunc(n) }
+            : null;
+        })
+        .filter(Boolean) as { id: string; sort_order: number }[];
+      for (const u of updates) {
+        const { error } = await supabase.from("content_blocks")
+          .update({ sort_order: u.sort_order }).eq("id", u.id);
+        if (error) throw error;
+      }
+      return new Response(JSON.stringify({ ok: true, updated: updates.length }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

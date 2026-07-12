@@ -7,7 +7,7 @@ import { useTheme } from "@/theme/ThemeProvider";
 import { useT } from "@/i18n/LanguageProvider";
 import {
   ContentBlocksProvider,
-  SectionAnchor,
+  AfterSection,
   MdBlock,
   useSlot,
 } from "@/hooks/useContentBlocks";
@@ -335,7 +335,7 @@ const PosisjonerInner = () => {
           </div>
         </section>
 
-        <SectionAnchor anchor="end" />
+        <AfterSection page="posisjoner" after="defense" />
         <div className="pt-2 pb-8">
           <Link
             to="/#spillet"

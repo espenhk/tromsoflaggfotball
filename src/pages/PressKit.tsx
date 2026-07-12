@@ -6,7 +6,7 @@ import BrandLogo from "@/components/BrandLogo";
 import tuilLogo from "@/assets/tuil-logo.svg";
 import {
   ContentBlocksProvider,
-  SectionAnchor,
+  AfterSection,
   MdBlock,
   useSlot,
 } from "@/hooks/useContentBlocks";
@@ -203,7 +203,7 @@ const PressKitInner = () => {
           </Link>
         </Section>
       </div>
-      <SectionAnchor anchor="end" />
+      <AfterSection page="presse" after="contact" />
     </main>
   );
 };

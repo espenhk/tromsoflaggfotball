@@ -3364,6 +3364,95 @@
         renderPreview();
         savePersisted && savePersisted();
       }
+      // ---------- Image library (localStorage-backed) ----------
+      const IMAGE_LIB_KEY = 'tff-image-library-v1';
+      function loadImageLibrary() {
+        try {
+          const raw = localStorage.getItem(IMAGE_LIB_KEY);
+          if (!raw) return [];
+          const arr = JSON.parse(raw);
+          return Array.isArray(arr) ? arr : [];
+        } catch { return []; }
+      }
+      function saveImageLibrary(arr) {
+        try { localStorage.setItem(IMAGE_LIB_KEY, JSON.stringify(arr)); }
+        catch (e) { alert('Could not save to library (storage full?): ' + (e.message || e)); }
+      }
+      function addToImageLibrary({ name, dataUrl }) {
+        const arr = loadImageLibrary();
+        arr.push({ id: 'img_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6), name, dataUrl, addedAt: Date.now() });
+        saveImageLibrary(arr);
+      }
+      function removeFromImageLibrary(id) {
+        saveImageLibrary(loadImageLibrary().filter(x => x.id !== id));
+      }
+      function openImageLibraryModal({ onPick } = {}) {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
+        overlay.innerHTML = `
+          <div style="background:var(--bg-elevated);border:1px solid rgba(13,106,106,0.6);border-radius:14px;padding:24px;max-width:640px;width:100%;font-family:var(--font-body),system-ui,sans-serif;color:#f0fcfa;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+              <div style="font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:16px;letter-spacing:0.04em;flex:1;">Image library</div>
+              <label style="cursor:pointer;">
+                <input type="file" data-lib-upload accept="image/*" multiple style="display:none;">
+                <span style="padding:8px 12px;background:var(--primary);color:#021018;border-radius:8px;font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;">Upload to library</span>
+              </label>
+              <button data-close style="padding:8px 12px;background:transparent;color:#9ec;border:1px solid rgba(13,106,106,0.6);border-radius:8px;cursor:pointer;font-size:12px;">Close</button>
+            </div>
+            <div style="font-size:12px;color:#9ec;margin-bottom:10px;line-height:1.5;">${onPick ? 'Click an image to use it in this field. Hover to delete.' : 'Manage saved images. Hover to delete.'}</div>
+            <div data-lib-grid></div>
+          </div>`;
+        document.body.appendChild(overlay);
+        const cleanup = () => overlay.remove();
+        overlay.addEventListener('click', ev => { if (ev.target === overlay) cleanup(); });
+        overlay.querySelector('[data-close]').onclick = cleanup;
+        const grid = overlay.querySelector('[data-lib-grid]');
+        const renderGrid = () => {
+          const lib = loadImageLibrary();
+          if (lib.length === 0) {
+            grid.innerHTML = '<div class="img-lib-empty">Library is empty. Upload an image or save one from an image field.</div>';
+            return;
+          }
+          grid.innerHTML = '<div class="img-lib-grid">' + lib.map(item => `
+            <div class="img-lib-item" data-lib-id="${item.id}" style="background-image:url(${item.dataUrl});" title="${escAttr(item.name)}">
+              <button class="ili-del" data-lib-del="${item.id}" title="Delete">✕</button>
+              <div class="ili-name">${item.name}</div>
+            </div>`).join('') + '</div>';
+          grid.querySelectorAll('[data-lib-del]').forEach(b => {
+            b.addEventListener('click', ev => {
+              ev.stopPropagation();
+              if (!confirm('Delete this image from the library?')) return;
+              removeFromImageLibrary(ev.currentTarget.dataset.libDel);
+              renderGrid();
+            });
+          });
+          if (onPick) {
+            grid.querySelectorAll('.img-lib-item').forEach(el => {
+              el.addEventListener('click', () => {
+                const item = loadImageLibrary().find(x => x.id === el.dataset.libId);
+                if (!item) return;
+                onPick(item.dataUrl);
+                cleanup();
+              });
+            });
+          }
+        };
+        overlay.querySelector('[data-lib-upload]').addEventListener('change', ev => {
+          const files = Array.from(ev.target.files || []);
+          if (!files.length) return;
+          let pending = files.length;
+          files.forEach(f => {
+            const r = new FileReader();
+            r.onload = e => {
+              addToImageLibrary({ name: f.name.replace(/\.[^.]+$/, ''), dataUrl: String(e.target.result || '') });
+              if (--pending === 0) renderGrid();
+            };
+            r.readAsDataURL(f);
+          });
+          ev.target.value = '';
+        });
+        renderGrid();
+      }
       function showImportModal() {
         const overlay = document.createElement('div');
         overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';

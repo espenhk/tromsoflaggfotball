@@ -79,12 +79,7 @@
         "titleA",
         "titleB",
         "subtitle",
-        "s1t",
-        "s1d",
-        "s2t",
-        "s2d",
-        "s3t",
-        "s3d",
+        "steps",
         "wm_right"
       ]
     },
@@ -160,6 +155,8 @@
         "dS2v",
         "dS3l",
         "dS3v",
+        "vsShow",
+        "vsSize",
         "wm_right"
       ]
     },
@@ -181,6 +178,8 @@
         "gTime",
         "gVenue",
         "gResult",
+        "vsShow",
+        "vsSize",
         "wm_right"
       ]
     }

@@ -1556,6 +1556,12 @@
           b.classList.toggle('active', b.dataset.acc === state.accent));
         document.querySelectorAll('#aspect-row button').forEach(b =>
           b.classList.toggle('active', b.dataset.aspect === state.aspect));
+        // Load-from-matches button: only for game & matchlist templates.
+        const lmRow = document.getElementById('load-matches-row');
+        if (lmRow) {
+          const show = state.tpl === 'game' || state.tpl === 'matchlist';
+          lmRow.style.display = show ? 'block' : 'none';
+        }
         // Photo upload widget
         const up = document.getElementById('upload');
         const lbl = document.getElementById('upload-label');

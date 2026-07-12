@@ -259,7 +259,7 @@ const IndexInner = () => {
 
       {/* Treninger */}
       <TrainingSection />
-      <SectionAnchor anchor="after-training" striped />
+      <SectionAnchor anchor="after-training" />
 
       {/* Banediagram + Posisjoner */}
       <GameSection />
@@ -389,7 +389,7 @@ const IndexInner = () => {
           </div>
         </div>
       </section>
-      <SectionAnchor anchor="after-faq" striped />
+      <SectionAnchor anchor="after-faq" />
 
       {/* Footer */}
       <footer className={`py-8 px-6 ${theme === "tuil" ? "bg-primary border-t border-white/20" : "border-t border-border"}`}>

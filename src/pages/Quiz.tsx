@@ -199,7 +199,7 @@ const QuizInner = () => {
           </div>
         )}
       </div>
-      <SectionAnchor anchor="end" striped />
+      <SectionAnchor anchor="end" />
     </main>
   );
 };

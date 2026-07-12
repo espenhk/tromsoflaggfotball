@@ -203,7 +203,7 @@ const PressKitInner = () => {
           </Link>
         </Section>
       </div>
-      <SectionAnchor anchor="end" striped />
+      <SectionAnchor anchor="end" />
     </main>
   );
 };

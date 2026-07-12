@@ -2188,7 +2188,9 @@
         renderSlideBar();
         savePersisted();
         const accCls = state.accent !== 'primary' ? `acc-${state.accent}` : '';
-        const wmRight = state.values.wm_right || '';
+        const wmRightField = (t.fields || []).find(f => f.id === 'wm_right');
+        const wmRight = (state.values.wm_right && String(state.values.wm_right).trim())
+          || (wmRightField ? fieldPlaceholder(wmRightField) : '');
         const chromeHtml = state.chrome === 'none' ? '' : window.tileChrome(state.chrome);
 
         const isTuil = document.documentElement.getAttribute('data-theme') === 'tuil';

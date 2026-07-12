@@ -3746,7 +3746,7 @@
       const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5sa3RpYW9jaW1nbXhudGRlcnlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzOTQ4MjksImV4cCI6MjA5NDk3MDgyOX0.L6tWS2sJ8pGe9lM9_X1Ha4HQhjY82Mv5b0jvoE95-KI';
       let _aiCaptionCache = null; // { key, body } — key is a hash of the raw body
       async function aiGenerateCaptionBody() {
-        const raw = generateCaptionBody();
+        const raw = generateCaptionBody(false); // no credit line — appended by composer
         if (!raw) return { body: '', ai: false };
         if (_aiCaptionCache && _aiCaptionCache.key === raw) {
           return { body: _aiCaptionCache.body, ai: true };

@@ -220,22 +220,6 @@ const IndexInner = () => {
       <div className="zebra">
       <AfterSection page="home" after="hero" />
 
-      {/* Om sporten */}
-      <section id="om" className="py-20 px-6 scroll-mt-16">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">
-            {t("om.h")}
-          </h2>
-          <p className="font-body text-muted-foreground text-lg leading-relaxed mb-4">
-            {t("om.p1.pre")}
-          </p>
-          <p className="font-body text-muted-foreground leading-relaxed">
-            {t("om.p2.pre")}<strong className="text-foreground">{t("om.p2.strong")}</strong>{t("om.p2.post")}
-          </p>
-        </div>
-      </section>
-      <AfterSection page="home" after="om" />
-
       {/* Åpent for alle + Prøv en trening */}
       <section className="py-16 px-6">
         <div className="max-w-3xl mx-auto">

@@ -3864,12 +3864,15 @@
             </div>` : '';
           box.innerHTML = `
             <div style="font-family:var(--font-heading),system-ui,sans-serif;font-weight:800;font-size:18px;margin-bottom:10px;">Suggested caption</div>
-            <div style="font-size:12px;color:var(--fg-muted);margin-bottom:10px;">Auto-generated from your slide fields. Edit freely before copying.</div>
+            <div style="font-size:12px;color:var(--fg-muted);margin-bottom:10px;">
+              <span id="cap-status">Genererer bildetekst med AI …</span>
+            </div>
             ${optListHtml}
             <textarea id="cap-text" style="width:100%;min-height:220px;padding:12px;background:var(--bg-muted);border:1px solid var(--border);border-radius:8px;color:var(--fg);font-family:var(--font-body);font-size:14px;box-sizing:border-box;line-height:1.5;"></textarea>
             <div style="display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;">
               <button data-config style="padding:9px 14px;background:transparent;color:var(--fg-muted);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;">Edit tags…</button>
               <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button data-regen style="padding:9px 14px;background:transparent;color:var(--fg-muted);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;">↻ Regenerer</button>
                 <button data-copy style="padding:9px 14px;background:transparent;color:var(--primary);border:1px solid var(--primary);border-radius:8px;cursor:pointer;font-weight:700;">Copy</button>
                 <button data-continue style="padding:9px 14px;background:var(--primary);color:var(--primary-fg);border:none;border-radius:8px;cursor:pointer;font-weight:700;">${continueLabel}</button>
               </div>
@@ -3879,15 +3882,35 @@
           document.body.appendChild(overlay);
 
           const ta = box.querySelector('#cap-text');
-          const rebuild = () => {
+          let aiBody = null;   // filled after aiGenerateCaptionBody resolves
+          let aiOk = false;
+          const statusEl = box.querySelector('#cap-status');
+          const pickedNow = () => {
             const picked = { tags: [], hashtags: [] };
             if (hasOptional && box.querySelector('#' + optToggleId).checked) {
               box.querySelectorAll('[data-opt-tag]').forEach(el => { if (el.checked) picked.tags.push(cfg.optionalTags[+el.dataset.optTag]); });
               box.querySelectorAll('[data-opt-hash]').forEach(el => { if (el.checked) picked.hashtags.push(cfg.optionalHashtags[+el.dataset.optHash]); });
             }
-            ta.value = buildFullCaption({ optionalPicked: picked });
+            return picked;
+          };
+          const rebuild = () => {
+            const body = aiBody != null ? aiBody : generateCaptionBody(false);
+            ta.value = composeCaption(body, cfg, pickedNow());
           };
           rebuild();
+          const runAi = async (force) => {
+            if (force) _aiCaptionCache = null;
+            statusEl.textContent = 'Genererer bildetekst med AI …';
+            const { body, ai } = await aiGenerateCaptionBody();
+            aiBody = body;
+            aiOk = ai;
+            statusEl.textContent = ai
+              ? 'AI-generert bildetekst. Rediger fritt før du kopierer.'
+              : 'AI utilgjengelig — viser enkel bildetekst.';
+            rebuild();
+          };
+          runAi(false);
+          box.querySelector('[data-regen]').onclick = () => runAi(true);
           if (hasOptional) {
             const tog = box.querySelector('#' + optToggleId);
             const panel = box.querySelector('#cap-optional-panel');

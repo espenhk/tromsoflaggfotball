@@ -3677,8 +3677,10 @@
         return String(str || '').split(/\r?\n/).map(s => s.trim()).filter(Boolean);
       }
 
-      // Build a human-readable caption from the current slides' text fields.
-      function generateCaptionBody() {
+      // Build a human-readable caption body from the current slides' text
+      // fields. `includeCredit=false` skips the 📸 line — used when the
+      // caller (e.g. AI polish path) will append the credit separately.
+      function generateCaptionBody(includeCredit = true) {
         try { snapshotSlide(); } catch (_) {}
         const slides = state.slides.length ? state.slides : [state];
         const parts = [];
@@ -3720,9 +3722,11 @@
           if (lines.length) parts.push((slides.length > 1 ? `Slide ${i + 1}: ` : '') + lines.join('\n'));
         });
         // Photo credit from current slide (fallback: any slide with credit)
-        const credit = (state.photoCredit && state.photoCredit.trim())
-          || (slides.find(s => s.photoCredit && s.photoCredit.trim()) || {}).photoCredit;
-        if (credit) parts.push('📸: ' + credit.trim());
+        if (includeCredit) {
+          const credit = (state.photoCredit && state.photoCredit.trim())
+            || (slides.find(s => s.photoCredit && s.photoCredit.trim()) || {}).photoCredit;
+          if (credit) parts.push('📸: ' + credit.trim());
+        }
         return parts.join('\n\n').trim();
       }
 

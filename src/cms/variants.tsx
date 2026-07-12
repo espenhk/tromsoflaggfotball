@@ -1,5 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useState } from "react";
+import { ChevronDown, Phone, Mail, ExternalLink } from "lucide-react";
 import { useLang } from "@/i18n/LanguageProvider";
 import { MdBlock, type ContentBlock } from "@/hooks/useContentBlocks";
 
@@ -8,9 +10,12 @@ export type VariantKey =
   | "training-info"
   | "map-basic"
   | "image-card"
-  | "video-embed";
+  | "video-embed"
+  | "faq"
+  | "contact-card"
+  | "links-grid";
 
-export type FieldType = "text" | "textarea" | "markdown" | "url" | "number";
+export type FieldType = "text" | "textarea" | "markdown" | "url" | "number" | "list";
 
 export type FieldSpec = {
   key: string;
@@ -19,6 +24,10 @@ export type FieldSpec = {
   placeholder?: string;
   bilingual?: boolean; // pairs `<key>_no` and `<key>_en` under data
   help?: string;
+  /** For type: "list" — schema of a single item. Data stored as array. */
+  itemFields?: FieldSpec[];
+  /** For type: "list" — label used on the "add" button, e.g. "spørsmål". */
+  itemLabel?: string;
 };
 
 export type Variant = {
@@ -45,6 +54,12 @@ function bi(data: Record<string, unknown>, key: string, lang: string): string {
 function s(data: Record<string, unknown>, key: string): string {
   const v = data[key];
   return typeof v === "string" ? v : "";
+}
+
+function list(data: Record<string, unknown>, key: string): Record<string, unknown>[] {
+  const v = data[key];
+  if (!Array.isArray(v)) return [];
+  return v.filter((x): x is Record<string, unknown> => !!x && typeof x === "object");
 }
 
 const SectionShell = ({
@@ -227,6 +242,138 @@ const VideoRenderer = (block: ContentBlock) => {
   );
 };
 
+/* ── FAQ ─────────────────────────────────────────────────────────── */
+
+const FaqItemRow = ({ q, a }: { q: string; a: string }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <button
+      type="button"
+      onClick={() => setOpen(!open)}
+      aria-expanded={open}
+      className="w-full text-left rounded-xl p-4 transition-all bg-muted/60 border border-border hover:bg-muted hover:border-primary/40"
+    >
+      <div className="flex items-start justify-between gap-2">
+        <p className="font-heading text-sm font-medium text-foreground leading-snug">{q}</p>
+        <ChevronDown
+          className={`w-4 h-4 shrink-0 mt-0.5 transition-transform duration-300 text-primary/50 ${open ? "rotate-180" : ""}`}
+        />
+      </div>
+      <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+        <div className="overflow-hidden">
+          <p className="text-xs text-muted-foreground font-body mt-2 leading-relaxed">{a}</p>
+        </div>
+      </div>
+    </button>
+  );
+};
+
+const FaqRenderer = (block: ContentBlock) => {
+  const { lang } = useLang();
+  const data = block.data ?? {};
+  const title = pickLang(block.title_no, block.title_en, lang);
+  const items = list(data, "items");
+  if (items.length === 0) return null;
+  return (
+    <SectionShell title={title || null} id={blockAnchorId(block)}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 items-start">
+        {items.map((it, i) => {
+          const q = pickLang(it.q_no as string, it.q_en as string, lang);
+          const a = pickLang(it.a_no as string, it.a_en as string, lang);
+          if (!q?.trim()) return null;
+          return <FaqItemRow key={i} q={q} a={a} />;
+        })}
+      </div>
+    </SectionShell>
+  );
+};
+
+/* ── Contact card(s) ─────────────────────────────────────────────── */
+
+const ContactRenderer = (block: ContentBlock) => {
+  const { lang } = useLang();
+  const data = block.data ?? {};
+  const title = pickLang(block.title_no, block.title_en, lang);
+  const intro = pickLang(
+    typeof data.intro_no === "string" ? (data.intro_no as string) : null,
+    typeof data.intro_en === "string" ? (data.intro_en as string) : null,
+    lang,
+  );
+  const items = list(data, "items");
+  if (items.length === 0 && !intro) return null;
+  return (
+    <SectionShell title={title || null} id={blockAnchorId(block)}>
+      {intro && <MdBlock md={intro} className="mb-6" />}
+      {items.length > 0 && (
+        <div className="grid sm:grid-cols-2 gap-4">
+          {items.map((it, i) => {
+            const name = typeof it.name === "string" ? it.name : "";
+            const role = pickLang(it.role_no as string, it.role_en as string, lang);
+            const phone = typeof it.phone === "string" ? it.phone : "";
+            const email = typeof it.email === "string" ? it.email : "";
+            const note = pickLang(it.note_md_no as string, it.note_md_en as string, lang);
+            return (
+              <div key={i} className="rounded-xl border border-border bg-card/50 p-5">
+                {role && (
+                  <div className="text-xs uppercase tracking-widest text-primary mb-1">{role}</div>
+                )}
+                {name && <div className="font-heading text-lg text-foreground mb-2">{name}</div>}
+                <div className="space-y-1.5">
+                  {phone && (
+                    <a href={`tel:${phone.replace(/\s+/g, "")}`}
+                      className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
+                      <Phone className="w-4 h-4" /> {phone}
+                    </a>
+                  )}
+                  {email && (
+                    <a href={`mailto:${email}`}
+                      className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary break-all">
+                      <Mail className="w-4 h-4" /> {email}
+                    </a>
+                  )}
+                </div>
+                {note && <div className="mt-3"><MdBlock md={note} /></div>}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </SectionShell>
+  );
+};
+
+/* ── Links grid ──────────────────────────────────────────────────── */
+
+const LinksRenderer = (block: ContentBlock) => {
+  const { lang } = useLang();
+  const data = block.data ?? {};
+  const title = pickLang(block.title_no, block.title_en, lang);
+  const items = list(data, "items");
+  if (items.length === 0) return null;
+  return (
+    <SectionShell title={title || null} id={blockAnchorId(block)}>
+      <div className="grid md:grid-cols-2 gap-4">
+        {items.map((it, i) => {
+          const href = typeof it.href === "string" ? it.href : "";
+          const t = pickLang(it.title_no as string, it.title_en as string, lang);
+          const d = pickLang(it.description_no as string, it.description_en as string, lang);
+          if (!href || !t) return null;
+          return (
+            <a key={i} href={href} target="_blank" rel="noopener noreferrer"
+              className="group flex items-start gap-3 px-5 py-4 rounded-xl border border-border bg-card/50 hover:border-primary/50 hover:bg-card transition-all">
+              <ExternalLink className="w-4 h-4 mt-1 text-primary/70 group-hover:text-primary shrink-0" />
+              <div className="flex-1 min-w-0">
+                <div className="font-heading text-base text-foreground group-hover:text-primary">{t}</div>
+                {d && <div className="text-sm text-muted-foreground mt-0.5">{d}</div>}
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </SectionShell>
+  );
+};
+
 export const VARIANTS: Record<VariantKey, Variant> = {
   "markdown": {
     key: "markdown",
@@ -281,10 +428,70 @@ export const VARIANTS: Record<VariantKey, Variant> = {
     ],
     render: VideoRenderer,
   },
+  "faq": {
+    key: "faq",
+    label: "FAQ (spørsmål og svar)",
+    usesMarkdownBody: false,
+    dataFields: [
+      {
+        key: "items",
+        label: "Spørsmål",
+        type: "list",
+        itemLabel: "spørsmål",
+        itemFields: [
+          { key: "q", label: "Spørsmål", type: "text", bilingual: true },
+          { key: "a", label: "Svar", type: "textarea", bilingual: true },
+        ],
+      },
+    ],
+    render: FaqRenderer,
+  },
+  "contact-card": {
+    key: "contact-card",
+    label: "Kontakt",
+    usesMarkdownBody: false,
+    dataFields: [
+      { key: "intro", label: "Introtekst (markdown)", type: "markdown", bilingual: true },
+      {
+        key: "items",
+        label: "Kontaktpersoner",
+        type: "list",
+        itemLabel: "kontakt",
+        itemFields: [
+          { key: "name", label: "Navn", type: "text" },
+          { key: "role", label: "Rolle", type: "text", bilingual: true },
+          { key: "phone", label: "Telefon", type: "text" },
+          { key: "email", label: "E-post", type: "text" },
+          { key: "note_md", label: "Notat (markdown)", type: "markdown", bilingual: true },
+        ],
+      },
+    ],
+    render: ContactRenderer,
+  },
+  "links-grid": {
+    key: "links-grid",
+    label: "Lenker (kort-rutenett)",
+    usesMarkdownBody: false,
+    dataFields: [
+      {
+        key: "items",
+        label: "Lenker",
+        type: "list",
+        itemLabel: "lenke",
+        itemFields: [
+          { key: "title", label: "Tittel", type: "text", bilingual: true },
+          { key: "description", label: "Beskrivelse", type: "text", bilingual: true },
+          { key: "href", label: "URL", type: "url", placeholder: "https://..." },
+        ],
+      },
+    ],
+    render: LinksRenderer,
+  },
 };
 
 export const VARIANT_ORDER: VariantKey[] = [
-  "markdown", "training-info", "map-basic", "image-card", "video-embed",
+  "markdown", "training-info", "faq", "contact-card", "links-grid",
+  "map-basic", "image-card", "video-embed",
 ];
 
 export function getVariant(key: string): Variant {

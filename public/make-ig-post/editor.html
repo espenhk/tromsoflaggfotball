@@ -1023,7 +1023,7 @@
           { id:'dS3l', label:'Def stat 3 label', type:'text', default:'40-yd' },
           { id:'dS3v', label:'Def stat 3 value', type:'text', default:'4.5s' },
           { id:'vsShow', label:'Show VS badge', type:'checkbox', default:true },
-          { id:'vsSize', label:'VS badge size (px)', type:'text', default:'96' },
+          { id:'vsSize', label:'VS badge size', type:'stepper', default:'96', min:40, max:320, step:4, suffix:'px' },
           { id:'wm_right', label:'Wordmark right', type:'text', default:'RUNDE 04 · LØRDAG' },
         ],
         render: d => {
@@ -1115,7 +1115,7 @@
           { id:'gVenue', label:'Venue',        type:'text', default:'TROMSDALEN KUNSTGRESS' },
           { id:'gResult',label:'Result label (post-game)', type:'text', default:'FULL TID' },
           { id:'vsShow', label:'Show VS badge', type:'checkbox', default:true },
-          { id:'vsSize', label:'VS badge size (px)', type:'text', default:'88' },
+          { id:'vsSize', label:'VS badge size', type:'stepper', default:'88', min:40, max:320, step:4, suffix:'px' },
           { id:'wm_right', label:'Wordmark right', type:'text', default:'RUNDE 04 · LØRDAG' },
         ],
         render: d => {

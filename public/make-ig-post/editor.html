@@ -1228,7 +1228,7 @@
       function loadDefaults(tplId) {
         const t = T[tplId];
         state.values = {};
-        t.fields.forEach(f => state.values[f.id] = JSON.parse(JSON.stringify(f.default)));
+        t.fields.forEach(f => state.values[f.id] = initialValueFor(f));
         state.fontScales = {};
         state.imageScales = {};
       }
@@ -1236,7 +1236,7 @@
       function blankSlide(tplId) {
         const t = T[tplId];
         const values = {};
-        t.fields.forEach(f => values[f.id] = JSON.parse(JSON.stringify(f.default)));
+        t.fields.forEach(f => values[f.id] = initialValueFor(f));
         return { tpl: tplId, chrome: 'curve', accent: 'primary', photo: null, photoCutout: false, values, fontScales: {}, imageScales: {} };
       }
 

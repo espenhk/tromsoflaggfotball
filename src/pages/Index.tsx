@@ -3,6 +3,12 @@ import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/i18n/LanguageProvider";
+import {
+  ContentBlocksProvider,
+  SectionAnchor,
+  MdBlock,
+  useSlot,
+} from "@/hooks/useContentBlocks";
 import heroBg from "@/assets/hero-bg.png";
 import BrandLogo from "@/components/BrandLogo";
 import { useTheme } from "@/theme/ThemeProvider";
@@ -37,7 +43,7 @@ const navItemKeyFor = (id: typeof navItemIds[number]): TranslationKey => {
   }
 };
 
-const Index = () => {
+const IndexInner = () => {
   const t = useT();
   const { lang } = useLang();
   const { theme, selectedTheme, revealMode, revealActive, revealStage } = useTheme();
@@ -188,9 +194,7 @@ const Index = () => {
             )}
           </h1>
           <div className="w-16 h-px bg-primary/50 mb-4" />
-          <p className="font-body text-muted-foreground text-sm tracking-widest uppercase mb-6">
-            {t("hero.tagline")}
-          </p>
+          <HeroTagline fallback={t("hero.tagline")} />
           <div className="flex items-center gap-4">
             <a
               href="https://www.instagram.com/tromsoflaggfotball/"
@@ -213,6 +217,7 @@ const Index = () => {
           </div>
         </div>
       </section>
+      <SectionAnchor anchor="after-hero" />
 
       {/* Om sporten */}
       <section id="om" className="py-20 px-6 scroll-mt-16">
@@ -254,9 +259,11 @@ const Index = () => {
 
       {/* Treninger */}
       <TrainingSection />
+      <SectionAnchor anchor="after-training" striped />
 
       {/* Banediagram + Posisjoner */}
       <GameSection />
+      <SectionAnchor anchor="after-positions" />
 
       {/* Coachene */}
       <section id="coachene" className="py-16 px-6 scroll-mt-16">
@@ -382,6 +389,7 @@ const Index = () => {
           </div>
         </div>
       </section>
+      <SectionAnchor anchor="after-faq" striped />
 
       {/* Footer */}
       <footer className={`py-8 px-6 ${theme === "tuil" ? "bg-primary border-t border-white/20" : "border-t border-border"}`}>

@@ -4436,22 +4436,8 @@
         });
       })();
 
-      // Wrap persistEntry so every saved export carries the current caption.
-      if (typeof persistEntry === 'function') {
-        const _origPersistEntry = persistEntry;
-        persistEntry = async function (entry) {
-          const cap = getCaption();
-          const wrapped = cap
-            ? { ...entry, caption: cap, payload: { ...entry.payload, caption: cap } }
-            : entry;
-          // The edge function reads `caption` off the top-level body.
-          const orig = window.fetch;
-          return _origPersistEntry(wrapped);
-        };
-      }
-      // Also patch historyApi to forward the top-level caption field when
-      // action === 'save'. persistEntry now spreads `caption` on the entry,
-      // which flows through to historyApi as extra.caption.
+      // (buildExportSnapshot and persistEntry now pass the caption through
+      // directly; no wrapper needed here.)
 
       // ================================================================
       // Load from matches — modal picker for `game` and `matchlist`.

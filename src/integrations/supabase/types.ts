@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_notification_recipients: {
+        Row: {
+          active: boolean
+          created_at: string
+          email: string
+          id: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          email: string
+          id?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          email?: string
+          id?: string
+        }
+        Relationships: []
+      }
       ig_post_exports: {
         Row: {
           created_at: string

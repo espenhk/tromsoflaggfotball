@@ -133,6 +133,69 @@ Deno.serve(async (req) => {
       });
     }
 
+    // ── Notification-recipient management ─────────────────
+    if (action === "list_recipients") {
+      const { data, error } = await supabase
+        .from("admin_notification_recipients")
+        .select("*")
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      return new Response(JSON.stringify({ recipients: data }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "add_recipient") {
+      const email = typeof body.email === "string" ? body.email.trim() : "";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 255) {
+        return new Response(JSON.stringify({ error: "invalid email" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const { error } = await supabase
+        .from("admin_notification_recipients")
+        .insert({ email });
+      if (error && !String(error.message).includes("duplicate")) throw error;
+      return new Response(JSON.stringify({ ok: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "delete_recipient") {
+      if (typeof id !== "string") {
+        return new Response(JSON.stringify({ error: "invalid id" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const { error } = await supabase
+        .from("admin_notification_recipients")
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
+      return new Response(JSON.stringify({ ok: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "toggle_recipient") {
+      if (typeof id !== "string" || typeof body.active !== "boolean") {
+        return new Response(JSON.stringify({ error: "invalid args" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const { error } = await supabase
+        .from("admin_notification_recipients")
+        .update({ active: body.active })
+        .eq("id", id);
+      if (error) throw error;
+      return new Response(JSON.stringify({ ok: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { data, error } = await supabase
       .from("training_signups")
       .select("*")

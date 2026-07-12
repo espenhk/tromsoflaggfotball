@@ -610,7 +610,7 @@ const TryTrainingSection = () => {
       return;
     }
 
-    const { error } = await supabase
+    const { data: inserted, error } = await supabase
       .from("training_signups")
       .insert({
         name: trimmedName,
@@ -619,7 +619,9 @@ const TryTrainingSection = () => {
         preferred_date: preferredDate.trim() || null,
         message: message.trim() || null,
         language: lang,
-      });
+      })
+      .select("id")
+      .maybeSingle();
 
     if (error) {
       console.error("Sign-up insert failed", error);
@@ -627,25 +629,22 @@ const TryTrainingSection = () => {
       return;
     }
 
-    // Fire-and-forget notification email to the head coach.
-    // Safe to ignore failure here — the sign-up is already stored in the DB.
+    // Fire-and-forget notification fan-out. Recipients are managed from /admin
+    // via `admin_notification_recipients`. Safe to ignore failure here — the
+    // sign-up itself is already persisted.
     void supabase.functions
-      .invoke("send-transactional-email", {
+      .invoke("notify-training-signup", {
         body: {
-          templateName: "training-signup-notification",
-          recipientEmail: "espenhkristensen@gmail.com",
-          idempotencyKey: `training-signup-${Date.now()}-${trimmedContact}`,
-          templateData: {
-            name: trimmedName,
-            contact: trimmedContact,
-            ageGroup: ageGroup || null,
-            preferredDate: preferredDate.trim() || null,
-            message: message.trim() || null,
-            language: lang,
-          },
+          signupId: inserted?.id ?? null,
+          name: trimmedName,
+          contact: trimmedContact,
+          ageGroup: ageGroup || null,
+          preferredDate: preferredDate.trim() || null,
+          message: message.trim() || null,
+          language: lang,
         },
       })
-      .catch((err) => console.warn("Notification email failed (sign-up still saved):", err));
+      .catch((err) => console.warn("Notification fan-out failed (sign-up still saved):", err));
 
     setStatus("success");
     setName("");
@@ -675,6 +674,9 @@ const TryTrainingSection = () => {
           >
             <div className="min-h-0 overflow-hidden">
               <div className="space-y-4 pb-4">
+            <p className="text-sm font-body text-muted-foreground leading-relaxed">
+              {t("try.note")}
+            </p>
             <div className="grid md:grid-cols-2 gap-4">
               <label className="block">
                 <span className="block text-sm font-body text-muted-foreground mb-1.5">{t("try.name")}</span>
@@ -745,7 +747,16 @@ const TryTrainingSection = () => {
             </label>
 
             {status === "error" && (
-              <p className="text-sm font-body text-destructive">{t("try.error")}</p>
+              <p className="text-sm font-body text-destructive">
+                {t("try.errorPre")}
+                <a
+                  href="#coachene"
+                  className="underline decoration-destructive/40 hover:decoration-destructive"
+                >
+                  {t("try.errorLink")}
+                </a>
+                {t("try.errorPost")}
+              </p>
             )}
               </div>
             </div>

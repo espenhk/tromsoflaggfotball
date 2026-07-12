@@ -26,6 +26,11 @@ const links = [
     description: "Registrer kommende og ferdigspilte kamper. Brukes til Instagram-poster.",
   },
   {
+    to: "/admin/content",
+    title: "Innhold",
+    description: "Rediger tekst og legg til seksjoner på forsiden, /presse, /quiz og /posisjoner.",
+  },
+  {
     to: "/admin/sosialt-mock",
     title: "Sosialt (mockup)",
     description: "Forhåndsvisning av sosiale medier-feeden.",

@@ -1242,6 +1242,23 @@
       function loadSlide(idx) {
         const s = state.slides[idx];
         if (!s) return;
+        // Migrations: legacy welcome slides used s1t..s3d instead of the
+        // dynamic `steps` list. Convert them lazily so old persisted state
+        // and imported JSON keeps rendering.
+        if (s.tpl === 'welcome' && s.values && !Array.isArray(s.values.steps)) {
+          const legacy = [];
+          for (let i = 1; i <= 6; i++) {
+            const t = s.values['s' + i + 't'];
+            const d = s.values['s' + i + 'd'];
+            if (t != null || d != null) legacy.push({ t: t || '', d: d || '' });
+            delete s.values['s' + i + 't'];
+            delete s.values['s' + i + 'd'];
+          }
+          s.values.steps = legacy.length ? legacy : [
+            { t: 'Møt opp', d: 'Tirsdag, torsdag eller lørdag.' },
+            { t: 'Lån utstyr', d: 'Vi har flagg + ball klart.' },
+          ];
+        }
         state.currentSlide = idx;
         state.tpl = s.tpl;
         state.chrome = s.chrome;

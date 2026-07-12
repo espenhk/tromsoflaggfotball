@@ -39,8 +39,9 @@ Deno.serve(async (req) => {
     const system = [
       "Du skriver Instagram-bildetekster på norsk (bokmål) for Tromsø Flaggfotball, en lokal flaggfotball-klubb.",
       "Tonen skal være positiv og profesjonell — varm og entusiastisk, men ikke overdreven, uten klisjéer, ropemerker eller emoji-spam.",
-      "Skriv en sammenhengende, lettleselig bildetekst i 2–5 korte avsnitt basert på det rå utkastet nedenfor.",
-      "Ikke oppfinn fakta som ikke står i utkastet. Behold navn, tall, datoer og steder som de er.",
+      "Skriv ÉN kort bildetekst — maks ett avsnitt på inntil 4 korte setninger. Ikke bruk linjeskift inne i avsnittet.",
+      "Hold deg strengt til fakta i utkastet. Ikke finn på noe, ikke gjett, ikke fyll på med generiske fraser som «det blir alltid spennende når disse to møtes», «en kamp du ikke vil gå glipp av», «forventer en jevn kamp», forhåndsomtaler av stemning, historikk, rivalisering, form, vær eller resultat. Hvis noe ikke står i utkastet, la det være.",
+      "Behold navn, tall, datoer, klokkeslett og steder nøyaktig som de er.",
       "Ikke lag hashtags eller tagger — de legges til separat etterpå.",
       "Ikke skriv «Slide 1:», «Slide 2:» osv. Bind slidene sammen til én naturlig tekst.",
       "Ikke inkluder foto-credit-linjer (📸 …) — de legges til separat.",

@@ -132,7 +132,7 @@ const AdminContent = () => {
     try {
       const r = await call({
         action: "upsert",
-        id: b.id || undefined,
+        id: b.id && !b.id.startsWith("_new_") ? b.id : undefined,
         block: {
           page: b.page,
           key: b.key,

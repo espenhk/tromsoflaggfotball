@@ -1790,7 +1790,7 @@
           if (!inp) return;
           if (inp.dataset.numVal) {
             const fid = inp.dataset.numVal;
-            const f = (TEMPLATES[state.tpl].fields || []).find(x => x.id === fid) || {};
+            const f = ((T[state.tpl] && T[state.tpl].fields) || []).find(x => x.id === fid) || {};
             const min = typeof f.min === 'number' ? f.min : 0;
             const max = typeof f.max === 'number' ? f.max : 999;
             let n = parseInt(inp.value, 10);
@@ -1818,7 +1818,7 @@
           const btn = e.target.closest('[data-num-minus], [data-num-plus]');
           if (!btn) return;
           const fid = btn.dataset.numMinus || btn.dataset.numPlus;
-          const f = (TEMPLATES[state.tpl].fields || []).find(x => x.id === fid) || {};
+          const f = ((T[state.tpl] && T[state.tpl].fields) || []).find(x => x.id === fid) || {};
           const min = typeof f.min === 'number' ? f.min : 0;
           const max = typeof f.max === 'number' ? f.max : 999;
           const step = typeof f.step === 'number' ? f.step : 1;
@@ -1835,7 +1835,7 @@
           const inp = e.target.closest && e.target.closest('input[data-num-val]');
           if (!inp) return;
           const fid = inp.dataset.numVal;
-          const f = (TEMPLATES[state.tpl].fields || []).find(x => x.id === fid) || {};
+          const f = ((T[state.tpl] && T[state.tpl].fields) || []).find(x => x.id === fid) || {};
           const min = typeof f.min === 'number' ? f.min : 0;
           const max = typeof f.max === 'number' ? f.max : 999;
           const n = parseInt(inp.value, 10);

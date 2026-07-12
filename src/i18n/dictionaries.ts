@@ -155,6 +155,8 @@ const no = {
   // ── Footer ────────────────────────────────────────────
   "footer.brand": "Tromsø Flaggfotball",
   "footer.howIDidIt": "Hvordan denne siden ble laget",
+  "footer.quiz": "Hvilken posisjon er du?",
+  "footer.press": "Pressekit",
 
   // ── FieldDiagram ──────────────────────────────────────
   "fd.offense": "Angrep",

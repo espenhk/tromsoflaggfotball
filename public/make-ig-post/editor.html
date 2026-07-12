@@ -3134,6 +3134,7 @@
           name: name || suggestExportName(),
           kind: kind || 'export',
           slideCount: state.slides.length,
+          caption: (typeof getCaption === 'function' ? getCaption() : null),
           payload: {
             aspect: state.aspect,
             topEndZone: state.topEndZone,
@@ -3141,6 +3142,7 @@
             bg: document.documentElement.getAttribute('data-bg') || 'royal',
             theme: document.documentElement.getAttribute('data-theme') || 'default',
             slides: JSON.parse(JSON.stringify(state.slides)),
+            caption: (typeof getCaption === 'function' ? getCaption() : null),
           },
         };
       }

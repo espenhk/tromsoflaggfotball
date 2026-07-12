@@ -1756,11 +1756,12 @@
             </div>`;
           }
           const esc = escAttr(v);
+          const phAttr = (f.type === 'text' || f.type === 'textarea') ? escAttr(fieldPlaceholder(f)) : '';
           if (f.type === 'textarea') {
             const fsInput = fieldFsHTML(state.tpl, f.id, scales);
             const body = fsInput
-              ? `<div class="field-input-row"><textarea data-field="${f.id}">${esc}</textarea>${fsInput}</div>`
-              : `<textarea data-field="${f.id}">${esc}</textarea>`;
+              ? `<div class="field-input-row"><textarea data-field="${f.id}" placeholder="${phAttr}">${esc}</textarea>${fsInput}</div>`
+              : `<textarea data-field="${f.id}" placeholder="${phAttr}">${esc}</textarea>`;
             return `<div class="field"><label>${f.label}</label>${body}</div>`;
           }
           if (f.type === 'checkbox') {
@@ -1785,8 +1786,8 @@
           }
           const fsInput = fieldFsHTML(state.tpl, f.id, scales);
           const body = fsInput
-            ? `<div class="field-input-row"><input type="text" data-field="${f.id}" value="${esc}">${fsInput}</div>`
-            : `<input type="text" data-field="${f.id}" value="${esc}">`;
+            ? `<div class="field-input-row"><input type="text" data-field="${f.id}" value="${esc}" placeholder="${phAttr}">${fsInput}</div>`
+            : `<input type="text" data-field="${f.id}" value="${esc}" placeholder="${phAttr}">`;
           return `<div class="field"><label>${f.label}</label>${body}</div>`;
         }).join('');
 

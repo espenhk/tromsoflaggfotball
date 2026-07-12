@@ -327,28 +327,6 @@ const IndexInner = () => {
       </section>
       <AfterSection page="home" after="kom-i-gang" />
 
-      {/* Video */}
-      <section id="video" className="py-16 px-6 scroll-mt-16">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2">
-            {t("video.h")}
-          </h2>
-          <p className="text-muted-foreground font-body text-sm mb-6">
-            {t("video.sub")}
-          </p>
-          <div className="aspect-video rounded-xl overflow-hidden border border-border">
-            <iframe
-              className="w-full h-full"
-              src="https://www.youtube.com/embed/BqLI6k8HEk8"
-              title="Wildcats vs Team USA – Fanatics Flag Football Classic"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
-        </div>
-      </section>
-      <AfterSection page="home" after="video" />
-
       {/* FAQ */}
       <section id="faq" className="py-16 px-6 scroll-mt-16">
         <div className="max-w-4xl mx-auto">

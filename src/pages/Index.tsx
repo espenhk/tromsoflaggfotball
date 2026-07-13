@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, UserPlus, Menu, X, ShieldCheck, Megaphone, ConeIcon, ShoppingBag, Send, CheckCircle2 } from "lucide-react";
+import { Facebook, Instagram, Phone, ExternalLink, ChevronDown, Flag, Users, UserPlus, Menu, X, ShieldCheck, Megaphone, ConeIcon, Send, CheckCircle2 } from "lucide-react";
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";

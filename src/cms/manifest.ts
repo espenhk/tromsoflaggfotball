@@ -21,7 +21,6 @@ export const CODE_MANIFEST: Record<CmsPage, CodeSection[]> = {
   home: [
     { key: "hero",         order: 10, label: "Hero" },
     { key: "open",         order: 30, label: "Åpent for alle + Prøv en trening" },
-    { key: "treninger",    order: 40, label: "Treninger" },
     { key: "spillet",      order: 50, label: "Banediagram + posisjoner" },
   ],
   presse: [

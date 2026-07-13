@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Phone, MapPin, Clock, Calendar, ExternalLink, ChevronDown, Flag, Users, UserPlus, Menu, X, ShieldCheck, Megaphone, ConeIcon, ShoppingBag, Send, CheckCircle2 } from "lucide-react";
+import { Facebook, Instagram, Phone, ExternalLink, ChevronDown, Flag, Users, UserPlus, Menu, X, ShieldCheck, Megaphone, ConeIcon, Send, CheckCircle2 } from "lucide-react";
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -244,10 +244,6 @@ const IndexInner = () => {
       </section>
       <AfterSection page="home" after="open" />
 
-      {/* Treninger */}
-      <TrainingSection />
-      <AfterSection page="home" after="treninger" />
-
       {/* Banediagram + Posisjoner */}
       <GameSection />
       <AfterSection page="home" after="spillet" />
@@ -276,16 +272,6 @@ const IndexInner = () => {
     </div>
   );
 };
-
-const InfoCard = ({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) => (
-  <div className="flex items-start gap-3">
-    <div className="text-primary mt-0.5">{icon}</div>
-    <div>
-      <p className="text-xs text-muted-foreground uppercase tracking-wider font-body">{label}</p>
-      <p className="font-heading text-lg font-medium text-foreground">{value}</p>
-    </div>
-  </div>
-);
 
 const LinkCard = ({
   href,
@@ -426,39 +412,6 @@ const GameSection = () => {
                 ))}
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const TrainingSection = () => {
-  const t = useT();
-  return (
-    <section id="treninger" className="py-16 px-6 scroll-mt-16">
-      <div className="max-w-4xl mx-auto">
-        <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-6">
-          {t("training.h")}
-        </h2>
-
-        <div className="flex flex-col md:flex-row md:items-stretch gap-6">
-          <div className="flex flex-col gap-4 md:w-1/3 shrink-0">
-            <InfoCard icon={<Calendar className="w-5 h-5" />} label={t("training.day")} value={t("training.dayValue")} />
-            <InfoCard icon={<Clock className="w-5 h-5" />} label={t("training.time")} value={t("training.timeValue")} />
-            <InfoCard icon={<MapPin className="w-5 h-5" />} label={t("training.place")} value={t("training.placeValue")} />
-            <InfoCard icon={<ShoppingBag className="w-5 h-5" />} label={t("training.bring")} value={t("training.bringValue")} />
-          </div>
-
-          <div className="rounded-xl overflow-hidden border border-border flex-1 h-[180px] md:h-auto md:self-stretch">
-            <iframe
-              className="w-full h-full"
-              src={`https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"}&q=TUIL+Arena,+Tromsø&maptype=satellite&zoom=17`}
-              title="TUIL Arena, Tromsø"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              allowFullScreen
-            />
           </div>
         </div>
       </div>

@@ -1,13 +1,24 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useState } from "react";
-import { ChevronDown, Phone, Mail, ExternalLink } from "lucide-react";
+import {
+  ChevronDown,
+  Phone,
+  Mail,
+  ExternalLink,
+  Calendar,
+  Clock,
+  MapPin,
+  ShoppingBag,
+  Info,
+} from "lucide-react";
 import { useLang } from "@/i18n/LanguageProvider";
 import { MdBlock, type ContentBlock } from "@/hooks/useContentBlocks";
 
 export type VariantKey =
   | "markdown"
   | "training-info"
+  | "training-schedule"
   | "map-basic"
   | "image-card"
   | "video-embed"
@@ -374,6 +385,81 @@ const LinksRenderer = (block: ContentBlock) => {
   );
 };
 
+/* ── Training schedule (info items + map) ────────────────────────── */
+
+const TRAINING_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  calendar: Calendar,
+  clock: Clock,
+  pin: MapPin,
+  bag: ShoppingBag,
+  info: Info,
+};
+
+const TrainingScheduleRenderer = (block: ContentBlock) => {
+  const { lang } = useLang();
+  const data = block.data ?? {};
+  const title = pickLang(block.title_no, block.title_en, lang);
+  const items = list(data, "items");
+  const mapQuery = s(data, "map_query");
+  const mapZoom = Number(data.map_zoom) || 17;
+  const mapType = s(data, "map_type") || "satellite";
+  const apiKey =
+    (import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined) ||
+    "AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8";
+  const mapSrc = mapQuery
+    ? `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(
+        mapQuery,
+      )}&maptype=${encodeURIComponent(mapType)}&zoom=${mapZoom}`
+    : "";
+  return (
+    <section id={blockAnchorId(block)} className="py-16 px-6 scroll-mt-16">
+      <div className="max-w-4xl mx-auto">
+        {title && (
+          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-6">
+            {title}
+          </h2>
+        )}
+        <div className="flex flex-col md:flex-row md:items-stretch gap-6">
+          <div className="flex flex-col gap-4 md:w-1/3 shrink-0">
+            {items.map((it, i) => {
+              const iconKey = (typeof it.icon === "string" ? it.icon : "info").toLowerCase();
+              const Icon = TRAINING_ICONS[iconKey] ?? Info;
+              const label = pickLang(it.label_no as string, it.label_en as string, lang);
+              const value = pickLang(it.value_no as string, it.value_en as string, lang);
+              if (!label && !value) return null;
+              return (
+                <div key={i} className="flex items-start gap-3">
+                  <div className="text-primary mt-0.5">
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider font-body">
+                      {label}
+                    </p>
+                    <p className="font-heading text-lg font-medium text-foreground">{value}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {mapSrc && (
+            <div className="rounded-xl overflow-hidden border border-border flex-1 h-[180px] md:h-auto md:self-stretch">
+              <iframe
+                className="w-full h-full"
+                src={mapSrc}
+                title={mapQuery}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+};
+
 export const VARIANTS: Record<VariantKey, Variant> = {
   "markdown": {
     key: "markdown",
@@ -394,6 +480,49 @@ export const VARIANTS: Record<VariantKey, Variant> = {
       { key: "notes_md", label: "Notater (markdown)", type: "markdown", bilingual: true },
     ],
     render: TrainingInfoRenderer,
+  },
+  "training-schedule": {
+    key: "training-schedule",
+    label: "Treninger (info + kart)",
+    usesMarkdownBody: false,
+    dataFields: [
+      {
+        key: "items",
+        label: "Info-felt",
+        type: "list",
+        itemLabel: "felt",
+        itemFields: [
+          {
+            key: "icon",
+            label: "Ikon (calendar, clock, pin, bag, info)",
+            type: "text",
+            placeholder: "calendar",
+          },
+          { key: "label", label: "Etikett", type: "text", bilingual: true, placeholder: "Dag" },
+          {
+            key: "value",
+            label: "Verdi",
+            type: "text",
+            bilingual: true,
+            placeholder: "Mandager og torsdager",
+          },
+        ],
+      },
+      {
+        key: "map_query",
+        label: "Kart-søk (Google Maps)",
+        type: "text",
+        placeholder: "TUIL Arena, Tromsø",
+      },
+      { key: "map_zoom", label: "Kart-zoom", type: "number", placeholder: "17" },
+      {
+        key: "map_type",
+        label: "Karttype (roadmap eller satellite)",
+        type: "text",
+        placeholder: "satellite",
+      },
+    ],
+    render: TrainingScheduleRenderer,
   },
   "map-basic": {
     key: "map-basic",
@@ -490,7 +619,7 @@ export const VARIANTS: Record<VariantKey, Variant> = {
 };
 
 export const VARIANT_ORDER: VariantKey[] = [
-  "markdown", "training-info", "faq", "contact-card", "links-grid",
+  "markdown", "training-info", "training-schedule", "faq", "contact-card", "links-grid",
   "map-basic", "image-card", "video-embed",
 ];
 

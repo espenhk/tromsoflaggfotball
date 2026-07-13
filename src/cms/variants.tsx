@@ -1,13 +1,24 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useState } from "react";
-import { ChevronDown, Phone, Mail, ExternalLink } from "lucide-react";
+import {
+  ChevronDown,
+  Phone,
+  Mail,
+  ExternalLink,
+  Calendar,
+  Clock,
+  MapPin,
+  ShoppingBag,
+  Info,
+} from "lucide-react";
 import { useLang } from "@/i18n/LanguageProvider";
 import { MdBlock, type ContentBlock } from "@/hooks/useContentBlocks";
 
 export type VariantKey =
   | "markdown"
   | "training-info"
+  | "training-schedule"
   | "map-basic"
   | "image-card"
   | "video-embed"

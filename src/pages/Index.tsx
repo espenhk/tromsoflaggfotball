@@ -244,10 +244,6 @@ const IndexInner = () => {
       </section>
       <AfterSection page="home" after="open" />
 
-      {/* Treninger */}
-      <TrainingSection />
-      <AfterSection page="home" after="treninger" />
-
       {/* Banediagram + Posisjoner */}
       <GameSection />
       <AfterSection page="home" after="spillet" />

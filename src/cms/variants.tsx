@@ -481,6 +481,49 @@ export const VARIANTS: Record<VariantKey, Variant> = {
     ],
     render: TrainingInfoRenderer,
   },
+  "training-schedule": {
+    key: "training-schedule",
+    label: "Treninger (info + kart)",
+    usesMarkdownBody: false,
+    dataFields: [
+      {
+        key: "items",
+        label: "Info-felt",
+        type: "list",
+        itemLabel: "felt",
+        itemFields: [
+          {
+            key: "icon",
+            label: "Ikon (calendar, clock, pin, bag, info)",
+            type: "text",
+            placeholder: "calendar",
+          },
+          { key: "label", label: "Etikett", type: "text", bilingual: true, placeholder: "Dag" },
+          {
+            key: "value",
+            label: "Verdi",
+            type: "text",
+            bilingual: true,
+            placeholder: "Mandager og torsdager",
+          },
+        ],
+      },
+      {
+        key: "map_query",
+        label: "Kart-søk (Google Maps)",
+        type: "text",
+        placeholder: "TUIL Arena, Tromsø",
+      },
+      { key: "map_zoom", label: "Kart-zoom", type: "number", placeholder: "17" },
+      {
+        key: "map_type",
+        label: "Karttype (roadmap eller satellite)",
+        type: "text",
+        placeholder: "satellite",
+      },
+    ],
+    render: TrainingScheduleRenderer,
+  },
   "map-basic": {
     key: "map-basic",
     label: "Kart",

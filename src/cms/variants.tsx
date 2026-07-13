@@ -619,7 +619,7 @@ export const VARIANTS: Record<VariantKey, Variant> = {
 };
 
 export const VARIANT_ORDER: VariantKey[] = [
-  "markdown", "training-info", "faq", "contact-card", "links-grid",
+  "markdown", "training-info", "training-schedule", "faq", "contact-card", "links-grid",
   "map-basic", "image-card", "video-embed",
 ];
 

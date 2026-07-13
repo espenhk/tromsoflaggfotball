@@ -273,16 +273,6 @@ const IndexInner = () => {
   );
 };
 
-const InfoCard = ({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) => (
-  <div className="flex items-start gap-3">
-    <div className="text-primary mt-0.5">{icon}</div>
-    <div>
-      <p className="text-xs text-muted-foreground uppercase tracking-wider font-body">{label}</p>
-      <p className="font-heading text-lg font-medium text-foreground">{value}</p>
-    </div>
-  </div>
-);
-
 const LinkCard = ({
   href,
   title,

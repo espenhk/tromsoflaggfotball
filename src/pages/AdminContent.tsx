@@ -31,7 +31,7 @@ const SLOTS: Record<CmsPage, { key: string; label: string; help?: string }[]> = 
     { key: "intro", label: "Intro" },
     { key: "about.body", label: "Om klubben" },
   ],
-  quiz: [{ key: "intro", label: "Intro" }],
+  quiz: [],
   posisjoner: [{ key: "intro", label: "Intro" }],
 };
 

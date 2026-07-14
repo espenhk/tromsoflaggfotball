@@ -1,6 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   ChevronDown,
   Phone,
@@ -14,9 +15,15 @@ import {
 } from "lucide-react";
 import { useLang } from "@/i18n/LanguageProvider";
 import { MdBlock, type ContentBlock } from "@/hooks/useContentBlocks";
+import {
+  offensePositions,
+  defensePositions,
+  positionSlugMap,
+} from "@/data/positions";
 
 export type VariantKey =
   | "markdown"
+  | "page-header"
   | "training-info"
   | "training-schedule"
   | "map-basic"
@@ -24,7 +31,8 @@ export type VariantKey =
   | "video-embed"
   | "faq"
   | "contact-card"
-  | "links-grid";
+  | "links-grid"
+  | "position-quiz";
 
 export type FieldType = "text" | "textarea" | "markdown" | "url" | "number" | "list" | "select";
 
@@ -462,6 +470,209 @@ const TrainingScheduleRenderer = (block: ContentBlock) => {
   );
 };
 
+/* ── Page header (big display title + optional intro) ─────────── */
+
+const PageHeaderRenderer = (block: ContentBlock) => {
+  const { lang } = useLang();
+  const data = block.data ?? {};
+  const title = pickLang(block.title_no, block.title_en, lang);
+  const intro = pickLang(
+    typeof data.intro_no === "string" ? (data.intro_no as string) : null,
+    typeof data.intro_en === "string" ? (data.intro_en as string) : null,
+    lang,
+  );
+  if (!title && !intro) return null;
+  return (
+    <section id={blockAnchorId(block)} className="pt-4 pb-2 px-6 scroll-mt-16">
+      <div className="max-w-2xl mx-auto">
+        {title && (
+          <h1 className="font-display text-4xl md:text-5xl mt-3 mb-2">{title}</h1>
+        )}
+        {intro && <MdBlock md={intro} className="mb-4" />}
+      </div>
+    </section>
+  );
+};
+
+/* ── Position quiz ────────────────────────────────────────────── */
+
+type QuizAnswerData = { label: string; weights: Record<string, number> };
+type QuizQuestionData = { q: string; answers: QuizAnswerData[] };
+
+const ALL_POSITIONS = [...offensePositions, ...defensePositions];
+
+const PositionQuizGame = ({
+  questions,
+  labels,
+}: {
+  questions: QuizQuestionData[];
+  labels: {
+    questionN: (n: number, total: number) => string;
+    yourPosition: string;
+    readMore: string;
+    seeScores: string;
+    retake: string;
+  };
+}) => {
+  const [answers, setAnswers] = useState<number[]>([]);
+  const total = questions.length;
+  const idx = answers.length;
+  const done = idx >= total;
+
+  const result = useMemo(() => {
+    if (!done) return null;
+    const score: Record<string, number> = {};
+    answers.forEach((ai, qi) => {
+      const w = questions[qi].answers[ai]?.weights ?? {};
+      Object.keys(w).forEach((k) => {
+        score[k] = (score[k] ?? 0) + (w[k] ?? 0);
+      });
+    });
+    const sorted = Object.entries(score).sort((a, b) => b[1] - a[1]);
+    if (sorted.length === 0) return { winners: [] as string[], sorted };
+    const top = sorted[0][1];
+    const winners = sorted.filter(([, s]) => s === top).map(([k]) => k);
+    return { winners, sorted };
+  }, [done, answers, questions]);
+
+  if (total === 0) return null;
+  if (!done) {
+    return (
+      <div className="rounded-lg border border-border bg-card/50 p-6">
+        <div className="flex items-center gap-1 mb-6">
+          {questions.map((_, i) => (
+            <div
+              key={i}
+              className={`h-1.5 flex-1 rounded-full transition-colors ${
+                i < idx ? "bg-primary" : i === idx ? "bg-primary/50" : "bg-muted"
+              }`}
+            />
+          ))}
+        </div>
+        <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+          {labels.questionN(idx + 1, total)}
+        </div>
+        <h2 className="font-heading text-xl md:text-2xl mb-6">{questions[idx].q}</h2>
+        <div className="flex flex-col gap-3">
+          {questions[idx].answers.map((a, ai) => (
+            <button
+              key={ai}
+              onClick={() => setAnswers([...answers, ai])}
+              className="text-left px-4 py-3 rounded-md border border-border bg-background hover:border-primary hover:shadow-[0_0_12px_hsl(var(--primary)/0.4)] transition"
+            >
+              {a.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  const abbrToPosition = (abbr: string) => ALL_POSITIONS.find((p) => p.abbr === abbr);
+
+  return (
+    <div className="rounded-lg border border-border bg-card/50 p-6">
+      <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+        {labels.yourPosition}
+      </div>
+      <div className="flex flex-wrap gap-3 mb-6">
+        {result?.winners.map((abbr) => {
+          const p = abbrToPosition(abbr);
+          if (!p) return null;
+          const slug = positionSlugMap[p.name];
+          return (
+            <Link
+              key={abbr}
+              to={`/posisjoner#${slug}`}
+              className="flex-1 min-w-[180px] rounded-md border border-primary/50 bg-primary/5 p-5 hover:shadow-[0_0_12px_hsl(var(--primary)/0.5)] transition"
+            >
+              <div className="font-display text-3xl">{p.name}</div>
+              <div className="text-xs text-muted-foreground mt-1">{p.abbr}</div>
+              <div className="text-sm mt-3 text-primary">{labels.readMore}</div>
+            </Link>
+          );
+        })}
+      </div>
+      <details className="mb-6 text-sm text-muted-foreground">
+        <summary className="cursor-pointer hover:text-foreground">{labels.seeScores}</summary>
+        <ul className="mt-3 space-y-1">
+          {result?.sorted.map(([k, s]) => (
+            <li key={k} className="flex justify-between border-b border-border/50 py-1">
+              <span>{abbrToPosition(k)?.name ?? k}</span>
+              <span className="font-mono">{s}</span>
+            </li>
+          ))}
+        </ul>
+      </details>
+      <button
+        onClick={() => setAnswers([])}
+        className="px-4 py-2 rounded-md border border-border hover:bg-muted text-sm"
+      >
+        {labels.retake}
+      </button>
+    </div>
+  );
+};
+
+const PositionQuizRenderer = (block: ContentBlock) => {
+  const { lang } = useLang();
+  const data = block.data ?? {};
+  const title = pickLang(block.title_no, block.title_en, lang);
+  const rawItems = list(data, "items");
+  const questions: QuizQuestionData[] = rawItems
+    .map((it) => {
+      const q = pickLang(it.q_no as string, it.q_en as string, lang);
+      const rawAnswers = Array.isArray(it.answers)
+        ? (it.answers as Record<string, unknown>[])
+        : [];
+      const answers: QuizAnswerData[] = rawAnswers
+        .map((a) => {
+          const label = pickLang(a.a_no as string, a.a_en as string, lang);
+          const weightsRaw = Array.isArray(a.weights)
+            ? (a.weights as Record<string, unknown>[])
+            : [];
+          const weights: Record<string, number> = {};
+          weightsRaw.forEach((w) => {
+            const p = typeof w.position === "string" ? w.position : "";
+            const v = Number(w.weight);
+            if (p && Number.isFinite(v)) weights[p] = (weights[p] ?? 0) + v;
+          });
+          return { label, weights };
+        })
+        .filter((a) => a.label);
+      return { q, answers };
+    })
+    .filter((x) => x.q && x.answers.length > 0);
+
+  const labels =
+    lang === "en"
+      ? {
+          questionN: (n: number, total: number) => `Question ${n} / ${total}`,
+          yourPosition: "Your position",
+          readMore: "Read more →",
+          seeScores: "See full scores",
+          retake: "Retake the quiz",
+        }
+      : {
+          questionN: (n: number, total: number) => `Spørsmål ${n} / ${total}`,
+          yourPosition: "Din posisjon",
+          readMore: "Les mer →",
+          seeScores: "Se alle poeng",
+          retake: "Ta quizen på nytt",
+        };
+
+  return (
+    <section id={blockAnchorId(block) ?? "quiz"} className="py-4 px-6 scroll-mt-16">
+      <div className="max-w-2xl mx-auto">
+        {title && (
+          <h2 className="font-heading text-2xl md:text-3xl mb-4">{title}</h2>
+        )}
+        <PositionQuizGame questions={questions} labels={labels} />
+      </div>
+    </section>
+  );
+};
+
 export const VARIANTS: Record<VariantKey, Variant> = {
   "markdown": {
     key: "markdown",
@@ -469,6 +680,15 @@ export const VARIANTS: Record<VariantKey, Variant> = {
     usesMarkdownBody: true,
     dataFields: [],
     render: MarkdownRenderer,
+  },
+  "page-header": {
+    key: "page-header",
+    label: "Sidetittel + intro",
+    usesMarkdownBody: false,
+    dataFields: [
+      { key: "intro", label: "Introtekst (markdown)", type: "markdown", bilingual: true },
+    ],
+    render: PageHeaderRenderer,
   },
   "training-info": {
     key: "training-info",
@@ -629,11 +849,55 @@ export const VARIANTS: Record<VariantKey, Variant> = {
     ],
     render: LinksRenderer,
   },
+  "position-quiz": {
+    key: "position-quiz",
+    label: "Posisjonsquiz",
+    usesMarkdownBody: false,
+    dataFields: [
+      {
+        key: "items",
+        label: "Spørsmål",
+        type: "list",
+        itemLabel: "spørsmål",
+        itemFields: [
+          { key: "q", label: "Spørsmål", type: "textarea", bilingual: true },
+          {
+            key: "answers",
+            label: "Svaralternativer",
+            type: "list",
+            itemLabel: "svar",
+            itemFields: [
+              { key: "a", label: "Svartekst", type: "textarea", bilingual: true },
+              {
+                key: "weights",
+                label: "Poeng til posisjoner",
+                type: "list",
+                itemLabel: "posisjon",
+                itemFields: [
+                  {
+                    key: "position",
+                    label: "Posisjon",
+                    type: "select",
+                    options: ALL_POSITIONS.map((p) => ({
+                      value: p.abbr,
+                      label: `${p.abbr} — ${p.name}`,
+                    })),
+                  },
+                  { key: "weight", label: "Poeng", type: "number", placeholder: "1" },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    render: PositionQuizRenderer,
+  },
 };
 
 export const VARIANT_ORDER: VariantKey[] = [
-  "markdown", "training-info", "training-schedule", "faq", "contact-card", "links-grid",
-  "map-basic", "image-card", "video-embed",
+  "markdown", "page-header", "training-info", "training-schedule", "faq", "contact-card",
+  "links-grid", "position-quiz", "map-basic", "image-card", "video-embed",
 ];
 
 export function getVariant(key: string): Variant {

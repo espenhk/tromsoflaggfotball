@@ -32,10 +32,7 @@ export const CODE_MANIFEST: Record<CmsPage, CodeSection[]> = {
     { key: "typography",   order: 60, label: "Typografi" },
     { key: "contact",      order: 70, label: "Kontakt" },
   ],
-  quiz: [
-    { key: "intro",        order: 10, label: "Intro" },
-    { key: "quiz",         order: 20, label: "Quiz" },
-  ],
+  quiz: [],
   posisjoner: [
     { key: "intro",        order: 10, label: "Intro" },
     { key: "field",        order: 20, label: "Banediagram" },

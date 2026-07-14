@@ -726,6 +726,21 @@ const ScalarInput = ({
 }) => {
   const strVal = typeof value === "string" ? value : (value == null ? "" : String(value));
   const cls = "w-full rounded-md bg-background border border-border px-3 py-1.5 text-sm";
+  if (field.type === "select") {
+    const opts = field.options ?? [];
+    return (
+      <select
+        value={strVal}
+        onChange={(e) => onChange(e.target.value)}
+        className={cls}
+      >
+        <option value="">— velg —</option>
+        {opts.map((o) => (
+          <option key={o.value} value={o.value}>{o.label}</option>
+        ))}
+      </select>
+    );
+  }
   if (field.type === "textarea" || field.type === "markdown") {
     return (
       <textarea rows={4} value={strVal} placeholder={placeholder}

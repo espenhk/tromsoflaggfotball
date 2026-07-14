@@ -26,7 +26,7 @@ export type VariantKey =
   | "contact-card"
   | "links-grid";
 
-export type FieldType = "text" | "textarea" | "markdown" | "url" | "number" | "list";
+export type FieldType = "text" | "textarea" | "markdown" | "url" | "number" | "list" | "select";
 
 export type FieldSpec = {
   key: string;
@@ -39,6 +39,8 @@ export type FieldSpec = {
   itemFields?: FieldSpec[];
   /** For type: "list" — label used on the "add" button, e.g. "spørsmål". */
   itemLabel?: string;
+  /** For type: "select" — allowed values. */
+  options?: { value: string; label: string }[];
 };
 
 export type Variant = {
@@ -494,9 +496,15 @@ export const VARIANTS: Record<VariantKey, Variant> = {
         itemFields: [
           {
             key: "icon",
-            label: "Ikon (calendar, clock, pin, bag, info)",
-            type: "text",
-            placeholder: "calendar",
+            label: "Ikon",
+            type: "select",
+            options: [
+              { value: "calendar", label: "Kalender" },
+              { value: "clock", label: "Klokke" },
+              { value: "pin", label: "Kart-nål" },
+              { value: "bag", label: "Bag / utstyr" },
+              { value: "info", label: "Info" },
+            ],
           },
           { key: "label", label: "Etikett", type: "text", bilingual: true, placeholder: "Dag" },
           {
@@ -517,9 +525,14 @@ export const VARIANTS: Record<VariantKey, Variant> = {
       { key: "map_zoom", label: "Kart-zoom", type: "number", placeholder: "17" },
       {
         key: "map_type",
-        label: "Karttype (roadmap eller satellite)",
-        type: "text",
-        placeholder: "satellite",
+        label: "Karttype",
+        type: "select",
+        options: [
+          { value: "roadmap", label: "Kart" },
+          { value: "satellite", label: "Satellitt" },
+          { value: "hybrid", label: "Hybrid" },
+          { value: "terrain", label: "Terreng" },
+        ],
       },
     ],
     render: TrainingScheduleRenderer,

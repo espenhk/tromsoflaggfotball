@@ -1,6 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   ChevronDown,
   Phone,
@@ -14,9 +15,15 @@ import {
 } from "lucide-react";
 import { useLang } from "@/i18n/LanguageProvider";
 import { MdBlock, type ContentBlock } from "@/hooks/useContentBlocks";
+import {
+  offensePositions,
+  defensePositions,
+  positionSlugMap,
+} from "@/data/positions";
 
 export type VariantKey =
   | "markdown"
+  | "page-header"
   | "training-info"
   | "training-schedule"
   | "map-basic"
@@ -24,7 +31,8 @@ export type VariantKey =
   | "video-embed"
   | "faq"
   | "contact-card"
-  | "links-grid";
+  | "links-grid"
+  | "position-quiz";
 
 export type FieldType = "text" | "textarea" | "markdown" | "url" | "number" | "list" | "select";
 

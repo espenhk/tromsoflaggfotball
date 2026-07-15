@@ -376,6 +376,34 @@ const ContactRenderer = (block: ContentBlock) => {
 
 /* ── Links grid ──────────────────────────────────────────────────── */
 
+const LINK_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  external: ExternalLink,
+  facebook: Facebook,
+  instagram: Instagram,
+  phone: Phone,
+  mail: Mail,
+  users: Users,
+  userplus: UserPlus,
+  shield: ShieldCheck,
+  calendar: Calendar,
+  bag: ShoppingBag,
+};
+
+type LinkTone = {
+  glow: string; // background of the blurred glow + inner fill
+  icon: string; // icon text color
+  hoverTitle: string; // group-hover title color class
+};
+const LINK_TONES: Record<string, LinkTone> = {
+  primary: { glow: "bg-primary/10", icon: "text-primary", hoverTitle: "group-hover:text-primary" },
+  facebook: { glow: "bg-[#1877F2]/15", icon: "text-[#1877F2]", hoverTitle: "group-hover:text-[#1877F2]" },
+  instagram: { glow: "bg-[#E1306C]/15", icon: "text-[#E1306C]", hoverTitle: "group-hover:text-[#E1306C]" },
+  sky: { glow: "bg-sky-400/15", icon: "text-sky-400", hoverTitle: "group-hover:text-sky-400" },
+  rose: { glow: "bg-rose-400/15", icon: "text-rose-400", hoverTitle: "group-hover:text-rose-400" },
+  emerald: { glow: "bg-emerald-400/15", icon: "text-emerald-400", hoverTitle: "group-hover:text-emerald-400" },
+  amber: { glow: "bg-amber-400/15", icon: "text-amber-400", hoverTitle: "group-hover:text-amber-400" },
+};
+
 const LinksRenderer = (block: ContentBlock) => {
   const { lang } = useLang();
   const data = block.data ?? {};
@@ -384,25 +412,55 @@ const LinksRenderer = (block: ContentBlock) => {
   if (items.length === 0) return null;
   return (
     <SectionShell title={title || null} id={blockAnchorId(block)}>
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid md:grid-cols-2 gap-2">
         {items.map((it, i) => {
           const href = typeof it.href === "string" ? it.href : "";
           const t = pickLang(it.title_no as string, it.title_en as string, lang);
           const d = pickLang(it.description_no as string, it.description_en as string, lang);
+          const iconKey = (typeof it.icon === "string" ? it.icon : "external").toLowerCase();
+          const Icon = LINK_ICONS[iconKey] ?? ExternalLink;
+          const toneKey = (typeof it.glow === "string" ? it.glow : "primary").toLowerCase();
+          const tone = LINK_TONES[toneKey] ?? LINK_TONES.primary;
           if (!href || !t) return null;
           return (
             <a key={i} href={href} target="_blank" rel="noopener noreferrer"
-              className="group flex items-start gap-3 px-5 py-4 rounded-xl border border-border bg-card/50 hover:border-primary/50 hover:bg-card transition-all">
-              <ExternalLink className="w-4 h-4 mt-1 text-primary/70 group-hover:text-primary shrink-0" />
-              <div className="flex-1 min-w-0">
-                <div className="font-heading text-base text-foreground group-hover:text-primary">{t}</div>
-                {d && <div className="text-sm text-muted-foreground mt-0.5">{d}</div>}
+              className="group relative flex items-start gap-4 px-6 py-4 rounded-xl transition-all">
+              <div className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${tone.glow}`} style={{ filter: "blur(12px)" }} />
+              <div className={`absolute inset-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${tone.glow}`} />
+              <div className={`relative mt-1 ${tone.icon}`}>
+                <Icon className="w-5 h-5" />
+              </div>
+              <div className="relative flex-1 min-w-0">
+                <p className={`font-heading font-medium text-foreground transition-colors ${tone.hoverTitle}`}>{t}</p>
+                {d && <p className="text-sm text-muted-foreground font-body mt-1">{d}</p>}
               </div>
             </a>
           );
         })}
       </div>
     </SectionShell>
+  );
+};
+
+/* ── Signup / interest form ─────────────────────────────────────── */
+
+const SignupFormRenderer = (block: ContentBlock) => {
+  const { lang } = useLang();
+  const data = block.data ?? {};
+  const heading = pickLang(block.title_no, block.title_en, lang);
+  const intro = bi(data, "intro", lang);
+  const cta = bi(data, "cta", lang);
+  const success = bi(data, "success", lang);
+  const iconKey = s(data, "icon") || "users";
+  return (
+    <SignupForm
+      heading={heading || null}
+      iconKey={iconKey}
+      introMd={intro || null}
+      ctaLabel={cta || null}
+      successMd={success || null}
+      anchorId={blockAnchorId(block) || "prov-en-trening"}
+    />
   );
 };
 

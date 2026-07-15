@@ -12,6 +12,11 @@ import {
   MapPin,
   ShoppingBag,
   Info,
+  Facebook,
+  Instagram,
+  Users,
+  UserPlus,
+  ShieldCheck,
 } from "lucide-react";
 import { useLang } from "@/i18n/LanguageProvider";
 import { MdBlock, type ContentBlock } from "@/hooks/useContentBlocks";
@@ -20,6 +25,7 @@ import {
   defensePositions,
   positionSlugMap,
 } from "@/data/positions";
+import SignupForm from "@/components/SignupForm";
 
 export type VariantKey =
   | "markdown"
@@ -32,6 +38,7 @@ export type VariantKey =
   | "faq"
   | "contact-card"
   | "links-grid"
+  | "signup-form"
   | "position-quiz";
 
 export type FieldType = "text" | "textarea" | "markdown" | "url" | "number" | "list" | "select";

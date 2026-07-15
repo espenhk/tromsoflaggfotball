@@ -1029,7 +1029,7 @@ export const VARIANTS: Record<VariantKey, Variant> = {
 };
 
 export const VARIANT_ORDER: VariantKey[] = [
-  "markdown", "page-header", "training-info", "training-schedule", "faq", "contact-card",
+  "markdown", "page-header", "training-info", "training-schedule", "signup-form", "faq", "contact-card",
   "links-grid", "position-quiz", "map-basic", "image-card", "video-embed",
 ];
 

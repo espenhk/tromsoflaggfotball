@@ -116,9 +116,13 @@ const MarkdownRenderer = (block: ContentBlock) => {
   const body = pickLang(block.body_md_no, block.body_md_en, lang);
   const title = pickLang(block.title_no, block.title_en, lang);
   if (!body?.trim()) return null;
+  const align = s(block.data ?? {}, "align") || "left";
+  const centered = align === "center";
   return (
     <SectionShell title={title || null} id={blockAnchorId(block)}>
-      <MdBlock md={body} />
+      <div className={centered ? "text-center [&_p]:mx-auto [&_ul]:list-none [&_ul]:pl-0 [&_h1]:text-center [&_h2]:text-center [&_h3]:text-center" : ""}>
+        <MdBlock md={body} />
+      </div>
     </SectionShell>
   );
 };

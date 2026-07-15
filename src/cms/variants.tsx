@@ -283,7 +283,7 @@ const FaqItemRow = ({ q, a }: { q: string; a: string }) => {
       type="button"
       onClick={() => setOpen(!open)}
       aria-expanded={open}
-      className="w-full text-left rounded-xl p-4 transition-all bg-muted/60 border border-border hover:bg-muted hover:border-primary/40"
+      className="w-full text-left rounded-xl p-4 transition-all bg-card border border-border/60 hover:bg-card/90 hover:border-primary/40"
     >
       <div className="flex items-start justify-between gap-2">
         <p className="font-heading text-sm font-medium text-foreground leading-snug">{q}</p>

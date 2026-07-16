@@ -94,11 +94,12 @@ const SectionShell = ({
   title,
   id,
   children,
-}: { title?: string | null; id?: string; children: React.ReactNode }) => (
+  align,
+}: { title?: string | null; id?: string; children: React.ReactNode; align?: "left" | "center" }) => (
   <section id={id} className="py-12 px-6 scroll-mt-16">
     <div className="max-w-3xl mx-auto">
       {title && (
-        <h2 className="font-display text-3xl md:text-4xl mb-4">{title}</h2>
+        <h2 className={`font-display text-3xl md:text-4xl mb-4 ${align === "center" ? "text-center" : ""}`}>{title}</h2>
       )}
       {children}
     </div>
@@ -116,10 +117,10 @@ const MarkdownRenderer = (block: ContentBlock) => {
   const body = pickLang(block.body_md_no, block.body_md_en, lang);
   const title = pickLang(block.title_no, block.title_en, lang);
   if (!body?.trim()) return null;
-  const align = s(block.data ?? {}, "align") || "left";
+  const align = (s(block.data ?? {}, "align") || "left") as "left" | "center";
   const centered = align === "center";
   return (
-    <SectionShell title={title || null} id={blockAnchorId(block)}>
+    <SectionShell title={title || null} id={blockAnchorId(block)} align={align}>
       <div className={centered ? "text-center [&_p]:mx-auto [&_ul]:list-none [&_ul]:pl-0 [&_h1]:text-center [&_h2]:text-center [&_h3]:text-center" : ""}>
         <MdBlock md={body} />
       </div>

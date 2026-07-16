@@ -355,7 +355,7 @@ const ContactItem = ({ item, lang }: { item: Record<string, unknown>; lang: "no"
   const phone = typeof item.phone === "string" ? item.phone : "";
   const email = typeof item.email === "string" ? item.email : "";
   const note = pickLang(item.note_md_no as string, item.note_md_en as string, lang);
-  const hasDetails = Boolean(role || email || note);
+  const hasDetails = Boolean(email || note);
   return (
     <div className="rounded-xl border border-border bg-card/50">
       <button
@@ -365,6 +365,9 @@ const ContactItem = ({ item, lang }: { item: Record<string, unknown>; lang: "no"
         aria-expanded={open}
       >
         <div className="flex-1 min-w-0">
+          {role && (
+            <div className="text-xs uppercase tracking-widest text-primary mb-1">{role}</div>
+          )}
           {name && <div className="font-heading text-base text-foreground">{name}</div>}
           {phone && (
             <a
@@ -383,9 +386,6 @@ const ContactItem = ({ item, lang }: { item: Record<string, unknown>; lang: "no"
       <div className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
         <div className="min-h-0 overflow-hidden">
           <div className="px-5 pb-4 pt-1 space-y-2">
-            {role && (
-              <div className="text-xs uppercase tracking-widest text-primary">{role}</div>
-            )}
             {email && (
               <a
                 href={`mailto:${email}`}

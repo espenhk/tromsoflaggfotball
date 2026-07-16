@@ -261,8 +261,17 @@ const GameSection = () => {
         <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2">
           {t("game.h")}
         </h2>
-        <p className="text-muted-foreground font-body mb-6">
+        <p className="text-muted-foreground font-body mb-4">
           {t("game.sub")}
+        </p>
+        <p className="font-body mb-6">
+          <span className="font-semibold text-foreground">{t("game.quizPrompt")}</span>{" "}
+          <Link
+            to="/quiz"
+            className={`hover:opacity-80 transition-opacity ${theme === "tuil" ? "text-rose-300" : "text-primary"}`}
+          >
+            {t("game.quizLink")} →
+          </Link>
         </p>
 
         {/* Desktop: 3-column layout with positions flanking the diagram */}
@@ -288,12 +297,6 @@ const GameSection = () => {
             >
               {t("game.readMoreAll")}
             </Link>
-            <Link
-              to="/quiz"
-              className={`block text-sm font-body hover:opacity-80 transition-opacity mt-2 ${theme === "tuil" ? "text-rose-300" : "text-primary"}`}
-            >
-              {t("game.quizCta")}
-            </Link>
           </div>
 
           {/* Defense positions - right */}
@@ -318,12 +321,6 @@ const GameSection = () => {
               className={`inline-block text-sm font-body hover:opacity-80 transition-opacity mt-4 ${theme === "tuil" ? "text-rose-300" : "text-primary"}`}
             >
               {t("game.readMoreAll")}
-            </Link>
-            <Link
-              to="/quiz"
-              className={`block text-sm font-body hover:opacity-80 transition-opacity mt-2 ${theme === "tuil" ? "text-rose-300" : "text-primary"}`}
-            >
-              {t("game.quizCta")}
             </Link>
           </div>
 

@@ -158,6 +158,8 @@ const no = {
   "footer.quiz": "Hvilken posisjon er du?",
   "footer.press": "Pressekit",
   "game.quizCta": "Ta quizen: Hvilken posisjon passer deg? →",
+  "game.quizPrompt": "Hvilken posisjon passer for deg?",
+  "game.quizLink": "Ta quizen her",
 
   // ── FieldDiagram ──────────────────────────────────────
   "fd.offense": "Angrep",

@@ -338,40 +338,67 @@ const ContactRenderer = (block: ContentBlock) => {
     <SectionShell title={title || null} id={blockAnchorId(block)}>
       {intro && <MdBlock md={intro} className="mb-6" />}
       {items.length > 0 && (
-        <div className="grid sm:grid-cols-2 gap-4">
-          {items.map((it, i) => {
-            const name = typeof it.name === "string" ? it.name : "";
-            const role = pickLang(it.role_no as string, it.role_en as string, lang);
-            const phone = typeof it.phone === "string" ? it.phone : "";
-            const email = typeof it.email === "string" ? it.email : "";
-            const note = pickLang(it.note_md_no as string, it.note_md_en as string, lang);
-            return (
-              <div key={i} className="rounded-xl border border-border bg-card/50 p-5">
-                {role && (
-                  <div className="text-xs uppercase tracking-widest text-primary mb-1">{role}</div>
-                )}
-                {name && <div className="font-heading text-lg text-foreground mb-2">{name}</div>}
-                <div className="space-y-1.5">
-                  {phone && (
-                    <a href={`tel:${phone.replace(/\s+/g, "")}`}
-                      className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
-                      <Phone className="w-4 h-4" /> {phone}
-                    </a>
-                  )}
-                  {email && (
-                    <a href={`mailto:${email}`}
-                      className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary break-all">
-                      <Mail className="w-4 h-4" /> {email}
-                    </a>
-                  )}
-                </div>
-                {note && <div className="mt-3"><MdBlock md={note} /></div>}
-              </div>
-            );
-          })}
+        <div className="space-y-2">
+          {items.map((it, i) => (
+            <ContactItem key={i} item={it} lang={lang} />
+          ))}
         </div>
       )}
     </SectionShell>
+  );
+};
+
+const ContactItem = ({ item, lang }: { item: Record<string, unknown>; lang: "no" | "en" }) => {
+  const [open, setOpen] = useState(false);
+  const name = typeof item.name === "string" ? item.name : "";
+  const role = pickLang(item.role_no as string, item.role_en as string, lang);
+  const phone = typeof item.phone === "string" ? item.phone : "";
+  const email = typeof item.email === "string" ? item.email : "";
+  const note = pickLang(item.note_md_no as string, item.note_md_en as string, lang);
+  const hasDetails = Boolean(role || email || note);
+  return (
+    <div className="rounded-xl border border-border bg-card/50">
+      <button
+        type="button"
+        onClick={() => hasDetails && setOpen((v) => !v)}
+        className="w-full flex items-center gap-3 px-5 py-3 text-left"
+        aria-expanded={open}
+      >
+        <div className="flex-1 min-w-0">
+          {name && <div className="font-heading text-base text-foreground">{name}</div>}
+          {phone && (
+            <a
+              href={`tel:${phone.replace(/\s+/g, "")}`}
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary mt-0.5"
+            >
+              <Phone className="w-4 h-4" /> {phone}
+            </a>
+          )}
+        </div>
+        {hasDetails && (
+          <ChevronDown className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
+        )}
+      </button>
+      <div className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+        <div className="min-h-0 overflow-hidden">
+          <div className="px-5 pb-4 pt-1 space-y-2">
+            {role && (
+              <div className="text-xs uppercase tracking-widest text-primary">{role}</div>
+            )}
+            {email && (
+              <a
+                href={`mailto:${email}`}
+                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary break-all"
+              >
+                <Mail className="w-4 h-4" /> {email}
+              </a>
+            )}
+            {note && <MdBlock md={note} />}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

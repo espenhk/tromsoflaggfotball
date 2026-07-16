@@ -417,6 +417,8 @@ const en: Record<TranslationKey, string> = {
   "footer.quiz": "Which position are you?",
   "footer.press": "Press kit",
   "game.quizCta": "Take the quiz: which position fits you? →",
+  "game.quizPrompt": "Which position fits you?",
+  "game.quizLink": "Take the quiz here",
 
   // FieldDiagram
   "fd.offense": "Offense",

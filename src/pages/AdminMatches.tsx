@@ -198,6 +198,13 @@ const Section = ({
                 {fmtWhen(m.kicks_off_at)} {m.venue && `· ${m.venue}`} {m.round_label && `· ${m.round_label}`}
               </div>
             </div>
+            <Link
+              to={`/admin/make-ig-post?match=${m.id}`}
+              className="text-sm px-3 py-1 rounded border border-border hover:bg-muted"
+              title="Åpne i IG-editor med denne kampen forhåndslastet"
+            >
+              IG-post
+            </Link>
             <button onClick={() => onEdit(m)} className="text-sm px-3 py-1 rounded border border-border hover:bg-muted">
               Rediger
             </button>

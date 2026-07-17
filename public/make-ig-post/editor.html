@@ -4596,6 +4596,26 @@
 
       document.getElementById('load-matches-btn')?.addEventListener('click', openMatchesModal);
       syncPickerUI();
+
+      // Deep-link: /make-ig-post/editor.html?match=<uuid> switches to the
+      // game template and auto-loads that match. Used by AdminMatches
+      // "IG-post" buttons.
+      (async () => {
+        const mid = new URLSearchParams(location.search).get('match');
+        if (!mid) return;
+        const gameBtn = document.querySelector('#picker button[data-tpl="game"]');
+        if (gameBtn && !gameBtn.classList.contains('active')) gameBtn.click();
+        try {
+          const res = await fetch(MATCHES_SB_URL + '?select=*&id=eq.' + encodeURIComponent(mid), {
+            headers: { apikey: MATCHES_ANON, Authorization: 'Bearer ' + MATCHES_ANON },
+          });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const rows = await res.json();
+          if (rows && rows[0]) applyMatchToGameSlide(rows[0]);
+        } catch (e) {
+          console.warn('deep-link match load failed', e);
+        }
+      })();
     </script>
   </body>
 </html>

@@ -28,7 +28,12 @@ const MakeIgPost = () => {
   if (theme === null) {
     return <div style={{ position: "fixed", inset: 0, background: "#0b0f14" }} />;
   }
-  const src = `/make-ig-post/editor.html${theme === "tuil" ? "?theme=tuil" : ""}`;
+  // Forward query params (e.g. ?match=<id>) from the admin route into the
+  // editor iframe so deep links like "open this match in IG editor" work.
+  const params = new URLSearchParams(window.location.search);
+  if (theme === "tuil") params.set("theme", "tuil");
+  const qs = params.toString();
+  const src = `/make-ig-post/editor.html${qs ? "?" + qs : ""}`;
   return (
     <iframe
       key={theme}

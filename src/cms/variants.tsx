@@ -782,8 +782,6 @@ const PositionQuizRenderer = (block: ContentBlock) => {
   );
 };
 
-export const VARIANTS: Record<VariantKey, Variant> = {
-};
 
 /* ── Field diagram ─────────────────────────────────────────── */
 

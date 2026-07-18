@@ -18,6 +18,16 @@ import {
   UserPlus,
   ShieldCheck,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import FieldDiagram from "@/components/FieldDiagram";
+import PositionCard from "@/components/PositionCard";
+import {
+  positionsDetail,
+  offensePositionsDetail,
+  defensePositionsDetail,
+  PositionRow,
+  type PositionData,
+} from "@/data/positionsDetail";
 import { useLang } from "@/i18n/LanguageProvider";
 import { MdBlock, type ContentBlock } from "@/hooks/useContentBlocks";
 import {
@@ -39,7 +49,9 @@ export type VariantKey =
   | "contact-card"
   | "links-grid"
   | "signup-form"
-  | "position-quiz";
+  | "position-quiz"
+  | "field-diagram"
+  | "position-list";
 
 export type FieldType = "text" | "textarea" | "markdown" | "url" | "number" | "list" | "select";
 
@@ -770,6 +782,276 @@ const PositionQuizRenderer = (block: ContentBlock) => {
   );
 };
 
+
+/* ── Field diagram ─────────────────────────────────────────── */
+
+const PLAYER_COLORS: Record<string, { fill: string; ring: string; text: string }> = {
+  amber: { fill: "fill-amber-400", ring: "stroke-amber-400", text: "text-amber-950" },
+  emerald: { fill: "fill-emerald-400", ring: "stroke-emerald-400", text: "text-emerald-950" },
+  sky: { fill: "fill-sky-400", ring: "stroke-sky-400", text: "text-sky-950" },
+  rose: { fill: "fill-rose-400", ring: "stroke-rose-400", text: "text-rose-950" },
+  orange: { fill: "fill-orange-400", ring: "stroke-orange-400", text: "text-orange-950" },
+};
+const ROUTE_COLORS: Record<string, string> = {
+  sky: "stroke-sky-400",
+  emerald: "stroke-emerald-400",
+  amber: "stroke-amber-400",
+  rose: "stroke-rose-400",
+  orange: "stroke-orange-400",
+};
+
+const CustomFieldSvg = ({
+  players,
+  routes,
+}: {
+  players: { label: string; x: number; y: number; color: string }[];
+  routes: { from: string; to_x: number; to_y: number; color: string }[];
+}) => {
+  const byLabel = Object.fromEntries(players.map((p) => [p.label, p]));
+  return (
+    <div className="relative w-full max-w-md mx-auto aspect-[2/3] rounded-xl overflow-hidden bg-emerald-900/60 border border-emerald-500/30">
+      {/* Field lines */}
+      <svg viewBox="0 0 100 150" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
+        {/* End zones */}
+        <rect x="0" y="0" width="100" height="15" className="fill-emerald-950/50" />
+        <rect x="0" y="135" width="100" height="15" className="fill-emerald-950/50" />
+        {/* Yard lines every 10 yd */}
+        {[15, 30, 45, 60, 75, 90, 105, 120, 135].map((y) => (
+          <line key={y} x1="0" y1={y} x2="100" y2={y} className="stroke-white/20" strokeWidth="0.3" />
+        ))}
+        {/* Midfield */}
+        <line x1="0" y1="75" x2="100" y2="75" className="stroke-white/40" strokeWidth="0.6" />
+        {/* Routes */}
+        {routes.map((r, i) => {
+          const from = byLabel[r.from];
+          if (!from) return null;
+          const stroke = ROUTE_COLORS[r.color] ?? "stroke-sky-400";
+          const y1 = (from.y / 100) * 150;
+          const y2 = (r.to_y / 100) * 150;
+          return (
+            <g key={i}>
+              <line
+                x1={from.x}
+                y1={y1}
+                x2={r.to_x}
+                y2={y2}
+                strokeWidth="0.8"
+                strokeDasharray="1.5,1.5"
+                className={stroke}
+                markerEnd={`url(#arrow-${r.color})`}
+              />
+            </g>
+          );
+        })}
+        <defs>
+          {Object.keys(ROUTE_COLORS).map((c) => (
+            <marker
+              key={c}
+              id={`arrow-${c}`}
+              markerWidth="6"
+              markerHeight="6"
+              refX="4"
+              refY="3"
+              orient="auto"
+            >
+              <path d="M0,0 L5,3 L0,6 z" className={ROUTE_COLORS[c].replace("stroke-", "fill-")} />
+            </marker>
+          ))}
+        </defs>
+      </svg>
+      {/* Players */}
+      {players.map((p, i) => {
+        const tone = PLAYER_COLORS[p.color] ?? PLAYER_COLORS.sky;
+        return (
+          <div
+            key={i}
+            className={`absolute w-8 h-8 -translate-x-1/2 -translate-y-1/2 rounded-full flex items-center justify-center font-heading text-xs font-bold ${tone.text}`}
+            style={{
+              left: `${p.x}%`,
+              top: `${p.y}%`,
+              backgroundColor: "currentColor",
+            }}
+          >
+            <span
+              className={`absolute inset-0 rounded-full ${tone.fill.replace("fill-", "bg-")}`}
+              aria-hidden
+            />
+            <span className="relative">{p.label}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+const FieldDiagramRenderer = (block: ContentBlock) => {
+  const { lang } = useLang();
+  const navigate = useNavigate();
+  const data = block.data ?? {};
+  const title = pickLang(block.title_no, block.title_en, lang);
+  const preset = (s(data, "preset") || "simple") as "simple" | "classic";
+  const fullscreen = s(data, "fullscreen") === "yes";
+  const rawPlayers = list(data, "players");
+  const rawRoutes = list(data, "routes");
+  const players = rawPlayers
+    .map((p) => ({
+      label: typeof p.label === "string" ? p.label : "",
+      x: Number(p.x),
+      y: Number(p.y),
+      color: typeof p.color === "string" ? p.color : "sky",
+    }))
+    .filter((p) => p.label && Number.isFinite(p.x) && Number.isFinite(p.y));
+  const routes = rawRoutes
+    .map((r) => ({
+      from: typeof r.from === "string" ? r.from : "",
+      to_x: Number(r.to_x),
+      to_y: Number(r.to_y),
+      color: typeof r.color === "string" ? r.color : "sky",
+    }))
+    .filter((r) => r.from && Number.isFinite(r.to_x) && Number.isFinite(r.to_y));
+
+  const inner =
+    players.length > 0 ? (
+      <CustomFieldSvg players={players} routes={routes} />
+    ) : (
+      <FieldDiagram
+        variant={preset}
+        fullscreen={fullscreen}
+        onPositionNavigate={(slug) => navigate(`/posisjoner#${slug}`)}
+        navigateMode="direct"
+      />
+    );
+
+  if (fullscreen && players.length === 0) {
+    return (
+      <section id={blockAnchorId(block)} className="relative w-full scroll-mt-16">
+        {title && (
+          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground max-w-3xl mx-auto px-6 pt-8 pb-2">{title}</h2>
+        )}
+        {inner}
+      </section>
+    );
+  }
+
+  return (
+    <SectionShell title={title || null} id={blockAnchorId(block)}>
+      {inner}
+    </SectionShell>
+  );
+};
+
+/* ── Position list ─────────────────────────────────────────── */
+
+const HEADING_TONES: Record<string, string> = {
+  sky: "text-sky-400",
+  rose: "text-rose-400",
+  primary: "text-primary",
+  none: "text-foreground",
+};
+
+const PositionListRenderer = (block: ContentBlock) => {
+  const { lang } = useLang();
+  const data = block.data ?? {};
+  const title = pickLang(block.title_no, block.title_en, lang);
+  const side = (s(data, "side") || "offense") as "offense" | "defense" | "custom";
+  const layout = (s(data, "layout") || "stack") as "stack" | "grid";
+  const headingTone = s(data, "heading_tone") || "auto";
+  const toneClass =
+    headingTone === "auto"
+      ? side === "offense"
+        ? "text-sky-400"
+        : side === "defense"
+          ? "text-rose-400"
+          : "text-foreground"
+      : HEADING_TONES[headingTone] ?? "text-foreground";
+
+  let items: PositionData[] = [];
+  if (side === "offense") items = offensePositionsDetail;
+  else if (side === "defense") items = defensePositionsDetail;
+  else {
+    const ids = list(data, "ids")
+      .map((it) => (typeof it.id === "string" ? it.id : ""))
+      .filter(Boolean);
+    const byId = Object.fromEntries(positionsDetail.map((p) => [p.id, p]));
+    items = ids.map((id) => byId[id]).filter(Boolean);
+  }
+  if (items.length === 0) return null;
+
+  const gridEntries = layout === "grid"
+    ? items
+        .map((p) => ({
+          full: p,
+          entry: [...offensePositions, ...defensePositions].find((e) => e.abbr === p.abbr),
+        }))
+        .filter((x): x is { full: PositionData; entry: NonNullable<typeof x.entry> } => !!x.entry)
+    : [];
+
+  return (
+    <PositionListSection title={title} id={blockAnchorId(block)} heading={toneClass}>
+      {layout === "stack" ? (
+        <StackList items={items} />
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+          {gridEntries.map(({ full, entry }) => (
+            <PositionCard
+              key={full.id}
+              name={entry.name}
+              abbr={entry.abbr}
+              taglineKey={entry.taglineKey}
+              icon={entry.icon}
+              glowBg={entry.glowBg}
+              supColor={entry.supColor}
+              roleKey={entry.roleKey}
+              traitsKey={entry.traitsKey}
+              nflExamples={entry.nflExamples}
+              variant={full.side}
+            />
+          ))}
+        </div>
+      )}
+    </PositionListSection>
+  );
+};
+
+const PositionListSection = ({
+  title,
+  id,
+  heading,
+  children,
+}: {
+  title: string;
+  id?: string;
+  heading: string;
+  children: React.ReactNode;
+}) => (
+  <section id={id} className="py-8 px-6 scroll-mt-16">
+    <div className="max-w-4xl mx-auto space-y-4">
+      {title && (
+        <h3 className={`font-heading text-lg font-medium ${heading}`}>{title}</h3>
+      )}
+      {children}
+    </div>
+  </section>
+);
+
+const StackList = ({ items }: { items: PositionData[] }) => {
+  const [openId, setOpenId] = useState<string | null>(null);
+  return (
+    <div>
+      {items.map((pos) => (
+        <PositionRow
+          key={pos.id}
+          pos={pos}
+          open={openId === pos.id}
+          onToggle={() => setOpenId(openId === pos.id ? null : pos.id)}
+        />
+      ))}
+    </div>
+  );
+};
+
+
+
 export const VARIANTS: Record<VariantKey, Variant> = {
   "markdown": {
     key: "markdown",
@@ -1054,11 +1336,136 @@ export const VARIANTS: Record<VariantKey, Variant> = {
     ],
     render: PositionQuizRenderer,
   },
+  "field-diagram": {
+    key: "field-diagram",
+    label: "Banediagram",
+    usesMarkdownBody: false,
+    dataFields: [
+      {
+        key: "preset",
+        label: "Feltvariant",
+        type: "select",
+        options: [
+          { value: "simple", label: "Fullt felt (posisjoner-side)" },
+          { value: "classic", label: "Kort felt (forside)" },
+        ],
+      },
+      {
+        key: "fullscreen",
+        label: "Fullskjerm",
+        type: "select",
+        options: [
+          { value: "no", label: "Nei — inline" },
+          { value: "yes", label: "Ja — bredt / kant-til-kant" },
+        ],
+      },
+      {
+        key: "players",
+        label: "Egendefinerte spillere (valgfritt — overstyrer preset)",
+        type: "list",
+        itemLabel: "spiller",
+        itemFields: [
+          { key: "label", label: "Etikett", type: "text", placeholder: "QB" },
+          { key: "x", label: "X (0–100 %)", type: "number", placeholder: "50" },
+          { key: "y", label: "Y (0–100 %, 0 = topp)", type: "number", placeholder: "70" },
+          {
+            key: "color",
+            label: "Farge",
+            type: "select",
+            options: [
+              { value: "amber", label: "Gul (QB)" },
+              { value: "emerald", label: "Grønn (RB)" },
+              { value: "sky", label: "Blå (WR/C)" },
+              { value: "rose", label: "Rosa (DB/S)" },
+              { value: "orange", label: "Oransje (Rusher)" },
+            ],
+          },
+        ],
+      },
+      {
+        key: "routes",
+        label: "Egendefinerte ruter (valgfritt)",
+        type: "list",
+        itemLabel: "rute",
+        itemFields: [
+          { key: "from", label: "Fra-etikett", type: "text", placeholder: "QB" },
+          { key: "to_x", label: "Til X (%)", type: "number", placeholder: "70" },
+          { key: "to_y", label: "Til Y (%)", type: "number", placeholder: "30" },
+          {
+            key: "color",
+            label: "Farge",
+            type: "select",
+            options: [
+              { value: "sky", label: "Blå" },
+              { value: "emerald", label: "Grønn" },
+              { value: "amber", label: "Gul" },
+              { value: "rose", label: "Rosa" },
+              { value: "orange", label: "Oransje" },
+            ],
+          },
+        ],
+      },
+    ],
+    render: FieldDiagramRenderer,
+  },
+  "position-list": {
+    key: "position-list",
+    label: "Posisjonsliste",
+    usesMarkdownBody: false,
+    dataFields: [
+      {
+        key: "side",
+        label: "Side",
+        type: "select",
+        options: [
+          { value: "offense", label: "Offense (angrep)" },
+          { value: "defense", label: "Defense (forsvar)" },
+          { value: "custom", label: "Egen utvalg" },
+        ],
+      },
+      {
+        key: "layout",
+        label: "Visning",
+        type: "select",
+        options: [
+          { value: "stack", label: "Stabel (klikk for detaljer, som posisjoner-siden)" },
+          { value: "grid", label: "Rutenett (kompakt, som forsiden)" },
+        ],
+      },
+      {
+        key: "heading_tone",
+        label: "Overskrift-farge",
+        type: "select",
+        options: [
+          { value: "auto", label: "Auto (sky/rose etter side)" },
+          { value: "sky", label: "Blå" },
+          { value: "rose", label: "Rosa" },
+          { value: "primary", label: "Primær" },
+          { value: "none", label: "Ingen (vanlig tekst)" },
+        ],
+      },
+      {
+        key: "ids",
+        label: "Egendefinerte posisjoner (bare hvis side = «Egen utvalg»)",
+        type: "list",
+        itemLabel: "posisjon",
+        itemFields: [
+          {
+            key: "id",
+            label: "Posisjon",
+            type: "select",
+            options: positionsDetail.map((p) => ({ value: p.id, label: `${p.abbr} — ${p.name}` })),
+          },
+        ],
+      },
+    ],
+    render: PositionListRenderer,
+  },
 };
 
 export const VARIANT_ORDER: VariantKey[] = [
   "markdown", "page-header", "training-info", "training-schedule", "signup-form", "faq", "contact-card",
-  "links-grid", "position-quiz", "map-basic", "image-card", "video-embed",
+  "links-grid", "field-diagram", "position-list", "position-quiz", "map-basic", "image-card", "video-embed",
 ];
 
 export function getVariant(key: string): Variant {

@@ -34,9 +34,6 @@ export const CODE_MANIFEST: Record<CmsPage, CodeSection[]> = {
   quiz: [],
   posisjoner: [
     { key: "intro",        order: 10, label: "Intro" },
-    { key: "field",        order: 20, label: "Banediagram" },
-    { key: "offense",      order: 30, label: "Offense-posisjoner" },
-    { key: "defense",      order: 40, label: "Defense-posisjoner" },
   ],
 };
 

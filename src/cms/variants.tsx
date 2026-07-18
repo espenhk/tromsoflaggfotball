@@ -18,6 +18,16 @@ import {
   UserPlus,
   ShieldCheck,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import FieldDiagram from "@/components/FieldDiagram";
+import PositionCard from "@/components/PositionCard";
+import {
+  positionsDetail,
+  offensePositionsDetail,
+  defensePositionsDetail,
+  PositionRow,
+  type PositionData,
+} from "@/data/positionsDetail";
 import { useLang } from "@/i18n/LanguageProvider";
 import { MdBlock, type ContentBlock } from "@/hooks/useContentBlocks";
 import {
@@ -39,7 +49,9 @@ export type VariantKey =
   | "contact-card"
   | "links-grid"
   | "signup-form"
-  | "position-quiz";
+  | "position-quiz"
+  | "field-diagram"
+  | "position-list";
 
 export type FieldType = "text" | "textarea" | "markdown" | "url" | "number" | "list" | "select";
 
@@ -1054,11 +1066,136 @@ export const VARIANTS: Record<VariantKey, Variant> = {
     ],
     render: PositionQuizRenderer,
   },
+  "field-diagram": {
+    key: "field-diagram",
+    label: "Banediagram",
+    usesMarkdownBody: false,
+    dataFields: [
+      {
+        key: "preset",
+        label: "Feltvariant",
+        type: "select",
+        options: [
+          { value: "simple", label: "Fullt felt (posisjoner-side)" },
+          { value: "classic", label: "Kort felt (forside)" },
+        ],
+      },
+      {
+        key: "fullscreen",
+        label: "Fullskjerm",
+        type: "select",
+        options: [
+          { value: "no", label: "Nei — inline" },
+          { value: "yes", label: "Ja — bredt / kant-til-kant" },
+        ],
+      },
+      {
+        key: "players",
+        label: "Egendefinerte spillere (valgfritt — overstyrer preset)",
+        type: "list",
+        itemLabel: "spiller",
+        itemFields: [
+          { key: "label", label: "Etikett", type: "text", placeholder: "QB" },
+          { key: "x", label: "X (0–100 %)", type: "number", placeholder: "50" },
+          { key: "y", label: "Y (0–100 %, 0 = topp)", type: "number", placeholder: "70" },
+          {
+            key: "color",
+            label: "Farge",
+            type: "select",
+            options: [
+              { value: "amber", label: "Gul (QB)" },
+              { value: "emerald", label: "Grønn (RB)" },
+              { value: "sky", label: "Blå (WR/C)" },
+              { value: "rose", label: "Rosa (DB/S)" },
+              { value: "orange", label: "Oransje (Rusher)" },
+            ],
+          },
+        ],
+      },
+      {
+        key: "routes",
+        label: "Egendefinerte ruter (valgfritt)",
+        type: "list",
+        itemLabel: "rute",
+        itemFields: [
+          { key: "from", label: "Fra-etikett", type: "text", placeholder: "QB" },
+          { key: "to_x", label: "Til X (%)", type: "number", placeholder: "70" },
+          { key: "to_y", label: "Til Y (%)", type: "number", placeholder: "30" },
+          {
+            key: "color",
+            label: "Farge",
+            type: "select",
+            options: [
+              { value: "sky", label: "Blå" },
+              { value: "emerald", label: "Grønn" },
+              { value: "amber", label: "Gul" },
+              { value: "rose", label: "Rosa" },
+              { value: "orange", label: "Oransje" },
+            ],
+          },
+        ],
+      },
+    ],
+    render: FieldDiagramRenderer,
+  },
+  "position-list": {
+    key: "position-list",
+    label: "Posisjonsliste",
+    usesMarkdownBody: false,
+    dataFields: [
+      {
+        key: "side",
+        label: "Side",
+        type: "select",
+        options: [
+          { value: "offense", label: "Offense (angrep)" },
+          { value: "defense", label: "Defense (forsvar)" },
+          { value: "custom", label: "Egen utvalg" },
+        ],
+      },
+      {
+        key: "layout",
+        label: "Visning",
+        type: "select",
+        options: [
+          { value: "stack", label: "Stabel (klikk for detaljer, som posisjoner-siden)" },
+          { value: "grid", label: "Rutenett (kompakt, som forsiden)" },
+        ],
+      },
+      {
+        key: "heading_tone",
+        label: "Overskrift-farge",
+        type: "select",
+        options: [
+          { value: "auto", label: "Auto (sky/rose etter side)" },
+          { value: "sky", label: "Blå" },
+          { value: "rose", label: "Rosa" },
+          { value: "primary", label: "Primær" },
+          { value: "none", label: "Ingen (vanlig tekst)" },
+        ],
+      },
+      {
+        key: "ids",
+        label: "Egendefinerte posisjoner (bare hvis side = «Egen utvalg»)",
+        type: "list",
+        itemLabel: "posisjon",
+        itemFields: [
+          {
+            key: "id",
+            label: "Posisjon",
+            type: "select",
+            options: positionsDetail.map((p) => ({ value: p.id, label: `${p.abbr} — ${p.name}` })),
+          },
+        ],
+      },
+    ],
+    render: PositionListRenderer,
+  },
 };
 
 export const VARIANT_ORDER: VariantKey[] = [
   "markdown", "page-header", "training-info", "training-schedule", "signup-form", "faq", "contact-card",
-  "links-grid", "position-quiz", "map-basic", "image-card", "video-embed",
+  "links-grid", "field-diagram", "position-list", "position-quiz", "map-basic", "image-card", "video-embed",
 ];
 
 export function getVariant(key: string): Variant {

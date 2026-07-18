@@ -1050,9 +1050,9 @@ const StackList = ({ items }: { items: PositionData[] }) => {
   );
 };
 
-const VARIANT_STUB__end_of_renderers__: null = null;
 
-const VARIANTS_INNER: Record<VariantKey, Variant> = {
+
+export const VARIANTS: Record<VariantKey, Variant> = {
   "markdown": {
     key: "markdown",
     label: "Markdown",

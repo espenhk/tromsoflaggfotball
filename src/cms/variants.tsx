@@ -783,6 +783,8 @@ const PositionQuizRenderer = (block: ContentBlock) => {
 };
 
 export const VARIANTS: Record<VariantKey, Variant> = {
+  // renderer implementations are defined above
+  ...({} as never),
   "markdown": {
     key: "markdown",
     label: "Markdown",

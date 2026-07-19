@@ -219,11 +219,6 @@ const IndexInner = () => {
       </section>
       <div className="zebra">
       <AfterSection page="home" after="hero" />
-
-      {/* Banediagram + Posisjoner */}
-      <GameSection />
-      <AfterSection page="home" after="spillet" />
-
       </div>
 
       {/* Footer */}

@@ -20,7 +20,6 @@ export type CmsPage = "home" | "presse" | "quiz" | "posisjoner";
 export const CODE_MANIFEST: Record<CmsPage, CodeSection[]> = {
   home: [
     { key: "hero",         order: 10, label: "Hero" },
-    { key: "spillet",      order: 50, label: "Banediagram + posisjoner" },
   ],
   presse: [
     { key: "intro",        order: 10, label: "Intro" },

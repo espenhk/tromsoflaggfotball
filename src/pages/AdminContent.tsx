@@ -120,7 +120,8 @@ function snapshotKey(list: Block[]): string {
 }
 
 const AdminContentInner = () => {
-  const [page, setPage] = useState<CmsPage>("home");
+  const [page, setPage] = useState<PageId>("home");
+  const [customPages, setCustomPages] = useState<CustomPageRow[]>([]);
   const [blocks, setBlocks] = useState<Block[]>([]);
   /** Last published state for this page (what the live site shows). */
   const [published, setPublished] = useState<Block[]>([]);
@@ -148,7 +149,7 @@ const AdminContentInner = () => {
     return data as { blocks?: Block[]; block?: Block; ok?: boolean };
   };
 
-  const refresh = async (p: CmsPage) => {
+  const refresh = async (p: PageId) => {
     setLoading(true);
     setError(null);
     try {
@@ -168,6 +169,71 @@ const AdminContentInner = () => {
     void refresh(page);
   }, [page]);
 
+  const refreshPages = async () => {
+    try {
+      const r = (await call({ action: "pages" })) as unknown as { pages?: CustomPageRow[] };
+      setCustomPages(r.pages ?? []);
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
+
+  useEffect(() => {
+    void refreshPages();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /** Create a new custom page at /pages/<slug> and switch to it. */
+  const createPage = async () => {
+    const title = prompt("Tittel på den nye siden?");
+    if (!title || !title.trim()) return;
+    const suggested = toSlug(title);
+    const slug = toSlug(prompt("Adresse (/pages/…)", suggested) ?? suggested);
+    if (!slug) return;
+    if (customPages.some((p) => p.slug === slug)) {
+      alert("Det finnes allerede en side med denne adressen.");
+      return;
+    }
+    try {
+      await call({ action: "page-upsert", page: { slug, title_no: title.trim(), visible: true } });
+      await refreshPages();
+      setPage(customPageId(slug));
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
+
+  const currentCustom = isCustomPage(page)
+    ? customPages.find((p) => p.slug === customSlug(page)) ?? null
+    : null;
+
+  const renamePage = async () => {
+    if (!currentCustom) return;
+    const title = prompt("Ny tittel", currentCustom.title_no);
+    if (!title || !title.trim()) return;
+    try {
+      await call({
+        action: "page-upsert",
+        page: { ...currentCustom, title_no: title.trim() },
+      });
+      await refreshPages();
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
+
+  const deletePage = async () => {
+    if (!currentCustom) return;
+    if (!confirm(`Slette siden «${currentCustom.title_no}» og alt innholdet på den?`)) return;
+    try {
+      await call({ action: "page-delete", slug: currentCustom.slug });
+      await refreshPages();
+      setPage("home");
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
+
   const slotBlocks = useMemo(
     () => blocks.filter((b) => b.kind === "slot"),
     [blocks],
@@ -179,7 +245,7 @@ const AdminContentInner = () => {
 
   /** Merged, ordered list of code rows and DB section rows. */
   const rows: Row[] = useMemo(() => {
-    const code: Row[] = CODE_MANIFEST[page].map((c) => ({
+    const code: Row[] = codeSections(page).map((c) => ({
       kind: "code", key: c.key, order: c.order, label: c.label,
     }));
     const db: Row[] = sectionBlocks.map((b) => ({ kind: "db", block: b }));
@@ -323,7 +389,7 @@ const AdminContentInner = () => {
     setEditingId(null);
   };
 
-  const slotRows: Block[] = SLOTS[page].map(({ key }) => {
+  const slotRows: Block[] = (SLOTS[page] ?? []).map(({ key }) => {
     const existing = slotBlocks.find((b) => b.key === key);
     return existing ?? normaliseBlock({
       page, key, kind: "slot", sort_order: 0, visible: true,

@@ -92,6 +92,23 @@ function isLinkedUp(b: Block): boolean {
   return typeof d?.group === "string" && d.group.trim().length > 0;
 }
 
+/** Serialised content of a block, ignoring its id. */
+function blockKey(b: Block): string {
+  return JSON.stringify([
+    b.page, b.key, b.kind, b.title_no, b.title_en, b.body_md_no, b.body_md_en,
+    b.sort_order, b.visible, b.variant, b.data,
+  ]);
+}
+
+function sameBlock(a: Block, b: Block): boolean {
+  return blockKey(a) === blockKey(b);
+}
+
+/** Stable fingerprint of a whole page state, used to detect unsaved edits. */
+function snapshotKey(list: Block[]): string {
+  return list.map(blockKey).sort().join("|");
+}
+
 const AdminContentInner = () => {
   const [page, setPage] = useState<CmsPage>("home");
   const [blocks, setBlocks] = useState<Block[]>([]);

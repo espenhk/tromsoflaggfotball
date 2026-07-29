@@ -409,24 +409,73 @@ const AdminContentInner = () => {
           når du trykker «Lagre».
         </p>
 
-        <div className="mb-8 inline-flex rounded-md border border-border overflow-hidden">
-          {(Object.keys(PAGE_LABELS) as CmsPage[]).map((p) => (
-            <button
-              key={p}
-              type="button"
-              onClick={() => {
-                if (p === page) return;
-                if (dirty && !confirm("Du har ulagrede endringer. Bytte side og forkaste dem?")) return;
-                setPage(p);
-                setEditingId(null);
-              }}
-              className={`px-4 py-2 text-sm font-medium border-l border-border first:border-l-0 ${
-                page === p ? "bg-primary text-primary-foreground" : "bg-transparent text-foreground hover:bg-muted"
-              }`}
-            >
-              {PAGE_LABELS[p]}
-            </button>
-          ))}
+        <div className="mb-8 flex flex-wrap items-center gap-2">
+          <label className="text-sm text-muted-foreground" htmlFor="cms-page-select">Side</label>
+          <select
+            id="cms-page-select"
+            value={page}
+            onChange={(e) => {
+              const p = e.target.value;
+              if (p === page) return;
+              if (dirty && !confirm("Du har ulagrede endringer. Bytte side og forkaste dem?")) {
+                e.target.value = page;
+                return;
+              }
+              setPage(p);
+              setEditingId(null);
+            }}
+            className="bg-input border border-border rounded-md px-3 py-2 text-sm min-w-56"
+          >
+            <optgroup label="Faste sider">
+              {(Object.keys(PAGE_LABELS) as CmsPage[]).map((p) => (
+                <option key={p} value={p}>{PAGE_LABELS[p]}</option>
+              ))}
+            </optgroup>
+            {customPages.length > 0 && (
+              <optgroup label="Egne sider (/pages/…)">
+                {customPages.map((p) => (
+                  <option key={p.slug} value={customPageId(p.slug)}>
+                    {p.title_no} — /pages/{p.slug}
+                  </option>
+                ))}
+              </optgroup>
+            )}
+          </select>
+
+          <button
+            type="button"
+            onClick={createPage}
+            className="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-md border border-border hover:bg-muted"
+          >
+            <Plus className="w-4 h-4" /> Ny side
+          </button>
+
+          {currentCustom && (
+            <>
+              <a
+                href={`/pages/${currentCustom.slug}`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-md border border-border hover:bg-muted"
+              >
+                <ExternalLink className="w-4 h-4" /> Åpne
+              </a>
+              <button
+                type="button"
+                onClick={renamePage}
+                className="text-sm px-3 py-2 rounded-md border border-border hover:bg-muted"
+              >
+                Gi nytt navn
+              </button>
+              <button
+                type="button"
+                onClick={deletePage}
+                className="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-md border border-destructive/40 text-destructive hover:bg-destructive/10"
+              >
+                <Trash2 className="w-4 h-4" /> Slett side
+              </button>
+            </>
+          )}
         </div>
 
         {error && <p className="mb-4 text-destructive text-sm">Feil: {error}</p>}

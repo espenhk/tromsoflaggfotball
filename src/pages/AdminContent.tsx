@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ADMIN_TOKEN_KEY } from "@/components/AdminGate";
 import { CODE_MANIFEST, midpointOrder, type CmsPage } from "@/cms/manifest";
 import { VARIANTS, VARIANT_ORDER, getVariant, type VariantKey, type FieldSpec } from "@/cms/variants";
-import { Link2, Unlink } from "lucide-react";
+import { Link2, Unlink, Save, Undo2 } from "lucide-react";
 
 type Block = {
   id: string;
@@ -92,9 +92,31 @@ function isLinkedUp(b: Block): boolean {
   return typeof d?.group === "string" && d.group.trim().length > 0;
 }
 
+/** Serialised content of a block, ignoring its id. */
+function blockKey(b: Block): string {
+  return JSON.stringify([
+    b.page, b.key, b.kind, b.title_no, b.title_en, b.body_md_no, b.body_md_en,
+    b.sort_order, b.visible, b.variant, b.data,
+  ]);
+}
+
+function sameBlock(a: Block, b: Block): boolean {
+  return blockKey(a) === blockKey(b);
+}
+
+/** Stable fingerprint of a whole page state, used to detect unsaved edits. */
+function snapshotKey(list: Block[]): string {
+  return list.map(blockKey).sort().join("|");
+}
+
 const AdminContentInner = () => {
   const [page, setPage] = useState<CmsPage>("home");
   const [blocks, setBlocks] = useState<Block[]>([]);
+  /** Last published state for this page (what the live site shows). */
+  const [published, setPublished] = useState<Block[]>([]);
+  /** Snapshots of the published state before each save, newest last. */
+  const [undoStack, setUndoStack] = useState<Block[][]>([]);
+  const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -121,7 +143,10 @@ const AdminContentInner = () => {
     setError(null);
     try {
       const r = await call({ action: "list", page: p });
-      setBlocks(((r.blocks ?? []) as Block[]).map(normaliseBlock));
+      const fresh = ((r.blocks ?? []) as Block[]).map(normaliseBlock);
+      setBlocks(fresh);
+      setPublished(fresh);
+      setUndoStack([]);
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -168,65 +193,15 @@ const AdminContentInner = () => {
     setBlocks((prev) => prev.map((b) => (b.id === id ? { ...b, ...patch } : b)));
   };
 
-  const saveBlock = async (b: Block) => {
-    setBusyId(b.id);
-    setError(null);
-    try {
-      const r = await call({
-        action: "upsert",
-        id: b.id && !b.id.startsWith("_new_") ? b.id : undefined,
-        block: {
-          page: b.page,
-          key: b.key,
-          kind: b.kind,
-          title_no: b.title_no,
-          title_en: b.title_en,
-          body_md_no: b.body_md_no,
-          body_md_en: b.body_md_en,
-          sort_order: b.sort_order,
-          visible: b.visible,
-          variant: b.variant,
-          data: b.data,
-        },
-      });
-      if (r.block) {
-        const saved = normaliseBlock(r.block);
-        setBlocks((prev) => {
-          const filtered = prev.filter(
-            (x) => x.id !== b.id && x.id !== saved.id
-              && !(x.kind === "slot" && x.key === saved.key && x.page === saved.page),
-          );
-          return [...filtered, saved];
-        });
-        setEditingId(null);
-      }
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusyId(null);
-    }
-  };
-
-  const deleteBlock = async (b: Block) => {
-    if (b.id.startsWith("_new_")) {
-      setBlocks((prev) => prev.filter((x) => x.id !== b.id));
-      setEditingId(null);
-      return;
-    }
-    if (!confirm("Slette denne seksjonen?")) return;
-    setBusyId(b.id);
-    try {
-      await call({ action: "delete", id: b.id });
-      setBlocks((prev) => prev.filter((x) => x.id !== b.id));
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusyId(null);
-    }
+  /** Local-only delete — published on the next save. */
+  const deleteBlock = (b: Block) => {
+    if (!b.id.startsWith("_new_") && !confirm("Fjerne denne seksjonen? Trer i kraft når du lagrer.")) return;
+    setBlocks((prev) => prev.filter((x) => x.id !== b.id));
+    setEditingId(null);
   };
 
   /** Move a DB section one step earlier or later in the merged list. */
-  const move = async (b: Block, direction: -1 | 1) => {
+  const move = (b: Block, direction: -1 | 1) => {
     const idx = rows.findIndex((r) => r.kind === "db" && r.block.id === b.id);
     if (idx < 0) return;
     const targetIdx = idx + direction;
@@ -240,58 +215,102 @@ const AdminContentInner = () => {
     const nextOrder = after ? orderOf(after) : orderOf(rows[targetIdx]) + 10;
     const newOrder = midpointOrder(prevOrder, nextOrder);
     updateBlock(b.id, { sort_order: newOrder });
-    if (!b.id.startsWith("_new_")) {
-      try {
-        await call({ action: "reorder", order: [{ id: b.id, sort_order: newOrder }] });
-      } catch (e) {
-        setError((e as Error).message);
-      }
-    }
   };
 
-  const toggleVisible = async (b: Block) => {
-    const next = { ...b, visible: !b.visible };
-    updateBlock(b.id, { visible: next.visible });
-    if (!b.id.startsWith("_new_")) await saveBlock(next);
-  };
+  const toggleVisible = (b: Block) => updateBlock(b.id, { visible: !b.visible });
 
   /** Link/unlink a section to the section above it (shared background). */
-  const toggleLink = async (b: Block) => {
+  const toggleLink = (b: Block) => {
     const data = { ...b.data, linkedUp: !isLinkedUp(b) };
     delete (data as Record<string, unknown>).group;
     updateBlock(b.id, { data });
-    if (!b.id.startsWith("_new_")) await saveBlock({ ...b, data });
   };
 
-  const saveSlot = async (b: Block) => {
-    setBusyId(b.id || `slot:${b.key}`);
-    setError(null);
-    try {
+  /**
+   * Write `target` to the database, using `base` (the currently published
+   * state) to work out what changed. Returns the resulting blocks with the
+   * ids the server assigned.
+   */
+  const persist = async (target: Block[], base: Block[]): Promise<Block[]> => {
+    const liveIds = new Set(base.map((b) => b.id).filter((id) => id && !id.startsWith("_new_")));
+    const targetIds = new Set(target.map((b) => b.id));
+    for (const b of base) {
+      if (liveIds.has(b.id) && !targetIds.has(b.id)) {
+        await call({ action: "delete", id: b.id });
+      }
+    }
+    const out: Block[] = [];
+    for (const b of target) {
+      const exists = liveIds.has(b.id);
+      const prior = exists ? base.find((x) => x.id === b.id) : undefined;
+      if (prior && sameBlock(prior, b)) { out.push(b); continue; }
       const r = await call({
         action: "upsert",
-        id: b.id && !b.id.startsWith("_new_") ? b.id : undefined,
+        id: exists ? b.id : undefined,
         block: {
-          page: b.page, key: b.key, kind: "slot",
+          page: b.page, key: b.key, kind: b.kind,
           title_no: b.title_no, title_en: b.title_en,
           body_md_no: b.body_md_no, body_md_en: b.body_md_en,
           sort_order: b.sort_order, visible: b.visible,
-          variant: "markdown", data: {},
+          variant: b.kind === "slot" ? "markdown" : b.variant,
+          data: b.kind === "slot" ? {} : b.data,
         },
       });
-      if (r.block) {
-        const saved = normaliseBlock(r.block);
-        setBlocks((prev) => {
-          const filtered = prev.filter(
-            (x) => !(x.kind === "slot" && x.key === saved.key && x.page === saved.page),
-          );
-          return [...filtered, saved];
-        });
-      }
+      out.push(r.block ? normaliseBlock(r.block) : b);
+    }
+    return out;
+  };
+
+  const dirty = useMemo(
+    () => snapshotKey(blocks) !== snapshotKey(published),
+    [blocks, published],
+  );
+
+  /** Publish all pending edits and remember the previous state for undo. */
+  const saveAll = async () => {
+    setSaving(true);
+    setError(null);
+    try {
+      const result = await persist(blocks, published);
+      setUndoStack((s) => [...s, published].slice(-20));
+      setBlocks(result);
+      setPublished(result);
+      setEditingId(null);
     } catch (e) {
       setError((e as Error).message);
+      await refresh(page);
     } finally {
-      setBusyId(null);
+      setSaving(false);
     }
+  };
+
+  /** Roll the page back to the state it had at the previous save point. */
+  const undoLastSave = async () => {
+    const snapshot = undoStack[undoStack.length - 1];
+    if (!snapshot) return;
+    if (!confirm("Tilbakestille siden til forrige lagringspunkt?")) return;
+    setSaving(true);
+    setError(null);
+    try {
+      const result = await persist(snapshot, published);
+      setUndoStack((s) => s.slice(0, -1));
+      setBlocks(result);
+      setPublished(result);
+      setEditingId(null);
+    } catch (e) {
+      setError((e as Error).message);
+      await refresh(page);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  /** Throw away unsaved edits. */
+  const discard = () => {
+    if (!dirty) return;
+    if (!confirm("Forkaste endringene som ikke er lagret?")) return;
+    setBlocks(published);
+    setEditingId(null);
   };
 
   const slotRows: Block[] = SLOTS[page].map(({ key }) => {
@@ -310,7 +329,8 @@ const AdminContentInner = () => {
         <h1 className="font-display text-3xl md:text-4xl mb-2">Innhold</h1>
         <p className="text-muted-foreground mb-8">
           Rediger seksjoner på forsiden og undersidene. Faste seksjoner fra koden vises grå — du kan
-          legge til nye seksjoner mellom dem og flytte dem opp/ned.
+          legge til nye seksjoner mellom dem og flytte dem opp/ned. Endringer vises på siden først
+          når du trykker «Lagre».
         </p>
 
         <div className="mb-8 inline-flex rounded-md border border-border overflow-hidden">
@@ -318,7 +338,12 @@ const AdminContentInner = () => {
             <button
               key={p}
               type="button"
-              onClick={() => { setPage(p); setEditingId(null); }}
+              onClick={() => {
+                if (p === page) return;
+                if (dirty && !confirm("Du har ulagrede endringer. Bytte side og forkaste dem?")) return;
+                setPage(p);
+                setEditingId(null);
+              }}
               className={`px-4 py-2 text-sm font-medium border-l border-border first:border-l-0 ${
                 page === p ? "bg-primary text-primary-foreground" : "bg-transparent text-foreground hover:bg-muted"
               }`}
@@ -330,6 +355,43 @@ const AdminContentInner = () => {
 
         {error && <p className="mb-4 text-destructive text-sm">Feil: {error}</p>}
         {loading && <p className="text-muted-foreground text-sm">Laster …</p>}
+
+        {!loading && (
+          <div className="sticky top-0 z-30 -mx-2 px-2 py-3 mb-6 bg-background/95 backdrop-blur border-b border-border flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={saveAll}
+              disabled={saving || !dirty}
+              className="inline-flex items-center gap-2 text-sm px-4 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-40"
+            >
+              <Save className="w-4 h-4" />
+              {saving ? "Lagrer …" : "Lagre"}
+            </button>
+            <button
+              type="button"
+              onClick={undoLastSave}
+              disabled={saving || undoStack.length === 0}
+              title="Tilbakestill siden til slik den var ved forrige lagring"
+              className="inline-flex items-center gap-2 text-sm px-3 py-1.5 rounded-md border border-border hover:bg-muted disabled:opacity-40"
+            >
+              <Undo2 className="w-4 h-4" />
+              Angre siste lagring
+            </button>
+            {dirty && (
+              <button
+                type="button"
+                onClick={discard}
+                disabled={saving}
+                className="text-sm px-3 py-1.5 rounded-md border border-border text-muted-foreground hover:bg-muted disabled:opacity-40"
+              >
+                Forkast endringer
+              </button>
+            )}
+            <span className={`text-xs ml-auto ${dirty ? "text-primary" : "text-muted-foreground"}`}>
+              {dirty ? "Ulagrede endringer" : "Alt er lagret"}
+            </span>
+          </div>
+        )}
 
         {!loading && (
           <>
@@ -362,7 +424,7 @@ const AdminContentInner = () => {
                           canMoveDown={i < rows.length - 1}
                           onEdit={() => setEditingId(editingId === r.block.id ? null : r.block.id)}
                           onChange={(patch) => updateBlock(r.block.id, patch)}
-                          onSave={() => saveBlock(r.block)}
+                          onSave={() => setEditingId(null)}
                           onCancel={() => {
                             if (r.block.id.startsWith("_new_")) {
                               setBlocks((prev) => prev.filter((x) => x.id !== r.block.id));
@@ -412,7 +474,6 @@ const AdminContentInner = () => {
                       if (existing) return prev.map((x) => (x === existing ? { ...existing, ...patch } : x));
                       return [...prev, { ...b, ...patch }];
                     })}
-                    onSave={() => saveSlot(b)}
                   />
                 ))}
               </div>
@@ -574,7 +635,7 @@ const DbRow = ({
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <button type="button" onClick={onSave} disabled={busy}
               className="text-sm px-4 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50">
-              {busy ? "Lagrer …" : "Lagre"}
+              Ferdig
             </button>
             <button type="button" onClick={onCancel}
               className="text-sm px-3 py-1.5 rounded-md border border-border hover:bg-muted">
@@ -819,12 +880,11 @@ const ScalarInput = ({
 };
 
 const SlotEditor = ({
-  block, busy, onChange, onSave,
+  block, onChange,
 }: {
   block: Block;
   busy: boolean;
   onChange: (patch: Partial<Block>) => void;
-  onSave: () => void;
 }) => (
   <div className="rounded-md border border-border bg-card/50 p-4">
     <div className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-2">
@@ -843,12 +903,6 @@ const SlotEditor = ({
           onChange={(e) => onChange({ body_md_en: e.target.value })}
           className="w-full rounded-md bg-background border border-border px-3 py-2 text-sm font-mono" />
       </div>
-    </div>
-    <div className="mt-3">
-      <button type="button" onClick={onSave} disabled={busy}
-        className="text-sm px-4 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50">
-        {busy ? "Lagrer …" : "Lagre"}
-      </button>
     </div>
   </div>
 );

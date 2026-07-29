@@ -296,11 +296,6 @@ const AdminContentInner = () => {
     setEditingId(null);
   };
 
-  const unusedBusy = () => {
-      setBusyId(null);
-    }
-  };
-
   const slotRows: Block[] = SLOTS[page].map(({ key }) => {
     const existing = slotBlocks.find((b) => b.key === key);
     return existing ?? normaliseBlock({

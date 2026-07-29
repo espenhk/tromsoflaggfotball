@@ -978,11 +978,8 @@ const FieldDiagram = ({
             </>
           ) : null}
 
-          {/* Instruction text - just above bottom end zone */}
-          <div
-            className="absolute inset-x-0"
-            style={{ bottom: `${(geo.endzone / geo.totalLength) * 100 + 1}%`, zIndex: 3 }}
-          >
+          {/* Instruction text - bottom of the bottom end zone */}
+          <div className="absolute inset-x-0" style={{ bottom: "1.5%", zIndex: 3 }}>
             <p className="text-white/30 text-[9px] text-center">Trykk på en spiller for beskrivelse</p>
           </div>
 

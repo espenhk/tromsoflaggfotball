@@ -482,6 +482,19 @@ const en: Record<TranslationKey, string> = {
   "posPage.whoFitsPrefix": "Who fits as a",
   "posPage.nflLabel": "NFL role models:",
 
+  // Matches page
+  "matches.headerTitle": "Fixtures & results",
+  "matches.h2": "Fixtures and results",
+  "matches.intro":
+    "Upcoming games and the results from games already played.",
+  "matches.upcoming": "Upcoming games",
+  "matches.results": "Results",
+  "matches.noUpcoming": "No games scheduled yet.",
+  "matches.noResults": "No results yet.",
+  "matches.loading": "Loading games …",
+  "matches.error": "Couldn't load the games right now.",
+  "matches.link": "Fixtures & results →",
+
   // HowIDidIt
   "hid.headerTitle": "How this site was built",
   "hid.h": "Built with GPT-5 + Lovable",

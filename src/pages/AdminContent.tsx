@@ -126,7 +126,10 @@ const AdminContentInner = () => {
     setError(null);
     try {
       const r = await call({ action: "list", page: p });
-      setBlocks(((r.blocks ?? []) as Block[]).map(normaliseBlock));
+      const fresh = ((r.blocks ?? []) as Block[]).map(normaliseBlock);
+      setBlocks(fresh);
+      setPublished(fresh);
+      setUndoStack([]);
     } catch (e) {
       setError((e as Error).message);
     } finally {

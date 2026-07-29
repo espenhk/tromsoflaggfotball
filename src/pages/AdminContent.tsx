@@ -4,13 +4,16 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { supabase } from "@/integrations/supabase/client";
 import { ADMIN_TOKEN_KEY } from "@/components/AdminGate";
-import { CODE_MANIFEST, midpointOrder, type CmsPage } from "@/cms/manifest";
+import {
+  codeSections, midpointOrder, customPageId, customSlug, isCustomPage, toSlug,
+  type CmsPage, type PageId,
+} from "@/cms/manifest";
 import { VARIANTS, VARIANT_ORDER, getVariant, type VariantKey, type FieldSpec } from "@/cms/variants";
-import { Link2, Unlink, Save, Undo2 } from "lucide-react";
+import { Link2, Unlink, Save, Undo2, Plus, Trash2, ExternalLink } from "lucide-react";
 
 type Block = {
   id: string;
-  page: CmsPage;
+  page: PageId;
   key: string;
   kind: "slot" | "section";
   title_no: string | null;
@@ -23,8 +26,15 @@ type Block = {
   data: Record<string, unknown>;
 };
 
+type CustomPageRow = {
+  slug: string;
+  title_no: string;
+  title_en: string | null;
+  visible: boolean;
+};
+
 /** Fixed text slots per page (inline overrides, not sections in the flow). */
-const SLOTS: Record<CmsPage, { key: string; label: string; help?: string }[]> = {
+const SLOTS: Record<string, { key: string; label: string; help?: string }[]> = {
   home: [
     { key: "hero.tagline", label: "Hero-undertekst", help: "Kort linje under hovedtittelen." },
   ],
@@ -47,7 +57,7 @@ type Row =
   | { kind: "code"; key: string; order: number; label: string }
   | { kind: "db"; block: Block };
 
-function newBlock(page: CmsPage, variant: VariantKey, sort_order: number): Block {
+function newBlock(page: PageId, variant: VariantKey, sort_order: number): Block {
   return {
     id: `_new_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
     page,
@@ -64,7 +74,7 @@ function newBlock(page: CmsPage, variant: VariantKey, sort_order: number): Block
   };
 }
 
-function normaliseBlock(b: Partial<Block> & { page: CmsPage; key: string }): Block {
+function normaliseBlock(b: Partial<Block> & { page: PageId; key: string }): Block {
   return {
     id: b.id ?? "",
     page: b.page,

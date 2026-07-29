@@ -3,10 +3,10 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/i18n/LanguageProvider";
-import { afterRange, type CmsPage } from "@/cms/manifest";
+import { afterRange, type PageId } from "@/cms/manifest";
 import { getVariant } from "@/cms/variants";
 
-export type ContentPage = CmsPage;
+export type ContentPage = PageId;
 
 export type ContentBlock = {
   id: string;
@@ -112,23 +112,7 @@ export const MdBlock = ({ md, className }: { md: string; className?: string }) =
  * The rendered output depends on each block's `variant` (markdown, map,
  * training-info, image, video, …).
  */
-export const AfterSection = ({
-  page,
-  after,
-}: {
-  page: ContentPage;
-  after: string;
-}) => {
-  const { blocks } = useContentBlocks();
-  const { from, to } = afterRange(page, after);
-  const sections = blocks
-    .filter(
-      (b) =>
-        b.kind === "section" &&
-        b.sort_order > from &&
-        b.sort_order < to,
-    )
-    .sort((a, b) => a.sort_order - b.sort_order);
+const SectionRun = ({ sections }: { sections: ContentBlock[] }) => {
   if (sections.length === 0) return null;
   // A section can be "linked" to the one above it (data.linkedUp). Linked
   // sections share one background stripe and sit tighter together, so a
@@ -172,6 +156,30 @@ export const AfterSection = ({
       })}
     </>
   );
+};
+
+export const AfterSection = ({
+  page,
+  after,
+}: {
+  page: ContentPage;
+  after: string;
+}) => {
+  const { blocks } = useContentBlocks();
+  const { from, to } = afterRange(page, after);
+  const sections = blocks
+    .filter((b) => b.kind === "section" && b.sort_order > from && b.sort_order < to)
+    .sort((a, b) => a.sort_order - b.sort_order);
+  return <SectionRun sections={sections} />;
+};
+
+/** Render every visible section on the page, in order (used by custom pages). */
+export const AllSections = () => {
+  const { blocks } = useContentBlocks();
+  const sections = blocks
+    .filter((b) => b.kind === "section")
+    .sort((a, b) => a.sort_order - b.sort_order);
+  return <SectionRun sections={sections} />;
 };
 
 /**

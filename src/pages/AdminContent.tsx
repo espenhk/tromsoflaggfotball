@@ -338,7 +338,12 @@ const AdminContentInner = () => {
             <button
               key={p}
               type="button"
-              onClick={() => { setPage(p); setEditingId(null); }}
+              onClick={() => {
+                if (p === page) return;
+                if (dirty && !confirm("Du har ulagrede endringer. Bytte side og forkaste dem?")) return;
+                setPage(p);
+                setEditingId(null);
+              }}
               className={`px-4 py-2 text-sm font-medium border-l border-border first:border-l-0 ${
                 page === p ? "bg-primary text-primary-foreground" : "bg-transparent text-foreground hover:bg-muted"
               }`}

@@ -494,7 +494,14 @@ const DbRow = ({
             className="text-xs px-2 rounded hover:bg-muted disabled:opacity-30" aria-label="Ned">▼</button>
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-xs uppercase tracking-widest text-primary">{variant.label}</div>
+          <div className="text-xs uppercase tracking-widest text-primary flex items-center gap-2">
+            <span>{variant.label}</span>
+            {typeof block.data?.group === "string" && block.data.group.trim() && (
+              <span className="normal-case tracking-normal text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                gruppe: {block.data.group as string}
+              </span>
+            )}
+          </div>
           <div className="font-heading text-base truncate">
             {block.title_no || block.title_en || <span className="text-muted-foreground italic">(uten tittel)</span>}
           </div>
@@ -560,6 +567,20 @@ const VariantEditor = ({
         <div className="text-xs text-muted-foreground">
           Rekkefølge: <span className="font-mono">{block.sort_order}</span>
         </div>
+      </div>
+      <div>
+        <Label>Gruppe (valgfritt)</Label>
+        <input
+          type="text"
+          value={typeof block.data?.group === "string" ? (block.data.group as string) : ""}
+          onChange={(e) => setData("group", e.target.value)}
+          placeholder="f.eks. spillet"
+          className="w-full rounded-md bg-background border border-border px-3 py-1.5 text-sm"
+        />
+        <p className="text-xs text-muted-foreground mt-1">
+          Seksjoner som ligger etter hverandre og har samme gruppenavn deler bakgrunnsfarge
+          og vises tettere sammen, som én seksjon.
+        </p>
       </div>
       <div className="grid sm:grid-cols-2 gap-3">
         <div>

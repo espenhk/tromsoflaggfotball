@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ADMIN_TOKEN_KEY } from "@/components/AdminGate";
 import { CODE_MANIFEST, midpointOrder, type CmsPage } from "@/cms/manifest";
 import { VARIANTS, VARIANT_ORDER, getVariant, type VariantKey, type FieldSpec } from "@/cms/variants";
+import { Link2, Unlink } from "lucide-react";
 
 type Block = {
   id: string;
@@ -81,6 +82,17 @@ function normaliseBlock(b: Partial<Block> & { page: CmsPage; key: string }): Blo
 }
 
 const AdminContent = () => {
+  return <AdminContentInner />;
+};
+
+/** True when this section is chained to the one above it. */
+function isLinkedUp(b: Block): boolean {
+  const d = b.data as { linkedUp?: unknown; group?: unknown };
+  if (d?.linkedUp === true) return true;
+  return typeof d?.group === "string" && d.group.trim().length > 0;
+}
+
+const AdminContentInner = () => {
   const [page, setPage] = useState<CmsPage>("home");
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [loading, setLoading] = useState(true);
@@ -243,6 +255,14 @@ const AdminContent = () => {
     if (!b.id.startsWith("_new_")) await saveBlock(next);
   };
 
+  /** Link/unlink a section to the section above it (shared background). */
+  const toggleLink = async (b: Block) => {
+    const data = { ...b.data, linkedUp: !isLinkedUp(b) };
+    delete (data as Record<string, unknown>).group;
+    updateBlock(b.id, { data });
+    if (!b.id.startsWith("_new_")) await saveBlock({ ...b, data });
+  };
+
   const saveSlot = async (b: Block) => {
     setBusyId(b.id || `slot:${b.key}`);
     setError(null);
@@ -317,7 +337,8 @@ const AdminContent = () => {
               <h2 className="font-heading text-xl mb-3">Seksjoner</h2>
               <p className="text-sm text-muted-foreground mb-4">
                 Rekkefølgen her matcher det som vises på siden. Bruk «+»-knappen mellom to seksjoner
-                for å sette inn en ny.
+                for å sette inn en ny. Kjede-knappen lenker to seksjoner sammen, slik at de deler
+                bakgrunnsfarge og vises tett inntil hverandre — som én seksjon.
               </p>
               <div>
                 <InsertBar
@@ -358,6 +379,15 @@ const AdminContent = () => {
                         prevOrder={orderOf(r)}
                         nextOrder={nextOrder}
                         onInsert={(v) => insertAt(orderOf(r), nextOrder, v)}
+                        link={
+                          r.kind === "db" && nextRow?.kind === "db"
+                            ? {
+                                linked: isLinkedUp(nextRow.block),
+                                busy: busyId === nextRow.block.id,
+                                onToggle: () => toggleLink(nextRow.block),
+                              }
+                            : undefined
+                        }
                       />
                     </div>
                   );
@@ -398,16 +428,38 @@ const InsertBar = ({
   prevOrder,
   nextOrder,
   onInsert,
+  link,
 }: {
   prevOrder: number;
   nextOrder: number;
   onInsert: (v: VariantKey) => void;
+  link?: { linked: boolean; busy: boolean; onToggle: () => void };
 }) => {
   const [open, setOpen] = useState(false);
   return (
     <div className="relative py-1">
       <div className="flex items-center gap-2">
         <div className="flex-1 h-px bg-border" />
+        {link && (
+          <button
+            type="button"
+            onClick={link.onToggle}
+            disabled={link.busy}
+            title={link.linked
+              ? "Lenket: deler bakgrunn med seksjonen over. Klikk for å løsne."
+              : "Ikke lenket. Klikk for å slå sammen med seksjonen over."}
+            aria-pressed={link.linked}
+            aria-label={link.linked ? "Løsne seksjonene" : "Lenke seksjonene"}
+            className={`flex items-center gap-1 text-xs px-2 py-1 rounded-md border transition-colors disabled:opacity-50 ${
+              link.linked
+                ? "border-primary text-primary bg-primary/10"
+                : "border-dashed border-border text-muted-foreground hover:text-primary hover:border-primary"
+            }`}
+          >
+            {link.linked ? <Link2 className="w-3.5 h-3.5" /> : <Unlink className="w-3.5 h-3.5" />}
+            {link.linked ? "Lenket" : "Lenk"}
+          </button>
+        )}
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
@@ -496,9 +548,9 @@ const DbRow = ({
         <div className="flex-1 min-w-0">
           <div className="text-xs uppercase tracking-widest text-primary flex items-center gap-2">
             <span>{variant.label}</span>
-            {typeof block.data?.group === "string" && block.data.group.trim() && (
-              <span className="normal-case tracking-normal text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
-                gruppe: {block.data.group as string}
+            {isLinkedUp(block) && (
+              <span className="normal-case tracking-normal text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary">
+                lenket til seksjonen over
               </span>
             )}
           </div>
@@ -567,20 +619,6 @@ const VariantEditor = ({
         <div className="text-xs text-muted-foreground">
           Rekkefølge: <span className="font-mono">{block.sort_order}</span>
         </div>
-      </div>
-      <div>
-        <Label>Gruppe (valgfritt)</Label>
-        <input
-          type="text"
-          value={typeof block.data?.group === "string" ? (block.data.group as string) : ""}
-          onChange={(e) => setData("group", e.target.value)}
-          placeholder="f.eks. spillet"
-          className="w-full rounded-md bg-background border border-border px-3 py-1.5 text-sm"
-        />
-        <p className="text-xs text-muted-foreground mt-1">
-          Seksjoner som ligger etter hverandre og har samme gruppenavn deler bakgrunnsfarge
-          og vises tettere sammen, som én seksjon.
-        </p>
       </div>
       <div className="grid sm:grid-cols-2 gap-3">
         <div>

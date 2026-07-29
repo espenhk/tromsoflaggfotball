@@ -208,6 +208,19 @@ const no = {
   "posPage.whoFitsPrefix": "Hvem passer som",
   "posPage.nflLabel": "NFL-forbilder:",
 
+  // ── Kamper (kampkalender og resultater) ───────────────
+  "matches.headerTitle": "Kamper og resultater",
+  "matches.h2": "Kampkalender og resultater",
+  "matches.intro":
+    "Her finner du kommende kamper og resultatene fra kamper som er spilt.",
+  "matches.upcoming": "Kommende kamper",
+  "matches.results": "Resultater",
+  "matches.noUpcoming": "Ingen kamper er satt opp ennå.",
+  "matches.noResults": "Ingen resultater ennå.",
+  "matches.loading": "Laster kamper …",
+  "matches.error": "Klarte ikke å hente kampene akkurat nå.",
+  "matches.link": "Kamper og resultater →",
+
   // ── HowIDidIt page chrome (steps stay NO-only for length) ─
   "hid.headerTitle": "Hvordan denne siden ble laget",
   "hid.h": "Bygget med GPT-5 + Lovable",

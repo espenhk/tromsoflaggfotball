@@ -244,6 +244,14 @@ const AdminContent = () => {
     if (!b.id.startsWith("_new_")) await saveBlock(next);
   };
 
+  /** Link/unlink a section to the section above it (shared background). */
+  const toggleLink = async (b: Block) => {
+    const data = { ...b.data, linkedUp: !isLinkedUp(b) };
+    delete (data as Record<string, unknown>).group;
+    updateBlock(b.id, { data });
+    if (!b.id.startsWith("_new_")) await saveBlock({ ...b, data });
+  };
+
   const saveSlot = async (b: Block) => {
     setBusyId(b.id || `slot:${b.key}`);
     setError(null);
@@ -359,6 +367,15 @@ const AdminContent = () => {
                         prevOrder={orderOf(r)}
                         nextOrder={nextOrder}
                         onInsert={(v) => insertAt(orderOf(r), nextOrder, v)}
+                        link={
+                          r.kind === "db" && nextRow?.kind === "db"
+                            ? {
+                                linked: isLinkedUp(nextRow.block),
+                                busy: busyId === nextRow.block.id,
+                                onToggle: () => toggleLink(nextRow.block),
+                              }
+                            : undefined
+                        }
                       />
                     </div>
                   );

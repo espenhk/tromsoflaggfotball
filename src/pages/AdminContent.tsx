@@ -630,7 +630,7 @@ const DbRow = ({
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <button type="button" onClick={onSave} disabled={busy}
               className="text-sm px-4 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50">
-              {busy ? "Lagrer …" : "Lagre"}
+              Ferdig
             </button>
             <button type="button" onClick={onCancel}
               className="text-sm px-3 py-1.5 rounded-md border border-border hover:bg-muted">

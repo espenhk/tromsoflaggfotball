@@ -1281,11 +1281,8 @@ const FieldDiagram = ({
             />
           ))}
 
-          {/* Legend */}
-          <div
-            className="absolute right-3 flex flex-col gap-1"
-            style={{ bottom: `${(geo.endzone / geo.totalLength) * 100 + 1}%` }}
-          >
+          {/* Legend — bottom of the bottom end zone */}
+          <div className="absolute left-3 flex flex-col gap-1" style={{ bottom: "1.5%", zIndex: 3 }}>
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-sky-400 inline-block" />
               <span className="text-[10px] text-white/60 font-body">{t("fd.offense")}</span>

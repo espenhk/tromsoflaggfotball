@@ -9,6 +9,7 @@ import TrainingPlans from "./pages/TrainingPlans.tsx";
 import Posisjoner from "./pages/Posisjoner.tsx";
 import MakeIgPost from "./pages/MakeIgPost.tsx";
 import Quiz from "./pages/Quiz.tsx";
+import Kamper from "./pages/Kamper.tsx";
 import PressKit from "./pages/PressKit.tsx";
 import CustomPage from "./pages/CustomPage.tsx";
 import Pameldinger from "./pages/Pameldinger.tsx";
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/how-i-did-it" element={<HowIDidIt />} />
             <Route path="/posisjoner" element={<Posisjoner />} />
             <Route path="/quiz" element={<Quiz />} />
+            <Route path="/kamper" element={<Kamper />} />
             <Route path="/presse" element={<PressKit />} />
             <Route path="/pages/:slug" element={<CustomPage />} />
 

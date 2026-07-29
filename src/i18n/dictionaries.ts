@@ -208,6 +208,19 @@ const no = {
   "posPage.whoFitsPrefix": "Hvem passer som",
   "posPage.nflLabel": "NFL-forbilder:",
 
+  // ── Kamper (kampkalender og resultater) ───────────────
+  "matches.headerTitle": "Kamper og resultater",
+  "matches.h2": "Kampkalender og resultater",
+  "matches.intro":
+    "Her finner du kommende kamper og resultatene fra kamper som er spilt.",
+  "matches.upcoming": "Kommende kamper",
+  "matches.results": "Resultater",
+  "matches.noUpcoming": "Ingen kamper er satt opp ennå.",
+  "matches.noResults": "Ingen resultater ennå.",
+  "matches.loading": "Laster kamper …",
+  "matches.error": "Klarte ikke å hente kampene akkurat nå.",
+  "matches.link": "Kamper og resultater →",
+
   // ── HowIDidIt page chrome (steps stay NO-only for length) ─
   "hid.headerTitle": "Hvordan denne siden ble laget",
   "hid.h": "Bygget med GPT-5 + Lovable",
@@ -468,6 +481,19 @@ const en: Record<TranslationKey, string> = {
   "posPage.skillsLabel": "Skills & traits",
   "posPage.whoFitsPrefix": "Who fits as a",
   "posPage.nflLabel": "NFL role models:",
+
+  // Matches page
+  "matches.headerTitle": "Fixtures & results",
+  "matches.h2": "Fixtures and results",
+  "matches.intro":
+    "Upcoming games and the results from games already played.",
+  "matches.upcoming": "Upcoming games",
+  "matches.results": "Results",
+  "matches.noUpcoming": "No games scheduled yet.",
+  "matches.noResults": "No results yet.",
+  "matches.loading": "Loading games …",
+  "matches.error": "Couldn't load the games right now.",
+  "matches.link": "Fixtures & results →",
 
   // HowIDidIt
   "hid.headerTitle": "How this site was built",

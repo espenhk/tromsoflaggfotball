@@ -231,6 +231,9 @@ const IndexInner = () => {
             </span>
           </div>
           <div className={`flex items-center gap-4 text-xs ${theme === "tuil" ? "text-white/80" : "text-muted-foreground"}`}>
+            <Link to="/kamper" className="hover:underline">
+              {t("matches.headerTitle")}
+            </Link>
             <Link to="/presse" className="hover:underline">
               {t("footer.press")}
             </Link>

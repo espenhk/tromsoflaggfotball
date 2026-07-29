@@ -185,9 +185,7 @@
     padding-bottom: 0;
   }
   .cms-group-cont > section {
-    padding-top: 0;
-  }
-  .cms-group-cont > section {
+    padding-top: 1.5rem;
     scroll-margin-top: 4rem;
   }
 }

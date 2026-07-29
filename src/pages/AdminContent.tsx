@@ -561,6 +561,20 @@ const VariantEditor = ({
           Rekkefølge: <span className="font-mono">{block.sort_order}</span>
         </div>
       </div>
+      <div>
+        <Label>Gruppe (valgfritt)</Label>
+        <input
+          type="text"
+          value={typeof block.data?.group === "string" ? (block.data.group as string) : ""}
+          onChange={(e) => setData("group", e.target.value)}
+          placeholder="f.eks. spillet"
+          className="w-full rounded-md bg-background border border-border px-3 py-1.5 text-sm"
+        />
+        <p className="text-xs text-muted-foreground mt-1">
+          Seksjoner som ligger etter hverandre og har samme gruppenavn deler bakgrunnsfarge
+          og vises tettere sammen, som én seksjon.
+        </p>
+      </div>
       <div className="grid sm:grid-cols-2 gap-3">
         <div>
           <Label>Tittel (norsk)</Label>

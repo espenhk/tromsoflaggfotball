@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ADMIN_TOKEN_KEY } from "@/components/AdminGate";
 import { CODE_MANIFEST, midpointOrder, type CmsPage } from "@/cms/manifest";
 import { VARIANTS, VARIANT_ORDER, getVariant, type VariantKey, type FieldSpec } from "@/cms/variants";
+import { Link2, Unlink } from "lucide-react";
 
 type Block = {
   id: string;

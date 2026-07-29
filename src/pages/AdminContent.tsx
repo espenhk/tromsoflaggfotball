@@ -176,65 +176,15 @@ const AdminContentInner = () => {
     setBlocks((prev) => prev.map((b) => (b.id === id ? { ...b, ...patch } : b)));
   };
 
-  const saveBlock = async (b: Block) => {
-    setBusyId(b.id);
-    setError(null);
-    try {
-      const r = await call({
-        action: "upsert",
-        id: b.id && !b.id.startsWith("_new_") ? b.id : undefined,
-        block: {
-          page: b.page,
-          key: b.key,
-          kind: b.kind,
-          title_no: b.title_no,
-          title_en: b.title_en,
-          body_md_no: b.body_md_no,
-          body_md_en: b.body_md_en,
-          sort_order: b.sort_order,
-          visible: b.visible,
-          variant: b.variant,
-          data: b.data,
-        },
-      });
-      if (r.block) {
-        const saved = normaliseBlock(r.block);
-        setBlocks((prev) => {
-          const filtered = prev.filter(
-            (x) => x.id !== b.id && x.id !== saved.id
-              && !(x.kind === "slot" && x.key === saved.key && x.page === saved.page),
-          );
-          return [...filtered, saved];
-        });
-        setEditingId(null);
-      }
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusyId(null);
-    }
-  };
-
-  const deleteBlock = async (b: Block) => {
-    if (b.id.startsWith("_new_")) {
-      setBlocks((prev) => prev.filter((x) => x.id !== b.id));
-      setEditingId(null);
-      return;
-    }
-    if (!confirm("Slette denne seksjonen?")) return;
-    setBusyId(b.id);
-    try {
-      await call({ action: "delete", id: b.id });
-      setBlocks((prev) => prev.filter((x) => x.id !== b.id));
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusyId(null);
-    }
+  /** Local-only delete — published on the next save. */
+  const deleteBlock = (b: Block) => {
+    if (!b.id.startsWith("_new_") && !confirm("Fjerne denne seksjonen? Trer i kraft når du lagrer.")) return;
+    setBlocks((prev) => prev.filter((x) => x.id !== b.id));
+    setEditingId(null);
   };
 
   /** Move a DB section one step earlier or later in the merged list. */
-  const move = async (b: Block, direction: -1 | 1) => {
+  const move = (b: Block, direction: -1 | 1) => {
     const idx = rows.findIndex((r) => r.kind === "db" && r.block.id === b.id);
     if (idx < 0) return;
     const targetIdx = idx + direction;
@@ -248,56 +198,105 @@ const AdminContentInner = () => {
     const nextOrder = after ? orderOf(after) : orderOf(rows[targetIdx]) + 10;
     const newOrder = midpointOrder(prevOrder, nextOrder);
     updateBlock(b.id, { sort_order: newOrder });
-    if (!b.id.startsWith("_new_")) {
-      try {
-        await call({ action: "reorder", order: [{ id: b.id, sort_order: newOrder }] });
-      } catch (e) {
-        setError((e as Error).message);
-      }
-    }
   };
 
-  const toggleVisible = async (b: Block) => {
-    const next = { ...b, visible: !b.visible };
-    updateBlock(b.id, { visible: next.visible });
-    if (!b.id.startsWith("_new_")) await saveBlock(next);
-  };
+  const toggleVisible = (b: Block) => updateBlock(b.id, { visible: !b.visible });
 
   /** Link/unlink a section to the section above it (shared background). */
-  const toggleLink = async (b: Block) => {
+  const toggleLink = (b: Block) => {
     const data = { ...b.data, linkedUp: !isLinkedUp(b) };
     delete (data as Record<string, unknown>).group;
     updateBlock(b.id, { data });
-    if (!b.id.startsWith("_new_")) await saveBlock({ ...b, data });
   };
 
-  const saveSlot = async (b: Block) => {
-    setBusyId(b.id || `slot:${b.key}`);
-    setError(null);
-    try {
+  /**
+   * Write `target` to the database, using `base` (the currently published
+   * state) to work out what changed. Returns the resulting blocks with the
+   * ids the server assigned.
+   */
+  const persist = async (target: Block[], base: Block[]): Promise<Block[]> => {
+    const liveIds = new Set(base.map((b) => b.id).filter((id) => id && !id.startsWith("_new_")));
+    const targetIds = new Set(target.map((b) => b.id));
+    for (const b of base) {
+      if (liveIds.has(b.id) && !targetIds.has(b.id)) {
+        await call({ action: "delete", id: b.id });
+      }
+    }
+    const out: Block[] = [];
+    for (const b of target) {
+      const exists = liveIds.has(b.id);
+      const prior = exists ? base.find((x) => x.id === b.id) : undefined;
+      if (prior && sameBlock(prior, b)) { out.push(b); continue; }
       const r = await call({
         action: "upsert",
-        id: b.id && !b.id.startsWith("_new_") ? b.id : undefined,
+        id: exists ? b.id : undefined,
         block: {
-          page: b.page, key: b.key, kind: "slot",
+          page: b.page, key: b.key, kind: b.kind,
           title_no: b.title_no, title_en: b.title_en,
           body_md_no: b.body_md_no, body_md_en: b.body_md_en,
           sort_order: b.sort_order, visible: b.visible,
-          variant: "markdown", data: {},
+          variant: b.kind === "slot" ? "markdown" : b.variant,
+          data: b.kind === "slot" ? {} : b.data,
         },
       });
-      if (r.block) {
-        const saved = normaliseBlock(r.block);
-        setBlocks((prev) => {
-          const filtered = prev.filter(
-            (x) => !(x.kind === "slot" && x.key === saved.key && x.page === saved.page),
-          );
-          return [...filtered, saved];
-        });
-      }
+      out.push(r.block ? normaliseBlock(r.block) : b);
+    }
+    return out;
+  };
+
+  const dirty = useMemo(
+    () => snapshotKey(blocks) !== snapshotKey(published),
+    [blocks, published],
+  );
+
+  /** Publish all pending edits and remember the previous state for undo. */
+  const saveAll = async () => {
+    setSaving(true);
+    setError(null);
+    try {
+      const result = await persist(blocks, published);
+      setUndoStack((s) => [...s, published].slice(-20));
+      setBlocks(result);
+      setPublished(result);
+      setEditingId(null);
     } catch (e) {
       setError((e as Error).message);
+      await refresh(page);
     } finally {
+      setSaving(false);
+    }
+  };
+
+  /** Roll the page back to the state it had at the previous save point. */
+  const undoLastSave = async () => {
+    const snapshot = undoStack[undoStack.length - 1];
+    if (!snapshot) return;
+    if (!confirm("Tilbakestille siden til forrige lagringspunkt?")) return;
+    setSaving(true);
+    setError(null);
+    try {
+      const result = await persist(snapshot, published);
+      setUndoStack((s) => s.slice(0, -1));
+      setBlocks(result);
+      setPublished(result);
+      setEditingId(null);
+    } catch (e) {
+      setError((e as Error).message);
+      await refresh(page);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  /** Throw away unsaved edits. */
+  const discard = () => {
+    if (!dirty) return;
+    if (!confirm("Forkaste endringene som ikke er lagret?")) return;
+    setBlocks(published);
+    setEditingId(null);
+  };
+
+  const unusedBusy = () => {
       setBusyId(null);
     }
   };

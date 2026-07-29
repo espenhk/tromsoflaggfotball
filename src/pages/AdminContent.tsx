@@ -337,7 +337,8 @@ const AdminContentInner = () => {
               <h2 className="font-heading text-xl mb-3">Seksjoner</h2>
               <p className="text-sm text-muted-foreground mb-4">
                 Rekkefølgen her matcher det som vises på siden. Bruk «+»-knappen mellom to seksjoner
-                for å sette inn en ny.
+                for å sette inn en ny. Kjede-knappen lenker to seksjoner sammen, slik at de deler
+                bakgrunnsfarge og vises tett inntil hverandre — som én seksjon.
               </p>
               <div>
                 <InsertBar

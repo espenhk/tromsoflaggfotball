@@ -357,43 +357,6 @@ const AdminContentInner = () => {
         {loading && <p className="text-muted-foreground text-sm">Laster …</p>}
 
         {!loading && (
-          <div className="sticky top-0 z-30 -mx-2 px-2 py-3 mb-6 bg-background/95 backdrop-blur border-b border-border flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={saveAll}
-              disabled={saving || !dirty}
-              className="inline-flex items-center gap-2 text-sm px-4 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-40"
-            >
-              <Save className="w-4 h-4" />
-              {saving ? "Lagrer …" : "Lagre"}
-            </button>
-            <button
-              type="button"
-              onClick={undoLastSave}
-              disabled={saving || undoStack.length === 0}
-              title="Tilbakestill siden til slik den var ved forrige lagring"
-              className="inline-flex items-center gap-2 text-sm px-3 py-1.5 rounded-md border border-border hover:bg-muted disabled:opacity-40"
-            >
-              <Undo2 className="w-4 h-4" />
-              Angre siste lagring
-            </button>
-            {dirty && (
-              <button
-                type="button"
-                onClick={discard}
-                disabled={saving}
-                className="text-sm px-3 py-1.5 rounded-md border border-border text-muted-foreground hover:bg-muted disabled:opacity-40"
-              >
-                Forkast endringer
-              </button>
-            )}
-            <span className={`text-xs ml-auto ${dirty ? "text-primary" : "text-muted-foreground"}`}>
-              {dirty ? "Ulagrede endringer" : "Alt er lagret"}
-            </span>
-          </div>
-        )}
-
-        {!loading && (
           <>
             <section className="mb-12">
               <h2 className="font-heading text-xl mb-3">Seksjoner</h2>
@@ -456,6 +419,41 @@ const AdminContentInner = () => {
                 })}
               </div>
             </section>
+
+            <div className="sticky bottom-0 z-30 -mx-2 px-2 py-3 mb-12 bg-background/95 backdrop-blur border-t border-border flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={saveAll}
+                disabled={saving || !dirty}
+                className="inline-flex items-center gap-2 text-sm px-4 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-40"
+              >
+                <Save className="w-4 h-4" />
+                {saving ? "Lagrer …" : "Lagre"}
+              </button>
+              <button
+                type="button"
+                onClick={undoLastSave}
+                disabled={saving || undoStack.length === 0}
+                title="Tilbakestill siden til slik den var ved forrige lagring"
+                className="inline-flex items-center gap-2 text-sm px-3 py-1.5 rounded-md border border-border hover:bg-muted disabled:opacity-40"
+              >
+                <Undo2 className="w-4 h-4" />
+                Angre siste lagring
+              </button>
+              {dirty && (
+                <button
+                  type="button"
+                  onClick={discard}
+                  disabled={saving}
+                  className="text-sm px-3 py-1.5 rounded-md border border-border text-muted-foreground hover:bg-muted disabled:opacity-40"
+                >
+                  Forkast endringer
+                </button>
+              )}
+              <span className={`text-xs ml-auto ${dirty ? "text-primary" : "text-muted-foreground"}`}>
+                {dirty ? "Ulagrede endringer" : "Alt er lagret"}
+              </span>
+            </div>
 
             <section>
               <h2 className="font-heading text-xl mb-3">Faste tekstfelt</h2>

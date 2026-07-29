@@ -494,7 +494,14 @@ const DbRow = ({
             className="text-xs px-2 rounded hover:bg-muted disabled:opacity-30" aria-label="Ned">▼</button>
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-xs uppercase tracking-widest text-primary">{variant.label}</div>
+          <div className="text-xs uppercase tracking-widest text-primary flex items-center gap-2">
+            <span>{variant.label}</span>
+            {typeof block.data?.group === "string" && block.data.group.trim() && (
+              <span className="normal-case tracking-normal text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                gruppe: {block.data.group as string}
+              </span>
+            )}
+          </div>
           <div className="font-heading text-base truncate">
             {block.title_no || block.title_en || <span className="text-muted-foreground italic">(uten tittel)</span>}
           </div>

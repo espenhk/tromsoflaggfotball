@@ -427,16 +427,38 @@ const InsertBar = ({
   prevOrder,
   nextOrder,
   onInsert,
+  link,
 }: {
   prevOrder: number;
   nextOrder: number;
   onInsert: (v: VariantKey) => void;
+  link?: { linked: boolean; busy: boolean; onToggle: () => void };
 }) => {
   const [open, setOpen] = useState(false);
   return (
     <div className="relative py-1">
       <div className="flex items-center gap-2">
         <div className="flex-1 h-px bg-border" />
+        {link && (
+          <button
+            type="button"
+            onClick={link.onToggle}
+            disabled={link.busy}
+            title={link.linked
+              ? "Lenket: deler bakgrunn med seksjonen over. Klikk for å løsne."
+              : "Ikke lenket. Klikk for å slå sammen med seksjonen over."}
+            aria-pressed={link.linked}
+            aria-label={link.linked ? "Løsne seksjonene" : "Lenke seksjonene"}
+            className={`flex items-center gap-1 text-xs px-2 py-1 rounded-md border transition-colors disabled:opacity-50 ${
+              link.linked
+                ? "border-primary text-primary bg-primary/10"
+                : "border-dashed border-border text-muted-foreground hover:text-primary hover:border-primary"
+            }`}
+          >
+            {link.linked ? <Link2 className="w-3.5 h-3.5" /> : <Unlink className="w-3.5 h-3.5" />}
+            {link.linked ? "Lenket" : "Lenk"}
+          </button>
+        )}
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}

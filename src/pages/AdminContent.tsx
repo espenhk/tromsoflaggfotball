@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ADMIN_TOKEN_KEY } from "@/components/AdminGate";
 import { CODE_MANIFEST, midpointOrder, type CmsPage } from "@/cms/manifest";
 import { VARIANTS, VARIANT_ORDER, getVariant, type VariantKey, type FieldSpec } from "@/cms/variants";
-import { Link2, Unlink } from "lucide-react";
+import { Link2, Unlink, Save, Undo2 } from "lucide-react";
 
 type Block = {
   id: string;
@@ -95,6 +95,11 @@ function isLinkedUp(b: Block): boolean {
 const AdminContentInner = () => {
   const [page, setPage] = useState<CmsPage>("home");
   const [blocks, setBlocks] = useState<Block[]>([]);
+  /** Last published state for this page (what the live site shows). */
+  const [published, setPublished] = useState<Block[]>([]);
+  /** Snapshots of the published state before each save, newest last. */
+  const [undoStack, setUndoStack] = useState<Block[][]>([]);
+  const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);

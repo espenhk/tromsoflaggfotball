@@ -4,13 +4,16 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { supabase } from "@/integrations/supabase/client";
 import { ADMIN_TOKEN_KEY } from "@/components/AdminGate";
-import { CODE_MANIFEST, midpointOrder, type CmsPage } from "@/cms/manifest";
+import {
+  codeSections, midpointOrder, customPageId, customSlug, isCustomPage, toSlug,
+  type CmsPage, type PageId,
+} from "@/cms/manifest";
 import { VARIANTS, VARIANT_ORDER, getVariant, type VariantKey, type FieldSpec } from "@/cms/variants";
-import { Link2, Unlink, Save, Undo2 } from "lucide-react";
+import { Link2, Unlink, Save, Undo2, Plus, Trash2, ExternalLink } from "lucide-react";
 
 type Block = {
   id: string;
-  page: CmsPage;
+  page: PageId;
   key: string;
   kind: "slot" | "section";
   title_no: string | null;
@@ -23,8 +26,15 @@ type Block = {
   data: Record<string, unknown>;
 };
 
+type CustomPageRow = {
+  slug: string;
+  title_no: string;
+  title_en: string | null;
+  visible: boolean;
+};
+
 /** Fixed text slots per page (inline overrides, not sections in the flow). */
-const SLOTS: Record<CmsPage, { key: string; label: string; help?: string }[]> = {
+const SLOTS: Record<string, { key: string; label: string; help?: string }[]> = {
   home: [
     { key: "hero.tagline", label: "Hero-undertekst", help: "Kort linje under hovedtittelen." },
   ],
@@ -47,7 +57,7 @@ type Row =
   | { kind: "code"; key: string; order: number; label: string }
   | { kind: "db"; block: Block };
 
-function newBlock(page: CmsPage, variant: VariantKey, sort_order: number): Block {
+function newBlock(page: PageId, variant: VariantKey, sort_order: number): Block {
   return {
     id: `_new_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
     page,
@@ -64,7 +74,7 @@ function newBlock(page: CmsPage, variant: VariantKey, sort_order: number): Block
   };
 }
 
-function normaliseBlock(b: Partial<Block> & { page: CmsPage; key: string }): Block {
+function normaliseBlock(b: Partial<Block> & { page: PageId; key: string }): Block {
   return {
     id: b.id ?? "",
     page: b.page,
@@ -110,7 +120,8 @@ function snapshotKey(list: Block[]): string {
 }
 
 const AdminContentInner = () => {
-  const [page, setPage] = useState<CmsPage>("home");
+  const [page, setPage] = useState<PageId>("home");
+  const [customPages, setCustomPages] = useState<CustomPageRow[]>([]);
   const [blocks, setBlocks] = useState<Block[]>([]);
   /** Last published state for this page (what the live site shows). */
   const [published, setPublished] = useState<Block[]>([]);
@@ -138,7 +149,7 @@ const AdminContentInner = () => {
     return data as { blocks?: Block[]; block?: Block; ok?: boolean };
   };
 
-  const refresh = async (p: CmsPage) => {
+  const refresh = async (p: PageId) => {
     setLoading(true);
     setError(null);
     try {
@@ -158,6 +169,71 @@ const AdminContentInner = () => {
     void refresh(page);
   }, [page]);
 
+  const refreshPages = async () => {
+    try {
+      const r = (await call({ action: "pages" })) as unknown as { pages?: CustomPageRow[] };
+      setCustomPages(r.pages ?? []);
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
+
+  useEffect(() => {
+    void refreshPages();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /** Create a new custom page at /pages/<slug> and switch to it. */
+  const createPage = async () => {
+    const title = prompt("Tittel på den nye siden?");
+    if (!title || !title.trim()) return;
+    const suggested = toSlug(title);
+    const slug = toSlug(prompt("Adresse (/pages/…)", suggested) ?? suggested);
+    if (!slug) return;
+    if (customPages.some((p) => p.slug === slug)) {
+      alert("Det finnes allerede en side med denne adressen.");
+      return;
+    }
+    try {
+      await call({ action: "page-upsert", page: { slug, title_no: title.trim(), visible: true } });
+      await refreshPages();
+      setPage(customPageId(slug));
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
+
+  const currentCustom = isCustomPage(page)
+    ? customPages.find((p) => p.slug === customSlug(page)) ?? null
+    : null;
+
+  const renamePage = async () => {
+    if (!currentCustom) return;
+    const title = prompt("Ny tittel", currentCustom.title_no);
+    if (!title || !title.trim()) return;
+    try {
+      await call({
+        action: "page-upsert",
+        page: { ...currentCustom, title_no: title.trim() },
+      });
+      await refreshPages();
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
+
+  const deletePage = async () => {
+    if (!currentCustom) return;
+    if (!confirm(`Slette siden «${currentCustom.title_no}» og alt innholdet på den?`)) return;
+    try {
+      await call({ action: "page-delete", slug: currentCustom.slug });
+      await refreshPages();
+      setPage("home");
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
+
   const slotBlocks = useMemo(
     () => blocks.filter((b) => b.kind === "slot"),
     [blocks],
@@ -169,7 +245,7 @@ const AdminContentInner = () => {
 
   /** Merged, ordered list of code rows and DB section rows. */
   const rows: Row[] = useMemo(() => {
-    const code: Row[] = CODE_MANIFEST[page].map((c) => ({
+    const code: Row[] = codeSections(page).map((c) => ({
       kind: "code", key: c.key, order: c.order, label: c.label,
     }));
     const db: Row[] = sectionBlocks.map((b) => ({ kind: "db", block: b }));
@@ -313,7 +389,7 @@ const AdminContentInner = () => {
     setEditingId(null);
   };
 
-  const slotRows: Block[] = SLOTS[page].map(({ key }) => {
+  const slotRows: Block[] = (SLOTS[page] ?? []).map(({ key }) => {
     const existing = slotBlocks.find((b) => b.key === key);
     return existing ?? normaliseBlock({
       page, key, kind: "slot", sort_order: 0, visible: true,
@@ -333,24 +409,73 @@ const AdminContentInner = () => {
           når du trykker «Lagre».
         </p>
 
-        <div className="mb-8 inline-flex rounded-md border border-border overflow-hidden">
-          {(Object.keys(PAGE_LABELS) as CmsPage[]).map((p) => (
-            <button
-              key={p}
-              type="button"
-              onClick={() => {
-                if (p === page) return;
-                if (dirty && !confirm("Du har ulagrede endringer. Bytte side og forkaste dem?")) return;
-                setPage(p);
-                setEditingId(null);
-              }}
-              className={`px-4 py-2 text-sm font-medium border-l border-border first:border-l-0 ${
-                page === p ? "bg-primary text-primary-foreground" : "bg-transparent text-foreground hover:bg-muted"
-              }`}
-            >
-              {PAGE_LABELS[p]}
-            </button>
-          ))}
+        <div className="mb-8 flex flex-wrap items-center gap-2">
+          <label className="text-sm text-muted-foreground" htmlFor="cms-page-select">Side</label>
+          <select
+            id="cms-page-select"
+            value={page}
+            onChange={(e) => {
+              const p = e.target.value;
+              if (p === page) return;
+              if (dirty && !confirm("Du har ulagrede endringer. Bytte side og forkaste dem?")) {
+                e.target.value = page;
+                return;
+              }
+              setPage(p);
+              setEditingId(null);
+            }}
+            className="bg-input border border-border rounded-md px-3 py-2 text-sm min-w-56"
+          >
+            <optgroup label="Faste sider">
+              {(Object.keys(PAGE_LABELS) as CmsPage[]).map((p) => (
+                <option key={p} value={p}>{PAGE_LABELS[p]}</option>
+              ))}
+            </optgroup>
+            {customPages.length > 0 && (
+              <optgroup label="Egne sider (/pages/…)">
+                {customPages.map((p) => (
+                  <option key={p.slug} value={customPageId(p.slug)}>
+                    {p.title_no} — /pages/{p.slug}
+                  </option>
+                ))}
+              </optgroup>
+            )}
+          </select>
+
+          <button
+            type="button"
+            onClick={createPage}
+            className="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-md border border-border hover:bg-muted"
+          >
+            <Plus className="w-4 h-4" /> Ny side
+          </button>
+
+          {currentCustom && (
+            <>
+              <a
+                href={`/pages/${currentCustom.slug}`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-md border border-border hover:bg-muted"
+              >
+                <ExternalLink className="w-4 h-4" /> Åpne
+              </a>
+              <button
+                type="button"
+                onClick={renamePage}
+                className="text-sm px-3 py-2 rounded-md border border-border hover:bg-muted"
+              >
+                Gi nytt navn
+              </button>
+              <button
+                type="button"
+                onClick={deletePage}
+                className="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-md border border-destructive/40 text-destructive hover:bg-destructive/10"
+              >
+                <Trash2 className="w-4 h-4" /> Slett side
+              </button>
+            </>
+          )}
         </div>
 
         {error && <p className="mb-4 text-destructive text-sm">Feil: {error}</p>}

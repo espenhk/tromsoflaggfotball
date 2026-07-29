@@ -17,6 +17,26 @@ export type CodeSection = { key: string; order: number; label: string };
 
 export type CmsPage = "home" | "presse" | "quiz" | "posisjoner";
 
+/**
+ * A page identifier used by the CMS. Built-in pages use their short key
+ * ("home", "presse", …). Admin-created pages live at /pages/<slug> and are
+ * stored as "custom:<slug>".
+ */
+export type PageId = CmsPage | string;
+
+export const CUSTOM_PREFIX = "custom:";
+export const customPageId = (slug: string) => `${CUSTOM_PREFIX}${slug}`;
+export const isCustomPage = (page: string): boolean => page.startsWith(CUSTOM_PREFIX);
+export const customSlug = (page: string): string | null =>
+  isCustomPage(page) ? page.slice(CUSTOM_PREFIX.length) : null;
+/** Normalise free text into a URL-safe slug. */
+export const toSlug = (s: string): string =>
+  s.toLowerCase().trim()
+    .replace(/[æ]/g, "ae").replace(/[ø]/g, "o").replace(/[å]/g, "a")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+
 export const CODE_MANIFEST: Record<CmsPage, CodeSection[]> = {
   home: [
     { key: "hero",         order: 10, label: "Hero" },
@@ -37,8 +57,12 @@ export const CODE_MANIFEST: Record<CmsPage, CodeSection[]> = {
 };
 
 /** The order at which `<AfterSection after="X" />` starts pulling DB rows. */
-export function afterRange(page: CmsPage, key: string): { from: number; to: number } {
-  const list = CODE_MANIFEST[page];
+export function codeSections(page: PageId): CodeSection[] {
+  return CODE_MANIFEST[page as CmsPage] ?? [];
+}
+
+export function afterRange(page: PageId, key: string): { from: number; to: number } {
+  const list = codeSections(page);
   const i = list.findIndex((s) => s.key === key);
   if (i < 0) return { from: -Infinity, to: Infinity };
   const from = list[i].order;

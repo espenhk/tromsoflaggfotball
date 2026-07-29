@@ -35,6 +35,33 @@ export type Database = {
         }
         Relationships: []
       }
+      cms_pages: {
+        Row: {
+          created_at: string
+          slug: string
+          title_en: string | null
+          title_no: string
+          updated_at: string
+          visible: boolean
+        }
+        Insert: {
+          created_at?: string
+          slug: string
+          title_en?: string | null
+          title_no: string
+          updated_at?: string
+          visible?: boolean
+        }
+        Update: {
+          created_at?: string
+          slug?: string
+          title_en?: string | null
+          title_no?: string
+          updated_at?: string
+          visible?: boolean
+        }
+        Relationships: []
+      }
       content_blocks: {
         Row: {
           body_md_en: string | null

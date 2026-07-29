@@ -82,6 +82,17 @@ function normaliseBlock(b: Partial<Block> & { page: CmsPage; key: string }): Blo
 }
 
 const AdminContent = () => {
+  return <AdminContentInner />;
+};
+
+/** True when this section is chained to the one above it. */
+function isLinkedUp(b: Block): boolean {
+  const d = b.data as { linkedUp?: unknown; group?: unknown };
+  if (d?.linkedUp === true) return true;
+  return typeof d?.group === "string" && d.group.trim().length > 0;
+}
+
+const AdminContentInner = () => {
   const [page, setPage] = useState<CmsPage>("home");
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [loading, setLoading] = useState(true);

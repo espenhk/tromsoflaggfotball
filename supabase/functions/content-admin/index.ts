@@ -36,7 +36,13 @@ async function verifyToken(token: unknown, secret: string): Promise<boolean> {
   return expected.length === sig.length && safeEqual(expected, sig);
 }
 
-const PAGES = new Set(["home", "presse", "quiz", "posisjoner"]);
+const BUILTIN_PAGES = new Set(["home", "presse", "quiz", "posisjoner"]);
+const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,59}$/;
+/** Built-in page key, or "custom:<slug>" for an admin-created page. */
+function isValidPage(p: string): boolean {
+  if (BUILTIN_PAGES.has(p)) return true;
+  return p.startsWith("custom:") && SLUG_RE.test(p.slice("custom:".length));
+}
 
 type BlockInput = {
   id?: string;
@@ -62,7 +68,7 @@ function clampStr(v: unknown, max: number): string | null {
 function sanitize(input: BlockInput): Record<string, unknown> {
   const out: Record<string, unknown> = {};
   if (input.page !== undefined) {
-    if (!PAGES.has(String(input.page))) throw new Error("invalid page");
+    if (!isValidPage(String(input.page))) throw new Error("invalid page");
     out.page = input.page;
   }
   if (input.key !== undefined) {
@@ -125,10 +131,61 @@ Deno.serve(async (req) => {
       const page = typeof body.page === "string" ? body.page : null;
       let q = supabase.from("content_blocks").select("*")
         .order("page").order("kind").order("sort_order").order("key");
-      if (page && PAGES.has(page)) q = q.eq("page", page);
+      if (page && isValidPage(page)) q = q.eq("page", page);
       const { data, error } = await q;
       if (error) throw error;
       return new Response(JSON.stringify({ blocks: data }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // ---- Custom pages (served at /pages/<slug>) ----
+    if (action === "pages") {
+      const { data, error } = await supabase.from("cms_pages").select("*").order("title_no");
+      if (error) throw error;
+      return new Response(JSON.stringify({ pages: data }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "page-upsert") {
+      const p = (body.page ?? {}) as {
+        slug?: string; title_no?: string; title_en?: string | null; visible?: boolean;
+      };
+      const slug = String(p.slug ?? "").trim();
+      const title = clampStr(p.title_no, 120)?.trim();
+      if (!SLUG_RE.test(slug) || !title) {
+        return new Response(JSON.stringify({ error: "invalid page" }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const row = {
+        slug,
+        title_no: title,
+        title_en: clampStr(p.title_en, 120),
+        visible: p.visible === undefined ? true : !!p.visible,
+      };
+      const { data, error } = await supabase.from("cms_pages")
+        .upsert(row, { onConflict: "slug" }).select().single();
+      if (error) throw error;
+      return new Response(JSON.stringify({ page: data }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "page-delete") {
+      const slug = String(body.slug ?? "");
+      if (!SLUG_RE.test(slug)) {
+        return new Response(JSON.stringify({ error: "invalid slug" }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const { error: be } = await supabase.from("content_blocks")
+        .delete().eq("page", `custom:${slug}`);
+      if (be) throw be;
+      const { error } = await supabase.from("cms_pages").delete().eq("slug", slug);
+      if (error) throw error;
+      return new Response(JSON.stringify({ ok: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

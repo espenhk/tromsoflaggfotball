@@ -381,7 +381,7 @@ const AdminContentInner = () => {
                           canMoveDown={i < rows.length - 1}
                           onEdit={() => setEditingId(editingId === r.block.id ? null : r.block.id)}
                           onChange={(patch) => updateBlock(r.block.id, patch)}
-                          onSave={() => saveBlock(r.block)}
+                          onSave={() => setEditingId(null)}
                           onCancel={() => {
                             if (r.block.id.startsWith("_new_")) {
                               setBlocks((prev) => prev.filter((x) => x.id !== r.block.id));
@@ -431,7 +431,6 @@ const AdminContentInner = () => {
                       if (existing) return prev.map((x) => (x === existing ? { ...existing, ...patch } : x));
                       return [...prev, { ...b, ...patch }];
                     })}
-                    onSave={() => saveSlot(b)}
                   />
                 ))}
               </div>

@@ -173,6 +173,23 @@
   .zebra > section:nth-of-type(even) {
     background-color: hsl(var(--card) / 0.5);
   }
+
+  /* CMS blocks: striping is computed in JS so that grouped sections share a
+     background and count as a single stripe. */
+  .cms-block-striped {
+    background-color: hsl(var(--card) / 0.5);
+  }
+  /* Sections inside a group hug each other vertically so the group reads as
+     one section. */
+  .cms-group-open > section {
+    padding-bottom: 0;
+  }
+  .cms-group-cont > section {
+    padding-top: 0;
+  }
+  .cms-group-cont > section {
+    scroll-margin-top: 4rem;
+  }
 }
 
 /* ============================================================

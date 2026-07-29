@@ -179,6 +179,11 @@
   .cms-block-striped {
     background-color: hsl(var(--card) / 0.5);
   }
+  /* Contain child margins so they can't escape the coloured wrapper and
+     punch a gap of the opposite background between linked sections. */
+  .cms-block {
+    display: flow-root;
+  }
   /* Sections inside a group hug each other vertically so the group reads as
      one section. */
   .cms-group-open > section {

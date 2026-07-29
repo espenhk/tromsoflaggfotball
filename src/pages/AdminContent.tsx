@@ -837,12 +837,11 @@ const ScalarInput = ({
 };
 
 const SlotEditor = ({
-  block, busy, onChange, onSave,
+  block, onChange,
 }: {
   block: Block;
   busy: boolean;
   onChange: (patch: Partial<Block>) => void;
-  onSave: () => void;
 }) => (
   <div className="rounded-md border border-border bg-card/50 p-4">
     <div className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-2">
@@ -861,12 +860,6 @@ const SlotEditor = ({
           onChange={(e) => onChange({ body_md_en: e.target.value })}
           className="w-full rounded-md bg-background border border-border px-3 py-2 text-sm font-mono" />
       </div>
-    </div>
-    <div className="mt-3">
-      <button type="button" onClick={onSave} disabled={busy}
-        className="text-sm px-4 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50">
-        {busy ? "Lagrer …" : "Lagre"}
-      </button>
     </div>
   </div>
 );

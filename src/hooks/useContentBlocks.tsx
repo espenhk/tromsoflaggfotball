@@ -130,11 +130,39 @@ export const AfterSection = ({
     )
     .sort((a, b) => a.sort_order - b.sort_order);
   if (sections.length === 0) return null;
+  // Group consecutive sections that share a non-empty `data.group` value.
+  // Each group counts as ONE stripe, so the section after a group always
+  // gets the opposite background.
+  const groupOf = (b: ContentBlock) => {
+    const g = (b.data as { group?: unknown })?.group;
+    return typeof g === "string" && g.trim() ? g.trim() : null;
+  };
+  let stripe = -1;
+  let prevGroup: string | null = null;
+  const rows = sections.map((s, i) => {
+    const g = groupOf(s);
+    const continues = i > 0 && g !== null && g === prevGroup;
+    if (!continues) stripe += 1;
+    prevGroup = g;
+    const nextG = i + 1 < sections.length ? groupOf(sections[i + 1]) : null;
+    const isLastOfGroup = !(g !== null && g === nextG);
+    return { block: s, striped: stripe % 2 === 1, continues, isLastOfGroup };
+  });
   return (
     <>
-      {sections.map((s) => {
-        const V = getVariant(s.variant);
-        return <V.render key={s.id} {...s} />;
+      {rows.map(({ block, striped, continues, isLastOfGroup }) => {
+        const V = getVariant(block.variant);
+        const cls = [
+          "cms-block",
+          striped ? "cms-block-striped" : "",
+          continues ? "cms-group-cont" : "",
+          !isLastOfGroup ? "cms-group-open" : "",
+        ].filter(Boolean).join(" ");
+        return (
+          <div key={block.id} className={cls}>
+            <V.render {...block} />
+          </div>
+        );
       })}
     </>
   );

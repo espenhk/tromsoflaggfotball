@@ -130,22 +130,28 @@ export const AfterSection = ({
     )
     .sort((a, b) => a.sort_order - b.sort_order);
   if (sections.length === 0) return null;
-  // Group consecutive sections that share a non-empty `data.group` value.
-  // Each group counts as ONE stripe, so the section after a group always
-  // gets the opposite background.
-  const groupOf = (b: ContentBlock) => {
-    const g = (b.data as { group?: unknown })?.group;
-    return typeof g === "string" && g.trim() ? g.trim() : null;
+  // A section can be "linked" to the one above it (data.linkedUp). Linked
+  // sections share one background stripe and sit tighter together, so a
+  // chain of them reads as a single section. Legacy `data.group` names are
+  // still honoured for blocks that haven't been migrated.
+  const linkedUp = (b: ContentBlock, prev?: ContentBlock) => {
+    const d = b.data as { linkedUp?: unknown; group?: unknown };
+    if (d?.linkedUp === true) return true;
+    const g = typeof d?.group === "string" && d.group.trim() ? d.group.trim() : null;
+    const pg = prev
+      ? (() => {
+          const p = (prev.data as { group?: unknown })?.group;
+          return typeof p === "string" && p.trim() ? p.trim() : null;
+        })()
+      : null;
+    return g !== null && g === pg;
   };
   let stripe = -1;
-  let prevGroup: string | null = null;
   const rows = sections.map((s, i) => {
-    const g = groupOf(s);
-    const continues = i > 0 && g !== null && g === prevGroup;
+    const continues = i > 0 && linkedUp(s, sections[i - 1]);
     if (!continues) stripe += 1;
-    prevGroup = g;
-    const nextG = i + 1 < sections.length ? groupOf(sections[i + 1]) : null;
-    const isLastOfGroup = !(g !== null && g === nextG);
+    const isLastOfGroup =
+      i + 1 >= sections.length || !linkedUp(sections[i + 1], s);
     return { block: s, striped: stripe % 2 === 1, continues, isLastOfGroup };
   });
   return (

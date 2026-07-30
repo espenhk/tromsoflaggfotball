@@ -29,7 +29,7 @@ const fmtDate = (iso: string) => {
 
 const fmtShortDate = (iso: string) => {
   try {
-    return new Date(iso).toLocaleDateString("nb-NO", { month: "short", day: "numeric" });
+    return new Date(iso).toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit" });
   } catch {
     return iso;
   }
@@ -208,17 +208,17 @@ const AdminExports = () => {
     "rounded-md border border-border bg-background text-foreground text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2";
 
   return (
-    <main className="min-h-screen bg-background text-foreground px-3 sm:px-6 py-10 sm:py-16">
+    <main className="min-h-screen bg-background text-foreground px-1.5 sm:px-6 py-6 sm:py-16">
       <div className="max-w-6xl mx-auto">
         <Link to="/admin" className="text-sm text-muted-foreground hover:text-primary">
           ← Admin
         </Link>
-        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl mt-3 mb-2">Eksportlogg</h1>
-        <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8">
+        <h1 className="font-display text-2xl sm:text-4xl md:text-5xl mt-2 mb-1">Eksportlogg</h1>
+        <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-8">
           Alle lagrede Instagram-poster. Last ned på nytt, åpne i editoren eller rydd opp.
         </p>
 
-        <div className="flex flex-wrap gap-2 sm:gap-3 mb-4 sm:mb-6">
+        <div className="flex flex-wrap gap-1.5 sm:gap-3 mb-2 sm:mb-6">
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -248,7 +248,7 @@ const AdminExports = () => {
           </select>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-6">
           <span className="text-xs sm:text-sm text-muted-foreground flex-1">
             {filtered.length} av {entries.length} eksport{entries.length === 1 ? "" : "er"}
             {selected.length > 0 && ` · ${selected.length} valgt`}
@@ -280,14 +280,14 @@ const AdminExports = () => {
           <p className="text-muted-foreground">Ingen eksporter matcher filteret.</p>
         )}
 
-        <div className="grid grid-cols-3 gap-2 sm:gap-4 lg:grid-cols-4">
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-4 lg:grid-cols-4">
           {filtered.map((e) => {
             const isSel = selected.includes(e.id);
             const thumb = thumbs[e.id];
             return (
               <div
                 key={e.id}
-                className={`rounded-lg border bg-card/50 overflow-hidden transition ${
+                className={`rounded-sm border bg-card/50 overflow-hidden transition ${
                   isSel ? "border-primary shadow-[0_0_12px_hsl(var(--primary)/0.4)]" : "border-border"
                 }`}
               >
@@ -310,11 +310,11 @@ const AdminExports = () => {
                     </span>
                   )}
                 </button>
-                <div className="p-1.5 sm:p-3">
+                <div className="p-1 sm:p-3">
                   <div className="font-medium text-xs sm:text-sm leading-tight truncate" title={e.name}>
                     {e.name}
                   </div>
-                  <div className="text-[11px] sm:text-xs text-muted-foreground mt-0.5 truncate">
+                  <div className="text-[11px] sm:text-xs text-muted-foreground truncate">
                     <span className="sm:hidden">{fmtShortDate(e.created_at)}</span>
                     <span className="hidden sm:inline">{fmtDate(e.created_at)}</span>
                     {` · ${e.slide_count}`}
@@ -322,33 +322,21 @@ const AdminExports = () => {
                       {` slide${e.slide_count === 1 ? "" : "s"}${e.aspect ? ` · ${e.aspect}` : ""}`}
                     </span>
                   </div>
-                  {!!(e.templates ?? []).length && (
-                    <div className="flex flex-wrap gap-1 mt-1 sm:mt-2 overflow-hidden max-h-[18px] sm:max-h-none">
-                      {e.templates!.map((t) => (
-                        <span
-                          key={t}
-                          className="text-[10px] sm:text-[11px] rounded border border-border px-1 sm:px-1.5 py-0.5 text-primary"
-                        >
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  )}
                   {e.photos_dropped && (
-                    <p className="text-[10px] sm:text-[11px] text-muted-foreground mt-1 sm:mt-2 truncate">
+                    <p className="text-[10px] sm:text-[11px] text-muted-foreground truncate">
                       Bilder utelatt
                     </p>
                   )}
-                  <div className="flex flex-wrap gap-1 sm:gap-2 mt-1.5 sm:mt-3">
+                  <div className="flex flex-nowrap items-center gap-0.5 sm:gap-2 mt-1 sm:mt-3">
                     <button
                       type="button"
                       title="Last ned"
                       aria-label="Last ned"
                       disabled={busy !== null}
                       onClick={() => void downloadEntry(e)}
-                      className="inline-flex items-center gap-1 text-xs rounded-md bg-primary text-primary-foreground p-1.5 sm:px-3 sm:py-1.5 disabled:opacity-60"
+                      className="inline-flex items-center justify-center gap-1 text-xs rounded-sm bg-primary text-primary-foreground p-1 sm:px-3 sm:py-1.5 disabled:opacity-60"
                     >
-                      <Download className="h-3.5 w-3.5" />
+                      <Download className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                       <span className="hidden sm:inline">
                         {busy === e.id ? "Laster ned…" : "Last ned"}
                       </span>
@@ -357,9 +345,9 @@ const AdminExports = () => {
                       to={`/admin/make-ig-post?export=${e.id}`}
                       title="Åpne i editor"
                       aria-label="Åpne i editor"
-                      className="inline-flex items-center gap-1 text-xs rounded-md border border-border p-1.5 sm:px-3 sm:py-1.5 hover:bg-muted"
+                      className="inline-flex items-center justify-center gap-1 text-xs rounded-sm border border-border p-1 sm:px-3 sm:py-1.5 hover:bg-muted"
                     >
-                      <Pencil className="h-3.5 w-3.5" />
+                      <Pencil className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                       <span className="hidden sm:inline">Åpne</span>
                     </Link>
                     <button
@@ -367,9 +355,9 @@ const AdminExports = () => {
                       title="Gi nytt navn"
                       aria-label="Gi nytt navn"
                       onClick={() => void doRename(e)}
-                      className="inline-flex items-center gap-1 text-xs rounded-md border border-border p-1.5 sm:px-3 sm:py-1.5 hover:bg-muted"
+                      className="inline-flex items-center justify-center gap-1 text-xs rounded-sm border border-border p-1 sm:px-3 sm:py-1.5 hover:bg-muted"
                     >
-                      <Type className="h-3.5 w-3.5" />
+                      <Type className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                       <span className="hidden sm:inline">Nytt navn</span>
                     </button>
                     <button
@@ -378,9 +366,9 @@ const AdminExports = () => {
                       aria-label="Slett"
                       disabled={busy !== null}
                       onClick={() => void doDelete([e.id])}
-                      className="inline-flex items-center gap-1 text-xs rounded-md border border-destructive text-destructive p-1.5 sm:px-3 sm:py-1.5 disabled:opacity-60"
+                      className="inline-flex items-center justify-center gap-1 text-xs rounded-sm border border-destructive text-destructive p-1 sm:px-3 sm:py-1.5 disabled:opacity-60"
                     >
-                      <Trash2 className="h-3.5 w-3.5" />
+                      <Trash2 className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                       <span className="hidden sm:inline">Slett</span>
                     </button>
                   </div>

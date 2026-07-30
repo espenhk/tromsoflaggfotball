@@ -5,11 +5,11 @@ import remarkGfm from "remark-gfm";
 import { supabase } from "@/integrations/supabase/client";
 import { ADMIN_TOKEN_KEY } from "@/components/AdminGate";
 import {
-  codeSections, midpointOrder, customPageId, customSlug, isCustomPage, toSlug,
+  codeSections, midpointOrder,
   type CmsPage, type PageId,
 } from "@/cms/manifest";
 import { VARIANTS, VARIANT_ORDER, getVariant, type VariantKey, type FieldSpec } from "@/cms/variants";
-import { Link2, Unlink, Save, Undo2, RotateCcw, Plus, Trash2, ExternalLink } from "lucide-react";
+import { Link2, Unlink, Save, Undo2, RotateCcw } from "lucide-react";
 
 type Block = {
   id: string;
@@ -24,13 +24,6 @@ type Block = {
   visible: boolean;
   variant: string;
   data: Record<string, unknown>;
-};
-
-type CustomPageRow = {
-  slug: string;
-  title_no: string;
-  title_en: string | null;
-  visible: boolean;
 };
 
 /** Fixed text slots per page (inline overrides, not sections in the flow). */
@@ -121,7 +114,6 @@ function snapshotKey(list: Block[]): string {
 
 const AdminContentInner = () => {
   const [page, setPage] = useState<PageId>("home");
-  const [customPages, setCustomPages] = useState<CustomPageRow[]>([]);
   const [blocks, setBlocks] = useState<Block[]>([]);
   /** Last published state for this page (what the live site shows). */
   const [published, setPublished] = useState<Block[]>([]);
@@ -168,71 +160,6 @@ const AdminContentInner = () => {
   useEffect(() => {
     void refresh(page);
   }, [page]);
-
-  const refreshPages = async () => {
-    try {
-      const r = (await call({ action: "pages" })) as unknown as { pages?: CustomPageRow[] };
-      setCustomPages(r.pages ?? []);
-    } catch (e) {
-      setError((e as Error).message);
-    }
-  };
-
-  useEffect(() => {
-    void refreshPages();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  /** Create a new custom page at /pages/<slug> and switch to it. */
-  const createPage = async () => {
-    const title = prompt("Tittel på den nye siden?");
-    if (!title || !title.trim()) return;
-    const suggested = toSlug(title);
-    const slug = toSlug(prompt("Adresse (/pages/…)", suggested) ?? suggested);
-    if (!slug) return;
-    if (customPages.some((p) => p.slug === slug)) {
-      alert("Det finnes allerede en side med denne adressen.");
-      return;
-    }
-    try {
-      await call({ action: "page-upsert", page: { slug, title_no: title.trim(), visible: true } });
-      await refreshPages();
-      setPage(customPageId(slug));
-    } catch (e) {
-      setError((e as Error).message);
-    }
-  };
-
-  const currentCustom = isCustomPage(page)
-    ? customPages.find((p) => p.slug === customSlug(page)) ?? null
-    : null;
-
-  const renamePage = async () => {
-    if (!currentCustom) return;
-    const title = prompt("Ny tittel", currentCustom.title_no);
-    if (!title || !title.trim()) return;
-    try {
-      await call({
-        action: "page-upsert",
-        page: { ...currentCustom, title_no: title.trim() },
-      });
-      await refreshPages();
-    } catch (e) {
-      setError((e as Error).message);
-    }
-  };
-
-  const deletePage = async () => {
-    if (!currentCustom) return;
-    if (!confirm(`Slette siden «${currentCustom.title_no}» og alt innholdet på den?`)) return;
-    try {
-      await call({ action: "page-delete", slug: currentCustom.slug });
-      await refreshPages();
-      setPage("home");
-    } catch (e) {
-      setError((e as Error).message);
-    }
-  };
 
   const slotBlocks = useMemo(
     () => blocks.filter((b) => b.kind === "slot"),
@@ -431,51 +358,7 @@ const AdminContentInner = () => {
                 <option key={p} value={p}>{PAGE_LABELS[p]}</option>
               ))}
             </optgroup>
-            {customPages.length > 0 && (
-              <optgroup label="Egne sider (/pages/…)">
-                {customPages.map((p) => (
-                  <option key={p.slug} value={customPageId(p.slug)}>
-                    {p.title_no} — /pages/{p.slug}
-                  </option>
-                ))}
-              </optgroup>
-            )}
           </select>
-
-          <button
-            type="button"
-            onClick={createPage}
-            className="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-md border border-border hover:bg-muted"
-          >
-            <Plus className="w-4 h-4" /> Ny side
-          </button>
-
-          {currentCustom && (
-            <>
-              <a
-                href={`/pages/${currentCustom.slug}`}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-md border border-border hover:bg-muted"
-              >
-                <ExternalLink className="w-4 h-4" /> Åpne
-              </a>
-              <button
-                type="button"
-                onClick={renamePage}
-                className="text-sm px-3 py-2 rounded-md border border-border hover:bg-muted"
-              >
-                Gi nytt navn
-              </button>
-              <button
-                type="button"
-                onClick={deletePage}
-                className="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-md border border-destructive/40 text-destructive hover:bg-destructive/10"
-              >
-                <Trash2 className="w-4 h-4" /> Slett side
-              </button>
-            </>
-          )}
         </div>
 
         {error && <p className="mb-4 text-destructive text-sm">Feil: {error}</p>}

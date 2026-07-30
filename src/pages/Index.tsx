@@ -54,6 +54,25 @@ const IndexInner = () => {
   // flips to TUIL underneath the blue dissolve.
   const navIsRedNow = theme === "tuil" || (inReveal && revealStage >= 2);
   const navTextOverRed = navIsRedNow || showHeaderSweep;
+  // Desktop nav: normally left-aligned inside a max-w-4xl container. When the
+  // items no longer fit that container, switch to a full-width centered row so
+  // the menu grows symmetrically instead of running off the right edge.
+  const navRowRef = useRef<HTMLDivElement>(null);
+  const [navCentered, setNavCentered] = useState(false);
+  useEffect(() => {
+    const measure = () => {
+      const el = navRowRef.current;
+      if (!el) return;
+      const natural = Array.from(el.children).reduce(
+        (sum, c) => sum + (c as HTMLElement).offsetWidth,
+        0,
+      ) + 4 * Math.max(0, el.children.length - 1) + 12;
+      setNavCentered(natural > 896 - 32);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [navItems]);
   // Hero title state during the reveal:
   //  - stages 0–1: keep the default-theme heading (the header is changing, hero is unchanged)
   //  - stage 2: only «FLAGGFOTBALL»
@@ -102,7 +121,12 @@ const IndexInner = () => {
         style={navIsRedNow ? { backgroundColor: "hsl(3 79% 49%)" } : undefined}
       >
         {showHeaderSweep && <div className="reveal-header-sweep" aria-hidden />}
-        <div className="max-w-4xl mx-auto px-4 flex items-center gap-1 py-2 relative z-10">
+        <div
+          ref={navRowRef}
+          className={`px-4 flex items-center gap-1 py-2 relative z-10 ${
+            navCentered ? "w-full justify-center" : "max-w-4xl mx-auto"
+          }`}
+        >
           <BrandLogo variant="mark" alt="Logo" className="h-10 w-auto shrink-0 mr-3" />
           {navItems.map(({ id, label }) => (
             <button

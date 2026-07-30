@@ -98,6 +98,18 @@ export function useContentBlocks() {
 export type NavItem = { id: string; label: string };
 
 /**
+ * Short title used in the header menu. Falls back to the full section title.
+ * Stored per block under `data.nav_title_no` / `data.nav_title_en`.
+ */
+export function navLabel(b: ContentBlock, lang: string): string {
+  const d = (b.data ?? {}) as Record<string, unknown>;
+  const shortNo = typeof d.nav_title_no === "string" ? d.nav_title_no.trim() : "";
+  const shortEn = typeof d.nav_title_en === "string" ? d.nav_title_en.trim() : "";
+  if (lang === "en") return shortEn || shortNo || b.title_en?.trim() || b.title_no?.trim() || "";
+  return shortNo || b.title_no?.trim() || "";
+}
+
+/**
  * Build the page navigation from the CMS sections: one entry per linked
  * group, taking the title and anchor of the group's first section.
  */
@@ -112,7 +124,7 @@ export function useNavItems(): NavItem[] {
     sections.forEach((s, i) => {
       if (i > 0 && linkedUp(s, sections[i - 1])) return;
       const id = blockAnchorId(s);
-      const label = (lang === "en" ? s.title_en?.trim() : "") || s.title_no?.trim();
+      const label = navLabel(s, lang);
       if (!id || !label) return;
       items.push({ id, label });
     });

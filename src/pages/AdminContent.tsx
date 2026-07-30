@@ -975,6 +975,24 @@ const VariantEditor = ({
         </div>
       </div>
 
+      <div className="grid sm:grid-cols-2 gap-3">
+        <div>
+          <Label>Kort tittel (meny, norsk)</Label>
+          <input type="text" value={typeof block.data.nav_title_no === "string" ? block.data.nav_title_no : ""}
+            onChange={(e) => setData("nav_title_no", e.target.value)}
+            placeholder={block.title_no ?? ""}
+            className="w-full rounded-md bg-background border border-border px-3 py-1.5 text-sm" />
+          <p className="text-xs text-muted-foreground mt-1">Brukes som lenketekst i menyen. Tom = full tittel.</p>
+        </div>
+        <div>
+          <Label>Short title (menu, english)</Label>
+          <input type="text" value={typeof block.data.nav_title_en === "string" ? block.data.nav_title_en : ""}
+            onChange={(e) => setData("nav_title_en", e.target.value)}
+            placeholder={block.title_en ?? ""}
+            className="w-full rounded-md bg-background border border-border px-3 py-1.5 text-sm" />
+        </div>
+      </div>
+
       {variant.usesMarkdownBody && (
         <div className="grid md:grid-cols-2 gap-3">
           <div>

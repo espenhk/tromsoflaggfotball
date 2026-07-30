@@ -325,7 +325,11 @@ const AdminExports = () => {
                     />
                   ) : (
                     <span className="text-[10px] sm:text-xs text-muted-foreground px-1 text-center">
-                      {thumb === "" ? "Ingen forhåndsvisning" : "Rendrer…"}
+                      {thumb === ""
+                        ? "Ingen forhåndsvisning"
+                        : e.thumb
+                          ? "Laster…"
+                          : "Rendrer…"}
                     </span>
                   )}
                 </button>

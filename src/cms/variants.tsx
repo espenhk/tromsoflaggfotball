@@ -413,7 +413,7 @@ const ContactItem = ({ item, lang }: { item: Record<string, unknown>; lang: "no"
   const phone = typeof item.phone === "string" ? item.phone : "";
   const email = typeof item.email === "string" ? item.email : "";
   const note = pickLang(item.note_md_no as string, item.note_md_en as string, lang);
-  const hasDetails = Boolean(email || note);
+  const hasDetails = Boolean(note);
   return (
     <div className="rounded-xl border border-border bg-card/50">
       {/* Not a <button>: the row contains tel:/mailto: links, and anchors are

@@ -557,6 +557,16 @@ const AdminContentInner = () => {
               </button>
               <button
                 type="button"
+                onClick={discard}
+                disabled={saving || !dirty}
+                title="Forkast endringene du ikke har lagret"
+                className="inline-flex items-center gap-2 text-sm px-3 py-1.5 rounded-md border border-border hover:bg-muted disabled:opacity-40"
+              >
+                <RotateCcw className="w-4 h-4" />
+                Forkast
+              </button>
+              <button
+                type="button"
                 onClick={undoLastSave}
                 disabled={saving || undoStack.length === 0}
                 title="Tilbakestill siden til slik den var ved forrige lagring"
@@ -565,16 +575,6 @@ const AdminContentInner = () => {
                 <Undo2 className="w-4 h-4" />
                 Angre siste lagring
               </button>
-              {dirty && (
-                <button
-                  type="button"
-                  onClick={discard}
-                  disabled={saving}
-                  className="text-sm px-3 py-1.5 rounded-md border border-border text-muted-foreground hover:bg-muted disabled:opacity-40"
-                >
-                  Forkast endringer
-                </button>
-              )}
               <span className={`text-xs ml-auto ${dirty ? "text-primary" : "text-muted-foreground"}`}>
                 {dirty ? "Ulagrede endringer" : "Alt er lagret"}
               </span>

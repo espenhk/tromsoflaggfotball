@@ -24,6 +24,7 @@ export type IgExportEntry = {
   templates: string[] | null;
   aspect?: string | null;
   caption?: string | null;
+  thumb?: string | null;
   payload?: IgExportPayload;
 };
 
@@ -57,6 +58,9 @@ export const getIgExport = (id: string) =>
 export const deleteIgExport = (id: string) => igExportsApi("delete", { id });
 
 export const renameIgExport = (id: string, name: string) => igExportsApi("rename", { id, name });
+
+export const setIgExportThumb = (id: string, thumb: string) =>
+  igExportsApi("set_thumb", { id, thumb });
 
 export function slugifyFilename(name: string) {
   return (

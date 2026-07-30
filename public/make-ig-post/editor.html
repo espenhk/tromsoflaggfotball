@@ -3133,6 +3133,36 @@
         const stamp = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
         return cleaned ? `${cleaned} — ${stamp}` : `Export ${stamp} ${d.toTimeString().slice(0,5)}`;
       }
+      // Renders the current preview tile down to a small JPEG preview used by
+      // the export log grid (so it never has to re-rasterize full-size posts).
+      async function makeThumbDataUrl(maxPx) {
+        try {
+          const blob = await exportCurrentTile();
+          const bmp = await createImageBitmap(blob);
+          const max = maxPx || 360;
+          const scale = Math.min(1, max / Math.max(bmp.width, bmp.height));
+          const c = document.createElement('canvas');
+          c.width = Math.max(1, Math.round(bmp.width * scale));
+          c.height = Math.max(1, Math.round(bmp.height * scale));
+          const ctx = c.getContext('2d');
+          ctx.drawImage(bmp, 0, 0, c.width, c.height);
+          bmp.close && bmp.close();
+          return c.toDataURL('image/jpeg', 0.72);
+        } catch (_) { return null; }
+      }
+      // Thumbnail of slide 1, restoring whatever slide the user was editing.
+      async function makeFirstSlideThumb() {
+        const prev = state.currentSlide;
+        try {
+          if (prev !== 0) { snapshotSlide(); loadSlide(0); renderPreview();
+            await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))); }
+          return await makeThumbDataUrl(360);
+        } catch (_) {
+          return null;
+        } finally {
+          if (prev !== 0) { loadSlide(prev); renderPreview(); }
+        }
+      }
       function buildExportSnapshot(name, kind) {
         snapshotSlide();
         return {
@@ -3160,6 +3190,7 @@
           payload: entry.payload,
           photos_dropped: false,
           caption: entry.caption || null,
+          thumb: await makeFirstSlideThumb(),
         };
         try {
           await historyApi('save', payload);
@@ -3996,6 +4027,10 @@
             r.onerror = () => reject(new Error('base64 encode failed'));
             r.readAsDataURL(blob);
           });
+        },
+        // Small JPEG preview data URL of the currently loaded slide.
+        async exportThumbDataUrl(maxPx) {
+          return await makeThumbDataUrl(maxPx || 360);
         },
       };
 

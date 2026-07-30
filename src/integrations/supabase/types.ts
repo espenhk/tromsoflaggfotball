@@ -124,6 +124,7 @@ export type Database = {
           photos_dropped: boolean
           slide_count: number
           templates: string[] | null
+          thumb: string | null
           updated_at: string
         }
         Insert: {
@@ -136,6 +137,7 @@ export type Database = {
           photos_dropped?: boolean
           slide_count?: number
           templates?: string[] | null
+          thumb?: string | null
           updated_at?: string
         }
         Update: {
@@ -148,6 +150,7 @@ export type Database = {
           photos_dropped?: boolean
           slide_count?: number
           templates?: string[] | null
+          thumb?: string | null
           updated_at?: string
         }
         Relationships: []

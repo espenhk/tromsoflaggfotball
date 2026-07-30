@@ -433,10 +433,11 @@ html[data-theme="tuil"][data-bg="navy"] .t-player .left-col,
 html[data-theme="tuil"][data-bg="navy"] .t-event .photo,
 html[data-theme="tuil"][data-bg="navy"] .t-bts .photo,
 html[data-theme="tuil"][data-bg="navy"] .t-drill .field {
-  background:
+  background-color: #002857;
+  background-image:
     radial-gradient(at 30% 30%, rgba(0, 154, 222, 0.26) 0%, transparent 55%),
     radial-gradient(at 70% 70%, rgba(225, 37, 27, 0.16) 0%, transparent 55%),
-    linear-gradient(180deg, #002857 0%, #00132b 100%) !important;
+    linear-gradient(180deg, #002857 0%, #00132b 100%);
 }
 html[data-theme="tuil"][data-bg="navy"] .t-rule .diagram {
   background: #00132b;

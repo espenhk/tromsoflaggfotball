@@ -32,8 +32,8 @@ const SignupForm = ({ heading, iconKey, introMd, ctaLabel, successMd, anchorId =
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
 
-  const Icon = ICONS[(iconKey || "users").toLowerCase()] ?? Users;
-  const resolvedHeading = heading?.trim() || t("open.h");
+  const Icon = ICONS[(iconKey || "").toLowerCase()];
+  const resolvedHeading = heading?.trim() || "";
   const resolvedCta = ctaLabel?.trim() || t("try.cta");
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -87,16 +87,20 @@ const SignupForm = ({ heading, iconKey, introMd, ctaLabel, successMd, anchorId =
     <section id={anchorId} className="py-16 px-6 scroll-mt-16">
       <div className="max-w-3xl mx-auto">
         <div className="flex items-start gap-4">
-          <div className="text-primary mt-1">
-            <Icon className="w-6 h-6" />
+          {/* Keep the icon column even without an icon so a form that follows
+              an icon-headed markdown section stays aligned with it. */}
+          <div className="text-primary mt-1 shrink-0 w-6">
+            {Icon && <Icon className="w-6 h-6" />}
           </div>
           <div className="flex-1">
-            <h3 className="font-heading text-xl md:text-2xl font-medium text-foreground mb-3">
-              {resolvedHeading}
-            </h3>
+            {resolvedHeading && (
+              <h3 className="font-heading text-xl md:text-2xl font-medium text-foreground mb-3">
+                {resolvedHeading}
+              </h3>
+            )}
             {introMd?.trim() ? (
               <MdBlock md={introMd} className="mb-6" />
-            ) : (
+            ) : introMd === null && !resolvedHeading ? null : (
               <>
                 <p className="text-muted-foreground font-body leading-relaxed mb-3">
                   {t("open.p1.pre")}<strong className="text-foreground">{t("open.p1.strong")}</strong>{t("open.p1.post")}

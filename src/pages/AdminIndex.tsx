@@ -31,6 +31,11 @@ const links = [
     description: "Rediger tekst og legg til seksjoner på forsiden, /presse, /quiz og /posisjoner.",
   },
   {
+    to: "/admin/bildebibliotek",
+    title: "Bildebibliotek",
+    description: "Last opp og slett bilder som brukes i IG-editoren og på kampsidene.",
+  },
+  {
     to: "/admin/sosialt-mock",
     title: "Sosialt (mockup)",
     description: "Forhåndsvisning av sosiale medier-feeden.",

@@ -43,6 +43,15 @@ export function removeFromImageLibrary(id: string) {
   saveImageLibrary(loadImageLibrary().filter((x) => x.id !== id));
 }
 
+export function removeManyFromImageLibrary(ids: string[]) {
+  const set = new Set(ids);
+  saveImageLibrary(loadImageLibrary().filter((x) => !set.has(x.id)));
+}
+
+export function renameImageInLibrary(id: string, name: string) {
+  saveImageLibrary(loadImageLibrary().map((x) => (x.id === id ? { ...x, name } : x)));
+}
+
 export function readFileAsDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const r = new FileReader();

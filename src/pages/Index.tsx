@@ -121,7 +121,12 @@ const IndexInner = () => {
         style={navIsRedNow ? { backgroundColor: "hsl(3 79% 49%)" } : undefined}
       >
         {showHeaderSweep && <div className="reveal-header-sweep" aria-hidden />}
-        <div className="max-w-4xl mx-auto px-4 flex items-center gap-1 py-2 relative z-10">
+        <div
+          ref={navRowRef}
+          className={`px-4 flex items-center gap-1 py-2 relative z-10 ${
+            navCentered ? "w-full justify-center" : "max-w-4xl mx-auto"
+          }`}
+        >
           <BrandLogo variant="mark" alt="Logo" className="h-10 w-auto shrink-0 mr-3" />
           {navItems.map(({ id, label }) => (
             <button

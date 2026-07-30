@@ -317,6 +317,11 @@ const AdminExports = () => {
         </div>
 
         {error && <p className="text-destructive mb-6">{error}</p>}
+        {progress && (
+          <p className="text-xs sm:text-sm text-muted-foreground mb-2">
+            Lager miniatyrbilder for eldre eksporter… {progress.done}/{progress.total}
+          </p>
+        )}
         {loading && <p className="text-muted-foreground">Laster…</p>}
         {!loading && !filtered.length && (
           <p className="text-muted-foreground">Ingen eksporter matcher filteret.</p>

@@ -250,6 +250,46 @@ const IndexInner = () => {
 };
 
 
+/**
+ * Footer links, editable from the CMS (slot `footer.links`). Falls back to
+ * the built-in Kamper/Pressekit pair when nothing is configured.
+ */
+const FooterLinks = () => {
+  const t = useT();
+  const { lang } = useLang();
+  const raw = useSlotRaw(FOOTER_LINKS_SLOT);
+  const configured = parseFooterLinks(raw);
+  const links: FooterLink[] =
+    configured && configured.length > 0
+      ? configured
+      : [
+          { href: "/kamper", label_no: t("matches.headerTitle"), label_en: t("matches.headerTitle") },
+          { href: "/presse", label_no: t("footer.press"), label_en: t("footer.press") },
+        ];
+  return (
+    <>
+      {links.map((l, i) => {
+        const label = (lang === "en" ? l.label_en?.trim() : "") || l.label_no;
+        return isInternalHref(l.href) ? (
+          <Link key={`${l.href}-${i}`} to={l.href} className="hover:underline">
+            {label}
+          </Link>
+        ) : (
+          <a
+            key={`${l.href}-${i}`}
+            href={l.href}
+            target="_blank"
+            rel="noreferrer"
+            className="hover:underline"
+          >
+            {label}
+          </a>
+        );
+      })}
+    </>
+  );
+};
+
 const GameSection = () => {
   const navigate = useNavigate();
   const t = useT();

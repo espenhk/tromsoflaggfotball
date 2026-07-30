@@ -536,7 +536,7 @@ const SignupFormRenderer = (block: ContentBlock) => {
   const intro = bi(data, "intro", lang);
   const cta = bi(data, "cta", lang);
   const success = bi(data, "success", lang);
-  const iconKey = s(data, "icon") || "users";
+  const iconKey = s(data, "icon");
   return (
     <SignupForm
       heading={heading || null}

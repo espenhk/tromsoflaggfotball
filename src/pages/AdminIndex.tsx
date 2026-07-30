@@ -36,6 +36,11 @@ const links = [
     description: "Last opp og slett bilder som brukes i IG-editoren og på kampsidene.",
   },
   {
+    to: "/admin/eksportlogg",
+    title: "Eksportlogg",
+    description: "Se alle lagrede Instagram-poster som bilder – last ned på nytt, rydd og slett.",
+  },
+  {
     to: "/admin/sosialt-mock",
     title: "Sosialt (mockup)",
     description: "Forhåndsvisning av sosiale medier-feeden.",

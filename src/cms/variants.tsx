@@ -119,7 +119,7 @@ const SectionShell = ({
 );
 
 /** Derive a scroll-target id from a CMS block's key. `foo-cms` → `foo`. */
-function blockAnchorId(block: ContentBlock): string | undefined {
+export function blockAnchorId(block: ContentBlock): string | undefined {
   if (!block.key) return undefined;
   return block.key.replace(/-cms$/, "");
 }

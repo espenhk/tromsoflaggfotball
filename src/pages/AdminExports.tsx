@@ -208,17 +208,17 @@ const AdminExports = () => {
     "rounded-md border border-border bg-background text-foreground text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2";
 
   return (
-    <main className="min-h-screen bg-background text-foreground px-3 sm:px-6 py-10 sm:py-16">
+    <main className="min-h-screen bg-background text-foreground px-1.5 sm:px-6 py-6 sm:py-16">
       <div className="max-w-6xl mx-auto">
         <Link to="/admin" className="text-sm text-muted-foreground hover:text-primary">
           ← Admin
         </Link>
-        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl mt-3 mb-2">Eksportlogg</h1>
-        <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8">
+        <h1 className="font-display text-2xl sm:text-4xl md:text-5xl mt-2 mb-1">Eksportlogg</h1>
+        <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-8">
           Alle lagrede Instagram-poster. Last ned på nytt, åpne i editoren eller rydd opp.
         </p>
 
-        <div className="flex flex-wrap gap-2 sm:gap-3 mb-4 sm:mb-6">
+        <div className="flex flex-wrap gap-1.5 sm:gap-3 mb-2 sm:mb-6">
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -248,7 +248,7 @@ const AdminExports = () => {
           </select>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-6">
           <span className="text-xs sm:text-sm text-muted-foreground flex-1">
             {filtered.length} av {entries.length} eksport{entries.length === 1 ? "" : "er"}
             {selected.length > 0 && ` · ${selected.length} valgt`}

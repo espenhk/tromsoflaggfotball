@@ -4231,8 +4231,8 @@
       }
 
       // Caption popup with optional-tag checkboxes and copy-to-clipboard.
-      // Returns a promise that resolves when "Continue" or "Close" is pressed.
-      function openCaptionModal({ continueLabel = 'Continue' } = {}) {
+      // Resolves with the caption text when saved, or null when cancelled.
+      function openCaptionModal({ continueLabel = 'Save' } = {}) {
         return new Promise((resolve) => {
           const cfg = loadCaptionCfg();
           const overlay = document.createElement('div');
@@ -4262,7 +4262,8 @@
               <div style="display:flex;gap:8px;flex-wrap:wrap;">
                 <button data-regen style="padding:9px 14px;background:transparent;color:var(--fg-muted);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;">↻ Regenerer</button>
                 <button data-copy style="padding:9px 14px;background:transparent;color:var(--primary);border:1px solid var(--primary);border-radius:8px;cursor:pointer;font-weight:700;">Copy</button>
-                <button data-continue style="padding:9px 14px;background:var(--primary);color:var(--primary-fg);border:none;border-radius:8px;cursor:pointer;font-weight:700;">${continueLabel}</button>
+                 <button data-cancel style="padding:9px 14px;background:transparent;color:var(--fg-muted);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-weight:700;">Cancel</button>
+                 <button data-continue style="padding:9px 14px;background:var(--primary);color:var(--primary-fg);border:none;border-radius:8px;cursor:pointer;font-weight:700;">${continueLabel}</button>
               </div>
             </div>
             <div id="cap-toast" style="font-size:12px;color:var(--primary);margin-top:8px;height:16px;"></div>`;
@@ -4308,15 +4309,25 @@
             });
             box.querySelectorAll('[data-opt-tag], [data-opt-hash]').forEach(el => el.addEventListener('change', rebuild));
           }
-          box.querySelector('[data-config]').onclick = () => { overlay.remove(); openCaptionConfigModal(); resolve(); };
+          box.querySelector('[data-config]').onclick = () => { overlay.remove(); openCaptionConfigModal(); resolve(null); };
           box.querySelector('[data-copy]').onclick = async () => {
             const ok = await copyToClipboard(ta.value);
             box.querySelector('#cap-toast').textContent = ok ? 'Copied to clipboard.' : 'Copy failed — select and copy manually.';
           };
-          const done = () => { overlay.remove(); resolve(); };
-          box.querySelector('[data-continue]').onclick = done;
-          overlay.addEventListener('click', (e) => { if (e.target === overlay) done(); });
+          const cancel = () => { overlay.remove(); resolve(null); };
+          const save = () => { const v = ta.value; overlay.remove(); resolve(v); };
+          box.querySelector('[data-cancel]').onclick = cancel;
+          box.querySelector('[data-continue]').onclick = save;
+          overlay.addEventListener('click', (e) => { if (e.target === overlay) cancel(); });
         });
+      }
+
+      // Write a caption into the sidebar textarea (and persist it).
+      function setCaptionText(text) {
+        const el = document.getElementById('caption-textarea');
+        if (!el || typeof text !== 'string') return;
+        el.value = text;
+        try { localStorage.setItem(CAPTION_KEY, text); } catch (_) {}
       }
 
       // Show the caption popup once per session before the very first export.
@@ -4324,7 +4335,8 @@
       async function maybeShowCaptionBeforeExport() {
         if (_captionShownThisSession) return;
         _captionShownThisSession = true;
-        await openCaptionModal({ continueLabel: 'Continue to export' });
+        const v = await openCaptionModal({ continueLabel: 'Save & continue' });
+        if (v != null) setCaptionText(v);
       }
 
       // Wire sidebar buttons and photo-credit inputs.
@@ -4332,7 +4344,10 @@
         const cfgBtn = document.getElementById('caption-config-btn');
         const prevBtn = document.getElementById('caption-preview-btn');
         if (cfgBtn) cfgBtn.addEventListener('click', openCaptionConfigModal);
-        if (prevBtn) prevBtn.addEventListener('click', () => openCaptionModal({ continueLabel: 'Close' }));
+        if (prevBtn) prevBtn.addEventListener('click', async () => {
+          const v = await openCaptionModal({ continueLabel: 'Save' });
+          if (v != null) setCaptionText(v);
+        });
 
         const pcInput = document.getElementById('photo-credit-input');
         const pcToggle = document.getElementById('credit-on-image-toggle');

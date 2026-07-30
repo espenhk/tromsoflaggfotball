@@ -61,3 +61,14 @@ export function parseFooterLinksDraft(raw: string | null | undefined): FooterLin
 }
 
 export const isInternalHref = (href: string) => href.startsWith("/") && !href.startsWith("//");
+
+/**
+ * Normalises an external footer href: anything without a scheme (e.g. `vg.no`)
+ * is treated as an https URL. Mail/tel links are left untouched.
+ */
+export const externalHref = (href: string) => {
+  const h = href.trim();
+  if (/^[a-z][a-z0-9+.-]*:/i.test(h)) return h; // https:, mailto:, tel: …
+  if (h.startsWith("//")) return `https:${h}`;
+  return `https://${h}`;
+};

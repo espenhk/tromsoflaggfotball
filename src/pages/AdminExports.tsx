@@ -55,9 +55,12 @@ const AdminExports = () => {
   const [thumbs, setThumbs] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState<string | null>(null);
   const [theme, setTheme] = useState<string | null>(null);
+  const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
 
   const payloadCache = useRef(new Map<string, IgExportPayload>());
   const rendererRef = useRef<IgRenderer | null>(null);
+  const poolRef = useRef<IgRenderer[]>([]);
+  const attempted = useRef(new Set<string>());
 
   const refresh = async () => {
     setLoading(true);
@@ -84,8 +87,10 @@ const AdminExports = () => {
   useEffect(() => {
     if (theme === null) return;
     rendererRef.current = new IgRenderer(theme);
+    poolRef.current = [rendererRef.current, new IgRenderer(theme), new IgRenderer(theme)];
     return () => {
-      rendererRef.current?.destroy();
+      poolRef.current.forEach((r) => r.destroy());
+      poolRef.current = [];
       rendererRef.current = null;
     };
   }, [theme]);

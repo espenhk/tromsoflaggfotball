@@ -3160,6 +3160,7 @@
           payload: entry.payload,
           photos_dropped: false,
           caption: entry.caption || null,
+          thumb: await makeFirstSlideThumb(),
         };
         try {
           await historyApi('save', payload);

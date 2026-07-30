@@ -141,7 +141,7 @@ const IndexInner = () => {
       </nav>
 
       {/* Language switcher: top-right, scrolls away with the page (not sticky) */}
-      <div className="absolute top-4 right-4 md:top-[4.5rem] z-[60]">
+      <div className="absolute top-4 right-4 md:top-[4.5rem] z-30">
         <LanguageToggle />
       </div>
 

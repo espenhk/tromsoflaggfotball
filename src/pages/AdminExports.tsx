@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { Download, Pencil, Trash2, Type } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   IgExportEntry,
@@ -21,6 +22,14 @@ const fmtDate = (iso: string) => {
       hour: "2-digit",
       minute: "2-digit",
     });
+  } catch {
+    return iso;
+  }
+};
+
+const fmtShortDate = (iso: string) => {
+  try {
+    return new Date(iso).toLocaleDateString("nb-NO", { month: "short", day: "numeric" });
   } catch {
     return iso;
   }

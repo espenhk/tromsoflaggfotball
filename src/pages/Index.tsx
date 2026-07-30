@@ -54,6 +54,25 @@ const IndexInner = () => {
   // flips to TUIL underneath the blue dissolve.
   const navIsRedNow = theme === "tuil" || (inReveal && revealStage >= 2);
   const navTextOverRed = navIsRedNow || showHeaderSweep;
+  // Desktop nav: normally left-aligned inside a max-w-4xl container. When the
+  // items no longer fit that container, switch to a full-width centered row so
+  // the menu grows symmetrically instead of running off the right edge.
+  const navRowRef = useRef<HTMLDivElement>(null);
+  const [navCentered, setNavCentered] = useState(false);
+  useEffect(() => {
+    const measure = () => {
+      const el = navRowRef.current;
+      if (!el) return;
+      const natural = Array.from(el.children).reduce(
+        (sum, c) => sum + (c as HTMLElement).offsetWidth,
+        0,
+      ) + 4 * Math.max(0, el.children.length - 1) + 12;
+      setNavCentered(natural > 896 - 32);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [navItems]);
   // Hero title state during the reveal:
   //  - stages 0–1: keep the default-theme heading (the header is changing, hero is unchanged)
   //  - stage 2: only «FLAGGFOTBALL»

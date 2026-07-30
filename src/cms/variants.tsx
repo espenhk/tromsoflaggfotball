@@ -17,6 +17,8 @@ import {
   Users,
   UserPlus,
   ShieldCheck,
+  Megaphone,
+  Flag,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import FieldDiagram from "@/components/FieldDiagram";
@@ -124,6 +126,24 @@ export function blockAnchorId(block: ContentBlock): string | undefined {
   return block.key.replace(/-cms$/, "");
 }
 
+/** Icons that can decorate a markdown / signup section heading. */
+const HEADING_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  users: Users,
+  megaphone: Megaphone,
+  userplus: UserPlus,
+  flag: Flag,
+  shield: ShieldCheck,
+};
+
+const HEADING_ICON_OPTIONS = [
+  { value: "", label: "Ingen" },
+  { value: "users", label: "Personer" },
+  { value: "megaphone", label: "Megafon" },
+  { value: "userplus", label: "Bli med" },
+  { value: "flag", label: "Flagg" },
+  { value: "shield", label: "Skjold" },
+];
+
 const MarkdownRenderer = (block: ContentBlock) => {
   const { lang } = useLang();
   const body = pickLang(block.body_md_no, block.body_md_en, lang);
@@ -131,6 +151,31 @@ const MarkdownRenderer = (block: ContentBlock) => {
   if (!body?.trim()) return null;
   const align = (s(block.data ?? {}, "align") || "left") as "left" | "center";
   const centered = align === "center";
+  const iconKey = s(block.data ?? {}, "icon").toLowerCase();
+  const Icon = HEADING_ICONS[iconKey];
+  // With an icon the section mirrors the "meld interesse" layout: icon in a
+  // narrow left column, heading + body to its right.
+  if (Icon) {
+    return (
+      <section id={blockAnchorId(block)} className="py-16 px-6 scroll-mt-16">
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-start gap-4">
+            <div className="text-primary mt-1">
+              <Icon className="w-6 h-6" />
+            </div>
+            <div className="flex-1">
+              {title && (
+                <h3 className="font-heading text-xl md:text-2xl font-medium text-foreground mb-3">
+                  {title}
+                </h3>
+              )}
+              <MdBlock md={body} />
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
   return (
     <SectionShell title={title || null} id={blockAnchorId(block)} align={align}>
       <div className={centered ? "text-center [&_p]:mx-auto [&_ul]:list-none [&_ul]:pl-0 [&_h1]:text-center [&_h2]:text-center [&_h3]:text-center" : ""}>

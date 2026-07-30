@@ -1,8 +1,8 @@
 import { useLang, useT } from "@/i18n/LanguageProvider";
 
 /**
- * Compact NO|EN pill toggle. Clicking anywhere on the pill swaps to the other language.
- * Used both in the desktop sticky nav and inside the mobile glass menu.
+ * Compact flag pill toggle. Clicking anywhere on the pill swaps language.
+ * Flags rather than NO/EN so a non-Norwegian visitor recognises it instantly.
  */
 const LanguageToggle = ({ className = "" }: { className?: string }) => {
   const { lang, setLang } = useLang();
@@ -12,24 +12,28 @@ const LanguageToggle = ({ className = "" }: { className?: string }) => {
     <button
       type="button"
       onClick={() => setLang(lang === "no" ? "en" : "no")}
-      className={`inline-flex items-center rounded-full border border-white/15 bg-background/40 backdrop-blur p-0.5 text-[10px] font-heading font-bold cursor-pointer ${className}`}
+      className={`inline-flex items-center rounded-full border border-white/15 bg-background/40 backdrop-blur p-0.5 text-base leading-none cursor-pointer ${className}`}
       role="switch"
       aria-checked={lang === "en"}
       aria-label={t("nav.languageLabel")}
     >
       <span
-        className={`px-2 py-0.5 rounded-full transition-colors ${
-          lang === "no" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+        title="Norsk"
+        className={`px-2 py-1 rounded-full transition-all ${
+          lang === "no" ? "bg-primary" : "opacity-50 grayscale"
         }`}
       >
-        NO
+        <span aria-hidden>🇳🇴</span>
+        <span className="sr-only">Norsk</span>
       </span>
       <span
-        className={`px-2 py-0.5 rounded-full transition-colors ${
-          lang === "en" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+        title="English"
+        className={`px-2 py-1 rounded-full transition-all ${
+          lang === "en" ? "bg-primary" : "opacity-50 grayscale"
         }`}
       >
-        EN
+        <span aria-hidden>🇬🇧</span>
+        <span className="sr-only">English</span>
       </span>
     </button>
   );

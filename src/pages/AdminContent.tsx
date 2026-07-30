@@ -575,9 +575,6 @@ const AdminContentInner = () => {
                 <Undo2 className="w-4 h-4" />
                 Angre siste lagring
               </button>
-              <span className={`text-xs ml-auto ${dirty ? "text-primary" : "text-muted-foreground"}`}>
-                {dirty ? "Ulagrede endringer" : "Alt er lagret"}
-              </span>
             </div>
 
             <section>

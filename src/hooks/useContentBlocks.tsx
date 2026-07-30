@@ -21,6 +21,12 @@ export type ContentBlock = {
   visible: boolean;
   variant: string;
   data: Record<string, unknown>;
+  /**
+   * Mirror of `key`. Blocks are spread into variant components
+   * (`<V.render {...block} />`) and React swallows the reserved `key` prop,
+   * so renderers read the anchor key from here.
+   */
+  cmsKey?: string;
 };
 
 type Ctx = {
@@ -69,6 +75,7 @@ export const ContentBlocksProvider = ({
       if (!cancelled) {
         setBlocks(((data ?? []) as unknown as ContentBlock[]).map((b) => ({
           ...b,
+          cmsKey: b.key,
           variant: (b as { variant?: string }).variant ?? "markdown",
           data: ((b as { data?: unknown }).data as Record<string, unknown>) ?? {},
         })));

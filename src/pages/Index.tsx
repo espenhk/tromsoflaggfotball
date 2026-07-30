@@ -95,7 +95,7 @@ const IndexInner = () => {
   }, [mobileMenuOpen]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
       {/* Desktop nav */}
       <nav
         className={`sticky top-0 z-50 backdrop-blur-md hidden md:block overflow-hidden border-b ${navIsRedNow ? "border-white/20" : "bg-background/80 border-border"}`}
@@ -113,11 +113,13 @@ const IndexInner = () => {
               {label}
             </button>
           ))}
-          <div className="ml-auto">
-            <LanguageToggle />
-          </div>
         </div>
       </nav>
+
+      {/* Language switcher: top-right, scrolls away with the page (not sticky) */}
+      <div className="absolute top-4 right-4 md:top-[4.5rem] z-[60]">
+        <LanguageToggle />
+      </div>
 
       {/* Mobile floating glass bubble nav */}
       <div className="fixed top-4 left-4 z-50 md:hidden" ref={menuRef}>
@@ -146,12 +148,6 @@ const IndexInner = () => {
                 {label}
               </button>
             ))}
-            <div className="px-4 pt-2 pb-1 flex items-center justify-between">
-              <span className={`text-[10px] uppercase tracking-wider font-heading font-bold ${theme === "tuil" ? "text-white/80" : "text-muted-foreground"}`}>
-                {t("nav.languageLabel")}
-              </span>
-              <LanguageToggle />
-            </div>
           </div>
         )}
       </div>

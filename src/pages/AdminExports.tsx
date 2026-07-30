@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { Download, Pencil, Trash2, Type } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   IgExportEntry,
@@ -21,6 +22,14 @@ const fmtDate = (iso: string) => {
       hour: "2-digit",
       minute: "2-digit",
     });
+  } catch {
+    return iso;
+  }
+};
+
+const fmtShortDate = (iso: string) => {
+  try {
+    return new Date(iso).toLocaleDateString("nb-NO", { month: "short", day: "numeric" });
   } catch {
     return iso;
   }
@@ -196,27 +205,27 @@ const AdminExports = () => {
     setSelected((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
 
   const selectClass =
-    "rounded-md border border-border bg-background text-foreground text-sm px-3 py-2";
+    "rounded-md border border-border bg-background text-foreground text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2";
 
   return (
-    <main className="min-h-screen bg-background text-foreground px-6 py-16">
+    <main className="min-h-screen bg-background text-foreground px-3 sm:px-6 py-10 sm:py-16">
       <div className="max-w-6xl mx-auto">
         <Link to="/admin" className="text-sm text-muted-foreground hover:text-primary">
           ← Admin
         </Link>
-        <h1 className="font-display text-4xl md:text-5xl mt-3 mb-2">Eksportlogg</h1>
-        <p className="text-muted-foreground mb-8">
+        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl mt-3 mb-2">Eksportlogg</h1>
+        <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8">
           Alle lagrede Instagram-poster. Last ned på nytt, åpne i editoren eller rydd opp.
         </p>
 
-        <div className="flex flex-wrap gap-3 mb-6">
+        <div className="flex flex-wrap gap-2 sm:gap-3 mb-4 sm:mb-6">
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Søk i navn, mal eller bildetekst…"
-            className="flex-1 min-w-[200px] rounded-md border border-border bg-background px-3 py-2 text-sm"
+            className="w-full sm:flex-1 sm:w-auto sm:min-w-[200px] rounded-md border border-border bg-background px-3 py-2 text-sm"
           />
-          <select value={template} onChange={(e) => setTemplate(e.target.value)} className={selectClass}>
+          <select value={template} onChange={(e) => setTemplate(e.target.value)} className={`${selectClass} flex-1 min-w-0`}>
             <option value="__all__">Alle maler</option>
             {templates.map((t) => (
               <option key={t} value={t}>
@@ -224,14 +233,14 @@ const AdminExports = () => {
               </option>
             ))}
           </select>
-          <select value={aspect} onChange={(e) => setAspect(e.target.value)} className={selectClass}>
+          <select value={aspect} onChange={(e) => setAspect(e.target.value)} className={`${selectClass} flex-1 min-w-0`}>
             {ASPECTS.map((a) => (
               <option key={a.value} value={a.value}>
                 {a.label}
               </option>
             ))}
           </select>
-          <select value={sort} onChange={(e) => setSort(e.target.value)} className={selectClass}>
+          <select value={sort} onChange={(e) => setSort(e.target.value)} className={`${selectClass} flex-1 min-w-0`}>
             <option value="date-desc">Nyeste først</option>
             <option value="date-asc">Eldste først</option>
             <option value="name-asc">Navn A–Å</option>
@@ -239,8 +248,8 @@ const AdminExports = () => {
           </select>
         </div>
 
-        <div className="flex items-center gap-3 mb-6">
-          <span className="text-sm text-muted-foreground flex-1">
+        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+          <span className="text-xs sm:text-sm text-muted-foreground flex-1">
             {filtered.length} av {entries.length} eksport{entries.length === 1 ? "" : "er"}
             {selected.length > 0 && ` · ${selected.length} valgt`}
           </span>
@@ -249,15 +258,15 @@ const AdminExports = () => {
               <button
                 type="button"
                 onClick={() => setSelected([])}
-                className="text-sm rounded-md border border-border px-3 py-2 hover:bg-muted"
+                className="text-xs sm:text-sm rounded-md border border-border px-2.5 py-1.5 sm:px-3 sm:py-2 hover:bg-muted"
               >
-                Nullstill valg
+                Nullstill
               </button>
               <button
                 type="button"
                 disabled={busy !== null}
                 onClick={() => void doDelete(selected)}
-                className="text-sm rounded-md bg-destructive text-destructive-foreground px-3 py-2 disabled:opacity-60"
+                className="text-xs sm:text-sm rounded-md bg-destructive text-destructive-foreground px-2.5 py-1.5 sm:px-3 sm:py-2 disabled:opacity-60"
               >
                 Slett valgte
               </button>
@@ -271,7 +280,7 @@ const AdminExports = () => {
           <p className="text-muted-foreground">Ingen eksporter matcher filteret.</p>
         )}
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-3 gap-2 sm:gap-4 lg:grid-cols-4">
           {filtered.map((e) => {
             const isSel = selected.includes(e.id);
             const thumb = thumbs[e.id];
@@ -285,7 +294,7 @@ const AdminExports = () => {
                 <button
                   type="button"
                   onClick={() => toggle(e.id)}
-                  className="block w-full aspect-square bg-muted/40 flex items-center justify-center overflow-hidden"
+                  className="w-full aspect-square bg-muted/40 flex items-center justify-center overflow-hidden"
                   aria-pressed={isSel}
                 >
                   {thumb ? (
@@ -296,26 +305,29 @@ const AdminExports = () => {
                       loading="lazy"
                     />
                   ) : (
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-[10px] sm:text-xs text-muted-foreground px-1 text-center">
                       {thumb === "" ? "Ingen forhåndsvisning" : "Rendrer…"}
                     </span>
                   )}
                 </button>
-                <div className="p-4">
-                  <div className="font-medium text-sm truncate" title={e.name}>
+                <div className="p-1.5 sm:p-3">
+                  <div className="font-medium text-xs sm:text-sm leading-tight truncate" title={e.name}>
                     {e.name}
                   </div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {fmtDate(e.created_at)} · {e.slide_count} slide
-                    {e.slide_count === 1 ? "" : "s"}
-                    {e.aspect ? ` · ${e.aspect}` : ""}
+                  <div className="text-[11px] sm:text-xs text-muted-foreground mt-0.5 truncate">
+                    <span className="sm:hidden">{fmtShortDate(e.created_at)}</span>
+                    <span className="hidden sm:inline">{fmtDate(e.created_at)}</span>
+                    {` · ${e.slide_count}`}
+                    <span className="hidden sm:inline">
+                      {` slide${e.slide_count === 1 ? "" : "s"}${e.aspect ? ` · ${e.aspect}` : ""}`}
+                    </span>
                   </div>
                   {!!(e.templates ?? []).length && (
-                    <div className="flex flex-wrap gap-1 mt-2">
+                    <div className="flex flex-wrap gap-1 mt-1 sm:mt-2 overflow-hidden max-h-[18px] sm:max-h-none">
                       {e.templates!.map((t) => (
                         <span
                           key={t}
-                          className="text-[11px] rounded border border-border px-1.5 py-0.5 text-primary"
+                          className="text-[10px] sm:text-[11px] rounded border border-border px-1 sm:px-1.5 py-0.5 text-primary"
                         >
                           {t}
                         </span>
@@ -323,39 +335,53 @@ const AdminExports = () => {
                     </div>
                   )}
                   {e.photos_dropped && (
-                    <p className="text-[11px] text-muted-foreground mt-2">
-                      Bilder ble utelatt da denne ble lagret.
+                    <p className="text-[10px] sm:text-[11px] text-muted-foreground mt-1 sm:mt-2 truncate">
+                      Bilder utelatt
                     </p>
                   )}
-                  <div className="flex flex-wrap gap-2 mt-3">
+                  <div className="flex flex-wrap gap-1 sm:gap-2 mt-1.5 sm:mt-3">
                     <button
                       type="button"
+                      title="Last ned"
+                      aria-label="Last ned"
                       disabled={busy !== null}
                       onClick={() => void downloadEntry(e)}
-                      className="text-xs rounded-md bg-primary text-primary-foreground px-3 py-1.5 disabled:opacity-60"
+                      className="inline-flex items-center gap-1 text-xs rounded-md bg-primary text-primary-foreground p-1.5 sm:px-3 sm:py-1.5 disabled:opacity-60"
                     >
-                      {busy === e.id ? "Laster ned…" : "Last ned"}
+                      <Download className="h-3.5 w-3.5" />
+                      <span className="hidden sm:inline">
+                        {busy === e.id ? "Laster ned…" : "Last ned"}
+                      </span>
                     </button>
                     <Link
                       to={`/admin/make-ig-post?export=${e.id}`}
-                      className="text-xs rounded-md border border-border px-3 py-1.5 hover:bg-muted"
+                      title="Åpne i editor"
+                      aria-label="Åpne i editor"
+                      className="inline-flex items-center gap-1 text-xs rounded-md border border-border p-1.5 sm:px-3 sm:py-1.5 hover:bg-muted"
                     >
-                      Åpne i editor
+                      <Pencil className="h-3.5 w-3.5" />
+                      <span className="hidden sm:inline">Åpne</span>
                     </Link>
                     <button
                       type="button"
+                      title="Gi nytt navn"
+                      aria-label="Gi nytt navn"
                       onClick={() => void doRename(e)}
-                      className="text-xs rounded-md border border-border px-3 py-1.5 hover:bg-muted"
+                      className="inline-flex items-center gap-1 text-xs rounded-md border border-border p-1.5 sm:px-3 sm:py-1.5 hover:bg-muted"
                     >
-                      Gi nytt navn
+                      <Type className="h-3.5 w-3.5" />
+                      <span className="hidden sm:inline">Nytt navn</span>
                     </button>
                     <button
                       type="button"
+                      title="Slett"
+                      aria-label="Slett"
                       disabled={busy !== null}
                       onClick={() => void doDelete([e.id])}
-                      className="text-xs rounded-md border border-destructive text-destructive px-3 py-1.5 disabled:opacity-60"
+                      className="inline-flex items-center gap-1 text-xs rounded-md border border-destructive text-destructive p-1.5 sm:px-3 sm:py-1.5 disabled:opacity-60"
                     >
-                      Slett
+                      <Trash2 className="h-3.5 w-3.5" />
+                      <span className="hidden sm:inline">Slett</span>
                     </button>
                   </div>
                 </div>

@@ -573,6 +573,18 @@ const AdminContentInner = () => {
               </div>
             </section>
 
+            {page === "home" && (
+              <section className="mb-8">
+                <h2 className="font-heading text-xl mb-3">Bunntekst (footer)</h2>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Lenkene som vises nederst på forsiden, ved siden av copyright-teksten. Interne
+                  adresser starter med «/» (f.eks. <code>/kamper</code>); alt annet åpnes i ny fane.
+                  Uten lenker her brukes standardoppsettet (Kamper og Pressekit).
+                </p>
+                <FooterEditor links={footerLinks} onChange={setFooterLinks} />
+              </section>
+            )}
+
             <div className="sticky bottom-0 z-30 -mx-2 px-2 py-3 mb-12 bg-background/95 backdrop-blur border-t border-border flex flex-wrap items-center gap-2">
               <button
                 type="button"

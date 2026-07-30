@@ -4,7 +4,7 @@ import remarkGfm from "remark-gfm";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/i18n/LanguageProvider";
 import { afterRange, type PageId } from "@/cms/manifest";
-import { getVariant } from "@/cms/variants";
+import { getVariant, blockAnchorId } from "@/cms/variants";
 
 export type ContentPage = PageId;
 
@@ -121,22 +121,6 @@ export const MdBlock = ({ md, className }: { md: string; className?: string }) =
  */
 const SectionRun = ({ sections }: { sections: ContentBlock[] }) => {
   if (sections.length === 0) return null;
-  // A section can be "linked" to the one above it (data.linkedUp). Linked
-  // sections share one background stripe and sit tighter together, so a
-  // chain of them reads as a single section. Legacy `data.group` names are
-  // still honoured for blocks that haven't been migrated.
-  const linkedUp = (b: ContentBlock, prev?: ContentBlock) => {
-    const d = b.data as { linkedUp?: unknown; group?: unknown };
-    if (d?.linkedUp === true) return true;
-    const g = typeof d?.group === "string" && d.group.trim() ? d.group.trim() : null;
-    const pg = prev
-      ? (() => {
-          const p = (prev.data as { group?: unknown })?.group;
-          return typeof p === "string" && p.trim() ? p.trim() : null;
-        })()
-      : null;
-    return g !== null && g === pg;
-  };
   let stripe = -1;
   const rows = sections.map((s, i) => {
     const continues = i > 0 && linkedUp(s, sections[i - 1]);

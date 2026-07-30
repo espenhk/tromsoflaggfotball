@@ -1590,7 +1590,12 @@
       // ----------------------------------------------------------------
       const PERSIST_KEY = 'tff-ig-editor-state-v1';
       let _persistTimer = null;
+      // Render mode (?render=1): the editor is embedded in a hidden iframe by
+      // the admin export-log page purely to rasterize thumbnails/downloads.
+      // It must never touch the human editor's saved working state.
+      const RENDER_MODE = new URLSearchParams(location.search).get('render') === '1';
       function savePersisted() {
+        if (RENDER_MODE) return;
         if (_persistTimer) return;
         _persistTimer = setTimeout(() => {
           _persistTimer = null;
@@ -4615,6 +4620,15 @@
         } catch (e) {
           console.warn('deep-link match load failed', e);
         }
+      })();
+
+      // Deep-link: ?export=<uuid> loads that export-log entry straight into
+      // the editor. Used by the admin export-log page ("Åpne i editor").
+      (async () => {
+        const eid = new URLSearchParams(location.search).get('export');
+        if (!eid) return;
+        try { await loadHistoryEntry(eid); }
+        catch (e) { console.warn('deep-link export load failed', e); }
       })();
     </script>
   </body>

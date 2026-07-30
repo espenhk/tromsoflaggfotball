@@ -17,6 +17,7 @@ import AdminIndex from "./pages/AdminIndex.tsx";
 import AdminMatches from "./pages/AdminMatches.tsx";
 import AdminContent from "./pages/AdminContent.tsx";
 import AdminLibrary from "./pages/AdminLibrary.tsx";
+import AdminExports from "./pages/AdminExports.tsx";
 import SosialtMock from "./pages/SosialtMock.tsx";
 import AdminGate from "./components/AdminGate.tsx";
 import NotFound from "./pages/NotFound.tsx";
@@ -52,6 +53,7 @@ const App = () => (
               <Route path="matches" element={<AdminMatches />} />
               <Route path="content" element={<AdminContent />} />
               <Route path="bildebibliotek" element={<AdminLibrary />} />
+              <Route path="eksportlogg" element={<AdminExports />} />
               <Route path="sosialt-mock" element={<SosialtMock />} />
             </Route>
 

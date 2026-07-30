@@ -10,7 +10,7 @@ import {
 } from "@/cms/manifest";
 import { VARIANTS, VARIANT_ORDER, getVariant, type VariantKey, type FieldSpec } from "@/cms/variants";
 import {
-  FOOTER_LINKS_SLOT, parseFooterLinks, serializeFooterLinks, type FooterLink,
+  FOOTER_LINKS_SLOT, parseFooterLinksDraft, serializeFooterLinks, type FooterLink,
 } from "@/cms/footer";
 import { Link2, Unlink, Save, Undo2, RotateCcw, Plus, Trash2, ExternalLink, ArrowUp, ArrowDown } from "lucide-react";
 

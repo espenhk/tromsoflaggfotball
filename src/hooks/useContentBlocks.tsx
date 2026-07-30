@@ -30,6 +30,24 @@ type Ctx = {
 
 const PageCtx = createContext<Ctx>({ blocks: [], loaded: false });
 
+/**
+ * A section can be "linked" to the one above it (data.linkedUp). Linked
+ * sections share one background stripe and read as one section. Legacy
+ * `data.group` names are still honoured for unmigrated blocks.
+ */
+export const linkedUp = (b: ContentBlock, prev?: ContentBlock) => {
+  const d = b.data as { linkedUp?: unknown; group?: unknown };
+  if (d?.linkedUp === true) return true;
+  const g = typeof d?.group === "string" && d.group.trim() ? d.group.trim() : null;
+  const pg = prev
+    ? (() => {
+        const p = (prev.data as { group?: unknown })?.group;
+        return typeof p === "string" && p.trim() ? p.trim() : null;
+      })()
+    : null;
+  return g !== null && g === pg;
+};
+
 export const ContentBlocksProvider = ({
   page,
   children,

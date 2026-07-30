@@ -6,9 +6,15 @@ import { useLang, useT } from "@/i18n/LanguageProvider";
  * ships none, so the Noto Color Emoji webfont (subset to these two flags in
  * index.css) fills in.
  */
+/**
+ * Order matters: Segoe UI Emoji (Windows) *does* contain the regional
+ * indicator letters, but draws them as "NO"/"GB" letter boxes rather than
+ * flags — so it must never come before Noto Color Emoji. Apple first so
+ * macOS/iOS keep their native look, then the Noto webfont subset.
+ */
 const emojiFont = {
   fontFamily:
-    '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Twemoji Mozilla","Android Emoji",sans-serif',
+    '"Apple Color Emoji","Noto Color Emoji","Twemoji Mozilla","Android Emoji","Segoe UI Emoji",sans-serif',
 } as const;
 
 /**

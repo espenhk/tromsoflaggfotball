@@ -209,14 +209,14 @@ const AdminExports = () => {
           Alle lagrede Instagram-poster. Last ned på nytt, åpne i editoren eller rydd opp.
         </p>
 
-        <div className="flex flex-wrap gap-3 mb-6">
+        <div className="flex flex-wrap gap-2 sm:gap-3 mb-4 sm:mb-6">
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Søk i navn, mal eller bildetekst…"
-            className="flex-1 min-w-[200px] rounded-md border border-border bg-background px-3 py-2 text-sm"
+            className="w-full sm:flex-1 sm:w-auto sm:min-w-[200px] rounded-md border border-border bg-background px-3 py-2 text-sm"
           />
-          <select value={template} onChange={(e) => setTemplate(e.target.value)} className={selectClass}>
+          <select value={template} onChange={(e) => setTemplate(e.target.value)} className={`${selectClass} flex-1 min-w-0`}>
             <option value="__all__">Alle maler</option>
             {templates.map((t) => (
               <option key={t} value={t}>
@@ -224,14 +224,14 @@ const AdminExports = () => {
               </option>
             ))}
           </select>
-          <select value={aspect} onChange={(e) => setAspect(e.target.value)} className={selectClass}>
+          <select value={aspect} onChange={(e) => setAspect(e.target.value)} className={`${selectClass} flex-1 min-w-0`}>
             {ASPECTS.map((a) => (
               <option key={a.value} value={a.value}>
                 {a.label}
               </option>
             ))}
           </select>
-          <select value={sort} onChange={(e) => setSort(e.target.value)} className={selectClass}>
+          <select value={sort} onChange={(e) => setSort(e.target.value)} className={`${selectClass} flex-1 min-w-0`}>
             <option value="date-desc">Nyeste først</option>
             <option value="date-asc">Eldste først</option>
             <option value="name-asc">Navn A–Å</option>
@@ -239,8 +239,8 @@ const AdminExports = () => {
           </select>
         </div>
 
-        <div className="flex items-center gap-3 mb-6">
-          <span className="text-sm text-muted-foreground flex-1">
+        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+          <span className="text-xs sm:text-sm text-muted-foreground flex-1">
             {filtered.length} av {entries.length} eksport{entries.length === 1 ? "" : "er"}
             {selected.length > 0 && ` · ${selected.length} valgt`}
           </span>
@@ -249,15 +249,15 @@ const AdminExports = () => {
               <button
                 type="button"
                 onClick={() => setSelected([])}
-                className="text-sm rounded-md border border-border px-3 py-2 hover:bg-muted"
+                className="text-xs sm:text-sm rounded-md border border-border px-2.5 py-1.5 sm:px-3 sm:py-2 hover:bg-muted"
               >
-                Nullstill valg
+                Nullstill
               </button>
               <button
                 type="button"
                 disabled={busy !== null}
                 onClick={() => void doDelete(selected)}
-                className="text-sm rounded-md bg-destructive text-destructive-foreground px-3 py-2 disabled:opacity-60"
+                className="text-xs sm:text-sm rounded-md bg-destructive text-destructive-foreground px-2.5 py-1.5 sm:px-3 sm:py-2 disabled:opacity-60"
               >
                 Slett valgte
               </button>

@@ -136,48 +136,66 @@ const AdminExports = () => {
     return payload;
   };
 
-  // Prefer the stored small thumbnail; only rasterize (and then backfill it)
-  // for older entries saved before thumbnails existed.
+  // Show stored thumbnails immediately.
   useEffect(() => {
-    let cancelled = false;
-    const visible = filtered.slice(0, 60);
     const stored: Record<string, string> = {};
-    visible.forEach((e) => {
-      if (e.thumb && !thumbs[e.id]) stored[e.id] = e.thumb;
+    entries.forEach((e) => {
+      if (e.thumb) stored[e.id] = e.thumb;
     });
     if (Object.keys(stored).length) setThumbs((t) => ({ ...stored, ...t }));
-    const ids = visible.filter((e) => !e.thumb).map((e) => e.id);
-    (async () => {
-      for (const id of ids) {
-        if (cancelled) return;
-        if (thumbs[id]) continue;
+  }, [entries]);
+
+  // One-time backfill: every entry saved before thumbnails existed gets
+  // rendered once (three renderers in parallel) and stored in the database.
+  useEffect(() => {
+    if (theme === null || !entries.length || !poolRef.current.length) return;
+    const missing = entries.filter((e) => !e.thumb && !attempted.current.has(e.id));
+    if (!missing.length) return;
+    missing.forEach((e) => attempted.current.add(e.id));
+
+    let cancelled = false;
+    let done = 0;
+    const total = missing.length;
+    setProgress({ done: 0, total });
+
+    const queue = missing.slice();
+    const worker = async (renderer: IgRenderer) => {
+      for (;;) {
+        const entry = queue.shift();
+        if (!entry || cancelled) return;
         try {
-          const payload = await loadPayload(id);
-          if (cancelled || !rendererRef.current) return;
-          const url = await rendererRef.current.renderThumb(payload, 0);
+          const payload = await loadPayload(entry.id);
           if (cancelled) return;
-          setThumbs((t) => ({ ...t, [id]: url }));
-          // Backfill so this entry never needs re-rendering again.
+          const url = await renderer.renderThumb(payload, 0);
+          if (cancelled) return;
+          setThumbs((t) => ({ ...t, [entry.id]: url }));
           if (url.startsWith("data:image/jpeg") && url.length < 400 * 1024) {
             try {
-              await setIgExportThumb(id, url);
+              await setIgExportThumb(entry.id, url);
               setEntries((list) =>
-                list.map((e) => (e.id === id ? { ...e, thumb: url } : e)),
+                list.map((e) => (e.id === entry.id ? { ...e, thumb: url } : e)),
               );
             } catch {
               /* non-fatal */
             }
           }
         } catch {
-          if (!cancelled) setThumbs((t) => ({ ...t, [id]: "" }));
+          if (!cancelled) setThumbs((t) => ({ ...t, [entry.id]: "" }));
         }
+        done += 1;
+        if (!cancelled) setProgress({ done, total });
       }
-    })();
+    };
+
+    void Promise.all(poolRef.current.map((r) => worker(r))).then(() => {
+      if (!cancelled) setProgress(null);
+    });
+
     return () => {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filtered, theme]);
+  }, [entries, theme]);
 
   const downloadEntry = async (entry: IgExportEntry) => {
     setBusy(entry.id);

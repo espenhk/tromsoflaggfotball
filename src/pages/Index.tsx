@@ -7,7 +7,14 @@ import {
   AfterSection,
   MdBlock,
   useSlot,
+  useSlotRaw,
 } from "@/hooks/useContentBlocks";
+import {
+  FOOTER_LINKS_SLOT,
+  parseFooterLinks,
+  isInternalHref,
+  type FooterLink,
+} from "@/cms/footer";
 import heroBg from "@/assets/hero-bg.png";
 import BrandLogo from "@/components/BrandLogo";
 import { useTheme } from "@/theme/ThemeProvider";

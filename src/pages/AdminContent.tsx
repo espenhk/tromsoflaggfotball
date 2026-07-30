@@ -5,11 +5,11 @@ import remarkGfm from "remark-gfm";
 import { supabase } from "@/integrations/supabase/client";
 import { ADMIN_TOKEN_KEY } from "@/components/AdminGate";
 import {
-  codeSections, midpointOrder, customPageId, customSlug, isCustomPage, toSlug,
+  codeSections, midpointOrder,
   type CmsPage, type PageId,
 } from "@/cms/manifest";
 import { VARIANTS, VARIANT_ORDER, getVariant, type VariantKey, type FieldSpec } from "@/cms/variants";
-import { Link2, Unlink, Save, Undo2, RotateCcw, Plus, Trash2, ExternalLink } from "lucide-react";
+import { Link2, Unlink, Save, Undo2, RotateCcw } from "lucide-react";
 
 type Block = {
   id: string;
@@ -24,13 +24,6 @@ type Block = {
   visible: boolean;
   variant: string;
   data: Record<string, unknown>;
-};
-
-type CustomPageRow = {
-  slug: string;
-  title_no: string;
-  title_en: string | null;
-  visible: boolean;
 };
 
 /** Fixed text slots per page (inline overrides, not sections in the flow). */

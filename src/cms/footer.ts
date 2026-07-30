@@ -33,14 +33,31 @@ export function parseFooterLinks(raw: string | null | undefined): FooterLink[] |
 }
 
 export function serializeFooterLinks(links: FooterLink[]): string {
-  const clean = links
-    .map((l) => ({
-      href: l.href.trim(),
-      label_no: l.label_no.trim(),
-      label_en: (l.label_en ?? "").trim(),
-    }))
-    .filter((l) => l.href && l.label_no);
+  // Keep partially filled rows so they survive editing; rendering filters them.
+  const clean = links.map((l) => ({
+    href: (l.href ?? "").trim(),
+    label_no: (l.label_no ?? "").trim(),
+    label_en: (l.label_en ?? "").trim(),
+  }));
   return clean.length ? JSON.stringify(clean, null, 2) : "";
+}
+
+/** Lenient parse for the admin editor: keeps incomplete rows while typing. */
+export function parseFooterLinksDraft(raw: string | null | undefined): FooterLink[] {
+  if (!raw || !raw.trim()) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((l) => l && typeof l === "object")
+      .map((l) => ({
+        href: typeof l.href === "string" ? l.href : "",
+        label_no: typeof l.label_no === "string" ? l.label_no : "",
+        label_en: typeof l.label_en === "string" ? l.label_en : "",
+      }));
+  } catch {
+    return [];
+  }
 }
 
 export const isInternalHref = (href: string) => href.startsWith("/") && !href.startsWith("//");

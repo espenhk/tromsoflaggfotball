@@ -140,10 +140,6 @@ Deno.serve(async (req) => {
       });
     }
 
-    if (action === "rename") {
-      // fallthrough below
-    }
-
     if (action === "set_thumb") {
       const { id, thumb } = body;
       const clean = cleanThumb(thumb);

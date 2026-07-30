@@ -60,7 +60,6 @@ const AdminExports = () => {
   const payloadCache = useRef(new Map<string, IgExportPayload>());
   const rendererRef = useRef<IgRenderer | null>(null);
   const poolRef = useRef<IgRenderer[]>([]);
-  const attempted = useRef(new Set<string>());
 
   const refresh = async () => {
     setLoading(true);
@@ -145,57 +144,47 @@ const AdminExports = () => {
     if (Object.keys(stored).length) setThumbs((t) => ({ ...stored, ...t }));
   }, [entries]);
 
-  // One-time backfill: every entry saved before thumbnails existed gets
-  // rendered once (three renderers in parallel) and stored in the database.
-  useEffect(() => {
-    if (theme === null || !entries.length || !poolRef.current.length) return;
-    const missing = entries.filter((e) => !e.thumb && !attempted.current.has(e.id));
+  const missingThumbs = useMemo(() => entries.filter((e) => !e.thumb), [entries]);
+
+  /**
+   * Manual one-time job: renders and stores a thumbnail for every entry saved
+   * before thumbnails existed. Never runs automatically on page load.
+   */
+  const generateMissingThumbs = async () => {
+    if (theme === null || !poolRef.current.length || progress) return;
+    const missing = entries.filter((e) => !e.thumb);
     if (!missing.length) return;
-    missing.forEach((e) => attempted.current.add(e.id));
 
-    let cancelled = false;
     let done = 0;
-    const total = missing.length;
-    setProgress({ done: 0, total });
-
+    setProgress({ done: 0, total: missing.length });
     const queue = missing.slice();
+    let failure: string | null = null;
+
     const worker = async (renderer: IgRenderer) => {
       for (;;) {
         const entry = queue.shift();
-        if (!entry || cancelled) return;
+        if (!entry) return;
         try {
           const payload = await loadPayload(entry.id);
-          if (cancelled) return;
           const url = await renderer.renderThumb(payload, 0);
-          if (cancelled) return;
           setThumbs((t) => ({ ...t, [entry.id]: url }));
-          if (url.startsWith("data:image/jpeg") && url.length < 400 * 1024) {
-            try {
-              await setIgExportThumb(entry.id, url);
-              setEntries((list) =>
-                list.map((e) => (e.id === entry.id ? { ...e, thumb: url } : e)),
-              );
-            } catch {
-              /* non-fatal */
-            }
-          }
-        } catch {
-          if (!cancelled) setThumbs((t) => ({ ...t, [entry.id]: "" }));
+          await setIgExportThumb(entry.id, url);
+          setEntries((list) =>
+            list.map((e) => (e.id === entry.id ? { ...e, thumb: url } : e)),
+          );
+        } catch (err) {
+          failure = err instanceof Error ? err.message : String(err);
+          setThumbs((t) => ({ ...t, [entry.id]: "" }));
         }
         done += 1;
-        if (!cancelled) setProgress({ done, total });
+        setProgress({ done, total: missing.length });
       }
     };
 
-    void Promise.all(poolRef.current.map((r) => worker(r))).then(() => {
-      if (!cancelled) setProgress(null);
-    });
-
-    return () => {
-      cancelled = true;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [entries, theme]);
+    await Promise.all(poolRef.current.map((r) => worker(r)));
+    setProgress(null);
+    setError(failure ? `Noen miniatyrbilder feilet: ${failure}` : null);
+  };
 
   const downloadEntry = async (entry: IgExportEntry) => {
     setBusy(entry.id);
@@ -314,14 +303,21 @@ const AdminExports = () => {
               </button>
             </>
           )}
+          {missingThumbs.length > 0 && (
+            <button
+              type="button"
+              disabled={progress !== null || theme === null}
+              onClick={() => void generateMissingThumbs()}
+              className="text-xs sm:text-sm rounded-md border border-border px-2.5 py-1.5 sm:px-3 sm:py-2 hover:bg-muted disabled:opacity-60"
+            >
+              {progress
+                ? `Lager miniatyrbilder… ${progress.done}/${progress.total}`
+                : `Lag miniatyrbilder (${missingThumbs.length})`}
+            </button>
+          )}
         </div>
 
         {error && <p className="text-destructive mb-6">{error}</p>}
-        {progress && (
-          <p className="text-xs sm:text-sm text-muted-foreground mb-2">
-            Lager miniatyrbilder for eldre eksporter… {progress.done}/{progress.total}
-          </p>
-        )}
         {loading && <p className="text-muted-foreground">Laster…</p>}
         {!loading && !filtered.length && (
           <p className="text-muted-foreground">Ingen eksporter matcher filteret.</p>
@@ -357,7 +353,7 @@ const AdminExports = () => {
                         ? "Ingen forhåndsvisning"
                         : e.thumb
                           ? "Laster…"
-                          : "Rendrer…"}
+                          : "Ingen miniatyr"}
                     </span>
                   )}
                 </button>

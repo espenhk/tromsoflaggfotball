@@ -241,6 +241,31 @@ const AdminContentInner = () => {
     () => blocks.filter((b) => b.kind === "slot"),
     [blocks],
   );
+
+  /** Footer links live in a hidden slot so they follow the same save flow. */
+  const footerLinks: FooterLink[] = useMemo(() => {
+    const row = slotBlocks.find((b) => b.key === FOOTER_LINKS_SLOT);
+    return parseFooterLinks(row?.body_md_no) ?? [];
+  }, [slotBlocks]);
+
+  const setFooterLinks = (links: FooterLink[]) => {
+    const body = serializeFooterLinks(links);
+    setBlocks((prev) => {
+      const existing = prev.find(
+        (x) => x.kind === "slot" && x.key === FOOTER_LINKS_SLOT && x.page === page,
+      );
+      if (existing) {
+        return prev.map((x) => (x === existing ? { ...x, body_md_no: body } : x));
+      }
+      return [
+        ...prev,
+        normaliseBlock({
+          page, key: FOOTER_LINKS_SLOT, kind: "slot", sort_order: 0,
+          visible: true, body_md_no: body,
+        }),
+      ];
+    });
+  };
   const sectionBlocks = useMemo(
     () => blocks.filter((b) => b.kind === "section").sort((a, b) => a.sort_order - b.sort_order),
     [blocks],

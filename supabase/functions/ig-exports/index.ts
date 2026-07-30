@@ -37,6 +37,14 @@ async function verifyToken(token: unknown, secret: string): Promise<boolean> {
 }
 
 const MAX_PAYLOAD_BYTES = 8 * 1024 * 1024; // 8 MB cap per entry
+const MAX_THUMB_BYTES = 400 * 1024; // small first-slide preview
+
+function cleanThumb(thumb: unknown): string | null {
+  if (typeof thumb !== "string") return null;
+  if (!/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(thumb)) return null;
+  if (thumb.length > MAX_THUMB_BYTES) return null;
+  return thumb;
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -68,7 +76,7 @@ Deno.serve(async (req) => {
       // List without the payload (could be huge); fetch payload on demand.
       const { data, error } = await supabase
         .from("ig_post_exports")
-        .select("id, name, kind, slide_count, photos_dropped, created_at, updated_at, templates, payload->aspect")
+        .select("id, name, kind, slide_count, photos_dropped, created_at, updated_at, templates, thumb, payload->aspect")
         .order("created_at", { ascending: false })
         .limit(500);
       if (error) throw error;
@@ -101,7 +109,7 @@ Deno.serve(async (req) => {
     }
 
     if (action === "save") {
-      const { name, kind, slide_count, payload, photos_dropped, caption } = body;
+      const { name, kind, slide_count, payload, photos_dropped, caption, thumb } = body;
       if (typeof name !== "string" || !name.trim() || !payload || typeof payload !== "object") {
         return new Response(JSON.stringify({ error: "invalid input" }), {
           status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -122,11 +130,34 @@ Deno.serve(async (req) => {
           payload,
           photos_dropped: !!photos_dropped,
           caption: typeof caption === "string" ? caption.slice(0, 4000) : null,
+          thumb: cleanThumb(thumb),
         })
         .select("id")
         .single();
       if (error) throw error;
       return new Response(JSON.stringify({ ok: true, id: data.id }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "rename") {
+      // fallthrough below
+    }
+
+    if (action === "set_thumb") {
+      const { id, thumb } = body;
+      const clean = cleanThumb(thumb);
+      if (typeof id !== "string" || !clean) {
+        return new Response(JSON.stringify({ error: "invalid input" }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const { error } = await supabase
+        .from("ig_post_exports")
+        .update({ thumb: clean })
+        .eq("id", id);
+      if (error) throw error;
+      return new Response(JSON.stringify({ ok: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

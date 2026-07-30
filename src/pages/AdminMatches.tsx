@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ADMIN_TOKEN_KEY } from "@/components/AdminGate";
 import { Link } from "react-router-dom";
+import ImagePickerField from "@/components/ImagePickerField";
+import ColorPickerField from "@/components/ColorPickerField";
 
 type Match = {
   id: string;
@@ -263,16 +265,16 @@ const EditorModal = ({
           <div className="col-span-2 mt-2 text-xs font-bold uppercase text-muted-foreground">Hjemmelag</div>
           <Field label="Navn" value={draft.home_name} onChange={(v) => set("home_name", v)} />
           <Field label="Undertekst" value={draft.home_tag} onChange={(v) => set("home_tag", v)} />
-          <Field label="Logo URL" value={draft.home_logo} onChange={(v) => set("home_logo", v)} />
-          <Field label="Farge (hex)" value={draft.home_color} onChange={(v) => set("home_color", v)} />
+          <ImagePickerField label="Logo" value={draft.home_logo} onChange={(v) => set("home_logo", v)} />
+          <ColorPickerField label="Farge" value={draft.home_color} onChange={(v) => set("home_color", v)} />
           <Field label="Score (blank = ikke spilt)" type="number" value={draft.home_score}
                  onChange={(v) => set("home_score", v === "" ? null : Number(v))} />
 
           <div className="col-span-2 mt-2 text-xs font-bold uppercase text-muted-foreground">Bortelag</div>
           <Field label="Navn" value={draft.away_name} onChange={(v) => set("away_name", v)} />
           <Field label="Undertekst" value={draft.away_tag} onChange={(v) => set("away_tag", v)} />
-          <Field label="Logo URL" value={draft.away_logo} onChange={(v) => set("away_logo", v)} />
-          <Field label="Farge (hex)" value={draft.away_color} onChange={(v) => set("away_color", v)} />
+          <ImagePickerField label="Logo" value={draft.away_logo} onChange={(v) => set("away_logo", v)} />
+          <ColorPickerField label="Farge" value={draft.away_color} onChange={(v) => set("away_color", v)} />
           <Field label="Score" type="number" value={draft.away_score}
                  onChange={(v) => set("away_score", v === "" ? null : Number(v))} />
         </div>

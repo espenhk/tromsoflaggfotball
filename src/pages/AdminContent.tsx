@@ -9,7 +9,10 @@ import {
   type CmsPage, type PageId,
 } from "@/cms/manifest";
 import { VARIANTS, VARIANT_ORDER, getVariant, type VariantKey, type FieldSpec } from "@/cms/variants";
-import { Link2, Unlink, Save, Undo2, RotateCcw, Plus, Trash2, ExternalLink } from "lucide-react";
+import {
+  FOOTER_LINKS_SLOT, parseFooterLinks, serializeFooterLinks, type FooterLink,
+} from "@/cms/footer";
+import { Link2, Unlink, Save, Undo2, RotateCcw, Plus, Trash2, ExternalLink, ArrowUp, ArrowDown } from "lucide-react";
 
 type Block = {
   id: string;

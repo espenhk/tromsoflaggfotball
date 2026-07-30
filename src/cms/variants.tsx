@@ -413,45 +413,58 @@ const ContactItem = ({ item, lang }: { item: Record<string, unknown>; lang: "no"
   const phone = typeof item.phone === "string" ? item.phone : "";
   const email = typeof item.email === "string" ? item.email : "";
   const note = pickLang(item.note_md_no as string, item.note_md_en as string, lang);
-  const hasDetails = Boolean(email || note);
+  const hasDetails = Boolean(note);
   return (
     <div className="rounded-xl border border-border bg-card/50">
-      <button
-        type="button"
+      {/* Not a <button>: the row contains tel:/mailto: links, and anchors are
+          not allowed inside a button (the links stop working). */}
+      <div
+        role={hasDetails ? "button" : undefined}
+        tabIndex={hasDetails ? 0 : undefined}
         onClick={() => hasDetails && setOpen((v) => !v)}
-        className="w-full flex items-center gap-3 px-5 py-3 text-left"
-        aria-expanded={open}
+        onKeyDown={(e) => {
+          if (!hasDetails) return;
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setOpen((v) => !v);
+          }
+        }}
+        className={`w-full flex items-center gap-3 px-5 py-3 text-left ${hasDetails ? "cursor-pointer" : ""}`}
+        aria-expanded={hasDetails ? open : undefined}
       >
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 space-y-0.5">
           {role && (
             <div className="text-xs uppercase tracking-widest text-primary mb-1">{role}</div>
           )}
           {name && <div className="font-heading text-base text-foreground">{name}</div>}
-          {phone && (
-            <a
-              href={`tel:${phone.replace(/\s+/g, "")}`}
-              onClick={(e) => e.stopPropagation()}
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary mt-0.5"
-            >
-              <Phone className="w-4 h-4" /> {phone}
-            </a>
-          )}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            {phone && (
+              <a
+                href={`tel:${phone.replace(/[^\d+]/g, "")}`}
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary"
+              >
+                <Phone className="w-4 h-4 shrink-0" /> {phone}
+              </a>
+            )}
+            {email && (
+              <a
+                href={`mailto:${email}`}
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary break-all"
+              >
+                <Mail className="w-4 h-4 shrink-0" /> {email}
+              </a>
+            )}
+          </div>
         </div>
         {hasDetails && (
           <ChevronDown className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
         )}
-      </button>
+      </div>
       <div className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
         <div className="min-h-0 overflow-hidden">
           <div className="px-5 pb-4 pt-1 space-y-2">
-            {email && (
-              <a
-                href={`mailto:${email}`}
-                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary break-all"
-              >
-                <Mail className="w-4 h-4" /> {email}
-              </a>
-            )}
             {note && <MdBlock md={note} />}
           </div>
         </div>

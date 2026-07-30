@@ -10,7 +10,7 @@ import {
 } from "@/cms/manifest";
 import { VARIANTS, VARIANT_ORDER, getVariant, type VariantKey, type FieldSpec } from "@/cms/variants";
 import {
-  FOOTER_LINKS_SLOT, parseFooterLinks, serializeFooterLinks, type FooterLink,
+  FOOTER_LINKS_SLOT, parseFooterLinksDraft, serializeFooterLinks, type FooterLink,
 } from "@/cms/footer";
 import { Link2, Unlink, Save, Undo2, RotateCcw, Plus, Trash2, ExternalLink, ArrowUp, ArrowDown } from "lucide-react";
 
@@ -245,7 +245,7 @@ const AdminContentInner = () => {
   /** Footer links live in a hidden slot so they follow the same save flow. */
   const footerLinks: FooterLink[] = useMemo(() => {
     const row = slotBlocks.find((b) => b.key === FOOTER_LINKS_SLOT);
-    return parseFooterLinks(row?.body_md_no) ?? [];
+    return parseFooterLinksDraft(row?.body_md_no);
   }, [slotBlocks]);
 
   const setFooterLinks = (links: FooterLink[]) => {
@@ -613,7 +613,7 @@ const AdminContentInner = () => {
                 className="inline-flex items-center gap-2 text-sm px-3 py-1.5 rounded-md border border-border hover:bg-muted disabled:opacity-40"
               >
                 <Undo2 className="w-4 h-4" />
-                Angre siste lagring
+                Angre
               </button>
             </div>
 

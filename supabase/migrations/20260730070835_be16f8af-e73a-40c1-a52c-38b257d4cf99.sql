@@ -1,0 +1,1 @@
+ALTER TABLE public.ig_post_exports ADD COLUMN IF NOT EXISTS thumb text;

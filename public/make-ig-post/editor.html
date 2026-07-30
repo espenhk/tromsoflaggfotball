@@ -4621,6 +4621,15 @@
           console.warn('deep-link match load failed', e);
         }
       })();
+
+      // Deep-link: ?export=<uuid> loads that export-log entry straight into
+      // the editor. Used by the admin export-log page ("Åpne i editor").
+      (async () => {
+        const eid = new URLSearchParams(location.search).get('export');
+        if (!eid) return;
+        try { await loadHistoryEntry(eid); }
+        catch (e) { console.warn('deep-link export load failed', e); }
+      })();
     </script>
   </body>
 </html>

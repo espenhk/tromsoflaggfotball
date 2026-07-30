@@ -88,6 +88,31 @@ export function useContentBlocks() {
   return useContext(PageCtx);
 }
 
+export type NavItem = { id: string; label: string };
+
+/**
+ * Build the page navigation from the CMS sections: one entry per linked
+ * group, taking the title and anchor of the group's first section.
+ */
+export function useNavItems(): NavItem[] {
+  const { lang } = useLang();
+  const { blocks } = useContentBlocks();
+  return useMemo(() => {
+    const sections = blocks
+      .filter((b) => b.kind === "section")
+      .sort((a, b) => a.sort_order - b.sort_order);
+    const items: NavItem[] = [];
+    sections.forEach((s, i) => {
+      if (i > 0 && linkedUp(s, sections[i - 1])) return;
+      const id = blockAnchorId(s);
+      const label = (lang === "en" ? s.title_en?.trim() : "") || s.title_no?.trim();
+      if (!id || !label) return;
+      items.push({ id, label });
+    });
+    return items;
+  }, [blocks, lang]);
+}
+
 /** Return the localized markdown for a named slot, or null if not set. */
 export function useSlot(key: string): { title: string | null; body: string } | null {
   const { lang } = useLang();

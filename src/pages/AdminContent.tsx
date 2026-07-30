@@ -358,51 +358,7 @@ const AdminContentInner = () => {
                 <option key={p} value={p}>{PAGE_LABELS[p]}</option>
               ))}
             </optgroup>
-            {customPages.length > 0 && (
-              <optgroup label="Egne sider (/pages/…)">
-                {customPages.map((p) => (
-                  <option key={p.slug} value={customPageId(p.slug)}>
-                    {p.title_no} — /pages/{p.slug}
-                  </option>
-                ))}
-              </optgroup>
-            )}
           </select>
-
-          <button
-            type="button"
-            onClick={createPage}
-            className="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-md border border-border hover:bg-muted"
-          >
-            <Plus className="w-4 h-4" /> Ny side
-          </button>
-
-          {currentCustom && (
-            <>
-              <a
-                href={`/pages/${currentCustom.slug}`}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-md border border-border hover:bg-muted"
-              >
-                <ExternalLink className="w-4 h-4" /> Åpne
-              </a>
-              <button
-                type="button"
-                onClick={renamePage}
-                className="text-sm px-3 py-2 rounded-md border border-border hover:bg-muted"
-              >
-                Gi nytt navn
-              </button>
-              <button
-                type="button"
-                onClick={deletePage}
-                className="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-md border border-destructive/40 text-destructive hover:bg-destructive/10"
-              >
-                <Trash2 className="w-4 h-4" /> Slett side
-              </button>
-            </>
-          )}
         </div>
 
         {error && <p className="mb-4 text-destructive text-sm">Feil: {error}</p>}

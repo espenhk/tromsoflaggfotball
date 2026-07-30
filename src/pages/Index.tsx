@@ -13,6 +13,7 @@ import {
   FOOTER_LINKS_SLOT,
   parseFooterLinks,
   isInternalHref,
+  externalHref,
   type FooterLink,
 } from "@/cms/footer";
 import heroBg from "@/assets/hero-bg.png";
@@ -277,7 +278,7 @@ const FooterLinks = () => {
         ) : (
           <a
             key={`${l.href}-${i}`}
-            href={l.href}
+            href={externalHref(l.href)}
             target="_blank"
             rel="noreferrer"
             className="hover:underline"

@@ -271,7 +271,7 @@ const AdminExports = () => {
           <p className="text-muted-foreground">Ingen eksporter matcher filteret.</p>
         )}
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-3 gap-2 sm:gap-4 lg:grid-cols-4">
           {filtered.map((e) => {
             const isSel = selected.includes(e.id);
             const thumb = thumbs[e.id];
@@ -285,7 +285,7 @@ const AdminExports = () => {
                 <button
                   type="button"
                   onClick={() => toggle(e.id)}
-                  className="block w-full aspect-square bg-muted/40 flex items-center justify-center overflow-hidden"
+                  className="w-full aspect-square bg-muted/40 flex items-center justify-center overflow-hidden"
                   aria-pressed={isSel}
                 >
                   {thumb ? (
@@ -296,26 +296,29 @@ const AdminExports = () => {
                       loading="lazy"
                     />
                   ) : (
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-[10px] sm:text-xs text-muted-foreground px-1 text-center">
                       {thumb === "" ? "Ingen forhåndsvisning" : "Rendrer…"}
                     </span>
                   )}
                 </button>
-                <div className="p-4">
-                  <div className="font-medium text-sm truncate" title={e.name}>
+                <div className="p-1.5 sm:p-3">
+                  <div className="font-medium text-xs sm:text-sm leading-tight truncate" title={e.name}>
                     {e.name}
                   </div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {fmtDate(e.created_at)} · {e.slide_count} slide
-                    {e.slide_count === 1 ? "" : "s"}
-                    {e.aspect ? ` · ${e.aspect}` : ""}
+                  <div className="text-[11px] sm:text-xs text-muted-foreground mt-0.5 truncate">
+                    <span className="sm:hidden">{fmtShortDate(e.created_at)}</span>
+                    <span className="hidden sm:inline">{fmtDate(e.created_at)}</span>
+                    {` · ${e.slide_count}`}
+                    <span className="hidden sm:inline">
+                      {` slide${e.slide_count === 1 ? "" : "s"}${e.aspect ? ` · ${e.aspect}` : ""}`}
+                    </span>
                   </div>
                   {!!(e.templates ?? []).length && (
-                    <div className="flex flex-wrap gap-1 mt-2">
+                    <div className="flex flex-wrap gap-1 mt-1 sm:mt-2 overflow-hidden max-h-[18px] sm:max-h-none">
                       {e.templates!.map((t) => (
                         <span
                           key={t}
-                          className="text-[11px] rounded border border-border px-1.5 py-0.5 text-primary"
+                          className="text-[10px] sm:text-[11px] rounded border border-border px-1 sm:px-1.5 py-0.5 text-primary"
                         >
                           {t}
                         </span>
@@ -323,39 +326,53 @@ const AdminExports = () => {
                     </div>
                   )}
                   {e.photos_dropped && (
-                    <p className="text-[11px] text-muted-foreground mt-2">
-                      Bilder ble utelatt da denne ble lagret.
+                    <p className="text-[10px] sm:text-[11px] text-muted-foreground mt-1 sm:mt-2 truncate">
+                      Bilder utelatt
                     </p>
                   )}
-                  <div className="flex flex-wrap gap-2 mt-3">
+                  <div className="flex flex-wrap gap-1 sm:gap-2 mt-1.5 sm:mt-3">
                     <button
                       type="button"
+                      title="Last ned"
+                      aria-label="Last ned"
                       disabled={busy !== null}
                       onClick={() => void downloadEntry(e)}
-                      className="text-xs rounded-md bg-primary text-primary-foreground px-3 py-1.5 disabled:opacity-60"
+                      className="inline-flex items-center gap-1 text-xs rounded-md bg-primary text-primary-foreground p-1.5 sm:px-3 sm:py-1.5 disabled:opacity-60"
                     >
-                      {busy === e.id ? "Laster ned…" : "Last ned"}
+                      <Download className="h-3.5 w-3.5" />
+                      <span className="hidden sm:inline">
+                        {busy === e.id ? "Laster ned…" : "Last ned"}
+                      </span>
                     </button>
                     <Link
                       to={`/admin/make-ig-post?export=${e.id}`}
-                      className="text-xs rounded-md border border-border px-3 py-1.5 hover:bg-muted"
+                      title="Åpne i editor"
+                      aria-label="Åpne i editor"
+                      className="inline-flex items-center gap-1 text-xs rounded-md border border-border p-1.5 sm:px-3 sm:py-1.5 hover:bg-muted"
                     >
-                      Åpne i editor
+                      <Pencil className="h-3.5 w-3.5" />
+                      <span className="hidden sm:inline">Åpne</span>
                     </Link>
                     <button
                       type="button"
+                      title="Gi nytt navn"
+                      aria-label="Gi nytt navn"
                       onClick={() => void doRename(e)}
-                      className="text-xs rounded-md border border-border px-3 py-1.5 hover:bg-muted"
+                      className="inline-flex items-center gap-1 text-xs rounded-md border border-border p-1.5 sm:px-3 sm:py-1.5 hover:bg-muted"
                     >
-                      Gi nytt navn
+                      <Type className="h-3.5 w-3.5" />
+                      <span className="hidden sm:inline">Nytt navn</span>
                     </button>
                     <button
                       type="button"
+                      title="Slett"
+                      aria-label="Slett"
                       disabled={busy !== null}
                       onClick={() => void doDelete([e.id])}
-                      className="text-xs rounded-md border border-destructive text-destructive px-3 py-1.5 disabled:opacity-60"
+                      className="inline-flex items-center gap-1 text-xs rounded-md border border-destructive text-destructive p-1.5 sm:px-3 sm:py-1.5 disabled:opacity-60"
                     >
-                      Slett
+                      <Trash2 className="h-3.5 w-3.5" />
+                      <span className="hidden sm:inline">Slett</span>
                     </button>
                   </div>
                 </div>

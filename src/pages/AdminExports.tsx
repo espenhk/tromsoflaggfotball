@@ -304,14 +304,21 @@ const AdminExports = () => {
               </button>
             </>
           )}
+          {missingThumbs.length > 0 && (
+            <button
+              type="button"
+              disabled={progress !== null || theme === null}
+              onClick={() => void generateMissingThumbs()}
+              className="text-xs sm:text-sm rounded-md border border-border px-2.5 py-1.5 sm:px-3 sm:py-2 hover:bg-muted disabled:opacity-60"
+            >
+              {progress
+                ? `Lager miniatyrbilder… ${progress.done}/${progress.total}`
+                : `Lag miniatyrbilder (${missingThumbs.length})`}
+            </button>
+          )}
         </div>
 
         {error && <p className="text-destructive mb-6">{error}</p>}
-        {progress && (
-          <p className="text-xs sm:text-sm text-muted-foreground mb-2">
-            Lager miniatyrbilder for eldre eksporter… {progress.done}/{progress.total}
-          </p>
-        )}
         {loading && <p className="text-muted-foreground">Laster…</p>}
         {!loading && !filtered.length && (
           <p className="text-muted-foreground">Ingen eksporter matcher filteret.</p>
@@ -347,7 +354,7 @@ const AdminExports = () => {
                         ? "Ingen forhåndsvisning"
                         : e.thumb
                           ? "Laster…"
-                          : "Rendrer…"}
+                          : "Ingen miniatyr"}
                     </span>
                   )}
                 </button>

@@ -4,7 +4,7 @@ import remarkGfm from "remark-gfm";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/i18n/LanguageProvider";
 import { afterRange, type PageId } from "@/cms/manifest";
-import { getVariant } from "@/cms/variants";
+import { getVariant, blockAnchorId } from "@/cms/variants";
 
 export type ContentPage = PageId;
 
@@ -29,6 +29,24 @@ type Ctx = {
 };
 
 const PageCtx = createContext<Ctx>({ blocks: [], loaded: false });
+
+/**
+ * A section can be "linked" to the one above it (data.linkedUp). Linked
+ * sections share one background stripe and read as one section. Legacy
+ * `data.group` names are still honoured for unmigrated blocks.
+ */
+export const linkedUp = (b: ContentBlock, prev?: ContentBlock) => {
+  const d = b.data as { linkedUp?: unknown; group?: unknown };
+  if (d?.linkedUp === true) return true;
+  const g = typeof d?.group === "string" && d.group.trim() ? d.group.trim() : null;
+  const pg = prev
+    ? (() => {
+        const p = (prev.data as { group?: unknown })?.group;
+        return typeof p === "string" && p.trim() ? p.trim() : null;
+      })()
+    : null;
+  return g !== null && g === pg;
+};
 
 export const ContentBlocksProvider = ({
   page,
@@ -68,6 +86,31 @@ export const ContentBlocksProvider = ({
 
 export function useContentBlocks() {
   return useContext(PageCtx);
+}
+
+export type NavItem = { id: string; label: string };
+
+/**
+ * Build the page navigation from the CMS sections: one entry per linked
+ * group, taking the title and anchor of the group's first section.
+ */
+export function useNavItems(): NavItem[] {
+  const { lang } = useLang();
+  const { blocks } = useContentBlocks();
+  return useMemo(() => {
+    const sections = blocks
+      .filter((b) => b.kind === "section")
+      .sort((a, b) => a.sort_order - b.sort_order);
+    const items: NavItem[] = [];
+    sections.forEach((s, i) => {
+      if (i > 0 && linkedUp(s, sections[i - 1])) return;
+      const id = blockAnchorId(s);
+      const label = (lang === "en" ? s.title_en?.trim() : "") || s.title_no?.trim();
+      if (!id || !label) return;
+      items.push({ id, label });
+    });
+    return items;
+  }, [blocks, lang]);
 }
 
 /** Return the localized markdown for a named slot, or null if not set. */
@@ -121,22 +164,6 @@ export const MdBlock = ({ md, className }: { md: string; className?: string }) =
  */
 const SectionRun = ({ sections }: { sections: ContentBlock[] }) => {
   if (sections.length === 0) return null;
-  // A section can be "linked" to the one above it (data.linkedUp). Linked
-  // sections share one background stripe and sit tighter together, so a
-  // chain of them reads as a single section. Legacy `data.group` names are
-  // still honoured for blocks that haven't been migrated.
-  const linkedUp = (b: ContentBlock, prev?: ContentBlock) => {
-    const d = b.data as { linkedUp?: unknown; group?: unknown };
-    if (d?.linkedUp === true) return true;
-    const g = typeof d?.group === "string" && d.group.trim() ? d.group.trim() : null;
-    const pg = prev
-      ? (() => {
-          const p = (prev.data as { group?: unknown })?.group;
-          return typeof p === "string" && p.trim() ? p.trim() : null;
-        })()
-      : null;
-    return g !== null && g === pg;
-  };
   let stripe = -1;
   const rows = sections.map((s, i) => {
     const continues = i > 0 && linkedUp(s, sections[i - 1]);

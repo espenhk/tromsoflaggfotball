@@ -8,6 +8,7 @@ import {
   MdBlock,
   useSlot,
   useSlotRaw,
+  useNavItems,
 } from "@/hooks/useContentBlocks";
 import {
   FOOTER_LINKS_SLOT,
@@ -38,21 +39,9 @@ const FieldDiagramFallback = () => (
 
 const POSITIONS_URL = "/posisjoner";
 
-const navItemIds = ["om", "treninger", "spillet", "coachene", "kom-i-gang", "video", "faq"] as const;
-const navItemKeyFor = (id: typeof navItemIds[number]): TranslationKey => {
-  switch (id) {
-    case "om": return "nav.om";
-    case "treninger": return "nav.treninger";
-    case "spillet": return "nav.spillet";
-    case "coachene": return "nav.coachene";
-    case "kom-i-gang": return "nav.komIGang";
-    case "video": return "nav.video";
-    case "faq": return "nav.faq";
-  }
-};
-
 const IndexInner = () => {
   const t = useT();
+  const navItems = useNavItems();
   const { lang } = useLang();
   const { theme, selectedTheme, revealMode, revealActive, revealStage } = useTheme();
   const inReveal = revealActive && revealMode && selectedTheme === "tuil";
@@ -115,13 +104,13 @@ const IndexInner = () => {
         {showHeaderSweep && <div className="reveal-header-sweep" aria-hidden />}
         <div className="max-w-4xl mx-auto px-4 flex items-center gap-1 py-2 relative z-10">
           <BrandLogo variant="mark" alt="Logo" className="h-10 w-auto shrink-0 mr-3" />
-          {navItemIds.map((id) => (
+          {navItems.map(({ id, label }) => (
             <button
               key={id}
               onClick={() => scrollTo(id)}
               className={`text-sm font-heading font-medium transition-colors whitespace-nowrap px-4 py-1.5 rounded-lg ${navTextOverRed ? "text-white/80 hover:text-white hover:bg-white/10 reveal-nav-tuil-font" : "text-muted-foreground hover:text-primary hover:bg-primary/5"}`}
             >
-              {t(navItemKeyFor(id))}
+              {label}
             </button>
           ))}
           <div className="ml-auto">
@@ -148,13 +137,13 @@ const IndexInner = () => {
         {/* Expanded menu bubble */}
         {mobileMenuOpen && (
           <div className={`absolute top-full left-0 mt-2 min-w-[200px] rounded-2xl backdrop-blur-xl shadow-xl shadow-black/30 p-2 animate-in fade-in slide-in-from-top-2 duration-200 ${theme === "tuil" ? "bg-primary/95 border border-white/20" : "bg-background/50 border border-white/15"}`}>
-            {navItemIds.map((id) => (
+            {navItems.map(({ id, label }) => (
               <button
                 key={id}
                 onClick={() => { scrollTo(id); setMobileMenuOpen(false); }}
                 className={`w-full text-left text-sm font-heading font-medium transition-colors px-4 py-2.5 rounded-xl ${theme === "tuil" ? "text-white/90 hover:text-white hover:bg-white/10" : "text-foreground/80 hover:text-primary hover:bg-white/10"}`}
               >
-                {t(navItemKeyFor(id))}
+                {label}
               </button>
             ))}
             <div className="px-4 pt-2 pb-1 flex items-center justify-between">

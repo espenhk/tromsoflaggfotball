@@ -4032,6 +4032,23 @@
             r.readAsDataURL(blob);
           });
         },
+        // Small JPEG preview data URL of the currently loaded slide.
+        async exportThumbDataUrl(maxPx) {
+          return await makeThumbDataUrl(maxPx || 360);
+        },
+        async _unusedExportCurrentAsBase64() {
+          const blob = await exportCurrentTile();
+          return await new Promise((resolve, reject) => {
+            const r = new FileReader();
+            r.onload = () => {
+              const s = String(r.result || '');
+              const i = s.indexOf(',');
+              resolve(i >= 0 ? s.slice(i + 1) : s);
+            };
+            r.onerror = () => reject(new Error('base64 encode failed'));
+            r.readAsDataURL(blob);
+          });
+        },
       };
 
       // ================================================================

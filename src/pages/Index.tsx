@@ -237,13 +237,8 @@ const IndexInner = () => {
               {theme === "tuil" ? "Flaggfotball" : t("footer.brand")}
             </span>
           </div>
-          <div className={`flex items-center gap-4 text-xs ${theme === "tuil" ? "text-white/80" : "text-muted-foreground"}`}>
-            <Link to="/kamper" className="hover:underline">
-              {t("matches.headerTitle")}
-            </Link>
-            <Link to="/presse" className="hover:underline">
-              {t("footer.press")}
-            </Link>
+          <div className={`flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs ${theme === "tuil" ? "text-white/80" : "text-muted-foreground"}`}>
+            <FooterLinks />
             <span>
               © {new Date().getFullYear()} Tromsø Flaggfotball / TUIL
             </span>

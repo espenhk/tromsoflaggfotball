@@ -3133,10 +3133,6 @@
         const stamp = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
         return cleaned ? `${cleaned} — ${stamp}` : `Export ${stamp} ${d.toTimeString().slice(0,5)}`;
       }
-      function buildExportSnapshot(name, kind) {
-        snapshotSlide();
-        return _buildExportSnapshot(name, kind);
-      }
       // Renders the current preview tile down to a small JPEG preview used by
       // the export log grid (so it never has to re-rasterize full-size posts).
       async function makeThumbDataUrl(maxPx) {
@@ -3167,7 +3163,7 @@
           if (prev !== 0) { loadSlide(prev); renderPreview(); }
         }
       }
-      function _buildExportSnapshot(name, kind) {
+      function buildExportSnapshot(name, kind) {
         snapshotSlide();
         return {
           name: name || suggestExportName(),

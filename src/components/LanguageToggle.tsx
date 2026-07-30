@@ -1,26 +1,15 @@
 import { useLang, useT } from "@/i18n/LanguageProvider";
 
-/** Inline SVG flags — emoji flags don't render on Windows/most desktop browsers. */
-const FlagNO = () => (
-  <svg viewBox="0 0 22 16" className="w-5 h-[0.9rem] rounded-[2px] block" aria-hidden>
-    <rect width="22" height="16" fill="#BA0C2F" />
-    <path d="M0 6h22M8 0v16" stroke="#fff" strokeWidth="4" />
-    <path d="M0 6h22M8 0v16" stroke="#00205B" strokeWidth="2" />
-  </svg>
-);
-
-const FlagGB = () => (
-  <svg viewBox="0 0 60 30" className="w-5 h-[0.9rem] rounded-[2px] block" aria-hidden>
-    <clipPath id="lt-gb-clip">
-      <path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z" />
-    </clipPath>
-    <rect width="60" height="30" fill="#012169" />
-    <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" strokeWidth="6" />
-    <path d="M0,0 L60,30 M60,0 L0,30" clipPath="url(#lt-gb-clip)" stroke="#C8102E" strokeWidth="4" />
-    <path d="M30,0 v30 M0,15 h60" stroke="#fff" strokeWidth="10" />
-    <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" strokeWidth="6" />
-  </svg>
-);
+/**
+ * Real emoji flags. The user's own emoji family is used when it has flag
+ * glyphs (Apple Color Emoji on macOS/iOS, Noto on Android/Linux); Windows
+ * ships none, so the Noto Color Emoji webfont (subset to these two flags in
+ * index.css) fills in.
+ */
+const emojiFont = {
+  fontFamily:
+    '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Twemoji Mozilla","Android Emoji",sans-serif',
+} as const;
 
 /**
  * Compact flag pill toggle. Clicking anywhere on the pill swaps language.
@@ -41,20 +30,22 @@ const LanguageToggle = ({ className = "" }: { className?: string }) => {
     >
       <span
         title="Norsk"
-        className={`px-2 py-1 rounded-full transition-all ${
+        style={emojiFont}
+        className={`px-2 py-1 rounded-full transition-all leading-none ${
           lang === "no" ? "bg-primary" : "opacity-50 grayscale"
         }`}
       >
-        <FlagNO />
+        🇳🇴
         <span className="sr-only">Norsk</span>
       </span>
       <span
         title="English"
-        className={`px-2 py-1 rounded-full transition-all ${
+        style={emojiFont}
+        className={`px-2 py-1 rounded-full transition-all leading-none ${
           lang === "en" ? "bg-primary" : "opacity-50 grayscale"
         }`}
       >
-        <FlagGB />
+        🇬🇧
         <span className="sr-only">English</span>
       </span>
     </button>

@@ -122,8 +122,9 @@ const SectionShell = ({
 
 /** Derive a scroll-target id from a CMS block's key. `foo-cms` → `foo`. */
 export function blockAnchorId(block: ContentBlock): string | undefined {
-  if (!block.key) return undefined;
-  return block.key.replace(/-cms$/, "");
+  const key = block.key || block.cmsKey;
+  if (!key) return undefined;
+  return key.replace(/-cms$/, "");
 }
 
 /** Icons that can decorate a markdown / signup section heading. */

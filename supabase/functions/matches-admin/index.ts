@@ -68,7 +68,10 @@ function sanitizeMatch(m: MatchInput): Record<string, unknown> {
   for (const f of MATCH_FIELDS) {
     if (m[f] === undefined) continue;
     const v = m[f];
-    if (typeof v === "string") out[f] = v.slice(0, 500);
+    // Logos may be data: URLs picked from the image library, so allow a much
+    // larger cap for those two fields.
+    const max = f === "home_logo" || f === "away_logo" ? 3_000_000 : 500;
+    if (typeof v === "string") out[f] = v.slice(0, max);
     else out[f] = v;
   }
   return out;

@@ -205,10 +205,22 @@ Deno.serve(async (req) => {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      // slot rows: upsert on (page, key)
+      // Slot rows are unique per (page, key), but the uniqueness is enforced by
+      // a *partial* index (kind = 'slot'), which ON CONFLICT can't target.
+      // Do the upsert manually: look for an existing slot row first.
       if (b.kind === "slot") {
-        const { data, error } = await supabase.from("content_blocks")
-          .upsert(b as any, { onConflict: "page,key" }).select().single();
+        const { data: existing, error: findError } = await supabase
+          .from("content_blocks")
+          .select("id")
+          .eq("page", b.page)
+          .eq("key", b.key)
+          .eq("kind", "slot")
+          .maybeSingle();
+        if (findError) throw findError;
+        const q = existing
+          ? supabase.from("content_blocks").update(b as any).eq("id", (existing as { id: string }).id)
+          : supabase.from("content_blocks").insert(b as any);
+        const { data, error } = await q.select().single();
         if (error) throw error;
         return new Response(JSON.stringify({ block: data }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },

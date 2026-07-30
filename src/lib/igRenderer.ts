@@ -5,6 +5,7 @@ type EditorApi = {
   loadPayload: (payload: unknown) => Promise<void>;
   setAspect: (aspect: string) => Promise<void>;
   exportCurrentAsBase64: () => Promise<string>;
+  exportThumbDataUrl?: (maxPx?: number) => Promise<string | null>;
 };
 
 /**
@@ -49,6 +50,15 @@ export class IgRenderer {
 
   /** Renders one slide of a payload and returns a PNG data URL. */
   render(payload: IgExportPayload, slideIndex = 0): Promise<string> {
+    return this.run(payload, slideIndex, false) as Promise<string>;
+  }
+
+  /** Renders one slide as a small JPEG data URL (for grid thumbnails). */
+  renderThumb(payload: IgExportPayload, slideIndex = 0): Promise<string> {
+    return this.run(payload, slideIndex, true) as Promise<string>;
+  }
+
+  private run(payload: IgExportPayload, slideIndex: number, thumb: boolean): Promise<string> {
     const run = async () => {
       const api = await this.boot();
       const slides = payload.slides ?? [];
@@ -61,6 +71,10 @@ export class IgRenderer {
         slides: [slide],
       });
       if (payload.aspect) await api.setAspect(payload.aspect);
+      if (thumb && api.exportThumbDataUrl) {
+        const url = await api.exportThumbDataUrl(360);
+        if (url) return url;
+      }
       const b64 = await api.exportCurrentAsBase64();
       return `data:image/png;base64,${b64}`;
     };

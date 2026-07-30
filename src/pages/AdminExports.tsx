@@ -196,16 +196,16 @@ const AdminExports = () => {
     setSelected((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
 
   const selectClass =
-    "rounded-md border border-border bg-background text-foreground text-sm px-3 py-2";
+    "rounded-md border border-border bg-background text-foreground text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2";
 
   return (
-    <main className="min-h-screen bg-background text-foreground px-6 py-16">
+    <main className="min-h-screen bg-background text-foreground px-3 sm:px-6 py-10 sm:py-16">
       <div className="max-w-6xl mx-auto">
         <Link to="/admin" className="text-sm text-muted-foreground hover:text-primary">
           ← Admin
         </Link>
-        <h1 className="font-display text-4xl md:text-5xl mt-3 mb-2">Eksportlogg</h1>
-        <p className="text-muted-foreground mb-8">
+        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl mt-3 mb-2">Eksportlogg</h1>
+        <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8">
           Alle lagrede Instagram-poster. Last ned på nytt, åpne i editoren eller rydd opp.
         </p>
 

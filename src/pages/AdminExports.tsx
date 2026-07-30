@@ -60,7 +60,6 @@ const AdminExports = () => {
   const payloadCache = useRef(new Map<string, IgExportPayload>());
   const rendererRef = useRef<IgRenderer | null>(null);
   const poolRef = useRef<IgRenderer[]>([]);
-  const attempted = useRef(new Set<string>());
 
   const refresh = async () => {
     setLoading(true);

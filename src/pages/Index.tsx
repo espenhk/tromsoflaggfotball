@@ -7,7 +7,14 @@ import {
   AfterSection,
   MdBlock,
   useSlot,
+  useSlotRaw,
 } from "@/hooks/useContentBlocks";
+import {
+  FOOTER_LINKS_SLOT,
+  parseFooterLinks,
+  isInternalHref,
+  type FooterLink,
+} from "@/cms/footer";
 import heroBg from "@/assets/hero-bg.png";
 import BrandLogo from "@/components/BrandLogo";
 import { useTheme } from "@/theme/ThemeProvider";
@@ -230,13 +237,8 @@ const IndexInner = () => {
               {theme === "tuil" ? "Flaggfotball" : t("footer.brand")}
             </span>
           </div>
-          <div className={`flex items-center gap-4 text-xs ${theme === "tuil" ? "text-white/80" : "text-muted-foreground"}`}>
-            <Link to="/kamper" className="hover:underline">
-              {t("matches.headerTitle")}
-            </Link>
-            <Link to="/presse" className="hover:underline">
-              {t("footer.press")}
-            </Link>
+          <div className={`flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs ${theme === "tuil" ? "text-white/80" : "text-muted-foreground"}`}>
+            <FooterLinks />
             <span>
               © {new Date().getFullYear()} Tromsø Flaggfotball / TUIL
             </span>
@@ -247,6 +249,46 @@ const IndexInner = () => {
   );
 };
 
+
+/**
+ * Footer links, editable from the CMS (slot `footer.links`). Falls back to
+ * the built-in Kamper/Pressekit pair when nothing is configured.
+ */
+const FooterLinks = () => {
+  const t = useT();
+  const { lang } = useLang();
+  const raw = useSlotRaw(FOOTER_LINKS_SLOT);
+  const configured = parseFooterLinks(raw);
+  const links: FooterLink[] =
+    configured && configured.length > 0
+      ? configured
+      : [
+          { href: "/kamper", label_no: t("matches.headerTitle"), label_en: t("matches.headerTitle") },
+          { href: "/presse", label_no: t("footer.press"), label_en: t("footer.press") },
+        ];
+  return (
+    <>
+      {links.map((l, i) => {
+        const label = (lang === "en" ? l.label_en?.trim() : "") || l.label_no;
+        return isInternalHref(l.href) ? (
+          <Link key={`${l.href}-${i}`} to={l.href} className="hover:underline">
+            {label}
+          </Link>
+        ) : (
+          <a
+            key={`${l.href}-${i}`}
+            href={l.href}
+            target="_blank"
+            rel="noreferrer"
+            className="hover:underline"
+          >
+            {label}
+          </a>
+        );
+      })}
+    </>
+  );
+};
 
 const GameSection = () => {
   const navigate = useNavigate();

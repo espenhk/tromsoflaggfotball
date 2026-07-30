@@ -9,7 +9,10 @@ import {
   type CmsPage, type PageId,
 } from "@/cms/manifest";
 import { VARIANTS, VARIANT_ORDER, getVariant, type VariantKey, type FieldSpec } from "@/cms/variants";
-import { Link2, Unlink, Save, Undo2, RotateCcw, Plus, Trash2, ExternalLink } from "lucide-react";
+import {
+  FOOTER_LINKS_SLOT, parseFooterLinks, serializeFooterLinks, type FooterLink,
+} from "@/cms/footer";
+import { Link2, Unlink, Save, Undo2, RotateCcw, Plus, Trash2, ExternalLink, ArrowUp, ArrowDown } from "lucide-react";
 
 type Block = {
   id: string;
@@ -238,6 +241,31 @@ const AdminContentInner = () => {
     () => blocks.filter((b) => b.kind === "slot"),
     [blocks],
   );
+
+  /** Footer links live in a hidden slot so they follow the same save flow. */
+  const footerLinks: FooterLink[] = useMemo(() => {
+    const row = slotBlocks.find((b) => b.key === FOOTER_LINKS_SLOT);
+    return parseFooterLinks(row?.body_md_no) ?? [];
+  }, [slotBlocks]);
+
+  const setFooterLinks = (links: FooterLink[]) => {
+    const body = serializeFooterLinks(links);
+    setBlocks((prev) => {
+      const existing = prev.find(
+        (x) => x.kind === "slot" && x.key === FOOTER_LINKS_SLOT && x.page === page,
+      );
+      if (existing) {
+        return prev.map((x) => (x === existing ? { ...x, body_md_no: body } : x));
+      }
+      return [
+        ...prev,
+        normaliseBlock({
+          page, key: FOOTER_LINKS_SLOT, kind: "slot", sort_order: 0,
+          visible: true, body_md_no: body,
+        }),
+      ];
+    });
+  };
   const sectionBlocks = useMemo(
     () => blocks.filter((b) => b.kind === "section").sort((a, b) => a.sort_order - b.sort_order),
     [blocks],
@@ -545,6 +573,18 @@ const AdminContentInner = () => {
               </div>
             </section>
 
+            {page === "home" && (
+              <section className="mb-8">
+                <h2 className="font-heading text-xl mb-3">Bunntekst (footer)</h2>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Lenkene som vises nederst på forsiden, ved siden av copyright-teksten. Interne
+                  adresser starter med «/» (f.eks. <code>/kamper</code>); alt annet åpnes i ny fane.
+                  Uten lenker her brukes standardoppsettet (Kamper og Pressekit).
+                </p>
+                <FooterEditor links={footerLinks} onChange={setFooterLinks} />
+              </section>
+            )}
+
             <div className="sticky bottom-0 z-30 -mx-2 px-2 py-3 mb-12 bg-background/95 backdrop-blur border-t border-border flex flex-wrap items-center gap-2">
               <button
                 type="button"
@@ -602,6 +642,125 @@ const AdminContentInner = () => {
         )}
       </div>
     </main>
+  );
+};
+
+const FOOTER_PRESETS: { label: string; link: FooterLink }[] = [
+  { label: "Kamper", link: { href: "/kamper", label_no: "Kamper", label_en: "Matches" } },
+  { label: "Pressekit", link: { href: "/presse", label_no: "Pressekit", label_en: "Press kit" } },
+  { label: "Posisjoner", link: { href: "/posisjoner", label_no: "Posisjoner", label_en: "Positions" } },
+  { label: "Quiz", link: { href: "/quiz", label_no: "Hvilken posisjon er du?", label_en: "Which position are you?" } },
+];
+
+const FooterEditor = ({
+  links,
+  onChange,
+}: {
+  links: FooterLink[];
+  onChange: (links: FooterLink[]) => void;
+}) => {
+  const update = (i: number, patch: Partial<FooterLink>) =>
+    onChange(links.map((l, idx) => (idx === i ? { ...l, ...patch } : l)));
+  const remove = (i: number) => onChange(links.filter((_, idx) => idx !== i));
+  const move = (i: number, dir: -1 | 1) => {
+    const j = i + dir;
+    if (j < 0 || j >= links.length) return;
+    const next = [...links];
+    [next[i], next[j]] = [next[j], next[i]];
+    onChange(next);
+  };
+  const add = (link?: FooterLink) =>
+    onChange([...links, link ?? { href: "/", label_no: "", label_en: "" }]);
+
+  return (
+    <div className="space-y-2">
+      {links.length === 0 && (
+        <p className="text-sm text-muted-foreground italic">
+          Ingen egne lenker — standardoppsettet vises.
+        </p>
+      )}
+      {links.map((l, i) => (
+        <div
+          key={i}
+          className="rounded-md border border-border bg-card/40 p-3 flex flex-col md:flex-row md:items-end gap-2"
+        >
+          <label className="flex-1 text-xs text-muted-foreground">
+            Tekst (norsk)
+            <input
+              value={l.label_no}
+              onChange={(e) => update(i, { label_no: e.target.value })}
+              className="mt-1 w-full bg-input border border-border rounded-md px-2 py-1.5 text-sm text-foreground"
+              placeholder="Kamper"
+            />
+          </label>
+          <label className="flex-1 text-xs text-muted-foreground">
+            Tekst (engelsk)
+            <input
+              value={l.label_en ?? ""}
+              onChange={(e) => update(i, { label_en: e.target.value })}
+              className="mt-1 w-full bg-input border border-border rounded-md px-2 py-1.5 text-sm text-foreground"
+              placeholder="Matches"
+            />
+          </label>
+          <label className="flex-1 text-xs text-muted-foreground">
+            Adresse
+            <input
+              value={l.href}
+              onChange={(e) => update(i, { href: e.target.value })}
+              className="mt-1 w-full bg-input border border-border rounded-md px-2 py-1.5 text-sm font-mono text-foreground"
+              placeholder="/kamper"
+            />
+          </label>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => move(i, -1)}
+              disabled={i === 0}
+              aria-label="Flytt opp"
+              className="p-2 rounded-md border border-border hover:bg-muted disabled:opacity-30"
+            >
+              <ArrowUp className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => move(i, 1)}
+              disabled={i === links.length - 1}
+              aria-label="Flytt ned"
+              className="p-2 rounded-md border border-border hover:bg-muted disabled:opacity-30"
+            >
+              <ArrowDown className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => remove(i)}
+              aria-label="Fjern lenke"
+              className="p-2 rounded-md border border-destructive/40 text-destructive hover:bg-destructive/10"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      ))}
+      <div className="flex flex-wrap items-center gap-2 pt-1">
+        <button
+          type="button"
+          onClick={() => add()}
+          className="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-md border border-border hover:bg-muted"
+        >
+          <Plus className="w-4 h-4" /> Ny lenke
+        </button>
+        {FOOTER_PRESETS.filter((p) => !links.some((l) => l.href === p.link.href)).map((p) => (
+          <button
+            key={p.link.href}
+            type="button"
+            onClick={() => add(p.link)}
+            className="text-xs px-2.5 py-1.5 rounded-md border border-dashed border-border text-muted-foreground hover:text-primary hover:border-primary"
+          >
+            + {p.label}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 };
 

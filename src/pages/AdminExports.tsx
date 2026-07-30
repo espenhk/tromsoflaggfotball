@@ -9,6 +9,7 @@ import {
   getIgExport,
   listIgExports,
   renameIgExport,
+  setIgExportThumb,
   slugifyFilename,
 } from "@/lib/igExports";
 import { IgRenderer, downloadDataUrl } from "@/lib/igRenderer";
@@ -130,10 +131,17 @@ const AdminExports = () => {
     return payload;
   };
 
-  // Render thumbnails for the currently visible entries, one at a time.
+  // Prefer the stored small thumbnail; only rasterize (and then backfill it)
+  // for older entries saved before thumbnails existed.
   useEffect(() => {
     let cancelled = false;
-    const ids = filtered.slice(0, 60).map((e) => e.id);
+    const visible = filtered.slice(0, 60);
+    const stored: Record<string, string> = {};
+    visible.forEach((e) => {
+      if (e.thumb && !thumbs[e.id]) stored[e.id] = e.thumb;
+    });
+    if (Object.keys(stored).length) setThumbs((t) => ({ ...stored, ...t }));
+    const ids = visible.filter((e) => !e.thumb).map((e) => e.id);
     (async () => {
       for (const id of ids) {
         if (cancelled) return;
@@ -141,9 +149,20 @@ const AdminExports = () => {
         try {
           const payload = await loadPayload(id);
           if (cancelled || !rendererRef.current) return;
-          const url = await rendererRef.current.render(payload, 0);
+          const url = await rendererRef.current.renderThumb(payload, 0);
           if (cancelled) return;
           setThumbs((t) => ({ ...t, [id]: url }));
+          // Backfill so this entry never needs re-rendering again.
+          if (url.startsWith("data:image/jpeg") && url.length < 400 * 1024) {
+            try {
+              await setIgExportThumb(id, url);
+              setEntries((list) =>
+                list.map((e) => (e.id === id ? { ...e, thumb: url } : e)),
+              );
+            } catch {
+              /* non-fatal */
+            }
+          }
         } catch {
           if (!cancelled) setThumbs((t) => ({ ...t, [id]: "" }));
         }

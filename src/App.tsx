@@ -11,6 +11,7 @@ import MakeIgPost from "./pages/MakeIgPost.tsx";
 import Quiz from "./pages/Quiz.tsx";
 import Kamper from "./pages/Kamper.tsx";
 import PressKit from "./pages/PressKit.tsx";
+import CustomPage from "./pages/CustomPage.tsx";
 import Pameldinger from "./pages/Pameldinger.tsx";
 import AdminIndex from "./pages/AdminIndex.tsx";
 import AdminMatches from "./pages/AdminMatches.tsx";
@@ -41,6 +42,8 @@ const App = () => (
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/kamper" element={<Kamper />} />
             <Route path="/presse" element={<PressKit />} />
+            <Route path="/pages/:slug" element={<CustomPage />} />
+
             {/* Admin (password-protected) */}
             <Route path="/admin" element={<AdminGate />}>
               <Route index element={<AdminIndex />} />

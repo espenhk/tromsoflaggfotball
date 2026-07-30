@@ -29,7 +29,7 @@ const fmtDate = (iso: string) => {
 
 const fmtShortDate = (iso: string) => {
   try {
-    return new Date(iso).toLocaleDateString("nb-NO", { month: "short", day: "numeric" });
+    return new Date(iso).toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit" });
   } catch {
     return iso;
   }

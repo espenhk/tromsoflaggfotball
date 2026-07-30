@@ -83,6 +83,13 @@ export function useSlot(key: string): { title: string | null; body: string } | n
 }
 
 /** Render safe markdown with the site typography. */
+export function useSlotRaw(key: string): string | null {
+  const { blocks } = useContentBlocks();
+  const row = blocks.find((b) => b.kind === "slot" && b.key === key);
+  return row?.body_md_no ?? null;
+}
+
+/** Render safe markdown with the site typography. */
 export const MdBlock = ({ md, className }: { md: string; className?: string }) => (
   <div
     className={

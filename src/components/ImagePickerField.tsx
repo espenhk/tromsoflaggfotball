@@ -15,6 +15,7 @@ const LibraryModal = ({
   onClose: () => void;
 }) => {
   const [items, setItems] = useState<LibraryImage[]>(() => loadImageLibrary());
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const upload = async (files: FileList | null) => {
@@ -35,7 +36,7 @@ const LibraryModal = ({
           <h4 className="font-display text-lg flex-1">Bildebibliotek</h4>
           <button
             onClick={() => fileRef.current?.click()}
-            className="text-sm px-3 py-1.5 rounded bg-primary text-primary-foreground font-medium hover:opacity-90"
+            className="text-sm px-3 py-1.5 rounded border border-border hover:bg-muted"
           >
             Last opp
           </button>
@@ -56,29 +57,66 @@ const LibraryModal = ({
             Biblioteket er tomt. Last opp et bilde her eller lagre et fra IG-editoren.
           </p>
         ) : (
-          <div className="grid grid-cols-4 gap-3">
-            {items.map((it) => (
-              <div key={it.id} className="relative group">
-                <button
-                  onClick={() => { onPick(it.dataUrl); onClose(); }}
-                  className="w-full aspect-square rounded border border-border bg-muted bg-contain bg-center bg-no-repeat"
-                  style={{ backgroundImage: `url(${it.dataUrl})` }}
-                  title={it.name}
-                />
-                <span className="block mt-1 text-[10px] text-muted-foreground truncate">{it.name}</span>
-                <button
-                  onClick={() => {
-                    if (!confirm("Slette dette bildet fra biblioteket?")) return;
-                    removeFromImageLibrary(it.id);
-                    setItems(loadImageLibrary());
-                  }}
-                  className="absolute top-1 right-1 hidden group-hover:block rounded bg-destructive text-destructive-foreground text-[10px] px-1"
-                >
-                  ✕
-                </button>
-              </div>
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+              {items.map((it) => {
+                const on = selectedId === it.id;
+                return (
+                  <div key={it.id} className="relative group">
+                    <button
+                      onClick={() => setSelectedId(on ? null : it.id)}
+                      onDoubleClick={() => { onPick(it.dataUrl); onClose(); }}
+                      aria-pressed={on}
+                      className={`w-full aspect-square rounded border bg-muted bg-contain bg-center bg-no-repeat transition ${
+                        on
+                          ? "border-primary ring-2 ring-primary shadow-[0_0_12px_hsl(var(--primary)/0.5)]"
+                          : "border-border hover:border-primary/60"
+                      }`}
+                      style={{ backgroundImage: `url(${it.dataUrl})` }}
+                      title={it.name}
+                    />
+                    <span className="block mt-1 text-[10px] text-muted-foreground truncate">{it.name}</span>
+                    <button
+                      onClick={() => {
+                        if (!confirm("Slette dette bildet fra biblioteket?")) return;
+                        removeFromImageLibrary(it.id);
+                        if (on) setSelectedId(null);
+                        setItems(loadImageLibrary());
+                      }}
+                      className="absolute top-1 right-1 hidden group-hover:block rounded bg-destructive text-destructive-foreground text-[10px] px-1"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="sticky bottom-0 -mx-5 -mb-5 mt-5 flex items-center gap-3 border-t border-border bg-background px-5 py-3">
+              <span className="flex-1 text-xs text-muted-foreground truncate">
+                {selectedId
+                  ? `Valgt: ${items.find((x) => x.id === selectedId)?.name ?? ""}`
+                  : "Trykk på et bilde for å velge"}
+              </span>
+              <button
+                onClick={onClose}
+                className="text-sm px-3 py-1.5 rounded border border-border hover:bg-muted"
+              >
+                Avbryt
+              </button>
+              <button
+                disabled={!selectedId}
+                onClick={() => {
+                  const it = items.find((x) => x.id === selectedId);
+                  if (!it) return;
+                  onPick(it.dataUrl);
+                  onClose();
+                }}
+                className="text-sm px-4 py-1.5 rounded bg-primary text-primary-foreground font-medium hover:opacity-90 disabled:opacity-40"
+              >
+                Bruk bildet
+              </button>
+            </div>
+          </>
         )}
       </div>
     </div>
